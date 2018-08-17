@@ -1,0 +1,44 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.redhat.kafka</groupId>
+    <artifactId>kafka-play</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>kafka-producer</module>
+    </modules>
+
+    <properties>
+
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <kafka-version>1.1.0</kafka-version>
+        <zookeeper-version>3.4.6</zookeeper-version>
+
+    </properties>
+
+    <repositories>
+    </repositories>
+
+    <pluginRepositories>
+    </pluginRepositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka_2.12</artifactId>
+                <version>${kafka-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>${zookeeper-version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>
