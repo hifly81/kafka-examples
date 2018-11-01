@@ -2,7 +2,7 @@ package com.redhat.kafka.demo.producer;
 
 import java.util.Properties;
 
-public class CustomConfig {
+public class KafkaConfig {
 
     public static Properties stringProducer() {
         Properties producerProperties = new Properties();
