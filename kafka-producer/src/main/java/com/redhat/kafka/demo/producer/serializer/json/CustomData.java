@@ -1,4 +1,4 @@
-package com.redhat.kafka.demo.producer.serializer;
+package com.redhat.kafka.demo.producer.serializer.json;
 
 import java.io.Serializable;
 

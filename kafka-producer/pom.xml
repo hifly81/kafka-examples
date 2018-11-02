@@ -7,6 +7,7 @@
         <artifactId>kafka-play</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
+
     <artifactId>kafka-producer</artifactId>
     <packaging>jar</packaging>
 
@@ -16,6 +17,20 @@
             <artifactId>kafka_2.12</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.confluent</groupId>
+            <artifactId>kafka-avro-serializer</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.perspicuus</groupId>
+            <artifactId>perspicuus-client</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

@@ -1,11 +1,11 @@
-package com.redhat.kafka.demo.producer.serializer;
+package com.redhat.kafka.demo.producer.serializer.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.common.serialization.Serializer;
 
 import java.util.Map;
 
-public class CustomSerializer implements Serializer<CustomData> {
+public class JsonSerializer implements Serializer<CustomData> {
 
     @Override
     public void configure(Map<String, ?> configs, boolean isKey) {}

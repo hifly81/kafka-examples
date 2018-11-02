@@ -9,5 +9,6 @@ public class BaseProducerCallback implements Callback {
             if (e != null) {
                 e.printStackTrace();
             }
+            RecordMetadataUtil.prettyPrinter(recordMetadata);
         }
     }
