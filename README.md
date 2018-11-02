@@ -1,11 +1,40 @@
 # Examples with Apache Kafka
 
 ## Apache Kafka installation
-A base cluster with 3 broker is need to test the examples; fro details about the installation, info at:
+A base cluster with a minimum of 1 broker (suggested 3) is need to test the examples; for details about the installation, info at:<br>
 https://kafka.apache.org/documentation/#quickstart
 
 Examples are tested with Apacha Kafka version:
 2.12-2.0.0
+
+## Compile, Test, Run
+### Compile: ###
+
+```
+mvn clean compile
+```
+
+### Run kafka producers: ###
+
+```
+cd kafka-producer
+mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.producer.serializer.base.Runner"
+```
+
+```
+cd kafka-producer
+mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.producer.serializer.json.Runner"
+```
+
+```
+cd kafka-producer
+mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.producer.serializer.avro.Runner"
+```
+
+```
+cd kafka-producer
+mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.producer.serializer.perspicuus.Runner"
+```
 
 ## kafka producer
 
