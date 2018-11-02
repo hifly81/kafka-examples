@@ -6,9 +6,8 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 public class BaseProducerCallback implements Callback {
         @Override
         public void onCompletion(RecordMetadata recordMetadata, Exception e) {
-            if (e != null) {
+            if (e != null)
                 e.printStackTrace();
-            }
             RecordMetadataUtil.prettyPrinter(recordMetadata);
         }
     }
