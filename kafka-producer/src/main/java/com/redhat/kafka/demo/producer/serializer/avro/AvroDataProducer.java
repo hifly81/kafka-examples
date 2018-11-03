@@ -3,11 +3,12 @@ package com.redhat.kafka.demo.producer.serializer.avro;
 import com.redhat.kafka.demo.producer.AbstractKafkaProducer;
 import com.redhat.kafka.demo.producer.BaseProducerCallback;
 import com.redhat.kafka.demo.producer.KafkaConfig;
-import com.redhat.kafka.demo.producer.KafkaProducer;
+import com.redhat.kafka.demo.producer.BaseKafkaProducer;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.producer.Callback;
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
@@ -16,7 +17,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecord> implements KafkaProducer<String, GenericRecord> {
+public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecord> implements BaseKafkaProducer<String, GenericRecord> {
 
     private Schema schema;
     private GenericRecord car;
@@ -32,6 +33,11 @@ public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecor
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void start(KafkaProducer<String, GenericRecord> kafkaProducer) {
+        producer = kafkaProducer;
     }
 
     public void stop() {

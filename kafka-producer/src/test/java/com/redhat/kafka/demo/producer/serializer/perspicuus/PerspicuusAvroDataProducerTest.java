@@ -1,7 +1,5 @@
 package com.redhat.kafka.demo.producer.serializer.perspicuus;
 
-import com.redhat.kafka.demo.producer.serializer.avro.AvroDataProducer;
-import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;

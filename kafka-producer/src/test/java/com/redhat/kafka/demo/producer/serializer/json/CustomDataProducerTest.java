@@ -1,6 +1,5 @@
 package com.redhat.kafka.demo.producer.serializer.json;
 
-import com.redhat.kafka.demo.producer.serializer.base.BaseProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;

@@ -3,18 +3,24 @@ package com.redhat.kafka.demo.producer.serializer.json;
 import com.redhat.kafka.demo.producer.AbstractKafkaProducer;
 import com.redhat.kafka.demo.producer.BaseProducerCallback;
 import com.redhat.kafka.demo.producer.KafkaConfig;
-import com.redhat.kafka.demo.producer.KafkaProducer;
+import com.redhat.kafka.demo.producer.BaseKafkaProducer;
 import org.apache.kafka.clients.producer.Callback;
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-public class CustomDataProducer extends AbstractKafkaProducer<String, CustomData> implements KafkaProducer<String, CustomData> {
+public class CustomDataProducer extends AbstractKafkaProducer<String, CustomData> implements BaseKafkaProducer<String, CustomData> {
 
     public void start() {
         producer = new org.apache.kafka.clients.producer.KafkaProducer(KafkaConfig.jsonProducer());
+    }
+
+    @Override
+    public void start(KafkaProducer<String, CustomData> kafkaProducer) {
+        producer = kafkaProducer;
     }
 
     public void stop() {

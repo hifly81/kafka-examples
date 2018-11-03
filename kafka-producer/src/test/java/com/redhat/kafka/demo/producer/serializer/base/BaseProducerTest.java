@@ -10,8 +10,6 @@ import org.junit.Test;
 
 import java.util.concurrent.Future;
 
-import static org.junit.Assert.*;
-
 public class BaseProducerTest {
 
     private BaseProducer baseProducer;

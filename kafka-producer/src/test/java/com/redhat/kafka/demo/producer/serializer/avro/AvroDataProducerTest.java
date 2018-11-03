@@ -1,7 +1,5 @@
 package com.redhat.kafka.demo.producer.serializer.avro;
 
-import com.redhat.kafka.demo.producer.serializer.json.CustomData;
-import com.redhat.kafka.demo.producer.serializer.json.CustomDataProducer;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;

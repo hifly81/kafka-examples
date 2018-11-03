@@ -10,9 +10,10 @@ Examples are tested with Apacha Kafka version:
 ## Compile, Test, Run
 
 If you want to run the test you need:
- - at 1 broker running. listening on localhost, port 9092
+ - at least 1 broker running. listening on localhost, port 9092
  - a running confluent schema registry is need to register the avro schema. Further info at: https://github.com/confluentinc/schema-registry
  -  a running RedHat perspicuus schema registry is need to register the avro schema. Further info at: https://github.com/jhalliday/perspicuus
+ - atopic with 3 partitions named "demo-2" must exists.
 
 ### Compile: ###
 
@@ -54,6 +55,11 @@ cd kafka-producer
 mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.producer.serializer.perspicuus.Runner"
 ```
 
+```
+cd kafka-producer
+mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.producer.partitioner.custom.Runner"
+```
+
 ## kafka producer
 
 Implementation of kafka producers:
@@ -63,5 +69,7 @@ Implementation of kafka producers:
   A running confluent schema registry is need to register the avro schema. Further info at: https://github.com/confluentinc/schema-registry
   - perspicuus: uses a custom AvroSerializer *com.redhat.kafka.demo.producer.serializer.perspicuus.AvroSerializer* for key and value.<br>
   A running RedHat perspicuus schema registry is need to register the avro schema. Further info at: https://github.com/jhalliday/perspicuus
+  - partitioner: use a custom partitioner for keys.<br>
+  A topic with 3 partitions named "demo-2" must exists.
 
 Every producer implementation has its own *Runner* java class producing a bunch of sample messages.
