@@ -8,6 +8,12 @@ Examples are tested with Apacha Kafka version:
 2.12-2.0.0
 
 ## Compile, Test, Run
+
+If you want to run the test you need:
+ - at 1 broker running. listening on localhost, port 9092
+ - a running confluent schema registry is need to register the avro schema. Further info at: https://github.com/confluentinc/schema-registry
+ -  a running RedHat perspicuus schema registry is need to register the avro schema. Further info at: https://github.com/jhalliday/perspicuus
+
 ### Compile: ###
 
 ```
