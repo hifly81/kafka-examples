@@ -1,19 +1,17 @@
 package com.redhat.kafka.demo.producer.serializer.base;
 
+import com.redhat.kafka.demo.producer.AbstractKafkaProducer;
 import com.redhat.kafka.demo.producer.BaseProducerCallback;
 import com.redhat.kafka.demo.producer.KafkaConfig;
 import com.redhat.kafka.demo.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
-public class BaseProducer implements KafkaProducer<String, String> {
-
-    private Producer<String, String> producer;
-
+public class BaseProducer extends AbstractKafkaProducer<String, String> implements KafkaProducer<String, String> {
 
     public void start() {
         producer = new org.apache.kafka.clients.producer.KafkaProducer(KafkaConfig.stringProducer());
@@ -23,8 +21,8 @@ public class BaseProducer implements KafkaProducer<String, String> {
         producer.close();
     }
 
-    public void produceFireAndForget(ProducerRecord<String, String> producerRecord) {
-        producer.send(producerRecord);
+    public Future<RecordMetadata> produceFireAndForget(ProducerRecord<String, String> producerRecord) {
+        return producer.send(producerRecord);
     }
 
     public RecordMetadata produceSync(ProducerRecord<String, String> producerRecord) {

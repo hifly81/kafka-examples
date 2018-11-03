@@ -1,5 +1,6 @@
 package com.redhat.kafka.demo.producer.serializer.avro;
 
+import com.redhat.kafka.demo.producer.AbstractKafkaProducer;
 import com.redhat.kafka.demo.producer.BaseProducerCallback;
 import com.redhat.kafka.demo.producer.KafkaConfig;
 import com.redhat.kafka.demo.producer.KafkaProducer;
@@ -7,17 +8,16 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
-public class AvroDataProducer implements KafkaProducer<String, GenericRecord> {
+public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecord> implements KafkaProducer<String, GenericRecord> {
 
-    private Producer<String, GenericRecord> producer;
     private Schema schema;
     private GenericRecord car;
 
@@ -45,8 +45,8 @@ public class AvroDataProducer implements KafkaProducer<String, GenericRecord> {
     }
 
     @Override
-    public void produceFireAndForget(ProducerRecord<String, GenericRecord> producerRecord) {
-        producer.send(producerRecord);
+    public Future<RecordMetadata> produceFireAndForget(ProducerRecord<String, GenericRecord> producerRecord) {
+        return producer.send(producerRecord);
     }
 
     @Override
@@ -67,6 +67,13 @@ public class AvroDataProducer implements KafkaProducer<String, GenericRecord> {
         producer.send(producerRecord, new BaseProducerCallback());
     }
 
+    public Schema getSchema() {
+        return schema;
+    }
+
+    public GenericRecord getCar() {
+        return car;
+    }
 }
 
 

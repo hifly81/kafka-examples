@@ -19,6 +19,7 @@
         <confluent.version>3.0.0</confluent.version>
         <perspicuus.version>0.1.0-SNAPSHOT</perspicuus.version>
         <zookeeper-version>3.4.6</zookeeper-version>
+        <junit.version>4.12</junit.version>
 
     </properties>
 
@@ -71,6 +72,13 @@
                 <groupId>org.apache.zookeeper</groupId>
                 <artifactId>zookeeper</artifactId>
                 <version>${zookeeper-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
             </dependency>
 
         </dependencies>

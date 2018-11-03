@@ -14,6 +14,18 @@ Examples are tested with Apacha Kafka version:
 mvn clean compile
 ```
 
+### Package and test: ###
+
+```
+mvn clean package
+```
+
+### Test: ###
+
+```
+mvn test
+```
+
 ### Run kafka producers: ###
 
 ```

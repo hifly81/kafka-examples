@@ -11,7 +11,7 @@ public class CarRecordBase extends SpecificRecordBase {
 
     @Override
     public Schema getSchema() {
-        return AvroDataProducer.getSchema();
+        return PerspicuusAvroDataProducer.getSchema();
     }
 
     public Object get(int field) {
