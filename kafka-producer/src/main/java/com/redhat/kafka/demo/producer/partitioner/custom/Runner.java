@@ -19,7 +19,7 @@ public class Runner {
     public static void main (String [] args) {
         BaseProducer baseProducer = new BaseProducer();
         baseProducer.start(new org.apache.kafka.clients.producer.KafkaProducer(KafkaConfig.stringProducerCustomPartitioner()));
-        final String topicName = "demo-2";
+        final String topicName = "demo-3";
         bunchOfSynchMessages(topicName, baseProducer);
 
     }

@@ -17,7 +17,7 @@ public class BaseProducerTest {
 
     private BaseProducer baseProducer;
     private KafkaProducer<String, String> kafkaProducer;
-    private String topicName = "demo-2";
+    private String topicName = "demo-3";
 
     @Before
     public void setUp() {

@@ -13,7 +13,7 @@ If you want to run the test you need:
  - at least 1 broker running. listening on localhost, port 9092
  - a running confluent schema registry is need to register the avro schema. Further info at: https://github.com/confluentinc/schema-registry
  -  a running RedHat perspicuus schema registry is need to register the avro schema. Further info at: https://github.com/jhalliday/perspicuus
- - atopic with 3 partitions named "demo-2" must exists.
+ - a topic with 3 partitions named "demo-3" must exists.
 
 ### Compile: ###
 
@@ -60,16 +60,16 @@ cd kafka-producer
 mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.producer.partitioner.custom.Runner"
 ```
 
+### Run kafka producers: ###
+
+```
+cd kafka-consumer
+mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.consumer.base.Runner"
+```
+
 ## kafka producer
 
-Implementation of kafka producers:
-  - base: uses a *org.apache.kafka.common.serialization.StringSerialize* for key and value
-  - json: uses a *org.apache.kafka.common.serialization.StringSerialize* for key and a *com.redhat.kafka.demo.producer.serializer.json.JsonSerializer* for value
-  - avro: uses a *io.confluent.kafka.serializers.KafkaAvroSerializer* for key and value.<br>
-  A running confluent schema registry is need to register the avro schema. Further info at: https://github.com/confluentinc/schema-registry
-  - perspicuus: uses a custom AvroSerializer *com.redhat.kafka.demo.producer.serializer.perspicuus.AvroSerializer* for key and value.<br>
-  A running RedHat perspicuus schema registry is need to register the avro schema. Further info at: https://github.com/jhalliday/perspicuus
-  - partitioner: use a custom partitioner for keys.<br>
-  A topic with 3 partitions named "demo-2" must exists.
+Implementation of kafka consumer:
+  - base: uses a *org.apache.kafka.common.serialization.StringDeserializer* for key and value
 
-Every producer implementation has its own *Runner* java class producing a bunch of sample messages.
+Every consumer implementation has its own *Runner* java class consuming a bunch of sample messages.
