@@ -42,9 +42,6 @@ public class AvroDataProducerTest {
 
     @Test
     public void produceFireAndForget() {
-        avroDataProducer.start();
-        Producer<String, GenericRecord> producer = avroDataProducer.getProducer();
-        Assert.assertNotNull(producer);
         GenericRecord genericRecord = avroDataProducer.getGenericRecord();
         genericRecord.put("model", "1");
         genericRecord.put("brand", "The Best Car Company in Town");
@@ -54,9 +51,6 @@ public class AvroDataProducerTest {
 
     @Test
     public void produceSync() {
-        avroDataProducer.start();
-        Producer<String, GenericRecord> producer = avroDataProducer.getProducer();
-        Assert.assertNotNull(producer);
         GenericRecord genericRecord = avroDataProducer.getGenericRecord();
         genericRecord.put("model", "1");
         genericRecord.put("brand", "The Best Car Company in Town");

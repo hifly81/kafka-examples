@@ -38,18 +38,12 @@ public class BaseProducerTest {
 
     @Test
     public void produceFireAndForget() {
-        baseProducer.start();
-        Producer<String, String> producer = baseProducer.getProducer();
-        Assert.assertNotNull(producer);
         Future<RecordMetadata> future =  baseProducer.produceFireAndForget(new ProducerRecord<>("test", "dummy"));
         Assert.assertNotNull(future);
     }
 
     @Test
     public void produceSync() {
-        baseProducer.start();
-        Producer<String, String> producer = baseProducer.getProducer();
-        Assert.assertNotNull(producer);
         RecordMetadata recordMetadata = baseProducer.produceSync(new ProducerRecord<>("test", "dummy"));
         Assert.assertNotNull(recordMetadata);
         Assert.assertTrue(recordMetadata.hasTimestamp());

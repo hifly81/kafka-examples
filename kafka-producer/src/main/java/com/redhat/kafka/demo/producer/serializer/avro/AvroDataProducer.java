@@ -52,11 +52,17 @@ public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecor
 
     @Override
     public Future<RecordMetadata> produceFireAndForget(ProducerRecord<String, GenericRecord> producerRecord) {
+        if(producer == null)
+            start();
+
         return producer.send(producerRecord);
     }
 
     @Override
     public RecordMetadata produceSync(ProducerRecord<String, GenericRecord> producerRecord) {
+        if(producer == null)
+            start();
+
         RecordMetadata recordMetadata = null;
         try {
             recordMetadata = producer.send(producerRecord).get();
@@ -70,6 +76,9 @@ public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecor
 
     @Override
     public void produceAsync(ProducerRecord<String, GenericRecord> producerRecord, Callback callback) {
+        if(producer == null)
+            start();
+
         producer.send(producerRecord, new BaseProducerCallback());
     }
 

@@ -19,7 +19,13 @@ public class BaseConsumerTest {
 
     @Test
     public void subscribe() {
-        baseConsumer.subscribe("group-1", "demo-3");
+        baseConsumer.subscribe("group-1", "demo-3", true);
+        baseConsumer.poll(100);
+    }
+
+    @Test
+    public void subscribeSyncCommit() {
+        baseConsumer.subscribe("group-1", "demo-3", false);
         baseConsumer.poll(100);
     }
 

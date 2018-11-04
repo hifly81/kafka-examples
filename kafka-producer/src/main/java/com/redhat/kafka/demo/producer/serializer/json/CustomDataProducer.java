@@ -28,10 +28,16 @@ public class CustomDataProducer extends AbstractKafkaProducer<String, CustomData
     }
 
     public Future<RecordMetadata> produceFireAndForget(ProducerRecord<String, CustomData> producerRecord) {
+        if(producer == null)
+            start();
+
         return producer.send(producerRecord);
     }
 
     public RecordMetadata produceSync(ProducerRecord<String, CustomData> producerRecord) {
+        if(producer == null)
+            start();
+
         RecordMetadata recordMetadata = null;
         try {
             recordMetadata = producer.send(producerRecord).get();
@@ -45,6 +51,9 @@ public class CustomDataProducer extends AbstractKafkaProducer<String, CustomData
 
     @Override
     public void produceAsync(ProducerRecord<String, CustomData> producerRecord, Callback callback) {
+        if(producer == null)
+            start();
+
         producer.send(producerRecord, new BaseProducerCallback());
     }
 }

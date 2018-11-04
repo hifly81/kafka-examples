@@ -28,10 +28,16 @@ public class BaseProducer extends AbstractKafkaProducer<String, String> implemen
     }
 
     public Future<RecordMetadata> produceFireAndForget(ProducerRecord<String, String> producerRecord) {
+        if(producer == null)
+            start();
+
         return producer.send(producerRecord);
     }
 
     public RecordMetadata produceSync(ProducerRecord<String, String> producerRecord) {
+        if(producer == null)
+            start();
+
         RecordMetadata recordMetadata = null;
         try {
             recordMetadata = producer.send(producerRecord).get();
@@ -45,6 +51,9 @@ public class BaseProducer extends AbstractKafkaProducer<String, String> implemen
 
     @Override
     public void produceAsync(ProducerRecord<String, String> producerRecord, Callback callback) {
+        if(producer == null)
+            start();
+
         producer.send(producerRecord, new BaseProducerCallback());
     }
 

@@ -38,9 +38,6 @@ public class CustomDataProducerTest {
 
     @Test
     public void produceFireAndForget() {
-        customDataProducer.start();
-        Producer<String, CustomData> producer = customDataProducer.getProducer();
-        Assert.assertNotNull(producer);
         CustomData customData = new CustomData();
         customData.setIndex(1);
         Future<RecordMetadata> future =  customDataProducer.produceFireAndForget(new ProducerRecord<>("test", customData));
@@ -49,9 +46,6 @@ public class CustomDataProducerTest {
 
     @Test
     public void produceSync() {
-        customDataProducer.start();
-        Producer<String, CustomData> producer = customDataProducer.getProducer();
-        Assert.assertNotNull(producer);
         CustomData customData = new CustomData();
         customData.setIndex(1);
         RecordMetadata recordMetadata = customDataProducer.produceSync(new ProducerRecord<>("test", customData));

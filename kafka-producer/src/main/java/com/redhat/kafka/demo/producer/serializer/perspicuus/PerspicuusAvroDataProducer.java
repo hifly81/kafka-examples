@@ -51,11 +51,17 @@ public class PerspicuusAvroDataProducer extends AbstractKafkaProducer<String, Sp
 
     @Override
     public Future<RecordMetadata> produceFireAndForget(ProducerRecord<String, SpecificRecordBase> producerRecord) {
+        if(producer == null)
+            start();
+
         return producer.send(producerRecord);
     }
 
     @Override
     public RecordMetadata produceSync(ProducerRecord<String, SpecificRecordBase> producerRecord) {
+        if(producer == null)
+            start();
+
         RecordMetadata recordMetadata = null;
         try {
             recordMetadata = producer.send(producerRecord).get();
@@ -69,6 +75,9 @@ public class PerspicuusAvroDataProducer extends AbstractKafkaProducer<String, Sp
 
     @Override
     public void produceAsync(ProducerRecord<String, SpecificRecordBase> producerRecord, Callback callback) {
+        if(producer == null)
+            start();
+
         producer.send(producerRecord, new BaseProducerCallback());
     }
 

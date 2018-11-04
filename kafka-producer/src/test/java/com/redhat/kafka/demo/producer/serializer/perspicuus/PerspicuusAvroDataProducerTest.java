@@ -41,9 +41,6 @@ public class PerspicuusAvroDataProducerTest {
 
     @Test
     public void produceFireAndForget() {
-        perspicuusAvroDataProducer.start();
-        Producer<String, SpecificRecordBase> producer = perspicuusAvroDataProducer.getProducer();
-        Assert.assertNotNull(producer);
         SpecificRecordBase specificRecordBase = new CarRecordBase();
         specificRecordBase.put("model", "1");
         specificRecordBase.put("brand", "The Best Car Company in Town");
@@ -53,9 +50,6 @@ public class PerspicuusAvroDataProducerTest {
 
     @Test
     public void produceSync() {
-        perspicuusAvroDataProducer.start();
-        Producer<String, SpecificRecordBase> producer = perspicuusAvroDataProducer.getProducer();
-        Assert.assertNotNull(producer);
         SpecificRecordBase specificRecordBase = new CarRecordBase();
         specificRecordBase.put("model", "1");
         specificRecordBase.put("brand", "The Best Car Company in Town");
