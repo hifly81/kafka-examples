@@ -60,7 +60,7 @@ cd kafka-producer
 mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.producer.partitioner.custom.Runner"
 ```
 
-### Run kafka producers: ###
+### Run kafka consumers: ###
 
 ```
 cd kafka-consumer
@@ -68,6 +68,23 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.consu
 ```
 
 ## kafka producer
+
+Implementation of kafka producer:
+  - base: uses a *org.apache.kafka.common.serialization.StringDeserializer* for key and value
+  - json: uses a *org.apache.kafka.common.serialization.StringSerialize* for key and a *com.redhat.kafka.demo.producer.serializer.json.JsonSerializer* for value
+  - avro: uses a *io.confluent.kafka.serializers.KafkaAvroSerializer* for key and value.<br>
+  A running confluent schema registry is need to register the avro schema. <br>
+  Info at: https://github.com/confluentinc/schema-registry
+  - perspicuus: uses a custom AvroSerializer *com.redhat.kafka.demo.producer.serializer.perspicuus.AvroSerializer* for key and value.<br>
+  A running RedHat perspicuus schema registry is need to register the avro schema.<br>
+  Info at: https://github.com/jhalliday/perspicuus
+  - partitioner: use a custom partitioner for keys.<br>
+  A topic with 3 partitions named "demo-2" must exists.
+
+Every producer implementation has its own *Runner* java class producing a bunch of sample messages.
+
+
+## kafka consumer
 
 Implementation of kafka consumer:
   - base: uses a *org.apache.kafka.common.serialization.StringDeserializer* for key and value
