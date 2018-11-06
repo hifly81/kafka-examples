@@ -4,8 +4,10 @@ import com.redhat.kafka.demo.consumer.BaseKafkaConsumer;
 import com.redhat.kafka.demo.consumer.ConsumerRecordUtil;
 import com.redhat.kafka.demo.consumer.KafkaConfig;
 import org.apache.kafka.clients.consumer.*;
+import org.apache.kafka.common.TopicPartition;
 
 import java.util.Collections;
+import java.util.Map;
 
 public class BaseConsumer implements BaseKafkaConsumer {
 
@@ -37,14 +39,26 @@ public class BaseConsumer implements BaseKafkaConsumer {
 
                 if (!autoCommit)
                     try {
-                        consumer.commitSync();
+                        //async doesn't do a retry
+                        consumer.commitAsync(new OffsetCommitCallback() {
+                            @Override
+                            public void onComplete(Map<TopicPartition, OffsetAndMetadata> map, Exception e) {
+                                if (e != null)
+                                    e.printStackTrace();
+                            }
+                        });
                     } catch (CommitFailedException e) {
                         e.printStackTrace();
                     }
 
             }
         } finally {
-            consumer.close();
+            try {
+                //sync does retries, we want to use it in case of last commit or rebalancing
+                consumer.commitSync();
+            } finally {
+                consumer.close();
+            }
         }
 
     }
