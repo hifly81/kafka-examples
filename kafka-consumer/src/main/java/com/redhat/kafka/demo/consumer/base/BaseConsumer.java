@@ -5,11 +5,10 @@ import com.redhat.kafka.demo.consumer.ConsumerRecordUtil;
 import com.redhat.kafka.demo.consumer.KafkaConfig;
 import com.redhat.kafka.demo.consumer.PartitionListener;
 import org.apache.kafka.clients.consumer.*;
+import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.TopicPartition;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class BaseConsumer implements BaseKafkaConsumer {
 
@@ -72,4 +71,26 @@ public class BaseConsumer implements BaseKafkaConsumer {
         }
 
     }
+
+    @Override
+    public boolean assign(String topic, List partitions, boolean autoCommit) {
+        boolean isAssigned = false;
+        consumer = new KafkaConsumer<>(KafkaConfig.stringConsumer("", autoCommit));
+        List<PartitionInfo> partitionsInfo = consumer.partitionsFor(topic);
+        Collection<TopicPartition> partitionCollection = new ArrayList<>();
+        if (partitionsInfo != null) {
+            for (PartitionInfo partition : partitionsInfo) {
+                if (partitions == null || partitions.contains(partition.partition()))
+                    partitionCollection.add(new TopicPartition(partition.topic(), partition.partition()));
+            }
+            if (!partitionCollection.isEmpty()) {
+                consumer.assign(partitionCollection);
+                isAssigned = true;
+            }
+        }
+        this.autoCommit = autoCommit;
+        return isAssigned;
+    }
+
+
 }

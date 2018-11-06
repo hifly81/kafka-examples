@@ -1,6 +1,7 @@
 package com.redhat.kafka.demo.consumer.base;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,6 +27,12 @@ public class BaseConsumerTest {
     @Test
     public void subscribeSyncCommit() {
         baseConsumer.subscribe("group-1", "demo-3", false);
+        baseConsumer.poll(100);
+    }
+
+    @Test
+    public void assignSyncCommit() {
+        Assert.assertTrue(baseConsumer.assign("demo-3", null, true));
         baseConsumer.poll(100);
     }
 
