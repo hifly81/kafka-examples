@@ -6,7 +6,7 @@ public interface BaseKafkaConsumer<K, V> {
 
     void subscribe(String groupId, String topic, boolean autoCommit);
 
-    void poll(int size, long duration);
+    void poll(int size, long duration, boolean commitSync);
 
     boolean assign(String topic, List<Integer> partitions, boolean autoCommit);
 }

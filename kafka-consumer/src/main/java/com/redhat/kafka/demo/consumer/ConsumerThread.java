@@ -13,6 +13,7 @@ public class ConsumerThread<T> implements Runnable {
         private int size;
         private long duration;
         private boolean autoCommit;
+        private boolean commitSync;
         private boolean subscribeMode;
         private ConsumerHandle consumerHandle;
 
@@ -24,6 +25,7 @@ public class ConsumerThread<T> implements Runnable {
                 int pollSize,
                 long duration,
                 boolean autoCommit,
+                boolean commitSync,
                 boolean subscribeMode,
                 ConsumerHandle consumerHandle) {
             this.id = id;
@@ -33,6 +35,7 @@ public class ConsumerThread<T> implements Runnable {
             this.size = pollSize;
             this.duration = duration;
             this.autoCommit = autoCommit;
+            this.commitSync = commitSync;
             this.subscribeMode = subscribeMode;
             this.consumerHandle = consumerHandle;
         }
@@ -45,7 +48,7 @@ public class ConsumerThread<T> implements Runnable {
                 consumer.subscribe(groupId, topic, autoCommit);
             else
                 consumer.assign(topic, null, autoCommit);
-            consumer.poll(size, duration);
+            consumer.poll(size, duration, commitSync);
         }
 
     }

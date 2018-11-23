@@ -27,19 +27,19 @@ public class BaseConsumerTest {
     @Test
     public void subscribe() {
         baseConsumer.subscribe("group-1", "demo-3", true);
-        baseConsumer.poll(100, -1);
+        baseConsumer.poll(100, -1, false);
     }
 
     @Test
     public void subscribeSyncCommit() {
         baseConsumer.subscribe("group-1", "demo-3", false);
-        baseConsumer.poll(100, -1);
+        baseConsumer.poll(100, -1, false);
     }
 
     @Test
     public void assignSyncCommit() {
         Assert.assertTrue(baseConsumer.assign("demo-3", null, true));
-        baseConsumer.poll(100, -1);
+        baseConsumer.poll(100, -1,false);
     }
 
 }

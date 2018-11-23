@@ -12,7 +12,7 @@ public class OrderApp {
             "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
     private static final int RANDOM_STRING_LENGTH = 6;
 
-    public static void main (String [] args) {
+    public static void main (String [] args) throws Exception {
         OrderController orderController = new OrderController();
 
         for(int i = 0; i < 50; i++) {
@@ -21,6 +21,9 @@ public class OrderApp {
             order.setId(uuid);
             order.setName(generateRandomString());
             orderController.create(order);
+
+            Thread.sleep(1000);
+
             orderController.ready(uuid);
         }
 

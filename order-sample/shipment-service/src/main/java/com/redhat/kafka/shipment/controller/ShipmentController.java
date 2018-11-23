@@ -1,58 +1,56 @@
 package com.redhat.kafka.shipment.controller;
 
-import com.redhat.kafka.demo.consumer.ConsumerThread;
-import com.redhat.kafka.shipment.consumer.handle.ShipmentHandle;
 import com.redhat.kafka.shipment.event.OrderEvent;
+import com.redhat.kafka.shipment.model.Order;
+import com.redhat.kafka.shipment.model.Shipment;
 import com.redhat.kafka.shipment.store.InMemoryStore;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+@RestController
+@RequestMapping(value = "/process-store")
 public class ShipmentController {
 
-    private final String TOPIC = "orders";
+	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity receiveOrder(@RequestBody OrderEvent orderEvent) {
+		Map<String, List> store = InMemoryStore.getStore();;
+		if(store.containsKey(orderEvent.getId())) {
+			List<OrderEvent> orderEvents = store.get(orderEvent.getId());
+			store.get(orderEvent.getId()).add(orderEvent);
+			//base groupBy supports only 1 order per Shipment
+			Map<OrderEvent.EventType, List<OrderEvent>> orderEventGrouped =
+					orderEvents.stream().collect(Collectors.groupingBy(w -> w.getEventType()));
+			if(orderEventGrouped.containsKey(OrderEvent.EventType.ORDER_CREATED)
+					&& orderEventGrouped.containsKey(OrderEvent.EventType.ORDER_READY)) {
+				//TODO create shipment and sent to output topic
+				Order order = new Order();
+				order.setId(orderEvent.getId());
+				order.setName(orderEvent.getOrderName());
+				Shipment shipment = new Shipment();
+				shipment.setOrder(order);
+				shipment.setCourier("Fedex");
+				store.remove(orderEvent.getId());
+				System.out.printf("Created shipment %s\n", shipment);
+			}
+		}
 
-    public void receiveOrders(int numberOfConsumer, int duration, int pollSize) {
-        for(int i = 0; i < numberOfConsumer; i++) {
-            Thread t = new Thread(
-                    new ConsumerThread<OrderEvent>(
-                            String.valueOf(i),
-                            "group-user-1",
-                            TOPIC,
-                            "com.redhat.kafka.shipment.consumer.OrderEventJsonDeserializer",
-                            pollSize,
-                            duration,
-                            true ,
-                            true,
-                            new ShipmentHandle()));
-            t.start();
-        }
-    }
+		else {
+			List<OrderEvent> orderEvents = new ArrayList<>();
+			orderEvents.add(orderEvent);
+			store.put(orderEvent.getId(), orderEvents);
+		}
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
 
-    public void verifyOrders() {
-        Runnable runnable = () -> {
-            while(true) {
-                System.out.printf("Entries in MAP:\n");
-                Map<String, List> store = InMemoryStore.getStore();
-                for (Map.Entry<String, List> entry : store.entrySet()) {
-                    StringBuilder stringBuilder = new StringBuilder();
-                    if(entry.getValue() != null && !entry.getValue().isEmpty()) {
-                        for(Object obj: entry.getValue()) {
-                            OrderEvent orderEvent = (OrderEvent)obj;
-                            stringBuilder.append(orderEvent.getId() + "-" + orderEvent.getEventType() + "/");
-                        }
-                        System.out.printf(entry.getKey() + "/" + entry.getValue().size() + "/" + stringBuilder.toString() + "\n");
-                    }
-                }
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
 
-        Thread t = new Thread(runnable);
-        t.start();
-    }
 }

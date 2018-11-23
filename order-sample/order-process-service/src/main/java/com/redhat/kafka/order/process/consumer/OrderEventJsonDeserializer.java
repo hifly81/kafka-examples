@@ -1,7 +1,7 @@
-package com.redhat.kafka.shipment.consumer;
+package com.redhat.kafka.order.process.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.redhat.kafka.shipment.event.OrderEvent;
+import com.redhat.kafka.order.process.event.OrderEvent;
 import org.apache.kafka.common.serialization.Deserializer;
 
 import java.io.IOException;

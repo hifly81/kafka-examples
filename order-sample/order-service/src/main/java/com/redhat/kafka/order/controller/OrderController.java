@@ -50,6 +50,7 @@ public class OrderController {
         orderEvent.setId(order.getId());
         orderEvent.setTimestamp(new Date());
         orderEvent.setEventType(eventType);
+        orderEvent.setOrderName(order.getName());
         return orderEvent;
     }
 }

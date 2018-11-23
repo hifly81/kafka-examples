@@ -1,4 +1,4 @@
-package com.redhat.kafka.shipment.event;
+package com.redhat.kafka.order.process.event;
 
 import java.io.Serializable;
 import java.util.Date;

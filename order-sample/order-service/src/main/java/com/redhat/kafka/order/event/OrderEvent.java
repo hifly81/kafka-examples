@@ -8,9 +8,10 @@ public class OrderEvent {
         ORDER_CREATED, ORDER_READY;
     }
 
+    private String id;
+    private String orderName;
     private Date timestamp;
     private EventType eventType;
-    private String id;
 
 
     public Date getTimestamp() {
@@ -35,6 +36,14 @@ public class OrderEvent {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getOrderName() {
+        return orderName;
+    }
+
+    public void setOrderName(String orderName) {
+        this.orderName = orderName;
     }
 
     public String toString() {

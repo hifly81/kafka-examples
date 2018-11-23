@@ -1,9 +1,11 @@
 package com.redhat.kafka.demo.consumer;
 
 import com.redhat.kafka.demo.consumer.handle.ConsumerHandle;
+import com.redhat.kafka.demo.consumer.offset.OffsetManager;
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.errors.WakeupException;
 
 import java.util.*;
 
@@ -33,28 +35,46 @@ public class BaseConsumer<T> implements BaseKafkaConsumer {
     }
 
     @Override
-    public void poll(int size, long duration) {
+    public void poll(int size, long duration, boolean commitSync) {
+        final Thread mainThread = Thread.currentThread();
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            System.out.printf("Starting exit...\n");
+            consumer.wakeup();
+            try {
+                mainThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }));
+
         if (consumer == null)
             throw new IllegalStateException("Can't poll, consumer not subscribed or null!");
+
         try {
             if(duration == -1) {
                 while (true) {
-                    consume(size);
+                    consume(size, commitSync);
 
                 }
             } else {
                 long startTime = System.currentTimeMillis();
                 while(false||(System.currentTimeMillis()-startTime) < duration) {
-                    consume(size);
+                    consume(size, commitSync);
                 }
             }
-        } finally {
+        }
+        catch (WakeupException e) {
+        // ignore for shutdown
+        }
+        finally {
             try {
                 //print offsets
-                for (Map.Entry<TopicPartition, OffsetAndMetadata> entry : offsets.entrySet())
-                    System.out.printf("Consumer %s - partition %s - lastOffset %s\n", this.id, entry.getKey().partition(), entry.getValue().offset());
                 //sync does retries, we want to use it in case of last commit or rebalancing
                 consumer.commitSync();
+                for (Map.Entry<TopicPartition, OffsetAndMetadata> entry : offsets.entrySet())
+                    System.out.printf("Consumer %s - partition %s - lastOffset %s\n", this.id, entry.getKey().partition(), entry.getValue().offset());
+                //Store offsets
+                OffsetManager.store(offsets);
             } finally {
                 consumer.close();
             }
@@ -83,7 +103,7 @@ public class BaseConsumer<T> implements BaseKafkaConsumer {
         return isAssigned;
     }
 
-    private void consume(int size) {
+    private void consume(int size, boolean commitSync) {
         ConsumerRecords<String, T> records = consumer.poll(size);
         for (ConsumerRecord<String, T> record : records) {
             ConsumerRecordUtil.prettyPrinter(id, groupId, record);
@@ -94,18 +114,18 @@ public class BaseConsumer<T> implements BaseKafkaConsumer {
         }
 
         if (!autoCommit)
-            try {
-                //async doesn't do a retry
-                consumer.commitAsync(new OffsetCommitCallback() {
-                    @Override
-                    public void onComplete(Map<TopicPartition, OffsetAndMetadata> map, Exception e) {
+            if(!commitSync) {
+                try {
+                    //async doesn't do a retry
+                    consumer.commitAsync((map, e) -> {
                         if (e != null)
                             e.printStackTrace();
-                    }
-                });
-            } catch (CommitFailedException e) {
-                e.printStackTrace();
-            }
+                    });
+                } catch (CommitFailedException e) {
+                    e.printStackTrace();
+                }
+            } else
+                consumer.commitSync();
     }
 
 

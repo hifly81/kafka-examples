@@ -22,6 +22,7 @@ public class Runner {
                             100,
                             5000,
                             true ,
+                            false,
                             true,
                             new BaseConsumerHandle()));
             t.start();
@@ -40,6 +41,7 @@ public class Runner {
                             100,
                             -1,
                             false,
+                            false,
                             true,
                             new BaseConsumerHandle()));
             t.start();
@@ -57,6 +59,7 @@ public class Runner {
                             100,
                             -1,
                             true,
+                            false,
                             false,
                             new BaseConsumerHandle()));
             t.start();

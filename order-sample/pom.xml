@@ -13,7 +13,8 @@
 
     <modules>
         <module>order-service</module>
-        <module>shipment-service</module>
+        <module>order-process-service</module>
+	<module>shipment-service</module>
     </modules>
 
     <properties>
