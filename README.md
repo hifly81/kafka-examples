@@ -90,3 +90,13 @@ Implementation of kafka consumer:
   - base: uses a *org.apache.kafka.common.serialization.StringDeserializer* for key and value
 
 Every consumer implementation has its own *Runner* java class consuming a bunch of sample messages.
+
+
+### Kafka commands
+
+Create a topic:
+
+```
+export KAFKA_OPTS="-Djava.security.auth.login.config=../configs/kafka/jaas.config"
+bin/kafka-topics.sh --zookeeper localhost:2181 --create --topic <topic_name> --partitions <number> --replication-factor <number>
+```

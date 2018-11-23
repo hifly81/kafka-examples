@@ -18,8 +18,10 @@ public class UserPartitioner implements Partitioner {
         List<PartitionInfo> partitions = cluster.partitionsForTopic(topic);
         int numPartitions = partitions.size();
 
+        System.out.printf("Number of partitions: %d\n", numPartitions);
+
         if(numPartitions < 3)
-            throw new IllegalStateException("no enough partitions!");
+            throw new IllegalStateException("not enough partitions!");
 
         if (( key).equals("Mark"))
             return 0;

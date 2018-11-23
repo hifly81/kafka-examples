@@ -31,20 +31,20 @@ public class BaseProducerTest {
 
     @Test
     public void start() {
-        baseProducer.start(kafkaProducer);
+        baseProducer.start(null, kafkaProducer);
         Producer<String, String> producer = baseProducer.getProducer();
         Assert.assertNotNull(producer);
     }
 
     @Test
     public void stop() {
-        baseProducer.start(kafkaProducer);
+        baseProducer.start(null, kafkaProducer);
         baseProducer.stop();
     }
 
     @Test
     public void produceFireAndForget() {
-        baseProducer.start(kafkaProducer);
+        baseProducer.start(null, kafkaProducer);
         Producer<String, String> producer = baseProducer.getProducer();
         Assert.assertNotNull(producer);
         Future<RecordMetadata> future =  baseProducer.produceFireAndForget(new ProducerRecord<>(topicName, "Mark","dummy"));
@@ -53,7 +53,7 @@ public class BaseProducerTest {
 
     @Test
     public void produceSync() {
-        baseProducer.start(kafkaProducer);
+        baseProducer.start(null, kafkaProducer);
         Producer<String, String> producer = baseProducer.getProducer();
         Assert.assertNotNull(producer);
         RecordMetadata recordMetadata = baseProducer.produceSync(new ProducerRecord<>(topicName, "Mark","dummy"));

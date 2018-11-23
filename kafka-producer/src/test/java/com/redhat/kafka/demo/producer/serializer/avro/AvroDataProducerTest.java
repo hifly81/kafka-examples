@@ -26,7 +26,7 @@ public class AvroDataProducerTest {
 
     @Test
     public void start() {
-        avroDataProducer.start();
+        avroDataProducer.start(null);
         Producer<String, GenericRecord> producer = avroDataProducer.getProducer();
         Assert.assertNotNull(producer);
         Assert.assertNotNull(avroDataProducer.getCar());
@@ -36,7 +36,7 @@ public class AvroDataProducerTest {
 
     @Test
     public void stop() {
-        avroDataProducer.start();
+        avroDataProducer.start(null);
         avroDataProducer.stop();
     }
 

@@ -14,6 +14,7 @@ import org.jboss.perspicuus.client.SchemaRegistryClient;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -35,13 +36,13 @@ public class PerspicuusAvroDataProducer extends AbstractKafkaProducer<String, Sp
         }
     }
 
-    public void start() {
+    public void start(Properties properties) {
         producer = new org.apache.kafka.clients.producer.KafkaProducer(KafkaConfig.avroPerspicuusProducer());
 
     }
 
     @Override
-    public void start(KafkaProducer<String, SpecificRecordBase> kafkaProducer) {
+    public void start(Properties properties, KafkaProducer<String, SpecificRecordBase> kafkaProducer) {
         producer = kafkaProducer;
     }
 
@@ -51,17 +52,11 @@ public class PerspicuusAvroDataProducer extends AbstractKafkaProducer<String, Sp
 
     @Override
     public Future<RecordMetadata> produceFireAndForget(ProducerRecord<String, SpecificRecordBase> producerRecord) {
-        if(producer == null)
-            start();
-
         return producer.send(producerRecord);
     }
 
     @Override
     public RecordMetadata produceSync(ProducerRecord<String, SpecificRecordBase> producerRecord) {
-        if(producer == null)
-            start();
-
         RecordMetadata recordMetadata = null;
         try {
             recordMetadata = producer.send(producerRecord).get();
@@ -75,9 +70,6 @@ public class PerspicuusAvroDataProducer extends AbstractKafkaProducer<String, Sp
 
     @Override
     public void produceAsync(ProducerRecord<String, SpecificRecordBase> producerRecord, Callback callback) {
-        if(producer == null)
-            start();
-
         producer.send(producerRecord, new BaseProducerCallback());
     }
 

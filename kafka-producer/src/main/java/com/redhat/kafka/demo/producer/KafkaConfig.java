@@ -26,12 +26,12 @@ public class KafkaConfig {
         return producerProperties;
     }
 
-    public static Properties jsonProducer() {
+    public static Properties jsonProducer(String valueSerializerClassName) {
         Properties producerProperties = new Properties();
         producerProperties.put("bootstrap.servers", BROKER_LIST);
         producerProperties.put("max.block.ms", 15000);
         producerProperties.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        producerProperties.put("value.serializer", "com.redhat.kafka.demo.producer.serializer.json.JsonSerializer");
+        producerProperties.put("value.serializer", valueSerializerClassName);
         return producerProperties;
     }
 

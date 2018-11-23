@@ -25,14 +25,14 @@ public class BaseProducerTest {
 
     @Test
     public void start() {
-        baseProducer.start();
+        baseProducer.start(null);
         Producer<String, String> producer = baseProducer.getProducer();
         Assert.assertNotNull(producer);
     }
 
     @Test
     public void stop() {
-        baseProducer.start();
+        baseProducer.start(null);
         baseProducer.stop();
     }
 

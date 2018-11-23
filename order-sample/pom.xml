@@ -1,0 +1,99 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.redhat.kafka</groupId>
+        <artifactId>kafka-play</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>	
+
+    <artifactId>order-sample</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>order-service</module>
+        <module>shipment-service</module>
+    </modules>
+
+    <properties>
+
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <kafka.version>1.1.0</kafka.version>
+        <avro.version>1.7.6.redhat-1</avro.version>
+        <confluent.version>3.0.0</confluent.version>
+        <perspicuus.version>0.1.0-SNAPSHOT</perspicuus.version>
+        <zookeeper.version>3.4.6</zookeeper.version>
+        <slf4j.version>1.7.5</slf4j.version>
+        <junit.version>4.12</junit.version>
+
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>confluent</id>
+            <url>http://packages.confluent.io/maven/</url>
+        </repository>
+    </repositories>
+
+
+    <pluginRepositories>
+    </pluginRepositories>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka_2.12</artifactId>
+                <version>${kafka.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro</artifactId>
+                <version>${avro.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.confluent</groupId>
+                <artifactId>kafka-serializers</artifactId>
+                <version>${confluent.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.confluent</groupId>
+                <artifactId>kafka-avro-serializer</artifactId>
+                <version>${confluent.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.perspicuus</groupId>
+                <artifactId>perspicuus-client</artifactId>
+                <version>${perspicuus.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>${zookeeper.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+</project>

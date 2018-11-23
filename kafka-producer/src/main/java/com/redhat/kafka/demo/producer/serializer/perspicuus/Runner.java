@@ -10,7 +10,7 @@ public class Runner {
 
     public static void main (String [] args) {
         PerspicuusAvroDataProducer perspicuusAvroDataProducer = new PerspicuusAvroDataProducer();
-        perspicuusAvroDataProducer.start();
+        perspicuusAvroDataProducer.start(null);
         bunchOfMessages("test_perspicuus_data", perspicuusAvroDataProducer);
         bunchOfFFMessages("test_perspicuus_data", perspicuusAvroDataProducer);
         bunchOfAsynchMessages("test_perspicuus_data", perspicuusAvroDataProducer);

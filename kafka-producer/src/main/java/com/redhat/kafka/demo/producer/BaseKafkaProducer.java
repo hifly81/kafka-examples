@@ -5,13 +5,14 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
+import java.util.Properties;
 import java.util.concurrent.Future;
 
 public interface BaseKafkaProducer<K, V> {
 
-    void start();
+    void start(Properties properties);
 
-    void start(KafkaProducer<K, V> kafkaProducer);
+    void start(Properties properties, KafkaProducer<K, V> kafkaProducer);
 
     void stop();
 

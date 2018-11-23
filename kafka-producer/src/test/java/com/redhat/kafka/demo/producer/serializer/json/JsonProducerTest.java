@@ -8,15 +8,16 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Properties;
 import java.util.concurrent.Future;
 
-public class CustomDataProducerTest {
+public class JsonProducerTest {
 
-    private CustomDataProducer customDataProducer;
+    private JsonProducer<CustomData> jsonProducer;
 
     @Before
     public void setUp() {
-        customDataProducer = new CustomDataProducer();
+        jsonProducer = new JsonProducer<CustomData>();
     }
 
     @After
@@ -25,22 +26,26 @@ public class CustomDataProducerTest {
 
     @Test
     public void start() {
-        customDataProducer.start();
-        Producer<String, CustomData> producer = customDataProducer.getProducer();
+        Properties properties = new Properties();
+        properties.put("valueSerializer", "com.redhat.kafka.demo.producer.serializer.json.CustomDataJsonSerializer");
+        jsonProducer.start(properties);
+        Producer<String, CustomData> producer = jsonProducer.getProducer();
         Assert.assertNotNull(producer);
     }
 
     @Test
     public void stop() {
-        customDataProducer.start();
-        customDataProducer.stop();
+        Properties properties = new Properties();
+        properties.put("valueSerializer", "com.redhat.kafka.demo.producer.serializer.json.CustomDataJsonSerializer");
+        jsonProducer.start(properties);
+        jsonProducer.stop();
     }
 
     @Test
     public void produceFireAndForget() {
         CustomData customData = new CustomData();
         customData.setIndex(1);
-        Future<RecordMetadata> future =  customDataProducer.produceFireAndForget(new ProducerRecord<>("test", customData));
+        Future<RecordMetadata> future =  jsonProducer.produceFireAndForget(new ProducerRecord<>("test", customData));
         Assert.assertNotNull(future);
     }
 
@@ -48,7 +53,7 @@ public class CustomDataProducerTest {
     public void produceSync() {
         CustomData customData = new CustomData();
         customData.setIndex(1);
-        RecordMetadata recordMetadata = customDataProducer.produceSync(new ProducerRecord<>("test", customData));
+        RecordMetadata recordMetadata = jsonProducer.produceSync(new ProducerRecord<>("test", customData));
         Assert.assertNotNull(recordMetadata);
         Assert.assertTrue(recordMetadata.hasTimestamp());
         Assert.assertTrue(recordMetadata.hasOffset());

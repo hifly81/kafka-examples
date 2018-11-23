@@ -10,7 +10,7 @@ public class Runner {
 
     public static void main (String [] args) {
         AvroDataProducer avroDataProducer = new AvroDataProducer();
-        avroDataProducer.start();
+        avroDataProducer.start(null);
         bunchOfMessages("test_avro_data", avroDataProducer);
         bunchOfFFMessages("test_avro_data", avroDataProducer);
         bunchOfAsynchMessages("test_avro_data", avroDataProducer);

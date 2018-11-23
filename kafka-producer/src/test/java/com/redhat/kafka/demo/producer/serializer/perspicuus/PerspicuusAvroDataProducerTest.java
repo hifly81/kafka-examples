@@ -26,7 +26,7 @@ public class PerspicuusAvroDataProducerTest {
 
     @Test
     public void start() {
-        perspicuusAvroDataProducer.start();
+        perspicuusAvroDataProducer.start(null);
         Producer<String, SpecificRecordBase> producer = perspicuusAvroDataProducer.getProducer();
         Assert.assertNotNull(producer);
         Assert.assertNotNull(perspicuusAvroDataProducer.getSchema());
@@ -35,7 +35,7 @@ public class PerspicuusAvroDataProducerTest {
 
     @Test
     public void stop() {
-        perspicuusAvroDataProducer.start();
+        perspicuusAvroDataProducer.start(null);
         perspicuusAvroDataProducer.stop();
     }
 

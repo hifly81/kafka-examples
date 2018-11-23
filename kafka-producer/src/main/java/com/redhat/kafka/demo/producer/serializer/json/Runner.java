@@ -5,30 +5,34 @@ import com.redhat.kafka.demo.producer.RecordMetadataUtil;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
+import java.util.Properties;
+
 public class Runner {
 
     public static void main (String [] args) {
-        CustomDataProducer customDataProducer = new CustomDataProducer();
-        customDataProducer.start();
-        bunchOfMessages("test_custom_data", customDataProducer);
-        bunchOfFFMessages("test_custom_data", customDataProducer);
-        bunchOfAsynchMessages("test_custom_data", customDataProducer);
+        JsonProducer<CustomData> jsonProducer = new JsonProducer<CustomData>();
+        Properties properties = new Properties();
+        properties.put("valueSerializer", "com.redhat.kafka.demo.producer.serializer.json.CustomDataJsonSerializer");
+        jsonProducer.start(properties);
+        bunchOfMessages("test_custom_data", jsonProducer);
+        bunchOfFFMessages("test_custom_data", jsonProducer);
+        bunchOfAsynchMessages("test_custom_data", jsonProducer);
     }
 
-    public static void bunchOfMessages(String topic, CustomDataProducer customDataProducer) {
+    public static void bunchOfMessages(String topic, JsonProducer jsonProducer) {
         RecordMetadata lastRecord = null;
         for (int i= 10; i < 30000; i++ )
-            lastRecord = customDataProducer.produceSync(new ProducerRecord<>(topic, new CustomData(i)));
+            lastRecord = jsonProducer.produceSync(new ProducerRecord<>(topic, new CustomData(i)));
         RecordMetadataUtil.prettyPrinter(lastRecord);
 
     }
 
-    public static void bunchOfFFMessages(String topic, CustomDataProducer baseProducer) {
+    public static void bunchOfFFMessages(String topic, JsonProducer baseProducer) {
         for (int i= 10; i < 30000; i++ )
             baseProducer.produceFireAndForget(new ProducerRecord<>(topic, new CustomData(i)));
     }
 
-    public static void bunchOfAsynchMessages(String topic, CustomDataProducer baseProducer) {
+    public static void bunchOfAsynchMessages(String topic, JsonProducer baseProducer) {
         for (int i= 10; i < 30000; i++ )
             baseProducer.produceAsync(new ProducerRecord<>(topic, new CustomData(i)), new BaseProducerCallback());
     }

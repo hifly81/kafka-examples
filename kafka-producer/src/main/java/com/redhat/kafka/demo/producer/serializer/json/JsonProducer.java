@@ -9,17 +9,19 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
+import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-public class CustomDataProducer extends AbstractKafkaProducer<String, CustomData> implements BaseKafkaProducer<String, CustomData> {
+public class JsonProducer<T> extends AbstractKafkaProducer<String, T> implements BaseKafkaProducer<String, T> {
 
-    public void start() {
-        producer = new org.apache.kafka.clients.producer.KafkaProducer(KafkaConfig.jsonProducer());
+    public void start(Properties properties) {
+        producer = new org.apache.kafka.clients.producer.KafkaProducer(
+                KafkaConfig.jsonProducer(properties.getProperty("valueSerializer")));
     }
 
     @Override
-    public void start(KafkaProducer<String, CustomData> kafkaProducer) {
+    public void start(Properties properties, KafkaProducer<String, T> kafkaProducer) {
         producer = kafkaProducer;
     }
 
@@ -27,17 +29,11 @@ public class CustomDataProducer extends AbstractKafkaProducer<String, CustomData
         producer.close();
     }
 
-    public Future<RecordMetadata> produceFireAndForget(ProducerRecord<String, CustomData> producerRecord) {
-        if(producer == null)
-            start();
-
+    public Future<RecordMetadata> produceFireAndForget(ProducerRecord<String, T> producerRecord) {
         return producer.send(producerRecord);
     }
 
-    public RecordMetadata produceSync(ProducerRecord<String, CustomData> producerRecord) {
-        if(producer == null)
-            start();
-
+    public RecordMetadata produceSync(ProducerRecord<String, T> producerRecord) {
         RecordMetadata recordMetadata = null;
         try {
             recordMetadata = producer.send(producerRecord).get();
@@ -50,10 +46,7 @@ public class CustomDataProducer extends AbstractKafkaProducer<String, CustomData
     }
 
     @Override
-    public void produceAsync(ProducerRecord<String, CustomData> producerRecord, Callback callback) {
-        if(producer == null)
-            start();
-
+    public void produceAsync(ProducerRecord<String, T> producerRecord, Callback callback) {
         producer.send(producerRecord, new BaseProducerCallback());
     }
 }

@@ -18,8 +18,8 @@ public class Runner {
 
     public static void main (String [] args) {
         BaseProducer baseProducer = new BaseProducer();
-        baseProducer.start(new org.apache.kafka.clients.producer.KafkaProducer(KafkaConfig.stringProducerCustomPartitioner()));
-        final String topicName = "demo-3";
+        baseProducer.start(null, new org.apache.kafka.clients.producer.KafkaProducer(KafkaConfig.stringProducerCustomPartitioner()));
+        final String topicName = "demo-test";
         bunchOfSynchMessages(topicName, baseProducer);
 
     }
@@ -30,7 +30,7 @@ public class Runner {
         for (int i= 10; i < 30000; i++ ) {
             String key = strings[random.nextInt(strings.length)];
             lastRecord = baseProducer.produceSync(new ProducerRecord<>(topic, key, Integer.toString(i)));
-            System.out.println(key);
+            System.out.printf("Key to send: %s\n", key);
             RecordMetadataUtil.prettyPrinter(lastRecord);
         }
     }

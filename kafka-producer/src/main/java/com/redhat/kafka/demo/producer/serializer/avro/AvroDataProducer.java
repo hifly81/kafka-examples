@@ -14,6 +14,7 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -22,8 +23,7 @@ public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecor
     private Schema schema;
     private GenericRecord car;
 
-
-    public void start() {
+    public void start(Properties properties) {
         producer = new org.apache.kafka.clients.producer.KafkaProducer(KafkaConfig.avroProducer());
         Schema.Parser parser = new Schema.Parser();
         try {
@@ -36,7 +36,7 @@ public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecor
     }
 
     @Override
-    public void start(KafkaProducer<String, GenericRecord> kafkaProducer) {
+    public void start(Properties properties, KafkaProducer<String, GenericRecord> kafkaProducer) {
         producer = kafkaProducer;
     }
 
@@ -52,17 +52,11 @@ public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecor
 
     @Override
     public Future<RecordMetadata> produceFireAndForget(ProducerRecord<String, GenericRecord> producerRecord) {
-        if(producer == null)
-            start();
-
         return producer.send(producerRecord);
     }
 
     @Override
     public RecordMetadata produceSync(ProducerRecord<String, GenericRecord> producerRecord) {
-        if(producer == null)
-            start();
-
         RecordMetadata recordMetadata = null;
         try {
             recordMetadata = producer.send(producerRecord).get();
@@ -76,9 +70,6 @@ public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecor
 
     @Override
     public void produceAsync(ProducerRecord<String, GenericRecord> producerRecord, Callback callback) {
-        if(producer == null)
-            start();
-
         producer.send(producerRecord, new BaseProducerCallback());
     }
 
