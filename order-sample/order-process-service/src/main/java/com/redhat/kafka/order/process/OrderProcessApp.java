@@ -6,7 +6,7 @@ public class OrderProcessApp {
 
     public static void main (String [] args) {
         OrderProcessController orderProcessController = new OrderProcessController();
-        orderProcessController.receiveOrders(1, "group-1", -1, 10);
+        orderProcessController.receiveOrders(3, "group-1", -1, 10);
     }
 
 }

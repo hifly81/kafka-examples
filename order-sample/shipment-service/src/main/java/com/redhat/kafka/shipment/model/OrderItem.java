@@ -1,13 +1,12 @@
 package com.redhat.kafka.shipment.model;
 
-import java.util.List;
-
-public class Order {
+public class OrderItem {
 
     private String id;
     private String name;
+    private double price;
+    private Order order;
 
-    private List<OrderItem> items;
 
     public String getId() {
         return id;
@@ -25,11 +24,19 @@ public class Order {
         this.name = name;
     }
 
-    public List<OrderItem> getItems() {
-        return items;
+    public double getPrice() {
+        return price;
     }
 
-    public void setItems(List<OrderItem> items) {
-        this.items = items;
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 }

@@ -9,22 +9,42 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 public class RestClient {
 
-    private static final String REST_URI = "http://localhost:8080/process-store";
+    private static final String REST_URI_ORDER = "http://localhost:8080/shipment";
 
     public void sendOrderEvent(OrderEvent orderEvent) {
 
         try {
 
-            URL url = new URL(REST_URI);
+            URL url = new URL(REST_URI_ORDER);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
 
-            String input = "{\"eventType\":\""+orderEvent.getEventType()+"\",\"id\":\""+orderEvent.getId()+"\",\"orderName\":\""+orderEvent.getOrderName()+"\"}";
+            List<String> items = orderEvent.getItemIds();
+            StringBuilder sb = new StringBuilder();
+            sb.append("[");
+            for(int i = 0; i < items.size(); i ++) {
+                String tmp = items.get(i);
+                sb.append("\""+tmp+"\"");
+                if(i < items.size() -1)
+                    sb.append(",");
+            }
+            sb.append("]");
+
+            String input = "";
+
+            if(orderEvent.getEventType() == OrderEvent.EventType.ORDER_ITEM_READY && orderEvent.getItemEvent() != null ) {
+                String inputItem = "{\"id\":\""+orderEvent.getItemEvent().getId()+"\",\"name\":\""+orderEvent.getItemEvent().getName()+"\",\"orderId\":\""+orderEvent.getItemEvent().getOrderId()+"\",\"price\":"+orderEvent.getItemEvent().getPrice()+"}";
+                input = "{\"eventType\":\""+orderEvent.getEventType()+"\",\"id\":\""+orderEvent.getId()+"\",\"name\":\""+orderEvent.getName()+"\",\"itemIds\":"+sb.toString()+",\"itemEvent\":"+inputItem+"}";
+            } else {
+                input = "{\"eventType\":\""+orderEvent.getEventType()+"\",\"id\":\""+orderEvent.getId()+"\",\"name\":\""+orderEvent.getName()+"\",\"itemIds\":"+sb.toString()+"}";
+
+            }
 
             OutputStream os = conn.getOutputStream();
             os.write(input.getBytes());
@@ -47,4 +67,6 @@ public class RestClient {
         }
 
     }
+
+
 }

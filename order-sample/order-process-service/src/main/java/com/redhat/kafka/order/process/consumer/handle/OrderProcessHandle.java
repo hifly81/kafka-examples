@@ -14,3 +14,4 @@ public class OrderProcessHandle extends ConsumerHandle {
         restClient.sendOrderEvent(orderEvent);
     }
 }
+
