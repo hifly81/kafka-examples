@@ -28,6 +28,17 @@ public class KafkaSuiteTest {
         kafka.startup();
     }
 
+    public void start(Properties props) throws Exception {
+
+        Integer port = getZkPort(props);
+        zk = new TestingServer(port);
+        zk.start();
+
+        KafkaConfig kafkaConfig = new KafkaConfig(props);
+        kafka = new KafkaServerStartable(kafkaConfig);
+        kafka.startup();
+    }
+
     public void stop() throws IOException {
         kafka.shutdown();
         zk.stop();
