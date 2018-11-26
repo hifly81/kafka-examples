@@ -1,11 +1,16 @@
 package com.redhat.kafka.shipment.model;
 
-import java.util.UUID;
+import javax.persistence.*;
 
+@Entity
 public class Shipment {
 
-    private String id = UUID.randomUUID().toString();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String id;
     private String courier;
+    @OneToOne (cascade= CascadeType.ALL)
+    @JoinColumn(name="ORDER_ID")
     private Order order;
     private double price;
     private double totalPrice;

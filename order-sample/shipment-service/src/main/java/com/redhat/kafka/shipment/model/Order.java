@@ -1,13 +1,21 @@
 package com.redhat.kafka.shipment.model;
 
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "order_obj")
 public class Order {
 
+    @Id
+    @Column(name = "ORDER_ID")
     private String id;
+
     private String name;
 
-    private List<OrderItem> items;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "order", orphanRemoval = true)
+    private List<OrderItem> items = new ArrayList<>();
 
     public String getId() {
         return id;

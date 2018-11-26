@@ -7,13 +7,6 @@ https://kafka.apache.org/documentation/#quickstart
 Examples are tested with Apacha Kafka version:
 2.12-2.0.0
 
-## Compile, Test, Run
-
-If you want to run the test you need:
- - at least 1 broker running. listening on localhost, port 9092
- - a running confluent schema registry is need to register the avro schema. Further info at: https://github.com/confluentinc/schema-registry
- -  a running RedHat perspicuus schema registry is need to register the avro schema. Further info at: https://github.com/jhalliday/perspicuus
- - a topic with 3 partitions named "demo-3" must exists.
 
 ### Compile: ###
 
@@ -39,7 +32,21 @@ mvn test
 A sample application showing how to send and receive events to/from kafka.
 The application simulates the creation of an Order: <br>
  - an Order contains several OrderItem
- - a Shipment can be created only when all items beloging to an order are READY
+ - a Shipment can be created only when all items beloging to an order are READY.
+
+The Order events are sent to a Kafka topic by order service.<br>
+The Order events are received by order process service adn sent to the Shipment service via a Rest call.<br>
+The Shipment service aggregates the events and prodcue a Shipment object. The Shipment object is also saved on DBMS.
+
+Create a postgres db schema for the Shipment
+```
+cd order-sample/shipment-service
+su - postgres
+CREATE DATABASE orders;
+CREATE USER orders WITH PASSWORD 'orders';
+GRANT ALL PRIVILEGES ON DATABASE orders to orders;
+```
+Modify property spring.datasource.url inside the file application.properties with you postgres host and port.
 
 
 Run the shipment service (create the Shipment when Order is READY)
@@ -62,6 +69,8 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.order.Orde
 
 
 ### Run kafka producers: ###
+
+At least a kafka broker listening on port 9092 is required.
 
 Implementation of kafka producer:
   - base: uses a *org.apache.kafka.common.serialization.StringDeserializer* for key and value
@@ -103,6 +112,8 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.produ
 ```
 
 ### Run kafka consumers: ###
+
+At least a kafka broker listening on port 9092 is required.
 
 Implementation of kafka consumer:
   - base: uses a *org.apache.kafka.common.serialization.StringDeserializer* for key and value

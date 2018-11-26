@@ -1,10 +1,16 @@
 package com.redhat.kafka.shipment.model;
 
+import javax.persistence.*;
+
+@Entity
 public class OrderItem {
 
+    @Id
     private String id;
     private String name;
     private double price;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="ORDER_ID")
     private Order order;
 
 

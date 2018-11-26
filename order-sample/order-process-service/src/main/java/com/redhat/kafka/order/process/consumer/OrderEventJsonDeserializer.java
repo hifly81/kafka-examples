@@ -7,7 +7,7 @@ import org.apache.kafka.common.serialization.Deserializer;
 import java.io.IOException;
 import java.util.Map;
 
-public class OrderEventJsonDeserializer implements Deserializer<Object> {
+public class OrderEventJsonDeserializer implements Deserializer<OrderEvent> {
 
     private ObjectMapper objectMapper;
 

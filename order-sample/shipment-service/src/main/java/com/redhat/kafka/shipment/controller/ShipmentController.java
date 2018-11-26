@@ -6,6 +6,8 @@ import com.redhat.kafka.shipment.model.Order;
 import com.redhat.kafka.shipment.model.OrderItem;
 import com.redhat.kafka.shipment.model.Shipment;
 import com.redhat.kafka.shipment.store.InMemoryStore;
+import com.redhat.kafka.shipment.store.ShipmentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +16,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/shipment")
 public class ShipmentController {
+
+    @Autowired
+    private ShipmentRepository shipmentRepository;
+
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity receiveOrder(@RequestBody OrderEvent orderEvent) {
@@ -69,17 +77,13 @@ public class ShipmentController {
                                     orderItem.setId(itemEvent.getId());
                                     orderItem.setName(itemEvent.getName());
                                     orderItem.setOrder(order);
+                                    orderItem.setPrice(itemEvent.getPrice());
                                     orderItems.add(orderItem);
                                     itemsPrice+=itemEvent.getPrice();
                                 }
                             }
                             order.setItems(orderItems);
-                            Shipment shipment = new Shipment();
-                            shipment.setOrder(order);
-                            shipment.setCourier("Fedex");
-                            shipment.setPrice(15);
-                            shipment.setTotalPrice(itemsPrice + shipment.getPrice());
-                            store.remove(orderEvent.getId());
+                            Shipment shipment = saveShipment(orderEvent, store, order, itemsPrice);
                             System.out.printf("Created shipment %s with %d items\n", shipment, shipment.getOrder().getItems().size());
 
 
@@ -93,6 +97,19 @@ public class ShipmentController {
         }
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    private Shipment saveShipment(@RequestBody OrderEvent orderEvent, Map<String, List> store, Order order, double itemsPrice) {
+        Shipment shipment = new Shipment();
+        shipment.setOrder(order);
+        shipment.setCourier("Fedex");
+        shipment.setPrice(15);
+        shipment.setTotalPrice(itemsPrice + shipment.getPrice());
+        //remove from map
+        store.remove(orderEvent.getId());
+        //save to mongo
+        shipmentRepository.save(shipment);
+        return shipment;
     }
 
 }

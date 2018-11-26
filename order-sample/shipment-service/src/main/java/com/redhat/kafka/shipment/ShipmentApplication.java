@@ -16,6 +16,7 @@ public class ShipmentApplication {
 		verifyOrders();
 	}
 
+
 	public static  void verifyOrders() {
 		Runnable runnable = () -> {
 			while(true) {
