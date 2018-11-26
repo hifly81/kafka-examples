@@ -30,13 +30,13 @@ mvn test
 ### Order sample: ###
 
 A sample application showing how to send and receive events to/from kafka.
-The application simulates the creation of an Order: <br>
+The application simulates the creation of an Order and a Shipment: <br>
  - an Order contains several OrderItem
  - a Shipment can be created only when all items beloging to an order are READY.
 
-The Order events are sent to a Kafka topic by order service.<br>
-The Order events are received by order process service adn sent to the Shipment service via a Rest call.<br>
-The Shipment service aggregates the events and prodcue a Shipment object. The Shipment object is also saved on DBMS.
+The Order events are sent to a Kafka topic via Order service.<br>
+The Order events are received by Order process service and sent to the Shipment service via a Rest call.<br>
+The Shipment service aggregates the events and produces a Shipment object. The Shipment object is also saved on DBMS.
 
 Create a postgres db schema for the Shipment
 ```

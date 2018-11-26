@@ -15,7 +15,7 @@ public class OrderApp {
         OrderController orderController = new OrderController();
 
 
-        for(int i=0; i<1; i++) {
+        for(int i=0; i < 500; i++) {
             Order order = new Order();
             String orderId = "ID-" + UUID.randomUUID().toString();
             order.setId(orderId);
