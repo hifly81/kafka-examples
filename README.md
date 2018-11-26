@@ -38,9 +38,8 @@ The Order events are sent to a Kafka topic via Order service.<br>
 The Order events are received by Order process service and sent to the Shipment service via a Rest call.<br>
 The Shipment service aggregates the events and produces a Shipment object. The Shipment object is also saved on DBMS.
 
-Create a postgres db schema for the Shipment
+Create a postgres db schema for the Shipment: (info for a postgres installed on a Linux machine)
 ```
-cd order-sample/shipment-service
 su - postgres
 CREATE DATABASE orders;
 CREATE USER orders WITH PASSWORD 'orders';
@@ -49,19 +48,19 @@ GRANT ALL PRIVILEGES ON DATABASE orders to orders;
 Modify property spring.datasource.url inside the file application.properties with you postgres host and port.
 
 
-Run the shipment service (create the Shipment when Order is READY)
+Run the shipment service: (create the Shipment when Order is READY)
 ```
 cd order-sample/shipment-service
 mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.shipment.ShipmentApplication"
 ```
 
-Run the order process service (receive kafka events)
+Run the order process service: (receive kafka events)
 ```
 cd order-sample/order-process-service
 mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.order.process.OrderProcessApp"
 ```
 
-Run the order service (send kafka events)
+Run the order service: (send kafka events)
 ```
 cd order-sample/order-service
 mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.order.OrderApp"
