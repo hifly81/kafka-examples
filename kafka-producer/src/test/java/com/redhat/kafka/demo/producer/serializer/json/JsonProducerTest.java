@@ -1,5 +1,6 @@
 package com.redhat.kafka.demo.producer.serializer.json;
 
+import com.redhat.kafka.demo.producer.KafkaSuiteTest;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
@@ -13,15 +14,20 @@ import java.util.concurrent.Future;
 
 public class JsonProducerTest {
 
+    private KafkaSuiteTest server;
     private JsonProducer<CustomData> jsonProducer;
+    private String TOPIC = "topic-test-1";
 
     @Before
-    public void setUp() {
-        jsonProducer = new JsonProducer<CustomData>();
+    public void setUp() throws Exception {
+        server = new KafkaSuiteTest();
+        server.start();
+        jsonProducer = new JsonProducer<>();
     }
 
     @After
     public void tearDown() throws Exception {
+        server.stop();
     }
 
     @Test
@@ -33,27 +39,26 @@ public class JsonProducerTest {
         Assert.assertNotNull(producer);
     }
 
-    @Test
-    public void stop() {
-        Properties properties = new Properties();
-        properties.put("valueSerializer", "com.redhat.kafka.demo.producer.serializer.json.CustomDataJsonSerializer");
-        jsonProducer.start(properties);
-        jsonProducer.stop();
-    }
 
     @Test
     public void produceFireAndForget() {
+        Properties properties = new Properties();
+        properties.put("valueSerializer", "com.redhat.kafka.demo.producer.serializer.json.CustomDataJsonSerializer");
+        jsonProducer.start(properties);
         CustomData customData = new CustomData();
         customData.setIndex(1);
-        Future<RecordMetadata> future =  jsonProducer.produceFireAndForget(new ProducerRecord<>("test", customData));
+        Future<RecordMetadata> future =  jsonProducer.produceFireAndForget(new ProducerRecord<>(TOPIC, customData));
         Assert.assertNotNull(future);
     }
 
     @Test
     public void produceSync() {
+        Properties properties = new Properties();
+        properties.put("valueSerializer", "com.redhat.kafka.demo.producer.serializer.json.CustomDataJsonSerializer");
+        jsonProducer.start(properties);
         CustomData customData = new CustomData();
         customData.setIndex(1);
-        RecordMetadata recordMetadata = jsonProducer.produceSync(new ProducerRecord<>("test", customData));
+        RecordMetadata recordMetadata = jsonProducer.produceSync(new ProducerRecord<>(TOPIC, customData));
         Assert.assertNotNull(recordMetadata);
         Assert.assertTrue(recordMetadata.hasTimestamp());
         Assert.assertTrue(recordMetadata.hasOffset());

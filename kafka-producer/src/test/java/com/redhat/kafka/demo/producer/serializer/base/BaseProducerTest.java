@@ -1,5 +1,6 @@
 package com.redhat.kafka.demo.producer.serializer.base;
 
+import com.redhat.kafka.demo.producer.KafkaSuiteTest;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
@@ -10,18 +11,24 @@ import org.junit.Test;
 
 import java.util.concurrent.Future;
 
-public class BaseProducerTest {
+public class BaseProducerTest extends KafkaSuiteTest {
 
+    private KafkaSuiteTest server;
     private BaseProducer baseProducer;
+    private String TOPIC = "topic-test-1";
 
     @Before
-    public void setUp() {
+    public void setup() throws Exception {
+        server = new KafkaSuiteTest();
+        server.start();
         baseProducer = new BaseProducer();
     }
 
     @After
     public void tearDown() throws Exception {
+        server.stop();
     }
+
 
     @Test
     public void start() {
@@ -31,20 +38,16 @@ public class BaseProducerTest {
     }
 
     @Test
-    public void stop() {
-        baseProducer.start(null);
-        baseProducer.stop();
-    }
-
-    @Test
     public void produceFireAndForget() {
-        Future<RecordMetadata> future =  baseProducer.produceFireAndForget(new ProducerRecord<>("test", "dummy"));
+        baseProducer.start(null);
+        Future<RecordMetadata> future =  baseProducer.produceFireAndForget(new ProducerRecord<>(TOPIC, "dummy"));
         Assert.assertNotNull(future);
     }
 
     @Test
     public void produceSync() {
-        RecordMetadata recordMetadata = baseProducer.produceSync(new ProducerRecord<>("test", "dummy"));
+        baseProducer.start(null);
+        RecordMetadata recordMetadata = baseProducer.produceSync(new ProducerRecord<>(TOPIC, "dummy"));
         Assert.assertNotNull(recordMetadata);
         Assert.assertTrue(recordMetadata.hasTimestamp());
         Assert.assertTrue(recordMetadata.hasOffset());
