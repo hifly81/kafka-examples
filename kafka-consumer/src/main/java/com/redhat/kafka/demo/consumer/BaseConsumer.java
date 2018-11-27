@@ -2,6 +2,7 @@ package com.redhat.kafka.demo.consumer;
 
 import com.redhat.kafka.demo.consumer.handle.ConsumerHandle;
 import com.redhat.kafka.demo.consumer.offset.OffsetManager;
+import com.redhat.kafka.demo.consumer.partition.PartitionListener;
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.TopicPartition;

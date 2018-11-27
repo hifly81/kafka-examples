@@ -40,7 +40,7 @@ public class OffsetManager {
 
             output = new FileOutputStream("/tmp/offsets.properties");
             for (Map.Entry<TopicPartition, OffsetAndMetadata> entry : offsetAndMetadataMap.entrySet())
-                prop.setProperty(String.valueOf(entry.getKey().partition()), String.valueOf(entry.getValue().offset()));
+                prop.setProperty(entry.getKey().topic() + "-" + String.valueOf(entry.getKey().partition()), String.valueOf(entry.getValue().offset()));
 
             prop.store(output, null);
 

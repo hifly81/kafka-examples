@@ -1,4 +1,4 @@
-package com.redhat.kafka.demo.consumer;
+package com.redhat.kafka.demo.consumer.partition;
 
 import com.redhat.kafka.demo.consumer.offset.OffsetManager;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -30,12 +30,14 @@ public class PartitionListener<T> implements ConsumerRebalanceListener {
     public void onPartitionsAssigned(Collection<TopicPartition> partitions) {
         Properties properties = OffsetManager.load();
         //seek from offset
-        for(TopicPartition partition: partitions) {
+        for (TopicPartition partition : partitions) {
             try {
-                String offset = properties.getProperty(String.valueOf(partition.partition()));
-                consumer.seek(partition, Long.valueOf(offset));
-                System.out.printf("Consumer - partition %s - initOffset %s\n", partition.partition(), offset);
-            } catch(Exception ex) {
+                String offset = properties.getProperty(partition.topic() + "-" + String.valueOf(partition.partition()));
+                if (offset != null) {
+                    consumer.seek(partition, Long.valueOf(offset));
+                    System.out.printf("Consumer - partition %s - initOffset %s\n", partition.partition(), offset);
+                }
+            } catch (Exception ex) {
                 System.out.printf("Consumer - partition %s - initOffset not from DB\n", partition.partition());
             }
 
