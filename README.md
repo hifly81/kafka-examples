@@ -50,7 +50,7 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.order.Orde
 ```
 
 
-## Kafka producers ###
+### Kafka producers ###
 
 At least a kafka broker listening on port 9092 is required.
 
