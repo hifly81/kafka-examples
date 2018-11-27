@@ -28,10 +28,10 @@ CREATE DATABASE orders;
 CREATE USER orders WITH PASSWORD 'orders';
 GRANT ALL PRIVILEGES ON DATABASE orders to orders;
 ```
-Modify property spring.datasource.url inside the file application.properties with you postgres host and port.
+Modify property spring.datasource.url inside the file application.properties with your postgres host and port.
 
 
-Run the shipment service: (create the Shipment when Order is READY)
+Run the shipment service: (aggregates kafka event and creates the Shipment when an Order is READY)
 ```
 cd order-sample/shipment-service
 mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.shipment.ShipmentApplication"
@@ -52,9 +52,11 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.order.Orde
 
 ### Kafka producers ###
 
+Some implementations of kafka producers.
+
 At least a kafka broker listening on port 9092 is required.
 
-Implementation of kafka producer:
+kafka producers available:
   - base: uses a *org.apache.kafka.common.serialization.StringDeserializer* for key and value
   - json: uses a *org.apache.kafka.common.serialization.StringSerialize* for key and a *com.redhat.kafka.demo.producer.serializer.json.JsonSerializer* for value
   - avro: uses a *io.confluent.kafka.serializers.KafkaAvroSerializer* for key and value.<br>
@@ -96,10 +98,9 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.produ
 
 ### Kafka consumers ###
 
-At least a kafka broker listening on port 9092 is required.
+Implementation of a kafka consumer that can be used with variuos deserializer classes.
 
-Implementation of kafka consumer:
-  - base: uses a *org.apache.kafka.common.serialization.StringDeserializer* for key and value
+At least a kafka broker listening on port 9092 is required.
 
 Every consumer implementation has its own *Runner* java class consuming a bunch of sample messages.
 
