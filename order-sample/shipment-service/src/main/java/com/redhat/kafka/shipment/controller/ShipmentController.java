@@ -83,7 +83,7 @@ public class ShipmentController {
                                 }
                             }
                             order.setItems(orderItems);
-                            Shipment shipment = saveShipment(orderEvent, store, order, itemsPrice);
+                            Shipment shipment = saveShipment(order, itemsPrice);
                             System.out.printf("Created shipment %s with %d items\n", shipment, shipment.getOrder().getItems().size());
 
 
@@ -99,15 +99,16 @@ public class ShipmentController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    private Shipment saveShipment(@RequestBody OrderEvent orderEvent, Map<String, List> store, Order order, double itemsPrice) {
+    private Shipment saveShipment(Order order, double itemsPrice) {
+        Map<String, List> store = InMemoryStore.getStore();
         Shipment shipment = new Shipment();
         shipment.setOrder(order);
         shipment.setCourier("Fedex");
         shipment.setPrice(15);
         shipment.setTotalPrice(itemsPrice + shipment.getPrice());
         //remove from map
-        store.remove(orderEvent.getId());
-        //save to mongo
+        store.remove(order.getId());
+        //save to DBMS
         shipmentRepository.save(shipment);
         return shipment;
     }

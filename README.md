@@ -1,6 +1,8 @@
 # Examples with Apache Kafka
 
-## Apache Kafka installation
+
+### Apache Kafka installation ###
+
 A base cluster with a minimum of 1 broker (suggested 3) is need to test the examples; for details about the installation, info at:<br>
 https://kafka.apache.org/documentation/#quickstart
 
@@ -8,26 +10,7 @@ Examples are tested with Apacha Kafka version:
 2.12-2.0.0
 
 
-### Compile: ###
-
-```
-mvn clean compile
-```
-
-### Package and test: ###
-
-```
-mvn clean package
-```
-
-### Test: ###
-
-```
-mvn test
-```
-
-
-### Order sample: ###
+### Order application ###
 
 A sample application showing how to send and receive events to/from kafka.
 The application simulates the creation of an Order and a Shipment: <br>
@@ -67,7 +50,7 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.order.Orde
 ```
 
 
-### Run kafka producers: ###
+## Kafka producers ###
 
 At least a kafka broker listening on port 9092 is required.
 
@@ -110,7 +93,8 @@ cd kafka-producer
 mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.producer.partitioner.custom.Runner"
 ```
 
-### Run kafka consumers: ###
+
+### Kafka consumers ###
 
 At least a kafka broker listening on port 9092 is required.
 
@@ -125,7 +109,7 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.consu
 ```
 
 
-### Kafka commands
+### Kafka commands ###
 
 Create a topic:
 
