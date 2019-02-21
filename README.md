@@ -97,9 +97,10 @@ oc port-forward <name-of-grafana-pod> 3000:3000
 
 - Import grafana dashboards
 
-Login to http://localhost:3000 (admin/admin) and follow the steps available at:
+Login to http://localhost:3000 (admin/admin) and follow the steps available at:<br>
 https://strimzi.io/docs/latest/#grafana_dashboard
 
+Grafana kafka dashboard:
 ![alt text](https://raw.githubusercontent.com/hifly81/kafka-play/master/order-sample/images/grafana.png)
 
 - Deploy a container for postgres (required by the shipment service)
