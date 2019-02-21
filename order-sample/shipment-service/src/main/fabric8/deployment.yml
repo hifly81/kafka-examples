@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: ${project.artifactId}
+spec:
+  template:
+    spec:
+      containers:
+      - image: shipment-service:latest
+        name: ${project.artifactId}
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DB_USERNAME
+          valueFrom:
+             secretKeyRef:
+               name: my-database-secret
+               key: user
+        - name: DB_PASSWORD
+          valueFrom:
+             secretKeyRef:
+               name: my-database-secret
+               key: password
+        - name: JAVA_OPTIONS
+          value: "-Dspring.profiles.active=openshift"

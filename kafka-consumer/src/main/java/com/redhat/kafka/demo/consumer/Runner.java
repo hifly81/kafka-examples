@@ -6,8 +6,8 @@ public class Runner {
 
     public static void main (String [] args) {
         pollAutoCommit();
-        pollSyncCommit();
-        pollAssignSyncCommit();
+        //pollSyncCommit();
+        //pollAssignSyncCommit();
     }
 
     private static void pollAutoCommit() {
@@ -17,7 +17,7 @@ public class Runner {
                     new ConsumerThread<String>(
                             String.valueOf(i),
                             "group-user-1",
-                            "demo-test",
+                            "test",
                             "org.apache.kafka.common.serialization.StringDeserializer",
                             100,
                             5000,

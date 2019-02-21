@@ -9,7 +9,6 @@ public class KafkaConfig {
     private static final String SCHEMA_REGISTRY_CONFLUENT_URL =
             System.getenv("confluent.schema.registry") != null? System.getenv("confluent.schema.registry"):"http://localhost:8081";
 
-
     public static Properties stringProducer() {
         Properties producerProperties = new Properties();
         producerProperties.put("bootstrap.servers", BROKER_LIST);

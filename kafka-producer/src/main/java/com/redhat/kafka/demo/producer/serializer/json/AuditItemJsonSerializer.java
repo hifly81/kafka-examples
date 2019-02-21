@@ -1,18 +1,18 @@
-package com.redhat.kafka.order.producer;
+package com.redhat.kafka.demo.producer.serializer.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.redhat.kafka.order.event.OrderEvent;
+import com.redhat.kafka.demo.producer.serializer.model.AuditItem;
 import org.apache.kafka.common.serialization.Serializer;
 
 import java.util.Map;
 
-public class OrderEventJsonSerializer implements Serializer<OrderEvent> {
+public class AuditItemJsonSerializer implements Serializer<AuditItem> {
 
     @Override
     public void configure(Map<String, ?> configs, boolean isKey) {}
 
     @Override
-    public byte[] serialize(String topic, OrderEvent data) {
+    public byte[] serialize(String topic, AuditItem data) {
         byte[] retVal = null;
         ObjectMapper objectMapper = new ObjectMapper();
         try {

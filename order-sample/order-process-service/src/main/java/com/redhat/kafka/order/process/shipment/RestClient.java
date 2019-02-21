@@ -13,13 +13,14 @@ import java.util.List;
 
 public class RestClient {
 
-    private static final String REST_URI_ORDER = "http://localhost:8080/shipment";
+    private static final String REST_SHIPMENT_URI =
+            System.getenv("shipment.url") != null? System.getenv("shipment.url") :"http://localhost:8080/shipment";
 
     public void sendOrderEvent(OrderEvent orderEvent) {
 
         try {
 
-            URL url = new URL(REST_URI_ORDER);
+            URL url = new URL(REST_SHIPMENT_URI);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");

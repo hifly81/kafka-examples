@@ -2,6 +2,7 @@ package com.redhat.kafka.demo.producer.serializer.json;
 
 import com.redhat.kafka.demo.producer.BaseProducerCallback;
 import com.redhat.kafka.demo.producer.RecordMetadataUtil;
+import com.redhat.kafka.demo.producer.serializer.model.CustomData;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 

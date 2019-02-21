@@ -1,6 +1,7 @@
 package com.redhat.kafka.demo.producer.serializer.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.redhat.kafka.demo.producer.serializer.model.CustomData;
 import org.apache.kafka.common.serialization.Serializer;
 
 import java.util.Map;
