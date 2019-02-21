@@ -147,6 +147,8 @@ oc start-build order-service --from-dir=.
 
 - Run a simulated scenario (send 500 orders)
 
+An OpenShift job invoking the main java class for the Order Service will be created and set of 500 will be delivered.
+
 ```
 cd order-service/src/main/resources
 oc create -f orderservicejob.yml
