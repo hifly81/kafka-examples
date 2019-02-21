@@ -53,7 +53,16 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.order.Orde
 
 - Required software
 
-You need OpenShift 3.11 and a user with cluster-admin role (to deploy the strimzi operators)
+- You need OpenShift 3.11 and a user with cluster-admin role (to deploy the strimzi operators)
+- You will run the Apache Kafka (and Zookeeper) cluster on OpenShift using Strmizi:
+https://strimzi.io
+- You will also deploy on Openshift, Promethes and Grafana to collect and show some kafka metrics
+- Shipment service will de deployed on OpenShift using the fabric8 maven plugin
+https://maven.fabric8.io/
+- Order process service will be deployed on OpenShift using the openjdk18 image for OpenShift
+https://registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift
+- Order service will be deployed on OpenShift using the openjdk18 image for OpenShift and running (on demand) and OpenShift job that will run
+a scenario with 500 orders.
 
 This is an image showing your final namespace:
 ![ScreenShot 1](order-sample/images/myproject.png)
