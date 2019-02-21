@@ -56,7 +56,7 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.order.Orde
 You need OpenShift 3.11 and a user with cluster-admin role (to deploy the strimzi operators)
 
 This is an image showing your final namespace:
-![alt text](https://raw.githubusercontent.com/hifly81/kafka-play/master/order-sample/images/myproject.png)
+![alt myproject](https://raw.githubusercontent.com/hifly81/kafka-play/master/order-sample/images/myproject.png)
 
 - Download strimzi, version 0.10
 
@@ -101,7 +101,7 @@ Login to http://localhost:3000 (admin/admin) and follow the steps available at:<
 https://strimzi.io/docs/latest/#grafana_dashboard
 
 Grafana kafka dashboard:
-![alt text](https://raw.githubusercontent.com/hifly81/kafka-play/master/order-sample/images/grafana.png)
+![alt grafana](https://raw.githubusercontent.com/hifly81/kafka-play/master/order-sample/images/grafana.png)
 
 - Deploy a container for postgres (required by the shipment service)
 
