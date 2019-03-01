@@ -9,6 +9,11 @@ https://kafka.apache.org/documentation/#quickstart
 Examples are tested with Apacha Kafka version:
 2.12-2.0.0
 
+### Apache Kafka installation on Kubernetes and OpenShift###
+
+If you want to run your kafka cluster on Kubernetes or OpenShift, have a look at Strimzi project:<br>
+https://strimzi.io/
+
 
 ### Order application ###
 
@@ -213,6 +218,24 @@ Implementation of a kafka consumer that can be used with variuos deserializer cl
 Execute tests:
 ```
 cd kafka-consumer
+mvn clean test
+```
+
+Every consumer implementation has its own *Runner* java class consuming a bunch of sample messages.
+At least a kafka broker listening on port 9092 is required.
+
+```
+cd kafka-consumer
+mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.consumer.base.Runner"
+```
+
+### Kafka streams ###
+
+Implementation of a kafka stream to analyze car sensors.
+
+Execute tests:
+```
+cd kafka-streams
 mvn clean test
 ```
 
