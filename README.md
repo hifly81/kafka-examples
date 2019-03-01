@@ -231,22 +231,14 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.consu
 
 ### Kafka streams ###
 
-Implementation of a kafka stream to analyze car sensors.
+Implementation of a kafka stream to analyze car sensors.<br>
+The stream filters out speed data from car data records.
 
 Execute tests:
 ```
 cd kafka-streams
 mvn clean test
 ```
-
-Every consumer implementation has its own *Runner* java class consuming a bunch of sample messages.
-At least a kafka broker listening on port 9092 is required.
-
-```
-cd kafka-consumer
-mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.consumer.base.Runner"
-```
-
 
 ### Kafka commands ###
 
