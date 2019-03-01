@@ -9,7 +9,7 @@ https://kafka.apache.org/documentation/#quickstart
 Examples are tested with Apacha Kafka version:
 2.12-2.0.0
 
-### Apache Kafka installation on Kubernetes and OpenShift###
+### Apache Kafka installation on Kubernetes and OpenShift ###
 
 If you want to run your kafka cluster on Kubernetes or OpenShift, have a look at Strimzi project:<br>
 https://strimzi.io/
