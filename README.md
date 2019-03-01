@@ -159,8 +159,6 @@ oc create -f orderservicejob.yml
 
 Some implementations of kafka producers.
 
-At least a kafka broker listening on port 9092 is required.
-
 kafka producers available:
   - base: uses a *org.apache.kafka.common.serialization.StringDeserializer* for key and value
   - json: uses a *org.apache.kafka.common.serialization.StringSerialize* for key and a *com.redhat.kafka.demo.producer.serializer.json.JsonSerializer* for value
@@ -173,7 +171,14 @@ kafka producers available:
   - partitioner: use a custom partitioner for keys.<br>
   A topic with 3 partitions named "demo-2" must exists.
 
+Execute tests:
+```
+cd kafka-producer
+mvn clean test
+```
+
 Every producer implementation has its own *Runner* java class producing a bunch of sample messages.
+At least a kafka broker listening on port 9092 is required.
 
 ```
 cd kafka-producer
@@ -205,9 +210,14 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.produ
 
 Implementation of a kafka consumer that can be used with variuos deserializer classes.
 
-At least a kafka broker listening on port 9092 is required.
+Execute tests:
+```
+cd kafka-consumer
+mvn clean test
+```
 
 Every consumer implementation has its own *Runner* java class consuming a bunch of sample messages.
+At least a kafka broker listening on port 9092 is required.
 
 ```
 cd kafka-consumer
