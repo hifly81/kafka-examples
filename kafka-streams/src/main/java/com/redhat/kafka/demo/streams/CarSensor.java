@@ -3,25 +3,9 @@ package com.redhat.kafka.demo.streams;
 public class CarSensor {
 
     private String id;
-    private String brand;
-    private String model;
     private float speed;
-
-    public String getBrand() {
-        return brand;
-    }
-
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
+    private float lat;
+    private float lng;
 
     public String getId() {
         return id;
@@ -37,5 +21,21 @@ public class CarSensor {
 
     public void setSpeed(float speed) {
         this.speed = speed;
+    }
+
+    public float getLat() {
+        return lat;
+    }
+
+    public void setLat(float lat) {
+        this.lat = lat;
+    }
+
+    public float getLng() {
+        return lng;
+    }
+
+    public void setLng(float lng) {
+        this.lng = lng;
     }
 }
