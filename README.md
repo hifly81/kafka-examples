@@ -85,10 +85,15 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.consu
 
 ### Kafka streams ###
 
-Implementation of a kafka stream to analyze car sensors.<br>
+Implementation of a series of kafka streams topoligies to analyze car data.<br>
+
+CarSensorStream:<br>
 The stream filters out speed data from car data sensor records. Speed limit is set to 150km/h and only events exceeding the limits are filtered out<br>
 A ktable stores the car info data.<br>
 A left join between the kstream and the ktable produces a new aggregated object published to an output topic.
+
+CarBrandStream:<br>
+The stream splits the original data into 2 different topics, one for Ferrari cars and one for all other car brands.
 
 Execute tests:
 ```

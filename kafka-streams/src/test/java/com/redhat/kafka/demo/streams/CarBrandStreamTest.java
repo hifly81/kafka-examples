@@ -50,8 +50,8 @@ public class CarBrandStreamTest extends KafkaSuiteTest {
 
         Assert.assertNotNull(sendInfoData("1", "{\"id\":\"1\",\"brand\":\"Ferrari\",\"model\":\"Testarossa\"}"));
         Assert.assertNotNull(sendInfoData("2", "{\"id\":\"2\",\"brand\":\"Bugatti\",\"model\":\"Chiron\"}"));
-        Assert.assertNotNull(sendInfoData("1", "{\"id\":\"3\",\"brand\":\"Ferrari\",\"model\":\"F40\"}"));
-        Assert.assertNotNull(sendInfoData("3", "{\"id\":\"4\",\"brand\":\"Fiat\",\"model\":\"500\"}"));
+        Assert.assertNotNull(sendInfoData("3", "{\"id\":\"3\",\"brand\":\"Ferrari\",\"model\":\"F40\"}"));
+        Assert.assertNotNull(sendInfoData("4", "{\"id\":\"4\",\"brand\":\"Fiat\",\"model\":\"500\"}"));
 
 
         KafkaStreams kafkaStreams = carBrandStream.createStream(TOPIC_CAR_INFO, TOPIC_FERRARI_OUTPUT, TOPIC_CAR_OUTPUT);
