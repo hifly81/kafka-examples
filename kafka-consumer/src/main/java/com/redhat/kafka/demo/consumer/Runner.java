@@ -16,8 +16,8 @@ public class Runner {
             Thread t = new Thread(
                     new ConsumerThread<String>(
                             String.valueOf(i),
-                            "group-user-1",
-                            "test",
+                            "group-user-2",
+                            "topic1",
                             "org.apache.kafka.common.serialization.StringDeserializer",
                             100,
                             5000,

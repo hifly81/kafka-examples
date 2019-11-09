@@ -10,9 +10,9 @@ public class Runner {
     public static void main (String [] args) throws Exception {
         BaseProducer baseProducer = new BaseProducer();
         baseProducer.start(null);
-        bunchOfSynchMessages("test", baseProducer);
-        bunchOfFFMessages("test", baseProducer);
-        bunchOfAsynchMessages("test", baseProducer);
+        bunchOfSynchMessages("topic1", baseProducer);
+        bunchOfFFMessages("topic1", baseProducer);
+        bunchOfAsynchMessages("topic1", baseProducer);
     }
 
     public static void bunchOfSynchMessages(String topic, BaseProducer baseProducer) {

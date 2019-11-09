@@ -101,6 +101,42 @@ cd kafka-streams
 mvn clean test
 ```
 
+### Kafka microprofile2 ###
+
+Sample of a kafka producer and consumer running on a open liberty MicroProfile v2 runtime.
+They can run on Docker and OpenShift.
+
+Run on docker:
+```
+#Start a zookeeper container
+docker run -d --name zookeeper -p 2181:2181 -p 2888:2888 -p 3888:3888 debezium/zookeeper
+
+#Start a kafka container
+docker run -d --name my-cluster-kafka-bootstrap -p 9092:9092 --link zookeeper:zookeeper debezium/kafka
+
+#Start a kafka producer container
+cd kafka-microprofile2-producer
+
+docker build -t kafka-producer:latest .
+
+docker run -d --name kafka-producer -p 9080:9080 -e KAFKABROKERLIST=my-cluster-kafka-bootstrap:9092 --link my-cluster-kafka-bootstrap:my-cluster-kafka-bootstrap kafka-producer:latest
+
+
+#Start a kafka consumer container
+cd kafka-microprofile2-consumer
+
+docker build -t kafka-consumer:latest .
+
+docker run -d --name kafka-consumer -p 9090:9080 -e KAFKABROKERLIST=my-cluster-kafka-bootstrap:9092 --link my-cluster-kafka-bootstrap:my-cluster-kafka-bootstrap kafka-consumer:latest
+
+#Receive orders
+curl -v -X POST http://localhost:9080/kafka-microprofile2-consumer-0.0.1-SNAPSHOT/order
+
+#Send orders (500)
+curl -v -X POST http://localhost:9080/kafka-microprofile2-producer-0.0.1-SNAPSHOT/order
+```
+
+
 ### Kafka commands ###
 
 Create a topic:

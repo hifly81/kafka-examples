@@ -10,6 +10,8 @@
         <module>kafka-producer</module>
         <module>kafka-consumer</module>
         <module>kafka-streams</module>
+        <module>kafka-microprofile2-producer</module>
+        <module>kafka-microprofile2-consumer</module>
     </modules>
 
     <properties>
