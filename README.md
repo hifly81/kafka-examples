@@ -119,14 +119,13 @@ cd kafka-microprofile2-producer
 docker build -t kafka-producer:latest .
 docker run -d --name kafka-producer -p 9080:9080 -e KAFKABROKERLIST=my-cluster-kafka-bootstrap:9092 --link my-cluster-kafka-bootstrap:my-cluster-kafka-bootstrap kafka-producer:latest
 
-
 #Start a kafka consumer container
 cd kafka-microprofile2-consumer
 docker build -t kafka-consumer:latest .
 docker run -d --name kafka-consumer -p 9090:9080 -e KAFKABROKERLIST=my-cluster-kafka-bootstrap:9092 --link my-cluster-kafka-bootstrap:my-cluster-kafka-bootstrap kafka-consumer:latest
 
 #Receive orders
-curl -v -X POST http://localhost:9080/kafka-microprofile2-consumer-0.0.1-SNAPSHOT/order
+curl -v -X POST http://localhost:9090/kafka-microprofile2-consumer-0.0.1-SNAPSHOT/order
 
 #Send orders (500)
 curl -v -X POST http://localhost:9080/kafka-microprofile2-producer-0.0.1-SNAPSHOT/order
