@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: ${project.artifactId}
+spec:
+  template:
+    spec:
+      containers:
+      - image: ${project.artifactId}:${project.version}
+        name: ${project.artifactId}
+        ports:
+        - containerPort: 8080
+        env:
+        - name: broker-url
+          valueFrom:
+            configMapKeyRef:
+               name: kafka-producer-service-cm
+               key: broker-url
+        - name: topic-name
+          valueFrom:
+            configMapKeyRef:
+               name:  kafka-producer-service-cm
+               key: topic-name
+        - name: JAVA_OPTIONS
+          value: "-Dspring.profiles.active=openshift"
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 15
+          timeoutSeconds: 2
+        livelinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 15
+          timeoutSeconds: 2

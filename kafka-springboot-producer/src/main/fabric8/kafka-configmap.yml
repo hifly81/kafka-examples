@@ -1,0 +1,7 @@
+apiVersion: "v1"
+kind: "ConfigMap"
+metadata:
+  name: "kafka-producer-service-cm"
+data:
+  broker-url: "amq-streams-cluster-kafka-bootstrap.xpaas-amq-streams.svc:9092"
+  topic-name: "demoTopic"

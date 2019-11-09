@@ -1,0 +1,13 @@
+apiVersion: "v1"
+kind: "ConfigMap"
+metadata:
+  name: "kafka-consumer-service-cm"
+data:
+  broker-url: "amq-streams-cluster-kafka-bootstrap.xpaas-amq-streams.svc:9092"
+  group-id: "group-1"
+  topic-name: "demoTopic"
+  spring.data.mongodb.host: "mongodb-26-rhel7.xpaas-amq-streams.svc"
+  spring.data.mongodb.port: "27017"
+  spring.data.mongodb.database: "orderdb"
+  spring.data.mongodb.username: "mongo"
+  spring.data.mongodb.password: "mongo"

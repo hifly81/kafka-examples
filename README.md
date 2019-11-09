@@ -101,6 +101,27 @@ cd kafka-streams
 mvn clean test
 ```
 
+### Kafka Spring Boot ###
+
+Sample of a kafka producer and consumer implemented with Spring Boot.
+They can run on Docker and OpenShift.
+
+At least a kafka broker listening on port 9092 is required.
+
+Run on your local machine:
+```
+#start a producer on port 8080
+cd kafka-springboot-producer
+mvn spring-boot:run
+
+#start a consumer on port 8090
+cd kafka-springboot-consumer
+mvn spring-boot:run
+
+#Send orders (on topic demoTopic)
+curl --data '{"id":5, "name": "PS5"}' -H "Content-Type:application/json" http://localhost:8080/api/order
+```
+
 ### Kafka microprofile2 ###
 
 Sample of a kafka producer and consumer running on a open liberty MicroProfile v2 runtime.
