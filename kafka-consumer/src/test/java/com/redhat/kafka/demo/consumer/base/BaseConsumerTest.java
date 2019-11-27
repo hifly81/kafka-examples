@@ -32,6 +32,7 @@ public class BaseConsumerTest {
 
     @After
     public void tearDown() throws Exception {
+        baseProducer.stop();
         server.stop();
     }
 
@@ -41,7 +42,7 @@ public class BaseConsumerTest {
         Future<RecordMetadata> future =  baseProducer.produceFireAndForget(new ProducerRecord<>(TOPIC, "dummy"));
         Assert.assertNotNull(future);
         baseConsumer.subscribe("group-1", TOPIC, true);
-        baseConsumer.poll(100, -1, false);
+        baseConsumer.poll(1, 5000, false);
     }
 
     @Test
@@ -50,7 +51,7 @@ public class BaseConsumerTest {
         Future<RecordMetadata> future =  baseProducer.produceFireAndForget(new ProducerRecord<>(TOPIC, "dummy"));
         Assert.assertNotNull(future);
         baseConsumer.subscribe("group-1", TOPIC, false);
-        baseConsumer.poll(100, -1, false);
+        baseConsumer.poll(1, 5000, false);
     }
 
     @Test
@@ -59,7 +60,7 @@ public class BaseConsumerTest {
         Future<RecordMetadata> future =  baseProducer.produceFireAndForget(new ProducerRecord<>(TOPIC, "dummy"));
         Assert.assertNotNull(future);
         Assert.assertTrue(baseConsumer.assign(TOPIC, null, true));
-        baseConsumer.poll(100, -1,false);
+        baseConsumer.poll(1, 5000,false);
     }
 
 }

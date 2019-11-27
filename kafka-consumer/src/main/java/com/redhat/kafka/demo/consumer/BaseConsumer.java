@@ -78,6 +78,7 @@ public class BaseConsumer<T> implements BaseKafkaConsumer {
                 OffsetManager.store(offsets);
             } finally {
                 consumer.close();
+                System.out.printf("Bye Bye...\n");
             }
         }
 
