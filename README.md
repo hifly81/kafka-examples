@@ -101,6 +101,33 @@ cd kafka-streams
 mvn clean test
 ```
 
+### Kafka Orders Transactional ###
+
+Example of a cart application using end-to-end exactly-once semantic between consumer and producer.<br>
+The ItemsProducer class sends 2 items in a single transaction.<br>
+The ItemsConsumer class receive the items and create an order containing the items.<br>
+The consumer offset is committed only if the order can be created and sent.
+
+Execute tests:
+```
+cd kafka-orders-tx
+mvn clean test
+```
+
+At least a kafka broker listening on port 9092 is required.
+
+Execute the ItemsProducer:<br>
+```
+cd kafka-orders-tx
+mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.orders.ItemsProducer"
+```
+
+Execute the ItemsConsumers:<br>
+```
+cd kafka-orders-tx
+mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.orders.ItemsConsumer"
+```
+
 ### Kafka Spring Boot ###
 
 Sample of a kafka producer and consumer implemented with Spring Boot.
