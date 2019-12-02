@@ -1,20 +1,13 @@
 package com.redhat.kafka.demo.orders;
 
-import com.redhat.kafka.demo.orders.kafka.producer.JsonProducer;
+import com.redhat.kafka.demo.orders.controller.ItemController;
 import com.redhat.kafka.demo.orders.model.Item;
-import org.apache.kafka.clients.producer.ProducerRecord;
 
-import java.util.Properties;
+import java.util.Arrays;
 
 public class ItemsProducer {
 
-    public static void main(String [] args) throws Exception {
-
-        final String TOPIC = "items";
-
-        Properties properties = new Properties();
-        properties.put("valueSerializer", "com.redhat.kafka.demo.orders.kafka.producer.ItemJsonSerializer");
-        properties.put("txId", "cart-app");
+    public static void main(String [] args) {
 
         Item item1 = new Item();
         item1.setId("111");
@@ -30,21 +23,8 @@ public class ItemsProducer {
         //same order id
         item2.setOrderId("OD001");
 
-        JsonProducer<Item> jsonProducer = new JsonProducer<>();
-        jsonProducer.start(properties);
+        ItemController itemController = new ItemController();
+        itemController.sendItems(Arrays.asList(item1, item2), 5000);
 
-        jsonProducer.getProducer().initTransactions();
-
-        try {
-            jsonProducer.getProducer().beginTransaction();
-            jsonProducer.produceSync(new ProducerRecord<>(TOPIC, item1.getOrderId(), item1));
-            Thread.sleep(5000);
-            jsonProducer.produceSync(new ProducerRecord<>(TOPIC, item1.getOrderId(), item2));
-            jsonProducer.getProducer().commitTransaction();
-        } catch(Exception ex) {
-            jsonProducer.getProducer().abortTransaction();
-        }
-
-        jsonProducer.stop();
     }
 }

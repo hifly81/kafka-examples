@@ -1,4 +1,4 @@
-package com.redhat.kafka.demo.producer;
+package com.redhat.kafka.demo.orders;
 
 import kafka.server.KafkaConfig;
 import kafka.server.KafkaServerStartable;
@@ -18,6 +18,8 @@ public class KafkaSuiteTest {
         Properties props = new Properties();
         props.put("zookeeper.connect", "localhost:2181");
         props.put("broker.id", "1");
+        props.put("offsets.topic.replication.factor", "1");
+        props.put("transaction.state.log.replication.factor", "1");
 
         Integer port = getZkPort(props);
         zk = new TestingServer(port);

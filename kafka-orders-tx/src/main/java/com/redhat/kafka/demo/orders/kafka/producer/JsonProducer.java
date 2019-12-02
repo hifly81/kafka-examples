@@ -37,7 +37,7 @@ public class JsonProducer<T> extends AbstractKafkaProducer<String, T> implements
     public RecordMetadata produceSync(ProducerRecord<String, T> producerRecord) {
         RecordMetadata recordMetadata = null;
         try {
-            log.info("Send record to kafka {}", producerRecord.key());
+            log.info("Send record to kafka {} - {}", producerRecord.key(), producerRecord.value());
             recordMetadata = producer.send(producerRecord).get();
         } catch (InterruptedException e) {
             log.error("Error in produceSync!", e);
