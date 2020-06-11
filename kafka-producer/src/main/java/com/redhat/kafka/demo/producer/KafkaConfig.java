@@ -6,8 +6,10 @@ public class KafkaConfig {
 
     private static final String BROKER_LIST =
             System.getenv("kafka.broker.list") != null? System.getenv("kafka.broker.list") :"localhost:9092,localhost:9093,localhost:9094";
-    private static final String SCHEMA_REGISTRY_CONFLUENT_URL =
+    private static final String CONFLUENT_SCHEMA_REGISTRY_URL =
             System.getenv("confluent.schema.registry") != null? System.getenv("confluent.schema.registry"):"http://localhost:8081";
+    private static final String APICURIO_SCHEMA_REGISTRY_URL =
+            System.getenv("apicurio.schema.registry") != null? System.getenv("apicurio.schema.registry"):"http://localhost:8081/api";
 
 
     public static Properties stringProducer() {
@@ -38,13 +40,23 @@ public class KafkaConfig {
         return producerProperties;
     }
 
-    public static Properties avroProducer() {
+    public static Properties confluentAvroProducer() {
         Properties producerProperties = new Properties();
         producerProperties.put("bootstrap.servers", BROKER_LIST);
         producerProperties.put("max.block.ms", 15000);
         producerProperties.put("key.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer");
         producerProperties.put("value.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer");
-        producerProperties.put("schema.registry.url", SCHEMA_REGISTRY_CONFLUENT_URL);
+        producerProperties.put("schema.registry.url", CONFLUENT_SCHEMA_REGISTRY_URL);
+        return producerProperties;
+    }
+
+    public static Properties apicurioAvroProducer() {
+        Properties producerProperties = new Properties();
+        producerProperties.put("bootstrap.servers", BROKER_LIST);
+        producerProperties.put("max.block.ms", 15000);
+        producerProperties.put("key.serializer", "io.apicurio.registry.utils.serde.AvroKafkaSerializer");
+        producerProperties.put("value.serializer", "io.apicurio.registry.utils.serde.AvroKafkaSerializer");
+        producerProperties.put("schema.registry.url", APICURIO_SCHEMA_REGISTRY_URL);
         return producerProperties;
     }
 

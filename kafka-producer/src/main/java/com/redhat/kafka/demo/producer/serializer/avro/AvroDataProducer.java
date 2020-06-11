@@ -24,7 +24,21 @@ public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecor
     private GenericRecord car;
 
     public void start(Properties properties) {
-        producer = new org.apache.kafka.clients.producer.KafkaProducer(KafkaConfig.avroProducer());
+        SchemaRegistry schemaRegistry = (SchemaRegistry) properties.get("schema.registry.instance");
+        switch (schemaRegistry) {
+            case CONFLUENT:
+                producer = new org.apache.kafka.clients.producer.KafkaProducer(KafkaConfig.confluentAvroProducer());
+                break;
+
+            case APICURIO:
+                producer = new org.apache.kafka.clients.producer.KafkaProducer(KafkaConfig.apicurioAvroProducer());
+                break;
+
+            default:
+                producer = new org.apache.kafka.clients.producer.KafkaProducer(KafkaConfig.apicurioAvroProducer());
+                break;
+        }
+
         Schema.Parser parser = new Schema.Parser();
         try {
             ClassLoader classLoader = getClass().getClassLoader();

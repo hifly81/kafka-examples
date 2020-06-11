@@ -21,9 +21,12 @@ Some implementations of kafka producers.
 kafka producers available:
   - base: uses a *org.apache.kafka.common.serialization.StringDeserializer* for key and value
   - json: uses a *org.apache.kafka.common.serialization.StringSerialize* for key and a *com.redhat.kafka.demo.producer.serializer.json.JsonSerializer* for value
-  - avro: uses a *io.confluent.kafka.serializers.KafkaAvroSerializer* for key and value.<br>
+  - avro-confluent: uses a *io.confluent.kafka.serializers.KafkaAvroSerializer* for key and value.<br>
   A running confluent schema registry is need to register the avro schema. <br>
   Info at: https://github.com/confluentinc/schema-registry
+  - avro-apicurio: uses a *io.apicurio.registry.utils.serde.AvroKafkaSerializer* for key and value.<br>
+  A running apicurio schema registry is need to register the avro schema. <br>
+  Info at: https://github.com/Apicurio/apicurio-registry
   - perspicuus: uses a custom AvroSerializer *com.redhat.kafka.demo.producer.serializer.perspicuus.AvroSerializer* for key and value.<br>
   A running RedHat perspicuus schema registry is need to register the avro schema.<br>
   Info at: https://github.com/jhalliday/perspicuus
@@ -51,7 +54,12 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.produ
 
 ```
 cd kafka-producer
-mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.producer.serializer.avro.Runner"
+mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.producer.serializer.avro.RunnerConfluent"
+```
+
+```
+cd kafka-producer
+mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.producer.serializer.avro.RunnerApicurio"
 ```
 
 ```

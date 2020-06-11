@@ -6,10 +6,14 @@ import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
-public class Runner {
+import java.util.Properties;
+
+public class RunnerConfluent {
 
     public static void main (String [] args) {
         AvroDataProducer avroDataProducer = new AvroDataProducer();
+        Properties properties = new Properties();
+        properties.put("schema.registry.instance", SchemaRegistry.CONFLUENT);
         avroDataProducer.start(null);
         bunchOfMessages("test_avro_data", avroDataProducer);
         bunchOfFFMessages("test_avro_data", avroDataProducer);
