@@ -136,6 +136,19 @@ cd kafka-orders-tx
 mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.orders.ItemsConsumer"
 ```
 
+### Kafka Quarkus ###
+
+Sample of a kafka producer and consumer implemented with Quarkus.
+Every 1s a new message is sent to demo topic.
+
+At least a kafka broker listening on port 9092 is required.
+
+Run on your local machine:
+```
+cd kafka-quarkus
+./mvnw clean compile quarkus:dev (debug port 5005)
+```
+
 ### Kafka Spring Boot ###
 
 Sample of a kafka producer and consumer implemented with Spring Boot.
