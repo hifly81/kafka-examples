@@ -149,6 +149,13 @@ cd kafka-quarkus
 ./mvnw clean compile quarkus:dev (debug port 5005)
 ```
 
+Run on Openshift machine:
+```
+cd kafka-quarkus
+./mvnw clean package -Dquarkus.container-image.build=true -Dquarkus.kubernetes.deploy=true
+```
+
+
 ### Kafka Spring Boot ###
 
 Sample of a kafka producer and consumer implemented with Spring Boot.
