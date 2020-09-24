@@ -160,6 +160,27 @@ mvn spring-boot:run
 curl --data '{"id":5, "name": "PS5"}' -H "Content-Type:application/json" http://localhost:8080/api/order
 ```
 
+## Kafka Quarkus
+
+Sample of a kafka producer and consumer implemented with Quarkus.
+Every 1s a new message is sent to demo topic.
+
+At least a kafka broker listening on port 9092 is required.
+
+Run on your local machine:  
+
+```bash
+cd kafka-quarkus
+./mvnw clean compile quarkus:dev (debug port 5005)
+```
+
+Run on Openshift machine:  
+
+```bash
+cd kafka-quarkus
+./mvnw clean package -Dquarkus.container-image.build=true -Dquarkus.kubernetes.deploy=true
+```
+
 ## Kafka microprofile2
 
 Sample of a kafka producer and consumer running on a open liberty MicroProfile v2 runtime.
