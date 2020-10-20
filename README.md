@@ -145,6 +145,8 @@ They can also run on Docker and OpenShift.
 
 At least a kafka broker listening on port 9092 is required.
 
+Kafka Consumer implements a DLQ for records not processable (after 3 attemps).
+
 Run on your local machine:  
 
 ```bash
@@ -158,6 +160,9 @@ mvn spring-boot:run
 
 #Send orders (on topic demoTopic)
 curl --data '{"id":5, "name": "PS5"}' -H "Content-Type:application/json" http://localhost:8010/api/order
+
+#Send ERROR orders and test DLQ (on topic demoTopic)
+curl --data '{"id":5, "name": "ERROR-PS5"}' -H "Content-Type:application/json" http://localhost:8010/api/order
 ```
 
 ## Kafka Quarkus
