@@ -148,7 +148,7 @@ At least a kafka broker listening on port 9092 is required.
 Run on your local machine:  
 
 ```bash
-#start a producer on port 8080
+#start a producer on port 8010
 cd kafka-springboot-producer
 mvn spring-boot:run
 
@@ -157,7 +157,7 @@ cd kafka-springboot-consumer
 mvn spring-boot:run
 
 #Send orders (on topic demoTopic)
-curl --data '{"id":5, "name": "PS5"}' -H "Content-Type:application/json" http://localhost:8080/api/order
+curl --data '{"id":5, "name": "PS5"}' -H "Content-Type:application/json" http://localhost:8010/api/order
 ```
 
 ## Kafka Quarkus

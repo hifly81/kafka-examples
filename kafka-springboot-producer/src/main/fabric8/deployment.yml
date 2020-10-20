@@ -9,7 +9,7 @@ spec:
       - image: ${project.artifactId}:${project.version}
         name: ${project.artifactId}
         ports:
-        - containerPort: 8080
+        - containerPort: 8010
         env:
         - name: broker-url
           valueFrom:
@@ -25,11 +25,11 @@ spec:
           value: "-Dspring.profiles.active=openshift"
         readinessProbe:
           tcpSocket:
-            port: 8080
+            port: 8010
           initialDelaySeconds: 15
           timeoutSeconds: 2
         livelinessProbe:
           tcpSocket:
-            port: 8080
+            port: 8010
           initialDelaySeconds: 15
           timeoutSeconds: 2

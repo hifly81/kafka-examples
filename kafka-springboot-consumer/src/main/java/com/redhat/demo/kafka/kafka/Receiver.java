@@ -2,6 +2,8 @@ package com.redhat.demo.kafka.kafka;
 
 import com.redhat.demo.kafka.model.Order;
 import com.redhat.demo.kafka.mongo.OrderRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -12,6 +14,8 @@ import java.util.concurrent.ThreadLocalRandom;
 @Service
 public class Receiver {
 
+    Logger logger = LoggerFactory.getLogger(Receiver.class);
+
     @Autowired
     private OrderRepository orderRepository;
 
@@ -19,7 +23,7 @@ public class Receiver {
     @KafkaListener(topics = "${topic-name}")
     public void listen(@Payload String message) {
 
-        System.out.println("received message:" + message);
+        logger.info("received message:" + message);
 
         Order order = new Order();
 
@@ -28,13 +32,14 @@ public class Receiver {
             order.setId(ThreadLocalRandom.current().nextLong(10000000));
             order.setName(message);
 
-            System.out.println("order saving to mongo...:" + order);
+            logger.info("order is going to be saved into mongo...:" + order);
 
             //save to mongo
             orderRepository.save(order);
-            System.out.println("order saved to mongo:" + order);
+
+            logger.info("order saved to mongo:" + order);
         } catch(Exception ex) {
-            System.out.println("can't save to mongo:" + order);
+            logger.error("can't save to mongo:" + order);
         }
     }
 
