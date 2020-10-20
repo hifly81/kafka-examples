@@ -27,20 +27,24 @@ public class Receiver {
 
         Order order = new Order();
 
+        //generate random id
+        order.setId(ThreadLocalRandom.current().nextLong(10000000));
+        order.setName(message);
+
+        logger.info("order is going to be saved into mongo...:" + order);
+
+        if (order.getName().contains("ERROR-"))
+            throw new OrderException();
+
         try {
-            //generate random id
-            order.setId(ThreadLocalRandom.current().nextLong(10000000));
-            order.setName(message);
-
-            logger.info("order is going to be saved into mongo...:" + order);
-
             //save to mongo
             orderRepository.save(order);
 
             logger.info("order saved to mongo:" + order);
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             logger.error("can't save to mongo:" + order);
         }
     }
+
 
 }
