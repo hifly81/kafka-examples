@@ -16,7 +16,6 @@
         <module>kafka-springboot-producer</module>
         <module>kafka-springboot-consumer</module>
         <module>kafka-quarkus</module>
-        <module>kafka-connector</module>
     </modules>
 
     <properties>
