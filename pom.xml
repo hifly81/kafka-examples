@@ -27,10 +27,10 @@
         <confluent.version>3.0.0</confluent.version>
         <apicurio.registry.version>1.2.2.Final</apicurio.registry.version>
         <perspicuus.version>0.1.0-SNAPSHOT</perspicuus.version>
-        <zookeeper.version>3.4.14</zookeeper.version>
+        <zookeeper.version>3.5.8</zookeeper.version>
         <slf4j.version>1.7.5</slf4j.version>
         <junit.version>4.12</junit.version>
-        <curator.version>2.8.0</curator.version>
+        <curator.version>5.0.0</curator.version>
 
 
     </properties>

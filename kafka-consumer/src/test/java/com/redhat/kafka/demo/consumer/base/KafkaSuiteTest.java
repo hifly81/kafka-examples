@@ -22,6 +22,10 @@ public class KafkaSuiteTest {
 
         Integer port = getZkPort(props);
         zk = new TestingServer(port);
+        try {
+            zk.stop();
+        } catch(Exception ex) {}
+
         zk.start();
 
         KafkaConfig kafkaConfig = new KafkaConfig(props);
