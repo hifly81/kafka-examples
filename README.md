@@ -24,10 +24,7 @@ Info at: <https://github.com/confluentinc/schema-registry>
 - avro-apicurio: uses a *io.apicurio.registry.utils.serde.AvroKafkaSerializer* for key and value.  
 A running apicurio schema registry is need to register the avro schema.  
 Info at: <https://github.com/Apicurio/apicurio-registry>
-- perspicuus: uses a custom AvroSerializer *com.redhat.kafka.demo.producer.serializer.perspicuus.AvroSerializer* for key and value.  
-A running RedHat perspicuus schema registry is need to register the avro schema.  
-Info at: <https://github.com/jhalliday/perspicuus>
-- partitioner: use a custom partitioner for keys. 
+- partitioner: use a custom partitioner for keys.
 A topic with 3 partitions named "demo-2" must exists.
 
 Execute tests:
@@ -58,11 +55,6 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.produ
 ```bash
 cd kafka-producer
 mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.producer.serializer.avro.RunnerApicurio"
-```
-
-```bash
-cd kafka-producer
-mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.producer.serializer.perspicuus.Runner"
 ```
 
 ```bash

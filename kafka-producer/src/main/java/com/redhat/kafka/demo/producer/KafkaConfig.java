@@ -59,13 +59,5 @@ public class KafkaConfig {
         producerProperties.put("schema.registry.url", APICURIO_SCHEMA_REGISTRY_URL);
         return producerProperties;
     }
-
-    public static Properties avroPerspicuusProducer() {
-        Properties producerProperties = new Properties();
-        producerProperties.put("bootstrap.servers", BROKER_LIST);
-        producerProperties.put("max.block.ms", 15000);
-        producerProperties.put("key.serializer", "com.redhat.kafka.demo.producer.serializer.perspicuus.AvroSerializer");
-        producerProperties.put("value.serializer", "com.redhat.kafka.demo.producer.serializer.perspicuus.AvroSerializer");
-        return producerProperties;
-    }
+    
 }
