@@ -3,7 +3,6 @@ package com.redhat.kafka.demo.streams.serializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.redhat.kafka.demo.streams.SpeedInfo;
 import org.apache.kafka.common.serialization.Deserializer;
-import org.apache.kafka.common.serialization.Serializer;
 
 import java.nio.charset.Charset;
 import java.util.Map;

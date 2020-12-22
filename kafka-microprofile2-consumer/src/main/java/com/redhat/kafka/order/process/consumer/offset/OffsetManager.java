@@ -9,8 +9,6 @@ import java.util.Properties;
 
 public class OffsetManager {
 
-    private static Properties prop;
-
     public static Properties load() {
         Properties prop = null;
         InputStream input = null;

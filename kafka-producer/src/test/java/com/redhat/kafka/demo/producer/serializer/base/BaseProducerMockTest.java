@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import org.apache.kafka.clients.producer.MockProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.streams.KeyValue;
 import org.junit.Test;
@@ -27,12 +26,8 @@ public class BaseProducerMockTest {
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("acks", "all");
 
-        final MockProducer<String, String> mockProducer = new MockProducer<>(true, new StringSerializer(), new StringSerializer(){
-            
-        });
+        final MockProducer<String, String> mockProducer = new MockProducer<>(true, new StringSerializer(), new StringSerializer());
         baseProducer.start(mockProducer);
-
-        final List<String> records = Arrays.asList("foo-bar", "test");
 
         final ProducerRecord<String, String> producerRecord1 = new ProducerRecord<>("topicOut", "foo", "bar");
         final ProducerRecord<String, String> producerRecord2 = new ProducerRecord<>("topicOut", null, "test");
