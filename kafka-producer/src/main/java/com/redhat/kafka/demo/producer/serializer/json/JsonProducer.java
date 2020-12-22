@@ -5,23 +5,29 @@ import com.redhat.kafka.demo.producer.BaseProducerCallback;
 import com.redhat.kafka.demo.producer.KafkaConfig;
 import com.redhat.kafka.demo.producer.BaseKafkaProducer;
 import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
-import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class JsonProducer<T> extends AbstractKafkaProducer<String, T> implements BaseKafkaProducer<String, T> {
 
-    public void start(Properties properties) {
-        producer = new org.apache.kafka.clients.producer.KafkaProducer(
-                KafkaConfig.jsonProducer(properties.getProperty("valueSerializer")));
+    private String valueSerializer;
+    
+    public JsonProducer() {}
+
+    public JsonProducer(String valueSerializer) {
+        this.valueSerializer = valueSerializer;
+    }
+
+    public void start() {
+        producer = new org.apache.kafka.clients.producer.KafkaProducer(KafkaConfig.jsonProducer(valueSerializer));
     }
 
     @Override
-    public void start(Properties properties, KafkaProducer<String, T> kafkaProducer) {
+    public void start(Producer<String, T> kafkaProducer) {
         producer = kafkaProducer;
     }
 

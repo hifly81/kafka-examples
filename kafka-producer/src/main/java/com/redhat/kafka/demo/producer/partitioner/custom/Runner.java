@@ -18,7 +18,7 @@ public class Runner {
 
     public static void main (String [] args) {
         BaseProducer baseProducer = new BaseProducer();
-        baseProducer.start(null, new org.apache.kafka.clients.producer.KafkaProducer(KafkaConfig.stringProducerCustomPartitioner()));
+        baseProducer.start(new org.apache.kafka.clients.producer.KafkaProducer(KafkaConfig.stringProducerCustomPartitioner()));
         final String topicName = "demo-test";
         bunchOfSynchMessages(topicName, baseProducer);
 

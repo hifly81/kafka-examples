@@ -10,7 +10,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Properties;
 import java.util.concurrent.Future;
 
 public class JsonProducerTest {
@@ -23,7 +22,7 @@ public class JsonProducerTest {
     public void setUp() throws Exception {
         server = new KafkaSuiteTest();
         server.start();
-        jsonProducer = new JsonProducer<>();
+        jsonProducer = new JsonProducer<>("com.redhat.kafka.demo.producer.serializer.json.CustomDataJsonSerializer");
     }
 
     @After
@@ -33,9 +32,7 @@ public class JsonProducerTest {
 
     @Test
     public void start() {
-        Properties properties = new Properties();
-        properties.put("valueSerializer", "com.redhat.kafka.demo.producer.serializer.json.CustomDataJsonSerializer");
-        jsonProducer.start(properties);
+        jsonProducer.start();
         Producer<String, CustomData> producer = jsonProducer.getProducer();
         Assert.assertNotNull(producer);
     }
@@ -43,9 +40,7 @@ public class JsonProducerTest {
 
     @Test
     public void produceFireAndForget() {
-        Properties properties = new Properties();
-        properties.put("valueSerializer", "com.redhat.kafka.demo.producer.serializer.json.CustomDataJsonSerializer");
-        jsonProducer.start(properties);
+        jsonProducer.start();
         CustomData customData = new CustomData();
         customData.setIndex(1);
         Future<RecordMetadata> future =  jsonProducer.produceFireAndForget(new ProducerRecord<>(TOPIC, customData));
@@ -54,9 +49,7 @@ public class JsonProducerTest {
 
     @Test
     public void produceSync() {
-        Properties properties = new Properties();
-        properties.put("valueSerializer", "com.redhat.kafka.demo.producer.serializer.json.CustomDataJsonSerializer");
-        jsonProducer.start(properties);
+        jsonProducer.start();
         CustomData customData = new CustomData();
         customData.setIndex(1);
         RecordMetadata recordMetadata = jsonProducer.produceSync(new ProducerRecord<>(TOPIC, customData));

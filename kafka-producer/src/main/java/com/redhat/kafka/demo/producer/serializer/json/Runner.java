@@ -14,7 +14,7 @@ public class Runner {
         JsonProducer<CustomData> jsonProducer = new JsonProducer<CustomData>();
         Properties properties = new Properties();
         properties.put("valueSerializer", "com.redhat.kafka.demo.producer.serializer.json.CustomDataJsonSerializer");
-        jsonProducer.start(properties);
+        jsonProducer.start();
         bunchOfMessages("test_custom_data", jsonProducer);
         bunchOfFFMessages("test_custom_data", jsonProducer);
         bunchOfAsynchMessages("test_custom_data", jsonProducer);

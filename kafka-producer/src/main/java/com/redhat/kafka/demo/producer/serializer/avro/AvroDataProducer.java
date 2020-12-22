@@ -8,24 +8,30 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Properties;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecord> implements BaseKafkaProducer<String, GenericRecord> {
 
     private Schema schema;
+    private SchemaRegistry schemaRegistryEnumValue;
     private GenericRecord car;
 
-    public void start(Properties properties) {
-        SchemaRegistry schemaRegistry = (SchemaRegistry) properties.get("schema.registry.instance");
-        switch (schemaRegistry) {
+    public AvroDataProducer() {}
+
+    public AvroDataProducer(SchemaRegistry schemaRegistry) {
+        this.schemaRegistryEnumValue = schemaRegistry;
+    }
+
+    public void start() {
+        switch (schemaRegistryEnumValue) {
             case CONFLUENT:
                 producer = new org.apache.kafka.clients.producer.KafkaProducer(KafkaConfig.confluentAvroProducer());
                 break;
@@ -50,7 +56,7 @@ public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecor
     }
 
     @Override
-    public void start(Properties properties, KafkaProducer<String, GenericRecord> kafkaProducer) {
+    public void start(Producer<String, GenericRecord> kafkaProducer) {
         producer = kafkaProducer;
     }
 

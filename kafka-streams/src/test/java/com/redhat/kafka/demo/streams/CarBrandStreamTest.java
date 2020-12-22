@@ -2,7 +2,6 @@ package com.redhat.kafka.demo.streams;
 
 import com.redhat.kafka.demo.producer.serializer.base.BaseProducer;
 import com.redhat.kafka.demo.streams.stream.CarBrandStream;
-import com.redhat.kafka.demo.streams.stream.CarSensorStream;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.streams.KafkaStreams;

@@ -5,22 +5,21 @@ import com.redhat.kafka.demo.producer.BaseProducerCallback;
 import com.redhat.kafka.demo.producer.KafkaConfig;
 import com.redhat.kafka.demo.producer.BaseKafkaProducer;
 import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
-import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class BaseProducer extends AbstractKafkaProducer<String, String> implements BaseKafkaProducer<String, String> {
 
-    public void start(Properties properties) {
+    public void start() {
         producer = new org.apache.kafka.clients.producer.KafkaProducer(KafkaConfig.stringProducer());
     }
 
     @Override
-    public void start(Properties properties, KafkaProducer<String, String> kafkaProducer) {
+    public void start(Producer<String, String> kafkaProducer) {
         producer = kafkaProducer;
     }
 

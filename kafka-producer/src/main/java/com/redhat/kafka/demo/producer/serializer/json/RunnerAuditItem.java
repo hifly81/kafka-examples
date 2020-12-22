@@ -6,16 +6,12 @@ import com.redhat.kafka.demo.producer.serializer.model.CustomData;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
-import java.util.Date;
-import java.util.Properties;
 
 public class RunnerAuditItem {
 
     public static void main (String [] args) {
-        JsonProducer<CustomData> jsonProducer = new JsonProducer<CustomData>();
-        Properties properties = new Properties();
-        properties.put("valueSerializer", "com.redhat.kafka.demo.producer.serializer.json.AuditItemJsonSerializer");
-        jsonProducer.start(properties);
+        JsonProducer<CustomData> jsonProducer = new JsonProducer<CustomData>("com.redhat.kafka.demo.producer.serializer.json.AuditItemJsonSerializer");
+        jsonProducer.start();
         bunchOfMessages("audit", jsonProducer);
     }
 

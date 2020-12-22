@@ -6,15 +6,11 @@ import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
-import java.util.Properties;
-
 public class RunnerApicurio {
 
     public static void main (String [] args) {
-        AvroDataProducer avroDataProducer = new AvroDataProducer();
-        Properties properties = new Properties();
-        properties.put("schema.registry.instance", SchemaRegistry.APICURIO);
-        avroDataProducer.start(null);
+        AvroDataProducer avroDataProducer = new AvroDataProducer(SchemaRegistry.APICURIO);
+        avroDataProducer.start();
         bunchOfMessages("test_avro_data", avroDataProducer);
         bunchOfFFMessages("test_avro_data", avroDataProducer);
         bunchOfAsynchMessages("test_avro_data", avroDataProducer);
