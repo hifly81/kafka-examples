@@ -32,3 +32,6 @@ hs_err_pid*
 #eclipse
 *.project
 *.classpath
+
+#vscode
+.vscode
