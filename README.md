@@ -12,9 +12,7 @@ Images are downloaded from confluentinc and are based on Confluent 6.0.x version
 - Zookeeper: confluentinc/cp-zookeeper:6.0.0
 - Kafka: confluentinc/cp-kafka:6.0.0
 
-Create an entry on your *hosts* file for:
-- Zookeeper: 127.0.0.1 zookeeper
-- Kafka: 127.0.0.1 broker
+Kafka will listen to *localhost:29092*
 
 Start containers:
 
