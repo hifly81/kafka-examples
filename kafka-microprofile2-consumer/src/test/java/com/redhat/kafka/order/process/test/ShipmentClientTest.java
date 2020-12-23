@@ -8,7 +8,6 @@ import java.util.Arrays;
 import com.redhat.kafka.order.process.event.OrderEvent;
 import com.redhat.kafka.order.process.shipment.ShipmentClient;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;

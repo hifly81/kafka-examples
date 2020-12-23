@@ -10,7 +10,7 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 public class RunnerAuditItem {
 
     public static void main (String [] args) {
-        JsonProducer<CustomData> jsonProducer = new JsonProducer<CustomData>("com.redhat.kafka.demo.producer.serializer.json.AuditItemJsonSerializer");
+        JsonProducer<CustomData> jsonProducer = new JsonProducer<>("com.redhat.kafka.demo.producer.serializer.json.AuditItemJsonSerializer");
         jsonProducer.start();
         bunchOfMessages("audit", jsonProducer);
     }

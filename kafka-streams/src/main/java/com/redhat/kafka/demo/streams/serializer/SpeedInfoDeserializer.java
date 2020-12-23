@@ -5,11 +5,12 @@ import com.redhat.kafka.demo.streams.SpeedInfo;
 import org.apache.kafka.common.serialization.Deserializer;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 public class SpeedInfoDeserializer implements Deserializer<SpeedInfo> {
 
-    private static final Charset CHARSET = Charset.forName("UTF-8");
+    private static final Charset CHARSET = StandardCharsets.UTF_8;
 
     @Override
     public void configure(Map<String, ?> configs, boolean isKey) {}

@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class CustomData implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private Integer index;
 
     public CustomData() {}

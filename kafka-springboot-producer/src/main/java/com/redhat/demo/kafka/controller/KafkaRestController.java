@@ -25,12 +25,10 @@ public class KafkaRestController {
 
 	@PostMapping(value="/api/order")
 	public ResponseEntity send(@RequestBody Order order) {
-		logger.info("sending order to kafka:" + order);
+		logger.info("sending order to kafka: {0}", order);
 		kafkaTemplate.send(TOPIC_NAME, order.toString());
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-
-	
 
 }

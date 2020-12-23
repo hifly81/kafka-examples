@@ -2,7 +2,7 @@
 
 ## Apache Kafka installation
 
-A base cluster with a minimum of 1 broker (suggested 3) is need to test the examples; for details about the installation, info at:  
+A kafka cluster with a minimum of 1 broker (suggested 3) is need to test the examples; for details about the installation, info at:  
 <https://kafka.apache.org/documentation/#quickstart>
 
 ## Apache Kafka installation on Kubernetes and OpenShift

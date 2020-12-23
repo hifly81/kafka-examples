@@ -8,6 +8,8 @@ import java.io.Serializable;
 @Document(collection = "Order")
 public class Order implements Serializable {
 
+    private static final long serialVersionUID = -4369275673459274085L;
+
     @Id
     private Long id;
 

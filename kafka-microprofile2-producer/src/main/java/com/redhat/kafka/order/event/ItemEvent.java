@@ -1,7 +1,6 @@
 package com.redhat.kafka.order.event;
 
 import java.util.Date;
-import java.util.List;
 
 public class ItemEvent {
 

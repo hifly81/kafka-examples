@@ -8,6 +8,7 @@ import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
 
+import java.time.Duration;
 import java.util.*;
 
 public class BaseConsumer<T> implements BaseKafkaConsumer {
@@ -36,7 +37,7 @@ public class BaseConsumer<T> implements BaseKafkaConsumer {
     }
 
     @Override
-    public void poll(int size, long duration, boolean commitSync) {
+    public void poll(int timeout, long duration, boolean commitSync) {
         final Thread mainThread = Thread.currentThread();
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             System.out.printf("Starting exit...\n");
@@ -54,13 +55,12 @@ public class BaseConsumer<T> implements BaseKafkaConsumer {
         try {
             if(duration == -1) {
                 while (true) {
-                    consume(size, commitSync);
-
+                    consume(timeout, commitSync);
                 }
             } else {
                 long startTime = System.currentTimeMillis();
                 while(false||(System.currentTimeMillis()-startTime) < duration) {
-                    consume(size, commitSync);
+                    consume(timeout, commitSync);
                 }
             }
         }
@@ -105,8 +105,8 @@ public class BaseConsumer<T> implements BaseKafkaConsumer {
         return isAssigned;
     }
 
-    private void consume(int size, boolean commitSync) {
-        ConsumerRecords<String, T> records = consumer.poll(size);
+    private void consume(int timeout, boolean commitSync) {
+        ConsumerRecords<String, T> records = consumer.poll(Duration.ofMillis(size));
         for (ConsumerRecord<String, T> record : records) {
             ConsumerRecordUtil.prettyPrinter(id, groupId, record);
             //store next offset to commit
@@ -126,8 +126,9 @@ public class BaseConsumer<T> implements BaseKafkaConsumer {
                 } catch (CommitFailedException e) {
                     e.printStackTrace();
                 }
-            } else
+            } else {
                 consumer.commitSync();
+            }
     }
 
 

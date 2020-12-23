@@ -1,7 +1,6 @@
 package com.redhat.kafka.demo.orders.kafka.producer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.redhat.kafka.demo.orders.model.Item;
 import com.redhat.kafka.demo.orders.model.Order;
 import org.apache.kafka.common.serialization.Serializer;
 import org.slf4j.Logger;

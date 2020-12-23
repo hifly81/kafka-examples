@@ -17,7 +17,7 @@ import java.util.Properties;
 
 public class CarBrandStream {
 
-    private StreamsConfig streamsConfig;
+    private Properties properties;
 
     private static final String BROKER_LIST =
             System.getenv("kafka.broker.list") != null ? System.getenv("kafka.broker.list") : "localhost:9092,localhost:9093,localhost:9094";
@@ -28,8 +28,6 @@ public class CarBrandStream {
         properties.put(StreamsConfig.APPLICATION_ID_CONFIG, "carbrand_app_id");
         properties.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
-
-        streamsConfig = new StreamsConfig(properties);
     }
 
     public void startStream(String inputTopic,
@@ -80,12 +78,7 @@ public class CarBrandStream {
         carInfoBranches[0].to(ferrariTopic, Produced.with(Serdes.String(), carInfoSerde));
         carInfoBranches[1].to(carsTopic, Produced.with(Serdes.String(), carInfoSerde));
 
-
-        KafkaStreams kafkaStreams = new KafkaStreams(builder.build(), streamsConfig);
-
-        return kafkaStreams;
-
+        return new KafkaStreams(builder.build(), properties);
     }
-
 
 }

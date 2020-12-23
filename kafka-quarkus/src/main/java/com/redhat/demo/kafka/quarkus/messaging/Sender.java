@@ -1,6 +1,5 @@
 package com.redhat.demo.kafka.quarkus.messaging;
 
-import com.redhat.demo.kafka.quarkus.domain.Vote;
 import io.smallrye.reactive.messaging.kafka.KafkaRecord;
 import io.quarkus.scheduler.Scheduled;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
