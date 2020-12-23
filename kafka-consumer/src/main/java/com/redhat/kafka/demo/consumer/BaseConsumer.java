@@ -20,17 +20,26 @@ public class BaseConsumer<T> implements BaseKafkaConsumer {
     private String id;
     private String groupId;
     private boolean autoCommit;
+    private boolean keepConsuming = true;
 
-    public BaseConsumer(String id, Properties properties, ConsumerHandle consumerHandle) {
+    public BaseConsumer(Consumer<String, T> consumer, String id, Properties properties, ConsumerHandle consumerHandle) {
+        this.consumer = consumer;
         this.id = id;
         this.properties = properties;
         this.consumerHandle = consumerHandle;
     }
 
     @Override
+    public void shutdown() {
+        keepConsuming = false;
+
+    }
+
+    @Override
     public void subscribe(String groupId, String topic, boolean autoCommit) {
-        consumer = new KafkaConsumer<>(
-                KafkaConfig.baseConsumerConfig(groupId, properties.getProperty("desererializerClass"), autoCommit));
+        if (consumer == null)
+            consumer = new KafkaConsumer<>(
+                    KafkaConfig.baseConsumerConfig(groupId, properties.getProperty("desererializerClass"), autoCommit));
         consumer.subscribe(Collections.singletonList(topic), new PartitionListener(consumer, offsets));
         this.autoCommit = autoCommit;
         this.groupId = groupId;
@@ -59,52 +68,36 @@ public class BaseConsumer<T> implements BaseKafkaConsumer {
 
     @Override
     public void poll(int timeout, long duration, boolean commitSync) {
-        final Thread mainThread = Thread.currentThread();
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            System.out.printf("Starting exit...\n");
-            consumer.wakeup();
-            try {
-                mainThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                // Restore interrupted state...
-                Thread.currentThread().interrupt();
-            }
-        }));
-
         if (consumer == null)
             throw new IllegalStateException("Can't poll, consumer not subscribed or null!");
 
         try {
-            if(duration == -1) {
-                while (true) {
+            if (duration == -1) {
+                while (keepConsuming)
                     consume(timeout, commitSync);
-                }
             } else {
                 long startTime = System.currentTimeMillis();
-                while(false||(System.currentTimeMillis()-startTime) < duration) {
+                while (false || (System.currentTimeMillis() - startTime) < duration) {
                     consume(timeout, commitSync);
                 }
             }
-        }
-        catch (WakeupException e) {
-        // ignore for shutdown
-        }
-        finally {
+        } catch (WakeupException e) {
+            // ignore for shutdown
+        } finally {
             try {
-                //print offsets
-                //sync does retries, we want to use it in case of last commit or rebalancing
+                // print offsets
+                // sync does retries, we want to use it in case of last commit or rebalancing
                 consumer.commitSync();
                 for (Map.Entry<TopicPartition, OffsetAndMetadata> entry : offsets.entrySet())
-                    System.out.printf("Consumer %s - partition %s - lastOffset %s\n", this.id, entry.getKey().partition(), entry.getValue().offset());
-                //Store offsets
+                    System.out.printf("Consumer %s - partition %s - lastOffset %s\n", this.id,
+                            entry.getKey().partition(), entry.getValue().offset());
+                // Store offsets
                 OffsetManager.store(offsets);
             } finally {
                 consumer.close();
                 System.out.printf("Bye Bye...\n");
             }
         }
-
     }
 
     private void consume(int timeout, boolean commitSync) {
@@ -113,9 +106,9 @@ public class BaseConsumer<T> implements BaseKafkaConsumer {
         consumerHandle.process(records);
 
         if (!autoCommit)
-            if(!commitSync) {
+            if (!commitSync) {
                 try {
-                    //async doesn't do a retry
+                    // async doesn't do a retry
                     consumer.commitAsync((map, e) -> {
                         if (e != null)
                             e.printStackTrace();
@@ -127,6 +120,5 @@ public class BaseConsumer<T> implements BaseKafkaConsumer {
                 consumer.commitSync();
             }
     }
-
 
 }

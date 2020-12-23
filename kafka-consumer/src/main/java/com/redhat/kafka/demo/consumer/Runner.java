@@ -24,7 +24,7 @@ public class Runner {
                             true ,
                             false,
                             true,
-                            new BaseConsumerHandle()));
+                            new BaseConsumerHandle(null)));
             t.start();
         }
     }
@@ -43,7 +43,7 @@ public class Runner {
                             false,
                             false,
                             true,
-                            new BaseConsumerHandle()));
+                            new BaseConsumerHandle(null)));
             t.start();
         }
     }
@@ -61,7 +61,7 @@ public class Runner {
                             true,
                             false,
                             false,
-                            new BaseConsumerHandle()));
+                            new BaseConsumerHandle(null)));
             t.start();
         }
     }

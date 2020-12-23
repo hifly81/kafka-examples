@@ -21,8 +21,10 @@ public class BaseConsumerHandleTest {
 
     @Test
     public void testProcess() {
-        final BaseConsumerHandle<String, String> recordsHandler = new BaseConsumerHandle<>();
-        List<String> actualRecords = recordsHandler.process(createConsumerRecords());
+        List<String> actualRecords = new ArrayList<>();
+        final BaseConsumerHandle<String, String> recordsHandler = new BaseConsumerHandle<>(actualRecords);
+        recordsHandler.process(createConsumerRecords());
+        actualRecords = recordsHandler.getValueStore();
         final List<String> expectedWords = Arrays.asList("test", "test2", "test3");
         assertThat(actualRecords, equalTo(expectedWords));
      

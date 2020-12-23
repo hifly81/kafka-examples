@@ -9,4 +9,7 @@ public interface BaseKafkaConsumer<K, V> {
     void poll(int size, long duration, boolean commitSync);
 
     boolean assign(String topic, List<Integer> partitions, boolean autoCommit);
+
+    public void shutdown();
+
 }
