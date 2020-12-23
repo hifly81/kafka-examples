@@ -5,7 +5,6 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
-import java.util.Properties;
 import java.util.concurrent.Future;
 
 public interface BaseKafkaProducer<K, V> {

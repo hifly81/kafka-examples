@@ -6,6 +6,8 @@ import java.util.Map;
 
 public class AuditItem implements Serializable {
 
+	private static final long serialVersionUID = -4880866185311154965L;
+	
 	private String user;
 	private String path;
 	private Map<String, String> params;

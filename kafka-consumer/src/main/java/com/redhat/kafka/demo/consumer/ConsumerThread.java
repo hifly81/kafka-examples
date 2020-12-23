@@ -10,7 +10,7 @@ public class ConsumerThread<T> implements Runnable {
         private String groupId;
         private String topic;
         private String deserializerClass;
-        private int size;
+        private int timeout;
         private long duration;
         private boolean autoCommit;
         private boolean commitSync;
@@ -22,7 +22,7 @@ public class ConsumerThread<T> implements Runnable {
                 String groupId,
                 String topic,
                 String deserializerClass,
-                int pollSize,
+                int timeout,
                 long duration,
                 boolean autoCommit,
                 boolean commitSync,
@@ -32,7 +32,7 @@ public class ConsumerThread<T> implements Runnable {
             this.groupId = groupId;
             this.topic = topic;
             this.deserializerClass = deserializerClass;
-            this.size = pollSize;
+            this.timeout = timeout;
             this.duration = duration;
             this.autoCommit = autoCommit;
             this.commitSync = commitSync;
@@ -48,7 +48,7 @@ public class ConsumerThread<T> implements Runnable {
                 consumer.subscribe(groupId, topic, autoCommit);
             else
                 consumer.assign(topic, null, autoCommit);
-            consumer.poll(size, duration, commitSync);
+            consumer.poll(timeout, duration, commitSync);
         }
 
     }

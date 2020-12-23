@@ -8,6 +8,7 @@ import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
 
+import java.time.Duration;
 import java.util.*;
 
 public class BaseConsumer<T> implements BaseKafkaConsumer {
@@ -73,7 +74,7 @@ public class BaseConsumer<T> implements BaseKafkaConsumer {
                 //sync does retries, we want to use it in case of last commit or rebalancing
                 consumer.commitSync();
                 for (Map.Entry<TopicPartition, OffsetAndMetadata> entry : offsets.entrySet())
-                    System.out.printf("Consumer %s - partition %s - lastOffset %s\n", this.id, entry.getKey().partition(), entry.getValue().offset());
+                    System.out.printf("Consumer %s - partition %s - lastOffset %s%n", this.id, entry.getKey().partition(), entry.getValue().offset());
                 //Store offsets
                 OffsetManager.store(offsets);
             } finally {
@@ -104,8 +105,8 @@ public class BaseConsumer<T> implements BaseKafkaConsumer {
         return isAssigned;
     }
 
-    private void consume(int size, boolean commitSync) {
-        ConsumerRecords<String, T> records = consumer.poll(size);
+    private void consume(int timeout, boolean commitSync) {
+        ConsumerRecords<String, T> records = consumer.poll(Duration.ofMillis(timeout));
         for (ConsumerRecord<String, T> record : records) {
             ConsumerRecordUtil.prettyPrinter(id, groupId, record);
             //store next offset to commit

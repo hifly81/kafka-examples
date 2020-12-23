@@ -46,6 +46,8 @@ public class BaseConsumer<T> implements BaseKafkaConsumer {
                 mainThread.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
+                // Restore interrupted state...
+                Thread.currentThread().interrupt();
             }
         }));
 
@@ -106,7 +108,7 @@ public class BaseConsumer<T> implements BaseKafkaConsumer {
     }
 
     private void consume(int timeout, boolean commitSync) {
-        ConsumerRecords<String, T> records = consumer.poll(Duration.ofMillis(size));
+        ConsumerRecords<String, T> records = consumer.poll(Duration.ofMillis(timeout));
         for (ConsumerRecord<String, T> record : records) {
             ConsumerRecordUtil.prettyPrinter(id, groupId, record);
             //store next offset to commit
