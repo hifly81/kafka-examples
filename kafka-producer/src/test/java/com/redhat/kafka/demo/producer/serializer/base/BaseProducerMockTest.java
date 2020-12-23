@@ -3,7 +3,6 @@ package com.redhat.kafka.demo.producer.serializer.base;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
 import java.util.stream.Collectors;
 
 import com.redhat.kafka.demo.producer.BaseProducerCallback;
@@ -22,11 +21,6 @@ public class BaseProducerMockTest {
     @Test
     public void testProduce() throws IOException {
         BaseProducer baseProducer = new BaseProducer();
-        final Properties props = new Properties();
-
-        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        props.put("acks", "all");
 
         final MockProducer<String, String> mockProducer = new MockProducer<>(true, new StringSerializer(), new StringSerializer());
         baseProducer.start(mockProducer);
@@ -48,11 +42,6 @@ public class BaseProducerMockTest {
     @Test
     public void testProduceAsync() throws IOException {
         BaseProducer baseProducer = new BaseProducer();
-        final Properties props = new Properties();
-
-        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        props.put("acks", "all");
 
         final MockProducer<String, String> mockProducer = new MockProducer<>(true, new StringSerializer(), new StringSerializer());
         baseProducer.start(mockProducer);
