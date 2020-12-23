@@ -37,6 +37,27 @@ public class BaseConsumer<T> implements BaseKafkaConsumer {
     }
 
     @Override
+    public boolean assign(String topic, List partitions, boolean autoCommit) {
+        boolean isAssigned = false;
+        consumer = new KafkaConsumer<>(
+                KafkaConfig.baseConsumerConfig("", properties.getProperty("desererializerClass"), autoCommit));
+        List<PartitionInfo> partitionsInfo = consumer.partitionsFor(topic);
+        Collection<TopicPartition> partitionCollection = new ArrayList<>();
+        if (partitionsInfo != null) {
+            for (PartitionInfo partition : partitionsInfo) {
+                if (partitions == null || partitions.contains(partition.partition()))
+                    partitionCollection.add(new TopicPartition(partition.topic(), partition.partition()));
+            }
+            if (!partitionCollection.isEmpty()) {
+                consumer.assign(partitionCollection);
+                isAssigned = true;
+            }
+        }
+        this.autoCommit = autoCommit;
+        return isAssigned;
+    }
+
+    @Override
     public void poll(int timeout, long duration, boolean commitSync) {
         final Thread mainThread = Thread.currentThread();
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -86,36 +107,10 @@ public class BaseConsumer<T> implements BaseKafkaConsumer {
 
     }
 
-    @Override
-    public boolean assign(String topic, List partitions, boolean autoCommit) {
-        boolean isAssigned = false;
-        consumer = new KafkaConsumer<>(
-                KafkaConfig.baseConsumerConfig("", properties.getProperty("desererializerClass"), autoCommit));
-        List<PartitionInfo> partitionsInfo = consumer.partitionsFor(topic);
-        Collection<TopicPartition> partitionCollection = new ArrayList<>();
-        if (partitionsInfo != null) {
-            for (PartitionInfo partition : partitionsInfo) {
-                if (partitions == null || partitions.contains(partition.partition()))
-                    partitionCollection.add(new TopicPartition(partition.topic(), partition.partition()));
-            }
-            if (!partitionCollection.isEmpty()) {
-                consumer.assign(partitionCollection);
-                isAssigned = true;
-            }
-        }
-        this.autoCommit = autoCommit;
-        return isAssigned;
-    }
-
     private void consume(int timeout, boolean commitSync) {
         ConsumerRecords<String, T> records = consumer.poll(Duration.ofMillis(timeout));
-        for (ConsumerRecord<String, T> record : records) {
-            ConsumerRecordUtil.prettyPrinter(id, groupId, record);
-            //store next offset to commit
-            offsets.put(new TopicPartition(record.topic(), record.partition()), new
-                    OffsetAndMetadata(record.offset() + 1, "null"));
-            consumerHandle.process(record);
-        }
+        consumerHandle.addOffsets(offsets);
+        consumerHandle.process(records);
 
         if (!autoCommit)
             if(!commitSync) {

@@ -11,8 +11,6 @@
     <artifactId>kafka-producer</artifactId>
     <packaging>jar</packaging>
 
-
-
     <dependencies>
         <dependency>
             <groupId>org.apache.kafka</groupId>
