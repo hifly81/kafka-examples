@@ -1,6 +1,6 @@
 package com.redhat.kafka.order.process.controller;
 
-import com.redhat.kafka.order.process.consumer.ConsumerThread;
+import com.redhat.kafka.demo.consumer.ConsumerThread;
 import com.redhat.kafka.order.process.consumer.handle.OrderProcessHandle;
 import com.redhat.kafka.order.process.event.OrderEvent;
 

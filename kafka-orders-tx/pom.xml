@@ -19,6 +19,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.redhat.kafka</groupId>
+            <artifactId>kafka-producer</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
         </dependency>

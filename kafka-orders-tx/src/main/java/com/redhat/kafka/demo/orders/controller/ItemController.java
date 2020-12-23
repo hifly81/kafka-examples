@@ -1,9 +1,10 @@
 package com.redhat.kafka.demo.orders.controller;
 
 import com.redhat.kafka.demo.orders.kafka.KafkaConfig;
-import com.redhat.kafka.demo.orders.kafka.producer.JsonProducer;
 import com.redhat.kafka.demo.orders.model.Item;
 import com.redhat.kafka.demo.orders.model.Order;
+import com.redhat.kafka.demo.producer.serializer.json.JsonProducer;
+
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -34,7 +35,7 @@ public class ItemController {
         properties.put("txId", "cart-app");
 
         JsonProducer<Item> jsonProducer = new JsonProducer<>();
-        jsonProducer.start(properties);
+        jsonProducer.start();
 
         jsonProducer.getProducer().initTransactions();
 
@@ -65,12 +66,8 @@ public class ItemController {
 
         String consGroup = CONS_GROUP;
 
-        Properties prodProperties = new Properties();
-        prodProperties.put("valueSerializer", "com.redhat.kafka.demo.orders.kafka.producer.OrderJsonSerializer");
-        prodProperties.put("txId", "order-app");
-
         JsonProducer<Order> jsonProducer = new JsonProducer<>();
-        jsonProducer.start(prodProperties);
+        jsonProducer.start();
 
         if(generateConsGroup)
             consGroup = UUID.randomUUID().toString();
