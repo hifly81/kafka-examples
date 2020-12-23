@@ -5,6 +5,29 @@
 A kafka cluster with a minimum of 1 broker (suggested 3) is need to test the examples; for details about the installation, info at:  
 <https://kafka.apache.org/documentation/#quickstart>
 
+## Apache Kafka on Docker
+
+If you want to run your kafka cluster with docker, use the *docker-compose.yml* file in the root directory.
+Images are downloaded from confluentinc and are based on Confluent 6.0.x version:
+- Zookeeper: confluentinc/cp-zookeeper:6.0.0
+- Kafka: confluentinc/cp-kafka:6.0.0
+
+Create an entry on your *hosts* file for:
+- Zookeeper: 127.0.0.1 zookeeper
+- Kafka: 127.0.0.1 broker
+
+Start containers:
+
+```bash
+docker-compose up -d
+```
+
+Stop containers:
+
+```bash
+docker-compose stop
+```
+
 ## Apache Kafka installation on Kubernetes and OpenShift
 
 If you want to run your kafka cluster on Kubernetes or OpenShift, have a look at Strimzi project:  
