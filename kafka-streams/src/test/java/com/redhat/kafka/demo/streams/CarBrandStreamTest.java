@@ -1,68 +1,108 @@
 package com.redhat.kafka.demo.streams;
 
-import com.redhat.kafka.demo.producer.serializer.base.BaseProducer;
+import com.redhat.kafka.demo.streams.serializer.CarInfoDeserializer;
+import com.redhat.kafka.demo.streams.serializer.CarInfoSerializer;
 import com.redhat.kafka.demo.streams.stream.CarBrandStream;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
-import org.apache.kafka.streams.KafkaStreams;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
+
+import org.apache.kafka.common.serialization.Deserializer;
+import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.common.serialization.Serializer;
+import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.TopologyTestDriver;
 import org.junit.Test;
 
+import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.Future;
 
-public class CarBrandStreamTest extends KafkaSuiteTest {
+import static org.apache.kafka.common.serialization.Serdes.String;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-    private KafkaSuiteTest server;
-    private BaseProducer baseProducer;
-    private CarBrandStream carBrandStream;
+public class CarBrandStreamTest {
+
     private String TOPIC_CAR_INFO = "topic-car-info";
     private String TOPIC_FERRARI_OUTPUT = "topic-ferrari-output";
     private String TOPIC_CAR_OUTPUT = "topic-car-output";
 
-    @Before
-    public void setup() throws Exception {
-        server = new KafkaSuiteTest();
-        Properties propertiesKafka = new Properties();
-        propertiesKafka.put("offsets.topic.replication.factor", "1");
-        propertiesKafka.put("zookeeper.connect", "localhost:2181");
-        propertiesKafka.put("broker.id", "1");
-        server.start(propertiesKafka);
-
-        baseProducer = new BaseProducer();
-
-        carBrandStream = new CarBrandStream();
-        carBrandStream.start(new Properties());
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        server.stop();
-    }
-
-
     @Test
     public void stream() throws Exception {
-        baseProducer.start(null);
+        Properties streamsProps = new Properties();
+        streamsProps.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        streamsProps.put(StreamsConfig.APPLICATION_ID_CONFIG, "carbrand_app_id");
+        streamsProps.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+        streamsProps.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 
-        Assert.assertNotNull(sendInfoData("1", "{\"id\":\"1\",\"brand\":\"Ferrari\",\"model\":\"Testarossa\"}"));
-        Assert.assertNotNull(sendInfoData("2", "{\"id\":\"2\",\"brand\":\"Bugatti\",\"model\":\"Chiron\"}"));
-        Assert.assertNotNull(sendInfoData("3", "{\"id\":\"3\",\"brand\":\"Ferrari\",\"model\":\"F40\"}"));
-        Assert.assertNotNull(sendInfoData("4", "{\"id\":\"4\",\"brand\":\"Fiat\",\"model\":\"500\"}"));
+        final Serializer<CarInfo> carInfoSerializer = new CarInfoSerializer();
+        final Deserializer<CarInfo> carInfoDeserializer = new CarInfoDeserializer();
 
+        CarBrandStream carBrandStream = new CarBrandStream();
 
-        KafkaStreams kafkaStreams = carBrandStream.createStream(TOPIC_CAR_INFO, TOPIC_FERRARI_OUTPUT, TOPIC_CAR_OUTPUT);
-        kafkaStreams.cleanUp();
-        kafkaStreams.start();
-        Thread.sleep(5000);
-        kafkaStreams.close();
+        Topology topology = carBrandStream.createTopology(TOPIC_CAR_INFO, TOPIC_FERRARI_OUTPUT, TOPIC_CAR_OUTPUT);
+        TopologyTestDriver testDriver = new TopologyTestDriver(topology, streamsProps);
+
+        testDriver
+            .createInputTopic(TOPIC_CAR_INFO, String().serializer(), carInfoSerializer)
+            .pipeValueList(this.prepareInput());
+
+        final List<CarInfo> ferrari =
+            testDriver.createOutputTopic(TOPIC_FERRARI_OUTPUT, String().deserializer(), carInfoDeserializer)
+                .readValuesToList();
+
+        assertThat(ferrari, equalTo(expectedFerrari()));
+
+        final List<CarInfo> cars =
+            testDriver.createOutputTopic(TOPIC_CAR_OUTPUT, String().deserializer(), carInfoDeserializer)
+                .readValuesToList();
+
+        assertThat(cars, equalTo(expectedCars()));
+
+        testDriver.close();
     }
 
-    private Future<RecordMetadata> sendInfoData(String key, String value) {
-        Future<RecordMetadata> future =  baseProducer.produceFireAndForget(
-                new ProducerRecord<>(TOPIC_CAR_INFO, key, value));
-        return future;
-    }
+    private List<CarInfo> prepareInput() {
+        List<CarInfo> cars = new java.util.ArrayList<>();
+        CarInfo carInfo = new CarInfo();
+        carInfo.setId("1");
+        carInfo.setBrand("Ferrari");
+        carInfo.setModel("Testarossa");
+        CarInfo carInfo2 = new CarInfo();
+        carInfo2.setId("2");
+        carInfo2.setBrand("Bugatti");
+        carInfo2.setModel("Chiron");
+        CarInfo carInfo3= new CarInfo();
+        carInfo3.setId("3");
+        carInfo3.setBrand("Ferrari");
+        carInfo3.setModel("F40");
+        cars.add(carInfo);
+        cars.add(carInfo2);
+        cars.add(carInfo3);
+        return cars;
+      }
+
+      private List<CarInfo> expectedFerrari() {
+        List<CarInfo> ferrari = new java.util.ArrayList<>();
+        CarInfo carInfo = new CarInfo();
+        carInfo.setId("1");
+        carInfo.setBrand("Ferrari");
+        carInfo.setModel("Testarossa");
+        CarInfo carInfo2 = new CarInfo();
+        carInfo2.setId("3");
+        carInfo2.setBrand("Ferrari");
+        carInfo2.setModel("F40");
+        ferrari.add(carInfo);
+        ferrari.add(carInfo2);
+        return ferrari;
+      }
+
+      private List<CarInfo> expectedCars() {
+        List<CarInfo> cars = new java.util.ArrayList<>();
+        CarInfo carInfo = new CarInfo();
+        carInfo.setId("2");
+        carInfo.setBrand("Bugatti");
+        carInfo.setModel("Chiron");
+        cars.add(carInfo);
+        return cars;
+      }
+
 }

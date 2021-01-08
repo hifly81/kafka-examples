@@ -35,15 +35,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-test</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.redhat.kafka</groupId>
-            <artifactId>kafka-producer</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>test</scope>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-streams-test-utils</artifactId>
         </dependency>
 
     </dependencies>

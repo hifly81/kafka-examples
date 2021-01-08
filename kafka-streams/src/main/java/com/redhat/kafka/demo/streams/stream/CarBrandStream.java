@@ -34,7 +34,8 @@ public class CarBrandStream {
                             String ferrariTopic,
                             String carsTopic) {
 
-        KafkaStreams kafkaStreams = createStream(inputTopic, ferrariTopic, carsTopic);
+        KafkaStreams kafkaStreams = 
+            new KafkaStreams(createTopology(inputTopic, ferrariTopic, carsTopic), properties);
         kafkaStreams.start();
 
         // SIGTERM
@@ -47,7 +48,7 @@ public class CarBrandStream {
 
     }
 
-    public KafkaStreams createStream(
+    public Topology createTopology(
             String inputTopic,
             String ferrariTopic,
             String carsTopic) {
@@ -78,7 +79,7 @@ public class CarBrandStream {
         carInfoBranches[0].to(ferrariTopic, Produced.with(Serdes.String(), carInfoSerde));
         carInfoBranches[1].to(carsTopic, Produced.with(Serdes.String(), carInfoSerde));
 
-        return new KafkaStreams(builder.build(), properties);
+        return builder.build();
     }
 
 }
