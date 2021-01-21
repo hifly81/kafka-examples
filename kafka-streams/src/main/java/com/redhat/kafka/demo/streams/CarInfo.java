@@ -66,4 +66,9 @@ public class CarInfo {
             return false;
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "CarInfo [brand=" + brand + ", id=" + id + ", model=" + model + "]";
+    }
 }

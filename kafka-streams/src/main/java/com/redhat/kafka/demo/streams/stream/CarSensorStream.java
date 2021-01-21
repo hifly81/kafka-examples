@@ -39,7 +39,8 @@ public class CarSensorStream {
                             String carInfoTopic,
                             String outputTopic) {
 
-        KafkaStreams kafkaStreams = createStream(carSensorTopic, carInfoTopic, outputTopic);
+        KafkaStreams kafkaStreams = 
+            new KafkaStreams(createTopology(carSensorTopic, carInfoTopic, outputTopic), properties);
         kafkaStreams.start();
 
         // SIGTERM
@@ -49,10 +50,10 @@ public class CarSensorStream {
             } catch (final Exception e) {
             }
         }));
-
+        
     }
 
-    public KafkaStreams createStream(
+    public Topology createTopology(
             String carSensorTopic,
             String carInfoTopic,
             String outputTopic) {
@@ -107,8 +108,7 @@ public class CarSensorStream {
         //publish to output topic
         speedInfo.to(outputTopic, Produced.with(Serdes.String(), speedInfoSerde));
 
-
-        return new KafkaStreams(builder.build(), properties);
+        return builder.build();
 
     }
 
