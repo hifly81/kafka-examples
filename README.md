@@ -37,8 +37,8 @@ Some implementations of kafka producers.
 
 kafka producers available:
 
-- base: uses a *org.apache.kafka.common.serialization.StringDeserializer* for key and value
-- json: uses a *org.apache.kafka.common.serialization.StringSerialize* for key and a *com.redhat.kafka.demo.producer.serializer.json.JsonSerializer* for value
+- base: uses a *org.apache.kafka.common.serialization.StringSerializer* for key and value
+- json: uses a *org.apache.kafka.common.serialization.StringSerializer* for key and a *com.redhat.kafka.demo.producer.serializer.json.JsonSerializer* for value
 - avro-confluent: uses a *io.confluent.kafka.serializers.KafkaAvroSerializer* for key and value.  
 A running confluent schema registry is need to register the avro schema.  
 Info at: <https://github.com/confluentinc/schema-registry>
