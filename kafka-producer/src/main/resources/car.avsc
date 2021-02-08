@@ -1,7 +1,7 @@
 {
   "type": "record",
   "name": "Car",
-  "namespace": "com.redhat.kafka.demo.producer.serializer.avro",
+  "namespace": "org.hifly.kafka.demo.producer.serializer.avro",
   "fields": [
     {
       "name": "model",

@@ -38,7 +38,7 @@ Some implementations of kafka producers.
 kafka producers available:
 
 - base: uses a *org.apache.kafka.common.serialization.StringSerializer* for key and value
-- json: uses a *org.apache.kafka.common.serialization.StringSerializer* for key and a *com.redhat.kafka.demo.producer.serializer.json.JsonSerializer* for value
+- json: uses a *org.apache.kafka.common.serialization.StringSerializer* for key and a *org.hifly.kafka.demo.producer.serializer.json.JsonSerializer* for value
 - avro-confluent: uses a *io.confluent.kafka.serializers.KafkaAvroSerializer* for key and value.  
 A running confluent schema registry is need to register the avro schema.  
 Info at: <https://github.com/confluentinc/schema-registry>
@@ -60,27 +60,27 @@ At least a kafka broker listening on port 9092 is required.
 
 ```bash
 cd kafka-producer
-mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.producer.serializer.base.Runner"
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.base.Runner"
 ```
 
 ```bash
 cd kafka-producer
-mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.producer.serializer.json.Runner"
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.json.Runner"
 ```
 
 ```bash
 cd kafka-producer
-mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.producer.serializer.avro.RunnerConfluent"
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.avro.RunnerConfluent"
 ```
 
 ```bash
 cd kafka-producer
-mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.producer.serializer.avro.RunnerApicurio"
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.avro.RunnerApicurio"
 ```
 
 ```bash
 cd kafka-producer
-mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.producer.partitioner.custom.Runner"
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.partitioner.custom.Runner"
 ```
 
 ## Kafka consumers
@@ -99,7 +99,7 @@ At least a kafka broker listening on port 9092 is required.
 
 ```bash
 cd kafka-consumer
-mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.consumer.base.Runner"
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.base.Runner"
 ```
 
 ## Kafka streams
@@ -141,14 +141,14 @@ Execute the ItemsProducer class:
 
 ```bash
 cd kafka-orders-tx
-mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.orders.ItemsProducer"
+mvn clean compile && mvn exec:java -Dexec.mainClass="ItemsProducer"
 ```
 
 Execute the ItemsConsumer class:  
 
 ```bash
 cd kafka-orders-tx
-mvn clean compile && mvn exec:java -Dexec.mainClass="com.redhat.kafka.demo.orders.ItemsConsumer"
+mvn clean compile && mvn exec:java -Dexec.mainClass="ItemsConsumer"
 ```
 
 ## Kafka Spring Boot
