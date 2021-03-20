@@ -16,10 +16,10 @@
         <module>kafka-springboot-producer</module>
         <module>kafka-springboot-consumer</module>
         <module>kafka-quarkus</module>
+        <module>kafka-nixstats-connector</module>
     </modules>
 
     <properties>
-
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
         <kafka.version>2.7.0</kafka.version>
@@ -30,8 +30,6 @@
         <slf4j.version>1.7.5</slf4j.version>
         <junit.version>4.12</junit.version>
         <curator.version>5.0.0</curator.version>
-
-
     </properties>
 
     <repositories>
@@ -51,6 +49,12 @@
             <dependency>
                 <groupId>org.apache.kafka</groupId>
                 <artifactId>kafka_2.12</artifactId>
+                <version>${kafka.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>connect-api</artifactId>
                 <version>${kafka.version}</version>
             </dependency>
 
