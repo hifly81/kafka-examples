@@ -5,6 +5,8 @@ import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.common.config.ConfigException;
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.source.SourceConnector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +28,8 @@ public class NixStatsSourceConnector extends SourceConnector {
             .define(TOPIC_CONFIG, ConfigDef.Type.LIST, ConfigDef.Importance.HIGH, "The topic to publish data to")
             .define(POLL_CONFIG, ConfigDef.Type.LONG, ConfigDef.Importance.HIGH, "Poll interval");
 
+    private static final Logger LOG = LoggerFactory.getLogger(NixStatsSourceConnector.class);
+
     @Override
     public void start(Map<String, String> map) {
         AbstractConfig parsedConfig = new AbstractConfig(CONFIG_DEF, map);
@@ -36,12 +40,14 @@ public class NixStatsSourceConnector extends SourceConnector {
         command = commands.get(0);
 
         List<String> topics = parsedConfig.getList(TOPIC_CONFIG);
-        if (topics == null || topics.size() == 1) {
-            throw new ConfigException("'topic' in NixStatsSourceConnector configuration requires definition of a a single topic");
+        if (topics == null || topics.size() != 1) {
+            throw new ConfigException("'topic' in NixStatsSourceConnector configuration requires definition of a single topic");
         }
         topic = topics.get(0);
 
         pollMs = parsedConfig.getLong(POLL_CONFIG);
+
+        LOG.info("Config: command: {} - topic: {} - pollMs: {}", command, topic, pollMs);
     }
 
     @Override
@@ -67,7 +73,7 @@ public class NixStatsSourceConnector extends SourceConnector {
 
     @Override
     public ConfigDef config() {
-        return null;
+        return CONFIG_DEF;
     }
 
     @Override

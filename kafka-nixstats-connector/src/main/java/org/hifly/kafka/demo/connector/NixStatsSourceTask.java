@@ -3,6 +3,8 @@ package org.hifly.kafka.demo.connector;
 import org.apache.kafka.connect.source.SourceRecord;
 import org.apache.kafka.connect.source.SourceTask;
 import org.apache.kafka.connect.data.Schema;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,13 +16,12 @@ public class NixStatsSourceTask extends SourceTask {
     private String topic;
     private Long pollMs;
     private Long last_execution = 0L;
-    private Long apiOffset;
+    private Long apiOffset = 0L;
     private String fromDate = "1970-01-01T00:00:00.0000000Z";
 
     private static final String COMMAND = "command";
-    private static final String LAST_READ = "last_read";
-    private static final String LAST_API_OFFSET = "last_api_offset";
-    private static final Schema VALUE_SCHEMA = Schema.STRING_SCHEMA;
+
+    private static final Logger LOG = LoggerFactory.getLogger(NixStatsSourceTask.class);
 
     @Override
     public String version() {
@@ -36,15 +37,20 @@ public class NixStatsSourceTask extends SourceTask {
         Map<String, Object> offset = context.offsetStorageReader().offset(Collections.singletonMap(COMMAND, command));
         if (offset != null) {
             Long lastRecordedOffset = (Long) offset.get("position");
-            if (lastRecordedOffset != null)
+            if (lastRecordedOffset != null) {
+                LOG.info("Loaded offset: {}", apiOffset);
                 apiOffset = lastRecordedOffset;
+            }
         }
     }
 
     @Override
-    public List<SourceRecord> poll() throws InterruptedException {
+    public List<SourceRecord> poll() {
 
         if (System.currentTimeMillis() > (last_execution + pollMs)) {
+
+            LOG.info("Poll command: {}", command);
+
             last_execution = System.currentTimeMillis();
             String result = execCommand(command);
             List<SourceRecord>  sourceRecords = new ArrayList<>();

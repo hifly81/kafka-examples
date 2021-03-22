@@ -5,22 +5,35 @@
 A kafka cluster with a minimum of 1 broker (suggested 3) is need to test the examples; for details about the installation, info at:  
 <https://kafka.apache.org/documentation/#quickstart>
 
-## Apache Kafka on Docker
+If you want to run the nixtstats connector example, use the Docker installation.
+
+## Installation using Docker
 
 If you want to run your kafka cluster with docker, use the *docker-compose.yml* file in the root directory.
-Images are downloaded from confluentinc and are based on Confluent 6.0.x version:
-- Zookeeper: confluentinc/cp-zookeeper:6.0.0
-- Kafka: confluentinc/cp-kafka:6.0.0
+Images are downloaded from *confluentinc* and are based on *Confluent 6.1.x* version:
+- Zookeeper: confluentinc/cp-zookeeper:6.1.0
+- Kafka: confluentinc/cp-kafka:6.1.0
+- Schema Registry: confluentinc/cp-schema-registry:6.1.0
+- Connect: custom image based on confluentinc/cp-kafka-connect-base:6.0.2
 
-Kafka will listen to *localhost:29092*
+Components list:
+- Broker will listen to *localhost:29092*
+- Schema Registry will listen to *localhost:8081*
+- Connect will listen to *localhost:8083*
 
-Start containers:
+### Create connect custom image with *nixstats connector*:
+
+```bash
+./kafka-nixstats-connector/build-image.sh
+```
+
+### Start containers:
 
 ```bash
 docker-compose up -d
 ```
 
-Stop containers:
+### Stop containers:
 
 ```bash
 docker-compose stop
@@ -228,6 +241,40 @@ curl -v -X POST http://localhost:9090/kafka-microprofile2-consumer-0.0.1-SNAPSHO
 
 #Send orders (500)
 curl -v -X POST http://localhost:9080/kafka-microprofile2-producer-0.0.1-SNAPSHOT/order
+```
+
+## Kafka nixstats Connector
+
+Implementation of a sample Source Connector; it executes *nix commands* (e.g. *ls -ltr, netstat*) and sends its output to a kafka topic.
+This connector relies on Confluent Schema Registry to convert the values using Avro: *CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter*.
+
+Connector config is in *kafka-nixstats-connector/config/source.quickstart.json* file.
+
+Parameters for source connector:
+- command --> nix command to execute (e.g. ls -ltr)
+- topic --> output topic
+- poll.ms --> poll interval in milliseconds between every executions 
+
+### Create the connector package:
+
+```bash
+cd kafka-nixtstats-connector
+mvn clean package
+```
+
+### Create a connect custom Docker image with the connector installed:
+This will create an image based on *confluentinc/cp-kafka-connect-base:6.0.2* using a custom *Dockerfile*.
+It will use the Confluent utility *confluent-hub install* to install the plugin in connect.
+
+```bash
+cd kafka-nixstats-connector
+./kafka-nixstats-connector/build-image.sh
+```
+
+### Run the Docker container:
+
+```bash
+docker-compose up -d
 ```
 
 ## Kafka commands
