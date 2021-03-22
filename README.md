@@ -14,7 +14,7 @@ Images are downloaded from *confluentinc* and are based on *Confluent 6.1.x* ver
 - Zookeeper: confluentinc/cp-zookeeper:6.1.0
 - Kafka: confluentinc/cp-kafka:6.1.0
 - Schema Registry: confluentinc/cp-schema-registry:6.1.0
-- Connect: custom image based on confluentinc/cp-kafka-connect-base:6.0.2
+- Connect: custom image based on confluentinc/cp-kafka-connect-base:6.1.0
 
 Components list:
 - Broker will listen to *localhost:29092*
@@ -275,6 +275,12 @@ cd kafka-nixstats-connector
 
 ```bash
 docker-compose up -d
+```
+
+### Install te connector
+
+```bash
+curl -X POST -H Accept:application/json -H Content-Type:application/json http://localhost:8083/connectors/ -d @kafka-nixstats-connector/config/source.quickstart.json
 ```
 
 ## Kafka commands
