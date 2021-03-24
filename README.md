@@ -23,7 +23,7 @@ Components list:
 - Broker will listen to *localhost:29092*
 - Schema Registry will listen to *localhost:8081*
 - Connect will listen to *localhost:8083*
-- ksqlDB cli listen to *localhost:8888*
+- ksqlDB cli listen to *localhost:8088*
 
 ### Create connect custom image with *nixstats connector*:
 
@@ -320,12 +320,6 @@ Create DDL on ksqlDB:
 /ksqldb-sample/ksql/./ksql-statements.sh
 ```
 
-Insert entries on ksqlDB:
-
-```bash
-/ksqldb-sample/ksql/./ksql-insert.sh
-```
-
 Create fat jar of Sample application (1 Saga):
 
 ```bash
@@ -337,10 +331,16 @@ Execute fat jar of Sample application (1 Saga):
 
 ```bash
 cd ksqldb-sample
-java -jar payment-0.0.1-jar-with-dependencies.jar
+java -jar target/ksqldb-sample-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 ```
 
 ### Saga Verification:
+
+Insert entries on ksqlDB:
+
+```bash
+ksql http://ksqldb-server:8088
+```
 
 ```sql
 insert into accounts values('AAA', 'Jimmy Best');
