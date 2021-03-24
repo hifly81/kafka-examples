@@ -15,11 +15,14 @@ Images are downloaded from *confluentinc* and are based on *Confluent 6.1.x* ver
 - Kafka: confluentinc/cp-kafka:6.1.0
 - Schema Registry: confluentinc/cp-schema-registry:6.1.0
 - Connect: custom image based on confluentinc/cp-kafka-connect-base:6.1.0
+- ksqlDB server: confluentinc/ksqldb-server:0.15.0
+- ksqlDB cli: confluentinc/ksqldb-cli:0.15.0
 
 Components list:
 - Broker will listen to *localhost:29092*
 - Schema Registry will listen to *localhost:8081*
 - Connect will listen to *localhost:8083*
+- ksqlDB cli listen to *localhost:8888*
 
 ### Create connect custom image with *nixstats connector*:
 
@@ -283,9 +286,81 @@ docker-compose up -d
 curl -X POST -H Accept:application/json -H Content-Type:application/json http://localhost:8083/connectors/ -d @kafka-nixstats-connector/config/source.quickstart.json
 ```
 
+## ksqlDB Sample App
+
+Implementation of a sample App (kafka producer and consumer) sending and receiving orders; ksqlDB acts as an orchestrator to coordinate a sample Saga.
+
+### Compile
+
+```bash
+cd ksqldb-sample
+mvn schema-registry:download
+mvn generate-sources
+mvn clean compile
+```
+
+### Launch on local environment
+
+Launch Docker Compose:
+
+```bash
+docker-compose up
+```
+
+Connect to ksqlDB and set auto.offset.reset:
+
+```bash
+ksql http://ksqldb-server:8088
+SET 'auto.offset.reset' = 'earliest';
+```
+
+Create DDL on ksqlDB:
+
+```bash
+/ksqldb-sample/ksql/./ksql-statements.sh
+```
+
+Insert entries on ksqlDB:
+
+```bash
+/ksqldb-sample/ksql/./ksql-insert.sh
+```
+
+Create fat jar of Sample application (1 Saga):
+
+```bash
+cd ksqldb-sample
+mvn clean compile assembly:single
+```
+
+Execute fat jar of Sample application (1 Saga):
+
+```bash
+cd ksqldb-sample
+java -jar payment-0.0.1-jar-with-dependencies.jar
+```
+
+### Saga Verification
+
+```sql
+insert into accounts values('AAA', 'Jimmy Best');
+insert into orders values('AAA', 150, 'Item0', 'A123', 'Jimmy Best', 'Transfer funds', '2020-04-22 03:19:51');
+insert into orders values('AAA', -110, 'Item1', 'A123', 'amazon.it', 'Purchase', '2020-04-22 03:19:55');
+insert into orders values('AAA', -100, 'Item2', 'A123', 'ebike.com', 'Purchase', '2020-04-22 03:19:58');
+
+select * from orders_tx where account_id='AAA' and order_id='A123';
+```
+
+```java
+Order Action:{"TX_ID": "TX_AAA_A123", "TX_ACTION": 0, "ACCOUNT": "AAA", "ITEMS": ["Item0"], "ORDER": "A123"}
+Order Action:{"TX_ID": "TX_AAA_A123", "TX_ACTION": 0, "ACCOUNT": "AAA", "ITEMS": ["Item0", "Item1"], "ORDER": "A123"}
+Order Action:{"TX_ID": "TX_AAA_A123", "TX_ACTION": -1, "ACCOUNT": "AAA", "ITEMS": ["Item0", "Item1", "Item2"], "ORDER": "A123"}
+ --> compensate:{"TX_ID": "TX_AAA_A123", "TX_ACTION": -1, "ACCOUNT": "AAA", "ITEMS": ["Item0", "Item1", "Item2", "ORDER": "A123"}
+```
+
 ## Kafka commands
 
-Create a topic:  
+### Create a topic:  
 
 ```bash
 export KAFKA_OPTS="-Djava.security.auth.login.config=../configs/kafka/jaas.config"
