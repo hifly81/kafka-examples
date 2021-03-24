@@ -6,6 +6,7 @@ A kafka cluster with a minimum of 1 broker (suggested 3) is need to test the exa
 <https://kafka.apache.org/documentation/#quickstart>
 
 If you want to run the nixtstats connector example, use the Docker installation.
+If you want to run the ksql sample, use the Docker installation.
 
 ## Installation using Docker
 
@@ -270,8 +271,7 @@ This will create an image based on *confluentinc/cp-kafka-connect-base:6.0.2* us
 It will use the Confluent utility *confluent-hub install* to install the plugin in connect.
 
 ```bash
-cd kafka-nixstats-connector
-./kafka-nixstats-connector/build-image.sh
+/kafka-nixstats-connector/./build-image.sh
 ```
 
 ### Run the Docker container:
@@ -280,7 +280,7 @@ cd kafka-nixstats-connector
 docker-compose up -d
 ```
 
-### Install te connector
+### Deploy the connector:
 
 ```bash
 curl -X POST -H Accept:application/json -H Content-Type:application/json http://localhost:8083/connectors/ -d @kafka-nixstats-connector/config/source.quickstart.json
@@ -290,7 +290,7 @@ curl -X POST -H Accept:application/json -H Content-Type:application/json http://
 
 Implementation of a sample App (kafka producer and consumer) sending and receiving orders; ksqlDB acts as an orchestrator to coordinate a sample Saga.
 
-### Compile
+### Compile:
 
 ```bash
 cd ksqldb-sample
@@ -299,7 +299,7 @@ mvn generate-sources
 mvn clean compile
 ```
 
-### Launch on local environment
+### Launch on local environment:
 
 Launch Docker Compose:
 
@@ -340,7 +340,7 @@ cd ksqldb-sample
 java -jar payment-0.0.1-jar-with-dependencies.jar
 ```
 
-### Saga Verification
+### Saga Verification:
 
 ```sql
 insert into accounts values('AAA', 'Jimmy Best');
@@ -356,13 +356,4 @@ Order Action:{"TX_ID": "TX_AAA_A123", "TX_ACTION": 0, "ACCOUNT": "AAA", "ITEMS":
 Order Action:{"TX_ID": "TX_AAA_A123", "TX_ACTION": 0, "ACCOUNT": "AAA", "ITEMS": ["Item0", "Item1"], "ORDER": "A123"}
 Order Action:{"TX_ID": "TX_AAA_A123", "TX_ACTION": -1, "ACCOUNT": "AAA", "ITEMS": ["Item0", "Item1", "Item2"], "ORDER": "A123"}
  --> compensate:{"TX_ID": "TX_AAA_A123", "TX_ACTION": -1, "ACCOUNT": "AAA", "ITEMS": ["Item0", "Item1", "Item2", "ORDER": "A123"}
-```
-
-## Kafka commands
-
-### Create a topic:  
-
-```bash
-export KAFKA_OPTS="-Djava.security.auth.login.config=../configs/kafka/jaas.config"
-bin/kafka-topics.sh --zookeeper localhost:2181 --create --topic <topic_name> --partitions <number> --replication-factor <number>
 ```
