@@ -1,174 +1,218 @@
-# Examples with Apache Kafka
+= Examples with Apache Kafka
 
-## Apache Kafka installation
+== Apache Kafka installation
 
-A kafka cluster with a minimum of 1 broker (suggested 3) is need to test the examples; for details about the installation, info at:  
-<https://kafka.apache.org/documentation/#quickstart>
+A kafka cluster with a minimum of 1 broker (suggested 3) is needed to test the examples; for details about the installation, info at: +
+https://kafka.apache.org/documentation/#quickstart
 
-If you want to run the nixtstats connector example, use the Docker installation.
-If you want to run the ksql sample, use the Docker installation.
+In order to run the _nixtstats connector_ example, use the Docker installation.
+In order to run the _ksql sample_, use the Docker installation.
 
-## Installation using Docker
+== Installation using Docker
 
-If you want to run your kafka cluster with docker, use the *docker-compose.yml* file in the root directory.
-Images are downloaded from *confluentinc* and are based on *Confluent 6.1.x* version:
-- Zookeeper: confluentinc/cp-zookeeper:6.1.0
-- Kafka: confluentinc/cp-kafka:6.1.0
-- Schema Registry: confluentinc/cp-schema-registry:6.1.0
-- Connect: custom image based on confluentinc/cp-kafka-connect-base:6.1.0
-- ksqlDB server: confluentinc/ksqldb-server:0.15.0
-- ksqlDB cli: confluentinc/ksqldb-cli:0.15.0
+In order to run a kafka cluster with Docker, use the _docker-compose.yml_ file in the root directory.
+
+Images are downloaded from _confluentinc_ and are based on _Confluent 6.1.x_ version:
+
+* Zookeeper: confluentinc/cp-zookeeper:6.1.0
+* Kafka: confluentinc/cp-kafka:6.1.0
+* Schema Registry: confluentinc/cp-schema-registry:6.1.0
+* Connect: custom image based on confluentinc/cp-kafka-connect-base:6.1.0
+* ksqlDB server: confluentinc/ksqldb-server:0.15.0
+* ksqlDB cli: confluentinc/ksqldb-cli:0.15.0
 
 Components list:
-- Broker will listen to *localhost:29092*
-- Schema Registry will listen to *localhost:8081*
-- Connect will listen to *localhost:8083*
-- ksqlDB cli listen to *localhost:8088*
 
-### Create connect custom image with *nixstats connector*:
+* Broker will listen to _localhost:29092_
+* Schema Registry will listen to _localhost:8081_
+* Connect will listen to _localhost:8083_
+* ksqlDB cli listen to _localhost:8088_
 
-```bash
+=== Create connect custom image with _nixstats connector_:
+
+[source,bash]
+----
 ./kafka-nixstats-connector/build-image.sh
-```
 
-### Start containers:
+----
 
-```bash
+=== Start containers:
+
+[source,bash]
+----
 docker-compose up -d
-```
 
-### Stop containers:
+----
 
-```bash
+=== Stop containers:
+
+[source,bash]
+----
 docker-compose stop
-```
 
-## Apache Kafka installation on Kubernetes and OpenShift
+----
 
-If you want to run your kafka cluster on Kubernetes or OpenShift, have a look at Strimzi project:  
-<https://strimzi.io>
+== Apache Kafka installation on Kubernetes and OpenShift
 
-## Kafka producers
+In order to run a kafka cluster on Kubernetes or OpenShift, have a look at Strimzi project: +
+https://strimzi.io
+
+== Kafka producers
 
 Some implementations of kafka producers.
 
 kafka producers available:
 
-- base: uses a *org.apache.kafka.common.serialization.StringSerializer* for key and value
-- json: uses a *org.apache.kafka.common.serialization.StringSerializer* for key and a *org.hifly.kafka.demo.producer.serializer.json.JsonSerializer* for value
-- avro-confluent: uses a *io.confluent.kafka.serializers.KafkaAvroSerializer* for key and value.  
-A running confluent schema registry is need to register the avro schema.  
-Info at: <https://github.com/confluentinc/schema-registry>
-- avro-apicurio: uses a *io.apicurio.registry.utils.serde.AvroKafkaSerializer* for key and value.  
-A running apicurio schema registry is need to register the avro schema.  
-Info at: <https://github.com/Apicurio/apicurio-registry>
-- partitioner: use a custom partitioner for keys.
+* base: uses a _org.apache.kafka.common.serialization.StringSerializer_ for key and value
+* json: uses a _org.apache.kafka.common.serialization.StringSerializer_ for key and a _org.hifly.kafka.demo.producer.serializer.json.JsonSerializer_ for value
+* avro-confluent: uses a _io.confluent.kafka.serializers.KafkaAvroSerializer_ for key and value. +
+A running confluent schema registry is need to register the avro schema. +
+Info at: https://github.com/confluentinc/schema-registry
+* avro-apicurio: uses a _io.apicurio.registry.utils.serde.AvroKafkaSerializer_ for key and value. +
+A running apicurio schema registry is need to register the avro schema. +
+Info at: https://github.com/Apicurio/apicurio-registry
+* partitioner: use a custom partitioner for keys.
 A topic with 3 partitions named "demo-2" must exists.
 
 Execute tests:
 
-```bash
+[source,bash]
+----
 cd kafka-producer
 mvn clean test
-```
+----
 
-Every producer implementation has its own *Runner* java class producing a bunch of sample messages.
+Every producer implementation has its own _Runner_ java class producing a bunch of messages.
 At least a kafka broker listening on port 9092 is required.
 
-```bash
+[source,bash]
+----
 cd kafka-producer
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.base.Runner"
-```
+----
 
-```bash
+[source,bash]
+----
 cd kafka-producer
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.json.Runner"
-```
+----
 
-```bash
+[source,bash]
+----
 cd kafka-producer
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.avro.RunnerConfluent"
-```
+----
 
-```bash
+[source,bash]
+----
 cd kafka-producer
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.avro.RunnerApicurio"
-```
+----
 
-```bash
+[source,bash]
+----
 cd kafka-producer
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.partitioner.custom.Runner"
-```
+----
 
-## Kafka consumers
+== Kafka consumers
 
 Implementation of a kafka consumer that can be used with variuos deserializer classes.
 
 Execute tests:
 
-```bash
+[source,bash]
+----
 cd kafka-consumer
 mvn clean test
-```
+----
 
-Every consumer implementation has its own *Runner* java class consuming a bunch of sample messages.
+Every consumer implementation has its own _Runner_ java class consuming a bunch of sample messages.
 At least a kafka broker listening on port 9092 is required.
 
-```bash
+[source,bash]
+----
 cd kafka-consumer
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.base.Runner"
-```
+----
 
-## Kafka streams
+== Kafka streams
 
-Implementation of a series of kafka streams topoligies to analyze car data.  
+Implementation of a series of kafka streams topoligies to analyze car data. 
 
-CarSensorStream:  
-The stream filters out speed data from car data sensor records. Speed limit is set to 150km/h and only events exceeding the limits are filtered out.  
-A ktable stores the car info data.  
+CarSensorStream: +
+The stream filters out speed data from car data sensor records. Speed limit is set to 150km/h and only events exceeding the limits are filtered out. +
+A ktable stores the car info data. +
 A left join between the kstream and the ktable produces a new aggregated object published to an output topic.
 
-CarBrandStream:  
+CarBrandStream: +
 The stream splits the original data into 2 different topics, one for Ferrari cars and one for all other car brands.
 
 Execute tests:
 
-```bash
+[source,bash]
+----
 cd kafka-streams
 mvn clean test
-```
+----
 
-## Kafka Orders Transactional
+== Kafka streams processor
 
-Example of a cart application implementing end-to-end exactly-once semantic between consumer and producer.  
-The ItemsProducer class sends 2 items in a single transaction.  
-The ItemsConsumer class receives the items and creates an order containing the items.  
+Implementation of a Processor used in a Topology.
+
+JSONArrayRemoveProcessor: +
+Remove a specific json field from the record and forward it to the next topology node.
+
+Execute tests:
+
+[source,bash]
+----
+cd kafka-streams-processor
+mvn clean test
+----
+
+Run application:
+
+[source,bash]
+----
+cd kafka-streams-processor
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.streams.processor.JSONArrayRemoveProcessorApplication"
+----
+
+== Kafka Orders Transactional
+
+Example of a cart application implementing end-to-end exactly-once semantic between consumer and producer. +
+The ItemsProducer class sends 2 items in a single transaction. +
+The ItemsConsumer class receives the items and creates an order containing the items. +
 The consumer offset is committed only if the order can be created and sent.
 
 Execute tests:
 
-```bash
+[source,bash]
+----
 cd kafka-orders-tx
 mvn clean test
-```
+----
 
 At least a kafka broker listening on port 9092 is required.
 
-Execute the ItemsProducer class:  
+Execute the ItemsProducer class: 
 
-```bash
+[source,bash]
+----
 cd kafka-orders-tx
 mvn clean compile && mvn exec:java -Dexec.mainClass="ItemsProducer"
-```
+----
 
-Execute the ItemsConsumer class:  
+Execute the ItemsConsumer class: 
 
-```bash
+[source,bash]
+----
 cd kafka-orders-tx
 mvn clean compile && mvn exec:java -Dexec.mainClass="ItemsConsumer"
-```
+----
 
-## Kafka Spring Boot
+== Kafka Spring Boot
 
 Sample of a kafka producer and consumer implemented with Spring Boot 2.x.
 They can also run on Docker and OpenShift.
@@ -177,9 +221,10 @@ At least a kafka broker listening on port 9092 is required.
 
 Kafka Consumer implements a DLQ for records not processable (after 3 attemps).
 
-Run on your local machine:  
+Run on your local machine: 
 
-```bash
+[source,bash]
+----
 #start a producer on port 8010
 cd kafka-springboot-producer
 mvn spring-boot:run
@@ -193,37 +238,40 @@ curl --data '{"id":5, "name": "PS5"}' -H "Content-Type:application/json" http://
 
 #Send ERROR orders and test DLQ (on topic demoTopic)
 curl --data '{"id":5, "name": "ERROR-PS5"}' -H "Content-Type:application/json" http://localhost:8010/api/order
-```
+----
 
-## Kafka Quarkus
+== Kafka Quarkus
 
 Sample of a kafka producer and consumer implemented with Quarkus.
 Every 1s a new message is sent to demo topic.
 
 At least a kafka broker listening on port 9092 is required.
 
-Run on your local machine:  
+Run on your local machine: 
 
-```bash
+[source,bash]
+----
 cd kafka-quarkus
 ./mvnw clean compile quarkus:dev (debug port 5005)
-```
+----
 
-Run on Openshift machine:  
+Run on Openshift machine: 
 
-```bash
+[source,bash]
+----
 cd kafka-quarkus
 ./mvnw clean package -Dquarkus.container-image.build=true -Dquarkus.kubernetes.deploy=true
-```
+----
 
-## Kafka microprofile2
+== Kafka microprofile2
 
 Sample of a kafka producer and consumer running on a open liberty MicroProfile v2 runtime.
 They can also run on Docker and OpenShift.
 
-Run on docker:  
+Run on docker: 
 
-```bash
+[source,bash]
+----
 #Start a zookeeper container
 docker run -d --name zookeeper -p 2181:2181 -p 2888:2888 -p 3888:3888 debezium/zookeeper
 
@@ -245,115 +293,129 @@ curl -v -X POST http://localhost:9090/kafka-microprofile2-consumer-0.0.1-SNAPSHO
 
 #Send orders (500)
 curl -v -X POST http://localhost:9080/kafka-microprofile2-producer-0.0.1-SNAPSHOT/order
-```
+----
 
-## Kafka nixstats Connector
+== Kafka nixstats Connector
 
-Implementation of a sample Source Connector; it executes *nix commands* (e.g. *ls -ltr, netstat*) and sends its output to a kafka topic.
-This connector relies on Confluent Schema Registry to convert the values using Avro: *CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter*.
+Implementation of a sample Source Connector; it executes _nix commands_ (e.g. _ls -ltr, netstat_) and sends its output to a kafka topic.
+This connector relies on Confluent Schema Registry to convert the values using Avro: _CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter_.
 
-Connector config is in *kafka-nixstats-connector/config/source.quickstart.json* file.
+Connector config is in _kafka-nixstats-connector/config/source.quickstart.json_ file.
 
 Parameters for source connector:
-- command --> nix command to execute (e.g. ls -ltr)
-- topic --> output topic
-- poll.ms --> poll interval in milliseconds between every executions 
+- command –&gt; nix command to execute (e.g. ls -ltr)
+- topic –&gt; output topic
+- poll.ms –&gt; poll interval in milliseconds between every executions 
 
-### Create the connector package:
+=== Create the connector package:
 
-```bash
+[source,bash]
+----
 cd kafka-nixtstats-connector
 mvn clean package
-```
+----
 
-### Create a connect custom Docker image with the connector installed:
-This will create an image based on *confluentinc/cp-kafka-connect-base:6.0.2* using a custom *Dockerfile*.
-It will use the Confluent utility *confluent-hub install* to install the plugin in connect.
+=== Create a connect custom Docker image with the connector installed:
 
-```bash
+This will create an image based on _confluentinc/cp-kafka-connect-base:6.0.2_ using a custom _Dockerfile_.
+It will use the Confluent utility _confluent-hub install_ to install the plugin in connect.
+
+[source,bash]
+----
 /kafka-nixstats-connector/./build-image.sh
-```
+----
 
-### Run the Docker container:
+=== Run the Docker container:
 
-```bash
+[source,bash]
+----
 docker-compose up -d
-```
+----
 
-### Deploy the connector:
+=== Deploy the connector:
 
-```bash
+[source,bash]
+----
 curl -X POST -H Accept:application/json -H Content-Type:application/json http://localhost:8083/connectors/ -d @kafka-nixstats-connector/config/source.quickstart.json
-```
+----
 
-## ksqlDB Sample App
+== ksqlDB Sample App
 
 Implementation of a sample App (kafka producer and consumer) sending and receiving orders; ksqlDB acts as an orchestrator to coordinate a sample Saga.
 
-### Compile:
+=== Compile:
 
-```bash
+[source,bash]
+----
 cd ksqldb-sample
 mvn schema-registry:download
 mvn generate-sources
 mvn clean compile
-```
+----
 
-### Launch on local environment:
+=== Launch on local environment:
 
 Launch Docker Compose:
 
-```bash
+[source,bash]
+----
 docker-compose up
-```
+----
 
 Connect to ksqlDB and set auto.offset.reset:
 
-```bash
+[source,bash]
+----
 ksql http://ksqldb-server:8088
 SET 'auto.offset.reset' = 'earliest';
-```
+----
 
 Create DDL on ksqlDB:
 
-```bash
+[source,bash]
+----
 /ksqldb-sample/ksql/./ksql-statements.sh
-```
+----
 
 Create fat jar of Sample application (1 Saga):
 
-```bash
+[source,bash]
+----
 cd ksqldb-sample
 mvn clean compile assembly:single
-```
+----
 
 Execute fat jar of Sample application (1 Saga):
 
-```bash
+[source,bash]
+----
 cd ksqldb-sample
 java -jar target/ksqldb-sample-0.0.1-SNAPSHOT-jar-with-dependencies.jar
-```
+----
 
-### Saga Verification:
+=== Saga Verification:
 
 Insert entries on ksqlDB:
 
-```bash
+[source,bash]
+----
 ksql http://ksqldb-server:8088
-```
+----
 
-```sql
+[source,sql]
+----
 insert into accounts values('AAA', 'Jimmy Best');
 insert into orders values('AAA', 150, 'Item0', 'A123', 'Jimmy Best', 'Transfer funds', '2020-04-22 03:19:51');
 insert into orders values('AAA', -110, 'Item1', 'A123', 'amazon.it', 'Purchase', '2020-04-22 03:19:55');
 insert into orders values('AAA', -100, 'Item2', 'A123', 'ebike.com', 'Purchase', '2020-04-22 03:19:58');
 
 select * from orders_tx where account_id='AAA' and order_id='A123';
-```
+----
 
-```java
+[source,java]
+----
 Order Action:{"TX_ID": "TX_AAA_A123", "TX_ACTION": 0, "ACCOUNT": "AAA", "ITEMS": ["Item0"], "ORDER": "A123"}
 Order Action:{"TX_ID": "TX_AAA_A123", "TX_ACTION": 0, "ACCOUNT": "AAA", "ITEMS": ["Item0", "Item1"], "ORDER": "A123"}
 Order Action:{"TX_ID": "TX_AAA_A123", "TX_ACTION": -1, "ACCOUNT": "AAA", "ITEMS": ["Item0", "Item1", "Item2"], "ORDER": "A123"}
  --> compensate:{"TX_ID": "TX_AAA_A123", "TX_ACTION": -1, "ACCOUNT": "AAA", "ITEMS": ["Item0", "Item1", "Item2", "ORDER": "A123"}
-```
+----
