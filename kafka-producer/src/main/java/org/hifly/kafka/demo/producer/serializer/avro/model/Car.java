@@ -1,4 +1,4 @@
-package org.hifly.kafka.demo.producer.serializer.avro;
+package org.hifly.kafka.demo.producer.serializer.avro.model;
 
 import java.io.Serializable;
 

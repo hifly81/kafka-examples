@@ -30,6 +30,11 @@ public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecor
         this.avscSchema = avscSchema;
     }
 
+    public AvroDataProducer(SchemaRegistry schemaRegistry, Schema schema) {
+        this.schemaRegistryEnumValue = schemaRegistry;
+        this.schema = schema;
+    }
+
     public void start() {
         switch (schemaRegistryEnumValue) {
             case CONFLUENT:
@@ -41,17 +46,19 @@ public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecor
                 break;
 
             default:
-                producer = new org.apache.kafka.clients.producer.KafkaProducer(KafkaConfig.apicurioAvroProducer());
+                producer = new org.apache.kafka.clients.producer.KafkaProducer(KafkaConfig.confluentAvroProducer());
                 break;
         }
 
-        Schema.Parser parser = new Schema.Parser();
-        try {
-            ClassLoader classLoader = getClass().getClassLoader();
-            schema = parser.parse(new File(classLoader.getResource(avscSchema).getFile()));
-            genericRecord = new GenericData.Record(schema);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(schema == null) {
+            Schema.Parser parser = new Schema.Parser();
+            try {
+                ClassLoader classLoader = getClass().getClassLoader();
+                schema = parser.parse(new File(classLoader.getResource(avscSchema).getFile()));
+                genericRecord = new GenericData.Record(schema);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

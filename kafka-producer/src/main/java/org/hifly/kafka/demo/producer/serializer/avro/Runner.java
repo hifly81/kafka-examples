@@ -1,19 +1,39 @@
 package org.hifly.kafka.demo.producer.serializer.avro;
 
+import org.apache.avro.Schema;
 import org.hifly.kafka.demo.producer.BaseProducerCallback;
 import org.hifly.kafka.demo.producer.RecordMetadataUtil;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
-public class RunnerConfluent {
+public class Runner {
 
     private static final String TOPIC = "test_avro_data";
     private static final String MODEL = "model";
     private static final String BRAND = "brand";
 
     public static void main (String [] args) {
-        AvroDataProducer avroDataProducer = new AvroDataProducer(SchemaRegistry.CONFLUENT, "car.avsc");
+
+        //Get schema from args (CONFLUENT or APICURIO)
+        String schemaRegistry = args[0];
+
+        //Schema from file
+        AvroDataProducer avroDataProducer = new AvroDataProducer(SchemaRegistry.valueOf(schemaRegistry), "car.avsc");
+        avroDataProducer.start();
+        bunchOfMessages(TOPIC, avroDataProducer);
+        bunchOfFFMessages(TOPIC, avroDataProducer);
+        bunchOfAsynchMessages(TOPIC, avroDataProducer);
+
+        //Schema from string
+        String userSchema = "{\"type\":\"record\"," +
+                "\"name\":\"myrecord\"," +
+                "\"fields\":[{\"name\":\"f1\",\"type\":\"string\"}]}";
+
+        Schema.Parser parser = new Schema.Parser();
+        Schema schema = parser.parse(userSchema);
+
+        avroDataProducer = new AvroDataProducer(SchemaRegistry.APICURIO, schema);
         avroDataProducer.start();
         bunchOfMessages(TOPIC, avroDataProducer);
         bunchOfFFMessages(TOPIC, avroDataProducer);
