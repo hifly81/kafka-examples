@@ -20,24 +20,21 @@ import java.util.Properties;
 
 public class CarSensorStream {
 
-    private Properties properties;
-
     private static final String BROKER_LIST =
             System.getenv("kafka.broker.list") != null ? System.getenv("kafka.broker.list") : "localhost:9092,localhost:9093,localhost:9094";
 
     private static final double SPEED_LIMIT = 150.0;
 
-    public void start(Properties properties) {
+    public void startStream(Properties properties,
+                            String carSensorTopic,
+                            String carInfoTopic,
+                            String outputTopic) {
+
         if (properties.getProperty(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG) == null)
             properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, BROKER_LIST);
         properties.put(StreamsConfig.APPLICATION_ID_CONFIG, "carsensor_app_id");
         properties.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
-    }
-
-    public void startStream(String carSensorTopic,
-                            String carInfoTopic,
-                            String outputTopic) {
 
         KafkaStreams kafkaStreams = 
             new KafkaStreams(createTopology(carSensorTopic, carInfoTopic, outputTopic), properties);
