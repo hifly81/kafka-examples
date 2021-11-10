@@ -21,13 +21,13 @@ import java.util.concurrent.Future;
 public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecord> implements BaseKafkaProducer<String, GenericRecord> {
 
     private Schema schema;
+    private String avscSchema;
     private SchemaRegistry schemaRegistryEnumValue;
-    private GenericRecord car;
+    private GenericRecord genericRecord;
 
-    public AvroDataProducer() {}
-
-    public AvroDataProducer(SchemaRegistry schemaRegistry) {
+    public AvroDataProducer(SchemaRegistry schemaRegistry, String avscSchema) {
         this.schemaRegistryEnumValue = schemaRegistry;
+        this.avscSchema = avscSchema;
     }
 
     public void start() {
@@ -48,8 +48,8 @@ public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecor
         Schema.Parser parser = new Schema.Parser();
         try {
             ClassLoader classLoader = getClass().getClassLoader();
-            schema = parser.parse(new File(classLoader.getResource("car.avsc").getFile()));
-            car = new GenericData.Record(schema);
+            schema = parser.parse(new File(classLoader.getResource(avscSchema).getFile()));
+            genericRecord = new GenericData.Record(schema);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -65,9 +65,9 @@ public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecor
     }
 
     public GenericRecord getGenericRecord() {
-        if(car != null)
+        if(genericRecord != null)
             return new GenericData.Record(schema);
-        return car;
+        return genericRecord;
     }
 
     @Override
@@ -97,9 +97,6 @@ public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecor
         return schema;
     }
 
-    public GenericRecord getCar() {
-        return car;
-    }
 }
 
 

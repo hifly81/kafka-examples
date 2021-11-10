@@ -13,7 +13,7 @@ public class RunnerConfluent {
     private static final String BRAND = "brand";
 
     public static void main (String [] args) {
-        AvroDataProducer avroDataProducer = new AvroDataProducer(SchemaRegistry.CONFLUENT);
+        AvroDataProducer avroDataProducer = new AvroDataProducer(SchemaRegistry.CONFLUENT, "car.avsc");
         avroDataProducer.start();
         bunchOfMessages(TOPIC, avroDataProducer);
         bunchOfFFMessages(TOPIC, avroDataProducer);

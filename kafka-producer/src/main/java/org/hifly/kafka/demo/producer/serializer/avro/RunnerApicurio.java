@@ -13,7 +13,7 @@ public class RunnerApicurio {
     private static final String BRAND = "brand";
 
     public static void main (String [] args) {
-        AvroDataProducer avroDataProducer = new AvroDataProducer(SchemaRegistry.APICURIO);
+        AvroDataProducer avroDataProducer = new AvroDataProducer(SchemaRegistry.APICURIO, "car.avsc");
         avroDataProducer.start();
         bunchOfMessages(TOPIC, avroDataProducer);
         bunchOfFFMessages(TOPIC, avroDataProducer);
