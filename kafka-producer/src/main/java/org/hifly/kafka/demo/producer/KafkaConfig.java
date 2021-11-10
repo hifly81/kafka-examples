@@ -1,5 +1,10 @@
 package org.hifly.kafka.demo.producer;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 public class KafkaConfig {
@@ -11,6 +16,20 @@ public class KafkaConfig {
     private static final String APICURIO_SCHEMA_REGISTRY_URL =
             System.getenv("apicurio.schema.registry") != null? System.getenv("apicurio.schema.registry"):"http://localhost:8081/api";
 
+
+    public static Properties loadConfig(final String configFile) throws IOException {
+        if (!Files.exists(Paths.get(configFile))) {
+            throw new IOException(configFile + " not found.");
+        }
+        final Properties cfg = new Properties();
+        try (InputStream inputStream = new FileInputStream(configFile)) {
+            cfg.load(inputStream);
+        }
+
+        cfg.put("acks", "all");
+
+        return cfg;
+    }
 
     public static Properties stringProducer() {
         Properties producerProperties = new Properties();
