@@ -46,7 +46,7 @@ public class CarSensorStreamTest {
             testDriver.createInputTopic(TOPIC_CAR_SENSOR, String().serializer(), String().serializer())
                     .pipeKeyValueList(this.prepareInput());
 
-            testDriver.createInputTopic(TOPIC_CAR_INFO, String().serializer(), carInfoSerializer)
+            testDriver.createInputTopic(TOPIC_CAR_INFO, String().serializer(), String().serializer())
                     .pipeKeyValueList(carInfoList());
 
             final List<SpeedInfo> speedInfo = testDriver
@@ -69,23 +69,11 @@ public class CarSensorStreamTest {
         return sensors;
     }
 
-    private List<KeyValue<String, CarInfo>> carInfoList() {
-        CarInfo carInfo = new CarInfo();
-        carInfo.setId("1");
-        carInfo.setBrand("Ferrari");
-        carInfo.setModel("Testarossa");
-        CarInfo carInfo2 = new CarInfo();
-        carInfo2.setId("2");
-        carInfo2.setBrand("Bugatti");
-        carInfo2.setModel("Chiron");
-        CarInfo carInfo3 = new CarInfo();
-        carInfo3.setId("3");
-        carInfo3.setBrand("Fiat");
-        carInfo3.setModel("500");
-
-        List<KeyValue<String, CarInfo>> cars = Arrays.asList(new KeyValue<>("1", carInfo),
-                new KeyValue<>("2", carInfo2), new KeyValue<>("3", carInfo3));
-
+    private List<KeyValue<String, String>> carInfoList() {
+        List<KeyValue<String, String>> cars = Arrays.asList(
+                new KeyValue<>("1", "{\"id\":\"1\",\"brand\":\"Ferrari\",\"model\":\"F40\"}"),
+                new KeyValue<>("2", "{\"id\":\"1\",\"brand\":\"Bugatti\",\"model\":\"Chiron\"}"),
+                new KeyValue<>("3", "{\"id\":\"1\",\"brand\":\"Fiat\",\"model\":\"500\"}"));
         return cars;
 
     }

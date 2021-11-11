@@ -150,15 +150,7 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consum
 
 == Kafka streams
 
-Implementation of a series of kafka streams topoligies to analyze car data. 
-
-CarSensorStream: +
-The stream filters out speed data from car data sensor records. Speed limit is set to 150km/h and only events exceeding the limits are filtered out. +
-A ktable stores the car info data. +
-A left join between the kstream and the ktable produces a new aggregated object published to an output topic.
-
-CarBrandStream: +
-The stream splits the original data into 2 different topics, one for Ferrari cars and one for all other car brands.
+Implementation of a series of kafka streams topologies to analyze car data.
 
 Execute tests:
 
@@ -166,6 +158,90 @@ Execute tests:
 ----
 cd kafka-streams
 mvn clean test
+----
+
+=== CarSensorStream +
+The stream filters out speed data from car data sensor records. Speed limit is set to 150km/h and only events exceeding the limits are filtered out. +
+A ktable stores the car info data. +
+A left join between the kstream and the ktable produces a new aggregated object published to an output topic.
+
+Create topics:
+
+[source,bash]
+----
+kafka-topics --bootstrap-server localhost:9092 --create --topic carinfo-topic --replication-factor 1 --partitions 1
+kafka-topics --bootstrap-server localhost:9092 --create --topic carsensor-topic --replication-factor 1 --partitions 1
+kafka-topics --bootstrap-server localhost:9092 --create --topic output-topic --replication-factor 1 --partitions 1
+----
+
+Run the topology:
+
+[source,bash]
+----
+cd kafka-streams
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.streams.stream.CarSensorStream"
+----
+
+Send messages to input topics:
+
+[source,bash]
+----
+kafka-console-producer --broker-list localhost:9092 --topic carinfo-topic --property "parse.key=true" --property "key.separator=:"
+1:{"id":"1","brand":"Ferrari","model":"F40"}
+----
+
+[source,bash]
+----
+kafka-console-producer --broker-list localhost:9092 --topic carsensor-topic --property "parse.key=true" --property "key.separator=:"
+1:{"id":"1","speed":350}
+----
+
+Read from output topic:
+
+[source,bash]
+----
+kafka-console-consumer --topic output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
+----
+
+=== CarBrandStream +
+The stream splits the original data into 2 different topics, one for Ferrari cars and one for all other car brands.
+
+Create topics:
+
+[source,bash]
+----
+kafka-topics --bootstrap-server localhost:9092 --create --topic input-topic --replication-factor 1 --partitions 1
+kafka-topics --bootstrap-server localhost:9092 --create --topic ferrari-topic --replication-factor 1 --partitions 1
+kafka-topics --bootstrap-server localhost:9092 --create --topic cars-topic --replication-factor 1 --partitions 1
+----
+
+Run the topology:
+
+[source,bash]
+----
+cd kafka-streams
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.streams.stream.CarBrandStream"
+----
+
+Send messages to input topic:
+
+[source,bash]
+----
+kafka-console-producer --broker-list localhost:9092 --topic input-topic --property "parse.key=true" --property "key.separator=:"
+1:{"id":"1","brand":"Ferrari","model":"F40"}
+2:{"id":"2","brand":"Bugatti","model":"Chiron"}
+----
+
+Read from output topics:
+
+[source,bash]
+----
+kafka-console-consumer --topic ferrari-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
+----
+
+[source,bash]
+----
+kafka-console-consumer --topic cars-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
 
 == Kafka streams processor
@@ -191,7 +267,7 @@ cd kafka-streams-processor
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.streams.processor.JSONArrayRemoveProcessorApplication"
 ----
 
-== Kafka Orders Transactional
+== Kafka Orders App: Example with end-to-end exactly-once semantic between consumer and producer
 
 Example of a cart application implementing end-to-end exactly-once semantic between consumer and producer. +
 The ItemsProducer class sends 2 items in a single transaction. +

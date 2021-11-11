@@ -1,11 +1,6 @@
 package org.hifly.kafka.demo.streams.stream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hifly.kafka.demo.streams.CarInfo;
-import org.hifly.kafka.demo.streams.CarSensor;
-import org.hifly.kafka.demo.streams.SpeedInfo;
-import org.hifly.kafka.demo.streams.serializer.SpeedInfoDeserializer;
-import org.hifly.kafka.demo.streams.serializer.SpeedInfoSerializer;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
@@ -15,6 +10,11 @@ import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.kstream.Produced;
+import org.hifly.kafka.demo.streams.CarInfo;
+import org.hifly.kafka.demo.streams.CarSensor;
+import org.hifly.kafka.demo.streams.SpeedInfo;
+import org.hifly.kafka.demo.streams.serializer.SpeedInfoDeserializer;
+import org.hifly.kafka.demo.streams.serializer.SpeedInfoSerializer;
 
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
@@ -108,8 +108,6 @@ public class CarSensorStream {
                         throw new RuntimeException("Can't generate the ktable" + e);
                     }
                 });
-
-        System.out.println(carInfoTable.toString());
 
         // join kstream and ktable
         KStream<String, SpeedInfo> speedInfo = streamCarSensor.leftJoin(carInfoTable,
