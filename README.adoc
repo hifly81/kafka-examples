@@ -1,4 +1,4 @@
-= Apache Kafka example
+= Apache Kafka examples
 ==============================
 :toc:
 :toc-placement: preamble
