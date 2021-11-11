@@ -391,6 +391,7 @@ This connector relies on Confluent Schema Registry to convert the values using A
 Connector config is in _kafka-nixstats-connector/config/source.quickstart.json_ file.
 
 Parameters for source connector:
+
 - command –&gt; nix command to execute (e.g. ls -ltr)
 - topic –&gt; output topic
 - poll.ms –&gt; poll interval in milliseconds between every executions 
