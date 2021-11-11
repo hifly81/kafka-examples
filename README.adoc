@@ -1,4 +1,14 @@
-= Examples with Apache Kafka
+= Apache Kafka example
+==============================
+:toc:
+:toc-placement: preamble
+:toclevels: 2
+:showtitle:
+:Some attr: Some value
+
+// Need some preamble to get TOC:
+{empty}
+
 
 == Apache Kafka installation
 
@@ -8,7 +18,7 @@ https://kafka.apache.org/documentation/#quickstart
 In order to run the _nixtstats connector_ example, use the Docker installation.
 In order to run the _ksql sample_, use the Docker installation.
 
-== Installation using Docker
+== Deploy using Docker
 
 In order to run a kafka cluster with Docker, use the _docker-compose.yml_ file in the root directory.
 
@@ -28,7 +38,7 @@ Components list:
 * Connect will listen to _localhost:8083_
 * ksqlDB cli listen to _localhost:8088_
 
-=== Create connect custom image with _nixstats connector_:
+Create connect custom image with _nixstats connector_
 
 [source,bash]
 ----
@@ -36,7 +46,7 @@ Components list:
 
 ----
 
-=== Start containers:
+Start containers:
 
 [source,bash]
 ----
@@ -44,7 +54,7 @@ docker-compose up -d
 
 ----
 
-=== Stop containers:
+Stop containers:
 
 [source,bash]
 ----
@@ -52,11 +62,11 @@ docker-compose stop
 
 ----
 
-== Apache Kafka installation on Kubernetes using Confluent For Kubernetes
+== Deploy on Kubernetes using Confluent For Kubernetes
 
 In order to run a kafka cluster on Kubernetes, have a look at Confluent for Kubernetes operator, see an example:
 
-https://github.com/hifly81/kafka-examples/blob/master/confluent-for-kubernetes/README.adoc
+link:confluent-for-kubernetes/README.adoc[CFK Example]
 
 == Kafka producers
 
@@ -308,7 +318,7 @@ Parameters for source connector:
 - topic –&gt; output topic
 - poll.ms –&gt; poll interval in milliseconds between every executions 
 
-=== Create the connector package:
+Create the connector package:
 
 [source,bash]
 ----
@@ -316,7 +326,7 @@ cd kafka-nixtstats-connector
 mvn clean package
 ----
 
-=== Create a connect custom Docker image with the connector installed:
+Create a connect custom Docker image with the connector installed:
 
 This will create an image based on _confluentinc/cp-kafka-connect-base:6.0.2_ using a custom _Dockerfile_.
 It will use the Confluent utility _confluent-hub install_ to install the plugin in connect.
@@ -326,14 +336,14 @@ It will use the Confluent utility _confluent-hub install_ to install the plugin 
 /kafka-nixstats-connector/./build-image.sh
 ----
 
-=== Run the Docker container:
+Run the Docker container:
 
 [source,bash]
 ----
 docker-compose up -d
 ----
 
-=== Deploy the connector:
+Deploy the connector:
 
 [source,bash]
 ----
@@ -344,7 +354,7 @@ curl -X POST -H Accept:application/json -H Content-Type:application/json http://
 
 Implementation of a sample App (kafka producer and consumer) sending and receiving orders; ksqlDB acts as an orchestrator to coordinate a sample Saga.
 
-=== Compile:
+Compile:
 
 [source,bash]
 ----
@@ -354,7 +364,7 @@ mvn generate-sources
 mvn clean compile
 ----
 
-=== Launch on local environment:
+Launch on local environment:
 
 Launch Docker Compose:
 
@@ -394,7 +404,7 @@ cd ksqldb-sample
 java -jar target/ksqldb-sample-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 ----
 
-=== Saga Verification:
+Saga Verification:
 
 Insert entries on ksqlDB:
 
