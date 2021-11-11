@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kafka-client-config
+  namespace: confluent
+type: Opaque
+data:
+  kafka.properties: Ym9vdHN0cmFwLnNlcnZlcnM9a2Fma2EuY29uZmx1ZW50LnN2Yy5jbHVzdGVyLmxvY2FsOjkwNzEKc2VjdXJpdHkucHJvdG9jb2w9UExBSU5URVhU
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: elastic
+spec:
+  serviceName: elastic
+  podManagementPolicy: Parallel
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elastic
+  template:
+    metadata:
+      labels:
+        app: elastic
+    spec:
+      containers:
+      - name: elastic
+        image: confluentinc/cp-kafka:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          kafka-producer-perf-test \
+            --topic test-1  \
+            --record-size 64 \
+            --throughput 1 \
+            --producer.config /mnt/kafka.properties \
+            --num-records 230400
+        volumeMounts:
+        - name: kafka-properties
+          mountPath: /mnt
+          readOnly: true
+        resources:
+          requests:
+            memory: 512Mi # 768Mi
+            cpu: 500m # 1000m
+      volumes:
+        - name: kafka-properties # Create secret with name `kafka-client-config` with client configurations
+          secret:
+            secretName: kafka-client-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elastic
+spec:
+  clusterIP: None

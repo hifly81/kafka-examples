@@ -52,10 +52,11 @@ docker-compose stop
 
 ----
 
-== Apache Kafka installation on Kubernetes and OpenShift
+== Apache Kafka installation on Kubernetes using Confluent For Kubernetes
 
-In order to run a kafka cluster on Kubernetes or OpenShift, have a look at Strimzi project: +
-https://strimzi.io
+In order to run a kafka cluster on Kubernetes, have a look at Confluent for Kubernetes operator, see an example:
+
+[Confluent For Kubernetes Example](confluent-for-kubernetes/README.adoc)
 
 == Kafka producers
 
