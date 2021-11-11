@@ -56,7 +56,7 @@ docker-compose stop
 
 In order to run a kafka cluster on Kubernetes, have a look at Confluent for Kubernetes operator, see an example:
 
-[Confluent For Kubernetes Example](confluent-for-kubernetes/README.adoc)
+https://github.com/hifly81/kafka-examples/blob/master/confluent-for-kubernetes/README.adoc
 
 == Kafka producers
 
