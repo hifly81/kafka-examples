@@ -15,8 +15,9 @@
 A kafka cluster with a minimum of 1 broker (suggested 3) is needed to test the examples; for details about the installation, info at: +
 https://kafka.apache.org/documentation/#quickstart
 
-In order to run the _nixtstats connector_ example, use the Docker installation.
-In order to run the _ksql sample_, use the Docker installation.
+To use the _nixtstats connector_ example, use the Docker installation.
+
+To use the _ksql sample_, use the Docker installation.
 
 == Deploy using Docker
 
