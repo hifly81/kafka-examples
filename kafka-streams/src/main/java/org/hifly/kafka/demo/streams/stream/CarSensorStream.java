@@ -6,10 +6,7 @@ import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.streams.*;
-import org.apache.kafka.streams.kstream.Consumed;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.KTable;
-import org.apache.kafka.streams.kstream.Produced;
+import org.apache.kafka.streams.kstream.*;
 import org.hifly.kafka.demo.streams.CarInfo;
 import org.hifly.kafka.demo.streams.CarSensor;
 import org.hifly.kafka.demo.streams.SpeedInfo;
@@ -75,6 +72,19 @@ public class CarSensorStream {
 
         ObjectMapper mapper = new ObjectMapper();
 
+        //create a ktable from car info
+        KTable<String, String> carInfo = builder.table(carInfoTopic);
+        KTable<String, CarInfo> carInfoTable = carInfo
+                .mapValues(car -> {
+                    try {
+                        return mapper.readValue(car, CarInfo.class);
+                    } catch (Exception e) {
+                        throw new RuntimeException("Can't generate the ktable" + e);
+                    }
+                });
+
+        carInfoTable.toStream().print(Printed.toSysOut());
+
         //TODO change value of kstream to CarSensor
         //create a kstream from car sensor data but extract only the speed data > speed limit
         KStream<String, String> streamCarSensor = builder.stream(
@@ -89,29 +99,19 @@ public class CarSensorStream {
                     }
 
                 })
-                .map((carId, car) -> {
+                .mapValues(car -> {
                     try {
                         CarSensor carSensor = mapper.readValue(car, CarSensor.class);
-                        return new KeyValue<>(carId, Float.toString(carSensor.getSpeed()));
+                        return Float.toString(carSensor.getSpeed());
                     } catch (Exception e) {
                         throw new RuntimeException("Can't generate the kstream" + e);
                     }
                 });
 
-        //create a ktable from car info
-        KTable<String, String> carInfo = builder.table(carInfoTopic);
-        KTable<String, CarInfo> carInfoTable = carInfo
-                .mapValues(car -> {
-                    try {
-                        return mapper.readValue(car, CarInfo.class);
-                    } catch (Exception e) {
-                        throw new RuntimeException("Can't generate the ktable" + e);
-                    }
-                });
 
         // join kstream and ktable
         KStream<String, SpeedInfo> speedInfo = streamCarSensor.leftJoin(carInfoTable,
-                (speed, infos) -> new SpeedInfo(Float.parseFloat(speed), infos));
+                (speed, car) -> new SpeedInfo(Float.parseFloat(speed), car));
 
         //publish to output topic
         speedInfo.to(outputTopic, Produced.with(Serdes.String(), speedInfoSerde));

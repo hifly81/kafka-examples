@@ -21,7 +21,7 @@ public class CarBrandStream {
     private static final String BROKER_LIST =
             System.getenv("kafka.broker.list") != null ? System.getenv("kafka.broker.list") : "localhost:9092,localhost:9093,localhost:9094";
 
-    public static void main (String [] args ) {
+    public static void main(String[] args) {
         Properties properties = new Properties();
         properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, BROKER_LIST);
         properties.put(StreamsConfig.APPLICATION_ID_CONFIG, "carbrand_app_id");
@@ -34,8 +34,8 @@ public class CarBrandStream {
 
         CarBrandStream carBrandStream = new CarBrandStream();
 
-        KafkaStreams kafkaStreams = 
-            new KafkaStreams(carBrandStream.createTopology(inputTopic, ferrariTopic, carsTopic), properties);
+        KafkaStreams kafkaStreams =
+                new KafkaStreams(carBrandStream.createTopology(inputTopic, ferrariTopic, carsTopic), properties);
         final CountDownLatch latch = new CountDownLatch(1);
 
         // SIGTERM
@@ -71,15 +71,12 @@ public class CarBrandStream {
         final Serde<CarInfo> carInfoSerde = Serdes.serdeFrom(carInfoSerializer, carInfoDeserializer);
 
         //group data by car brand
-        builder.stream(
-                inputTopic,
-                Consumed.with(Serdes.String(), Serdes.String()))
-                .map((carId, car) -> {
+        builder.stream(inputTopic, Consumed.with(Serdes.String(), Serdes.String()))
+                .mapValues(car -> {
                     try {
-                        CarInfo carInfo = mapper.readValue(car, CarInfo.class);
-                        return new KeyValue<>(carId, carInfo);
+                        return mapper.readValue(car, CarInfo.class);
                     } catch (Exception e) {
-                        throw new RuntimeException("Can't generate the kstream" + e);
+                        throw new RuntimeException("Can't generate the ktable" + e);
                     }
                 })
                 .split()

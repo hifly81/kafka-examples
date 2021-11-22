@@ -51,8 +51,6 @@ public class CarSensorStreamTest {
 
             final List<SpeedInfo> speedInfo = testDriver
                     .createOutputTopic(TOPIC_OUT, String().deserializer(), speedInfoDeserializer).readValuesToList();
-            
-            System.out.println(speedInfo);
 
             assertThat(speedInfo, equalTo(expectedSpeedInfo()));
 
@@ -72,8 +70,8 @@ public class CarSensorStreamTest {
     private List<KeyValue<String, String>> carInfoList() {
         List<KeyValue<String, String>> cars = Arrays.asList(
                 new KeyValue<>("1", "{\"id\":\"1\",\"brand\":\"Ferrari\",\"model\":\"F40\"}"),
-                new KeyValue<>("2", "{\"id\":\"1\",\"brand\":\"Bugatti\",\"model\":\"Chiron\"}"),
-                new KeyValue<>("3", "{\"id\":\"1\",\"brand\":\"Fiat\",\"model\":\"500\"}"));
+                new KeyValue<>("2", "{\"id\":\"2\",\"brand\":\"Bugatti\",\"model\":\"Chiron\"}"),
+                new KeyValue<>("3", "{\"id\":\"3\",\"brand\":\"Fiat\",\"model\":\"500\"}"));
         return cars;
 
     }
