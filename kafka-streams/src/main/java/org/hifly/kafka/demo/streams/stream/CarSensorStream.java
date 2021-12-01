@@ -36,8 +36,10 @@ public class CarSensorStream {
 
         CarSensorStream carSensorStream = new CarSensorStream();
 
-        KafkaStreams kafkaStreams = 
-            new KafkaStreams(carSensorStream.createTopology(carSensorTopic, carInfoTopic, outputTopic), properties);
+        Topology topology = carSensorStream.createTopology(carSensorTopic, carInfoTopic, outputTopic);
+        System.out.println(topology.describe());
+
+        KafkaStreams kafkaStreams = new KafkaStreams(topology, properties);
         final CountDownLatch latch = new CountDownLatch(1);
 
         // SIGTERM

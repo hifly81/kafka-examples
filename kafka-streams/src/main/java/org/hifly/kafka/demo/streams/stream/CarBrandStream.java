@@ -36,9 +36,10 @@ public class CarBrandStream {
         final String carsTopic = "cars-topic";
 
         CarBrandStream carBrandStream = new CarBrandStream();
+        Topology topology = carBrandStream.createTopology(inputTopic, ferrariTopic, carsTopic);
+        System.out.println(topology.describe());
 
-        KafkaStreams kafkaStreams =
-                new KafkaStreams(carBrandStream.createTopology(inputTopic, ferrariTopic, carsTopic), properties);
+        KafkaStreams kafkaStreams = new KafkaStreams(topology, properties);
         final CountDownLatch latch = new CountDownLatch(1);
 
         // SIGTERM
