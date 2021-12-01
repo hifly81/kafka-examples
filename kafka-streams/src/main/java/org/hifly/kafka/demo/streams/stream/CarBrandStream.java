@@ -8,6 +8,7 @@ import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.Branched;
 import org.apache.kafka.streams.kstream.Consumed;
+import org.apache.kafka.streams.kstream.Named;
 import org.apache.kafka.streams.kstream.Produced;
 import org.hifly.kafka.demo.streams.CarInfo;
 import org.hifly.kafka.demo.streams.serializer.CarInfoDeserializer;
@@ -27,6 +28,8 @@ public class CarBrandStream {
         properties.put(StreamsConfig.APPLICATION_ID_CONFIG, "carbrand_app_id");
         properties.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+        properties.put(StreamsConfig.STATE_DIR_CONFIG, "/tmp/streams-cars");
+
 
         final String inputTopic = "input-topic";
         final String ferrariTopic = "ferrari-topic";
@@ -71,21 +74,23 @@ public class CarBrandStream {
         final Serde<CarInfo> carInfoSerde = Serdes.serdeFrom(carInfoSerializer, carInfoDeserializer);
 
         //group data by car brand
-        builder.stream(inputTopic, Consumed.with(Serdes.String(), Serdes.String()))
+        builder.stream(inputTopic, Consumed.as("Cars_input_topic").with(Serdes.String(), Serdes.String()))
+                .peek((key, value) -> System.out.println("Incoming record - key " +key +" value " + value))
                 .mapValues(car -> {
                     try {
                         return mapper.readValue(car, CarInfo.class);
                     } catch (Exception e) {
                         throw new RuntimeException("Can't generate the ktable" + e);
                     }
-                })
+                }, Named.as("Cars_map_values"))
+                .peek((key, value) -> System.out.println("Outgoing record - key " +key +" value " + value))
                 .split()
                 .branch(
                         (key, value) -> "Ferrari".equalsIgnoreCase(value.getBrand()),
-                        Branched.withConsumer(ks -> ks.to(ferrariTopic, Produced.with(Serdes.String(), carInfoSerde))))
+                        Branched.withConsumer(ks -> ks.to(ferrariTopic, Produced.as("Ferrari_output_topic").with(Serdes.String(), carInfoSerde))))
                 .branch(
                         (key, value) -> true,
-                        Branched.withConsumer(ks -> ks.to(carsTopic, Produced.with(Serdes.String(), carInfoSerde))));
+                        Branched.withConsumer(ks -> ks.to(carsTopic, Produced.as("Cars_output_topic").with(Serdes.String(), carInfoSerde))));
 
         return builder.build();
     }

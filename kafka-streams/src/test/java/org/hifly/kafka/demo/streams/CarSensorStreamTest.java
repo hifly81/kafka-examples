@@ -1,6 +1,7 @@
 package org.hifly.kafka.demo.streams;
 
 import org.hifly.kafka.demo.streams.serializer.CarInfoSerializer;
+import org.hifly.kafka.demo.streams.serializer.CarSensorSerializer;
 import org.hifly.kafka.demo.streams.serializer.SpeedInfoDeserializer;
 import org.hifly.kafka.demo.streams.stream.CarSensorStream;
 import org.apache.kafka.common.serialization.Deserializer;
@@ -34,8 +35,8 @@ public class CarSensorStreamTest {
         streamsProps.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         streamsProps.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 
-        final Serializer<CarInfo> carInfoSerializer = new CarInfoSerializer();
         final Deserializer<SpeedInfo> speedInfoDeserializer = new SpeedInfoDeserializer();
+        final Serializer<CarSensor> carSensorSerializer = new CarSensorSerializer();
 
         CarSensorStream carSensorStream = new CarSensorStream();
 
@@ -43,7 +44,7 @@ public class CarSensorStreamTest {
 
         try (TopologyTestDriver testDriver = new TopologyTestDriver(topology, streamsProps)) {
 
-            testDriver.createInputTopic(TOPIC_CAR_SENSOR, String().serializer(), String().serializer())
+            testDriver.createInputTopic(TOPIC_CAR_SENSOR, String().serializer(), carSensorSerializer)
                     .pipeKeyValueList(this.prepareInput());
 
             testDriver.createInputTopic(TOPIC_CAR_INFO, String().serializer(), String().serializer())
@@ -58,12 +59,32 @@ public class CarSensorStreamTest {
 
     }
 
-    private List<KeyValue<String, String>> prepareInput() {
-        List<KeyValue<String, String>> sensors = Arrays.asList(
-                new KeyValue<>("1", "{\"id\":\"1\",\"lat\":12.657,\"lng\":25.543,\"speed\":350}"),
-                new KeyValue<>("2", "{\"id\":\"2\",\"lat\":16.657,\"lng\":23.543,\"speed\":360}"),
-                new KeyValue<>("1", "{\"id\":\"1\",\"lat\":13.657,\"lng\":23.582,\"speed\":370}"),
-                new KeyValue<>("3", "{\"id\":\"3\",\"lat\":13.657,\"lng\":23.582,\"speed\":120}"));
+    private List<KeyValue<String, CarSensor>> prepareInput() {
+        CarSensor carSensor1 = new CarSensor();
+        carSensor1.setId("1");
+        carSensor1.setSpeed(350);
+        carSensor1.setLat(12.657f);
+        carSensor1.setLng(25.543f);
+        CarSensor carSensor2 = new CarSensor();
+        carSensor2.setId("2");
+        carSensor2.setSpeed(360);
+        carSensor2.setLat(16.657f);
+        carSensor2.setLng(23.543f);
+        CarSensor carSensor3 = new CarSensor();
+        carSensor3.setId("1");
+        carSensor3.setSpeed(370);
+        carSensor3.setLat(13.657f);
+        carSensor3.setLng(23.582f);
+        CarSensor carSensor4 = new CarSensor();
+        carSensor4.setId("3");
+        carSensor4.setSpeed(120);
+        carSensor4.setLat(13.657f);
+        carSensor4.setLng(23.582f);
+        List<KeyValue<String, CarSensor>> sensors = Arrays.asList(
+                new KeyValue<>("1", carSensor1),
+                new KeyValue<>("2", carSensor2),
+                new KeyValue<>("1", carSensor3),
+                new KeyValue<>("3", carSensor4));
         return sensors;
     }
 

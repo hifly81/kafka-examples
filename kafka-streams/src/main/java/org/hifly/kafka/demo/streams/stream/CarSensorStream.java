@@ -83,13 +83,12 @@ public class CarSensorStream {
                     }
                 });
 
-        carInfoTable.toStream().print(Printed.toSysOut());
-
         //TODO change value of kstream to CarSensor
         //create a kstream from car sensor data but extract only the speed data > speed limit
-        KStream<String, String> streamCarSensor = builder.stream(
+        KStream<String, CarSensor> streamCarSensor = builder.stream(
                 carSensorTopic,
-                Consumed.with(Serdes.String(), Serdes.String()))
+                Consumed.as("CarSensor_input_topic").with(Serdes.String(), Serdes.String()))
+                .peek((key, value) -> System.out.println("Incoming record - key " +key +" value " + value))
                 .filter((s, s2) -> {
                     try {
                         CarSensor carSensor = mapper.readValue(s2, CarSensor.class);
@@ -98,23 +97,25 @@ public class CarSensorStream {
                         throw new RuntimeException("Can't generate the kstream" + e);
                     }
 
-                })
+                }, Named.as("CarSensor_filter_speed_limit"))
                 .mapValues(car -> {
                     try {
                         CarSensor carSensor = mapper.readValue(car, CarSensor.class);
-                        return Float.toString(carSensor.getSpeed());
+                        return carSensor;
+                        //return Float.toString(carSensor.getSpeed());
                     } catch (Exception e) {
                         throw new RuntimeException("Can't generate the kstream" + e);
                     }
-                });
+                }, Named.as("CarSensor_map_car_sensor"));
 
 
         // join kstream and ktable
         KStream<String, SpeedInfo> speedInfo = streamCarSensor.leftJoin(carInfoTable,
-                (speed, car) -> new SpeedInfo(Float.parseFloat(speed), car));
+                (speed, car) -> new SpeedInfo(speed.getSpeed(), car));
 
         //publish to output topic
-        speedInfo.to(outputTopic, Produced.with(Serdes.String(), speedInfoSerde));
+        speedInfo.peek((key, value) -> System.out.println("Outgoing record - key " +key +" value " + value));
+        speedInfo.to(outputTopic, Produced.as("CarSensor_output_topic").with(Serdes.String(), speedInfoSerde));
 
         return builder.build();
 
