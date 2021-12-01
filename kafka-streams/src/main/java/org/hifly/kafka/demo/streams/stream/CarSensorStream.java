@@ -29,6 +29,7 @@ public class CarSensorStream {
         properties.put(StreamsConfig.APPLICATION_ID_CONFIG, "carsensor_app_id");
         properties.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+        properties.put(StreamsConfig.STATE_DIR_CONFIG, "/tmp/streams-carsensors");
 
         final String carSensorTopic = "carsensor-topic";
         final String carInfoTopic = "carinfo-topic";
