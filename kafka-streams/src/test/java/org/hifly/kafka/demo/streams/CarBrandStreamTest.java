@@ -26,10 +26,8 @@ public class CarBrandStreamTest {
     private String TOPIC_CAR_OUTPUT = "topic-car-output";
 
     @Test
-    public void stream() throws Exception {
+    public void stream() {
         Properties streamsProps = new Properties();
-        streamsProps.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        streamsProps.put(StreamsConfig.APPLICATION_ID_CONFIG, "carbrand_app_id");
         streamsProps.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         streamsProps.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 

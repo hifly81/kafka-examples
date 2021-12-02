@@ -160,6 +160,78 @@ cd kafka-streams
 mvn clean test
 ----
 
+=== StreamCounter +
+Count number of events grouped by key.
+
+Create topics:
+
+[source,bash]
+----
+kafka-topics --bootstrap-server localhost:9092 --create --topic input-topic --replication-factor 1 --partitions 1
+kafka-topics --bootstrap-server localhost:9092 --create --topic output-topic --replication-factor 1 --partitions 1
+----
+
+Run the topology:
+
+[source,bash]
+----
+cd kafka-streams
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.streams.stream.StreamCounter"
+----
+
+Send messages to input topics:
+
+[source,bash]
+----
+kafka-console-producer --broker-list localhost:9092 --topic input-topic --property "parse.key=true" --property "key.separator=:"
+"John":"transaction_1"
+"Mark":"transaction_1"
+"John":"transaction_2"
+----
+
+Read from output topic:
+
+[source,bash]
+----
+kafka-console-consumer --topic output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
+----
+
+=== StreamSum +
+Sum values grouping by key.
+
+Create topics:
+
+[source,bash]
+----
+kafka-topics --bootstrap-server localhost:9092 --create --topic input-topic --replication-factor 1 --partitions 1
+kafka-topics --bootstrap-server localhost:9092 --create --topic output-topic --replication-factor 1 --partitions 1
+----
+
+Run the topology:
+
+[source,bash]
+----
+cd kafka-streams
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.streams.stream.StreamSum"
+----
+
+Send messages to input topics:
+
+[source,bash]
+----
+kafka-console-producer --broker-list localhost:9092 --topic input-topic --property "parse.key=true" --property "key.separator=:"
+"John":1
+"Mark":2
+"John":5
+----
+
+Read from output topic:
+
+[source,bash]
+----
+kafka-console-consumer --topic output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
+----
+
 === CarSensorStream +
 The stream filters out speed data from car data sensor records. Speed limit is set to 150km/h and only events exceeding the limits are filtered out. +
 A ktable stores the car info data. +

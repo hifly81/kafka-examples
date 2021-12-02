@@ -28,10 +28,8 @@ public class CarSensorStreamTest {
     private String TOPIC_OUT = "topic-out";
 
     @Test
-    public void stream() throws Exception {
+    public void stream() {
         Properties streamsProps = new Properties();
-        streamsProps.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        streamsProps.put(StreamsConfig.APPLICATION_ID_CONFIG, "carsensor_app_id");
         streamsProps.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         streamsProps.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 
@@ -44,11 +42,11 @@ public class CarSensorStreamTest {
 
         try (TopologyTestDriver testDriver = new TopologyTestDriver(topology, streamsProps)) {
 
+            testDriver.createInputTopic(TOPIC_CAR_INFO, String().serializer(), new CarInfoSerializer())
+                    .pipeKeyValueList(carInfoList());
+
             testDriver.createInputTopic(TOPIC_CAR_SENSOR, String().serializer(), carSensorSerializer)
                     .pipeKeyValueList(this.prepareInput());
-
-            testDriver.createInputTopic(TOPIC_CAR_INFO, String().serializer(), String().serializer())
-                    .pipeKeyValueList(carInfoList());
 
             final List<SpeedInfo> speedInfo = testDriver
                     .createOutputTopic(TOPIC_OUT, String().deserializer(), speedInfoDeserializer).readValuesToList();
@@ -88,11 +86,24 @@ public class CarSensorStreamTest {
         return sensors;
     }
 
-    private List<KeyValue<String, String>> carInfoList() {
-        List<KeyValue<String, String>> cars = Arrays.asList(
-                new KeyValue<>("1", "{\"id\":\"1\",\"brand\":\"Ferrari\",\"model\":\"F40\"}"),
-                new KeyValue<>("2", "{\"id\":\"2\",\"brand\":\"Bugatti\",\"model\":\"Chiron\"}"),
-                new KeyValue<>("3", "{\"id\":\"3\",\"brand\":\"Fiat\",\"model\":\"500\"}"));
+    private List<KeyValue<String, CarInfo>> carInfoList() {
+        CarInfo carInfo = new CarInfo();
+        carInfo.setId("1");
+        carInfo.setBrand("Ferrari");
+        carInfo.setModel("Testarossa");
+        CarInfo carInfo2 = new CarInfo();
+        carInfo2.setId("2");
+        carInfo2.setBrand("Bugatti");
+        carInfo2.setModel("Chiron");
+        CarInfo carInfo3 = new CarInfo();
+        carInfo3.setId("3");
+        carInfo3.setBrand("Fiat");
+        carInfo3.setModel("500");
+
+        List<KeyValue<String, CarInfo>> cars = Arrays.asList(
+                new KeyValue<>("1", carInfo),
+                new KeyValue<>("2", carInfo2),
+                new KeyValue<>("3", carInfo3));
         return cars;
 
     }

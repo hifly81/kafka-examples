@@ -1,6 +1,7 @@
 package org.hifly.kafka.demo.streams.stream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
@@ -25,11 +26,11 @@ public class CarBrandStream {
     public static void main(String[] args) {
         Properties properties = new Properties();
         properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, BROKER_LIST);
-        properties.put(StreamsConfig.APPLICATION_ID_CONFIG, "carbrand_app_id");
+        properties.put(StreamsConfig.APPLICATION_ID_CONFIG, "carbrand_app");
         properties.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         properties.put(StreamsConfig.STATE_DIR_CONFIG, "/tmp/streams-cars");
-
 
         final String inputTopic = "input-topic";
         final String ferrariTopic = "ferrari-topic";
@@ -75,16 +76,8 @@ public class CarBrandStream {
         final Serde<CarInfo> carInfoSerde = Serdes.serdeFrom(carInfoSerializer, carInfoDeserializer);
 
         //group data by car brand
-        builder.stream(inputTopic, Consumed.as("Cars_input_topic").with(Serdes.String(), Serdes.String()))
+        builder.stream(inputTopic, Consumed.as("Cars_input_topic").with(Serdes.String(), carInfoSerde))
                 .peek((key, value) -> System.out.println("Incoming record - key " +key +" value " + value))
-                .mapValues(car -> {
-                    try {
-                        return mapper.readValue(car, CarInfo.class);
-                    } catch (Exception e) {
-                        throw new RuntimeException("Can't generate the ktable" + e);
-                    }
-                }, Named.as("Cars_map_values"))
-                .peek((key, value) -> System.out.println("Outgoing record - key " +key +" value " + value))
                 .split()
                 .branch(
                         (key, value) -> "Ferrari".equalsIgnoreCase(value.getBrand()),
