@@ -1,7 +1,7 @@
 package org.hifly.kafka.demo.streams.serializer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hifly.kafka.demo.streams.CarInfo;
+import org.hifly.kafka.demo.streams.domain.CarInfo;
 import org.apache.kafka.common.serialization.Deserializer;
 
 import java.nio.charset.Charset;

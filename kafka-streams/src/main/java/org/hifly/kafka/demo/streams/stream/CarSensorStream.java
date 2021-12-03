@@ -8,9 +8,9 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.*;
-import org.hifly.kafka.demo.streams.CarInfo;
-import org.hifly.kafka.demo.streams.CarSensor;
-import org.hifly.kafka.demo.streams.SpeedInfo;
+import org.hifly.kafka.demo.streams.domain.CarInfo;
+import org.hifly.kafka.demo.streams.domain.CarSensor;
+import org.hifly.kafka.demo.streams.domain.SpeedInfo;
 import org.hifly.kafka.demo.streams.serializer.*;
 
 import java.util.*;
@@ -106,7 +106,7 @@ public class CarSensorStream {
                 .filter((s, s2) -> s2.getSpeed() > SPEED_LIMIT, Named.as("CarSensor_filter_speed_limit"));
 
 
-        // join kstream and ktable
+        //left join kstream and ktable
         KStream<String, SpeedInfo> speedInfo = streamCarSensor.leftJoin(carInfoTable,
                 (speed, car) -> new SpeedInfo(speed.getSpeed(), car));
 

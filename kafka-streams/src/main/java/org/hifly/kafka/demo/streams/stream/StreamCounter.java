@@ -79,8 +79,10 @@ public class StreamCounter {
 
         builder.stream(inputTopic, Consumed.as("StreamCounter_input_topic").with(Serdes.String(), Serdes.String()))
                 .peek((key, value) -> logger.info("Incoming record - key " +key +" value " + value))
+                //groupByKey and count occurrences
                 .groupByKey(Grouped.as("StreamCounter_groupByKey").with(Serdes.String(), Serdes.String()))
                 .count(Named.as("StreamCounter_count"))
+                //from ktable to kstream
                 .toStream(Named.as("StreamCounter_toStream"))
                 .peek((key, value) -> logger.info("Outgoing record - key " +key +" value " + value))
                 .to(outputTopic, Produced.as("StreamCounter_output_topic").with(Serdes.String(), Serdes.Long()));

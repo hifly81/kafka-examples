@@ -1,5 +1,8 @@
 package org.hifly.kafka.demo.streams;
 
+import org.hifly.kafka.demo.streams.domain.CarInfo;
+import org.hifly.kafka.demo.streams.domain.CarSensor;
+import org.hifly.kafka.demo.streams.domain.SpeedInfo;
 import org.hifly.kafka.demo.streams.serializer.CarInfoSerializer;
 import org.hifly.kafka.demo.streams.serializer.CarSensorSerializer;
 import org.hifly.kafka.demo.streams.serializer.SpeedInfoDeserializer;

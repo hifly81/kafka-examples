@@ -82,8 +82,10 @@ public class StreamSum {
 
         builder.stream(inputTopic, Consumed.as("StreamSum_input_topic").with(Serdes.String(), Serdes.Integer()))
                 .peek((key, value) -> logger.info("Incoming record - key " +key +" value " + value))
+                //groupByKey and sum values
                 .groupByKey(Grouped.as("StreamSum_groupByKey").with(Serdes.String(), Serdes.Integer()))
                 .reduce(Integer::sum)
+                //from ktable to kstream
                 .toStream(Named.as("StreamSum_toStream"))
                 .peek((key, value) -> logger.info("Outgoing record - key " +key +" value " + value))
                 .to(outputTopic, Produced.as("StreamCounter_output_topic").with(Serdes.String(), Serdes.Integer()));

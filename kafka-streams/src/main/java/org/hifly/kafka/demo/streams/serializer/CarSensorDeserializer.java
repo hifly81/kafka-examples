@@ -2,7 +2,7 @@ package org.hifly.kafka.demo.streams.serializer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.common.serialization.Deserializer;
-import org.hifly.kafka.demo.streams.CarSensor;
+import org.hifly.kafka.demo.streams.domain.CarSensor;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;

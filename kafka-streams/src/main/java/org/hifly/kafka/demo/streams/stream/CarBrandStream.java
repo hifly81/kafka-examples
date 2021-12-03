@@ -1,6 +1,5 @@
 package org.hifly.kafka.demo.streams.stream;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serde;
@@ -9,9 +8,8 @@ import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.Branched;
 import org.apache.kafka.streams.kstream.Consumed;
-import org.apache.kafka.streams.kstream.Named;
 import org.apache.kafka.streams.kstream.Produced;
-import org.hifly.kafka.demo.streams.CarInfo;
+import org.hifly.kafka.demo.streams.domain.CarInfo;
 import org.hifly.kafka.demo.streams.serializer.CarInfoDeserializer;
 import org.hifly.kafka.demo.streams.serializer.CarInfoSerializer;
 
@@ -69,15 +67,13 @@ public class CarBrandStream {
 
         StreamsBuilder builder = new StreamsBuilder();
 
-        ObjectMapper mapper = new ObjectMapper();
-
         final Serializer<CarInfo> carInfoSerializer = new CarInfoSerializer();
         final Deserializer<CarInfo> carInfoDeserializer = new CarInfoDeserializer();
         final Serde<CarInfo> carInfoSerde = Serdes.serdeFrom(carInfoSerializer, carInfoDeserializer);
 
-        //group data by car brand
         builder.stream(inputTopic, Consumed.as("Cars_input_topic").with(Serdes.String(), carInfoSerde))
                 .peek((key, value) -> System.out.println("Incoming record - key " +key +" value " + value))
+                //split into 2 different output topics
                 .split()
                 .branch(
                         (key, value) -> "Ferrari".equalsIgnoreCase(value.getBrand()),

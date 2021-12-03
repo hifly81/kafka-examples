@@ -1,4 +1,4 @@
-package org.hifly.kafka.demo.streams;
+package org.hifly.kafka.demo.streams.domain;
 
 public class SpeedInfo {
 
