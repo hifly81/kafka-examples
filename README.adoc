@@ -179,8 +179,8 @@ Create topics:
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic input-topic --replication-factor 1 --partitions 1
-kafka-topics --bootstrap-server localhost:9092 --create --topic output-topic --replication-factor 1 --partitions 1
+kafka-topics --bootstrap-server localhost:9092 --create --topic counter-input-topic --replication-factor 1 --partitions 1
+kafka-topics --bootstrap-server localhost:9092 --create --topic counter-output-topic --replication-factor 1 --partitions 1
 ----
 
 Run the topology:
@@ -195,7 +195,7 @@ Send messages to input topics:
 
 [source,bash]
 ----
-kafka-console-producer --broker-list localhost:9092 --topic input-topic --property "parse.key=true" --property "key.separator=:"
+kafka-console-producer --broker-list localhost:9092 --topic counter-input-topic --property "parse.key=true" --property "key.separator=:"
 "John":"transaction_1"
 "Mark":"transaction_1"
 "John":"transaction_2"
@@ -205,7 +205,7 @@ Read from output topic:
 
 [source,bash]
 ----
-kafka-console-consumer --topic output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
+kafka-console-consumer --topic counter-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : " --value-deserializer "org.apache.kafka.common.serialization.LongDeserializer"
 ----
 
 === StreamSum +
@@ -215,8 +215,8 @@ Create topics:
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic input-topic --replication-factor 1 --partitions 1
-kafka-topics --bootstrap-server localhost:9092 --create --topic output-topic --replication-factor 1 --partitions 1
+kafka-topics --bootstrap-server localhost:9092 --create --topic sum-input-topic --replication-factor 1 --partitions 1
+kafka-topics --bootstrap-server localhost:9092 --create --topic sum-output-topic --replication-factor 1 --partitions 1
 ----
 
 Run the topology:
@@ -231,7 +231,7 @@ Send messages to input topics:
 
 [source,bash]
 ----
-kafka-console-producer --broker-list localhost:9092 --topic input-topic --property "parse.key=true" --property "key.separator=:"
+kafka-console-producer --broker-list localhost:9092 --topic sum-input-topic --property "parse.key=true" --property "key.separator=:"
 "John":1
 "Mark":2
 "John":5
@@ -241,7 +241,7 @@ Read from output topic:
 
 [source,bash]
 ----
-kafka-console-consumer --topic output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
+kafka-console-consumer --topic sum-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : " --value-deserializer "org.apache.kafka.common.serialization.IntegerDeserializer"
 ----
 
 === CarSensorStream +

@@ -7,10 +7,7 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
-import org.apache.kafka.streams.kstream.Consumed;
-import org.apache.kafka.streams.kstream.Grouped;
-import org.apache.kafka.streams.kstream.Named;
-import org.apache.kafka.streams.kstream.Produced;
+import org.apache.kafka.streams.kstream.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,8 +37,8 @@ public class StreamSum {
         properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         properties.put(StreamsConfig.STATE_DIR_CONFIG, "/tmp/streams-streamsum");
 
-        final String inputTopic = "input-topic";
-        final String outputTopic = "output-topic";
+        final String inputTopic = "sum-input-topic";
+        final String outputTopic = "sum-output-topic";
 
         StreamSum streamCounter = new StreamSum();
         List<NewTopic> topics = Arrays.asList(
@@ -80,11 +77,12 @@ public class StreamSum {
 
         StreamsBuilder builder = new StreamsBuilder();
 
-        builder.stream(inputTopic, Consumed.as("StreamSum_input_topic").with(Serdes.String(), Serdes.Integer()))
+        builder.stream(inputTopic, Consumed.as("StreamSum_input_topic").with(Serdes.String(), Serdes.String()))
                 .peek((key, value) -> logger.info("Incoming record - key " +key +" value " + value))
+                .mapValues(v -> Integer.valueOf(v))
                 //groupByKey and sum values
                 .groupByKey(Grouped.as("StreamSum_groupByKey").with(Serdes.String(), Serdes.Integer()))
-                .reduce(Integer::sum)
+                .reduce(Integer::sum, Named.as("StreamSum_sum"), Materialized.as("StreamSum-table"))
                 //from ktable to kstream
                 .toStream(Named.as("StreamSum_toStream"))
                 .peek((key, value) -> logger.info("Outgoing record - key " +key +" value " + value))

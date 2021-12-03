@@ -37,8 +37,8 @@ public class StreamCounter {
         properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         properties.put(StreamsConfig.STATE_DIR_CONFIG, "/tmp/streams-streamcounter");
 
-        final String inputTopic = "input-topic";
-        final String outputTopic = "output-topic";
+        final String inputTopic = "counter-input-topic";
+        final String outputTopic = "counter-output-topic";
 
         StreamCounter streamCounter = new StreamCounter();
         List<NewTopic> topics = Arrays.asList(
@@ -81,7 +81,7 @@ public class StreamCounter {
                 .peek((key, value) -> logger.info("Incoming record - key " +key +" value " + value))
                 //groupByKey and count occurrences
                 .groupByKey(Grouped.as("StreamCounter_groupByKey").with(Serdes.String(), Serdes.String()))
-                .count(Named.as("StreamCounter_count"))
+                .count(Named.as("StreamCounter_count"), Materialized.as("StreamCounter-table"))
                 //from ktable to kstream
                 .toStream(Named.as("StreamCounter_toStream"))
                 .peek((key, value) -> logger.info("Outgoing record - key " +key +" value " + value))
