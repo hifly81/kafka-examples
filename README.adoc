@@ -12,16 +12,12 @@
 
 == Apache Kafka installation
 
-A kafka cluster with a minimum of 1 broker (suggested 3) is needed to test the examples; for details about the installation, info at: +
+Details about the installation, info at: +
 https://kafka.apache.org/documentation/#quickstart
-
-To use the _nixtstats connector_ example, use the Docker installation.
-
-To use the _ksql sample_, use the Docker installation.
 
 == Deploy using Docker
 
-In order to run a kafka cluster with Docker, use the _docker-compose.yml_ file in the root directory.
+To run a kafka cluster with Docker, use the _docker-compose.yml_ file available in the root directory.
 
 Images are downloaded from _confluentinc_ and are based on _Confluent 7.0_ version:
 
@@ -39,7 +35,7 @@ Components list:
 * Connect will listen to _localhost:8083_
 * ksqlDB cli listen to _localhost:8088_
 
-Create connect custom image with _nixstats connector_
+=== Create a connect custom image with _unixstats connector_
 
 [source,bash]
 ----
@@ -65,7 +61,9 @@ docker-compose stop
 
 == Deploy on Kubernetes using Confluent For Kubernetes
 
-In order to run a kafka cluster on Kubernetes, have a look at Confluent for Kubernetes operator, see an example:
+To run a kafka cluster on Kubernetes, have a look at Confluent for Kubernetes operator (CFK).
+
+Example of bootstrapping a cluster using CFK:
 
 link:confluent-for-kubernetes/README.adoc[CFK Example]
 
@@ -73,18 +71,64 @@ link:confluent-for-kubernetes/README.adoc[CFK Example]
 
 Some implementations of kafka producers.
 
-kafka producers available:
 
-* base: uses a _org.apache.kafka.common.serialization.StringSerializer_ for key and value
-* json: uses a _org.apache.kafka.common.serialization.StringSerializer_ for key and a _org.hifly.kafka.demo.producer.serializer.json.JsonSerializer_ for value
-* avro-confluent: uses a _io.confluent.kafka.serializers.KafkaAvroSerializer_ for key and value. +
+=== Base +
+
+It uses a _org.apache.kafka.common.serialization.StringSerializer_ for key and value
+
+[source,bash]
+----
+cd kafka-producer
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.base.Runner"
+----
+
+=== JSON +
+
+It uses a _org.apache.kafka.common.serialization.StringSerializer_ for key and a _org.hifly.kafka.demo.producer.serializer.json.JsonSerializer_ for value
+
+[source,bash]
+----
+cd kafka-producer
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.json.Runner"
+----
+
+=== Avro-confluent +
+
+It uses a _io.confluent.kafka.serializers.KafkaAvroSerializer_ for key and value.
+
 A running confluent schema registry is need to register the avro schema. +
-Info at: https://github.com/confluentinc/schema-registry
-* avro-apicurio: uses a _io.apicurio.registry.utils.serde.AvroKafkaSerializer_ for key and value. +
-A running apicurio schema registry is need to register the avro schema. +
+
+More Info at: https://github.com/confluentinc/schema-registry
+
+[source,bash]
+----
+cd kafka-producer
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.avro.RunnerConfluent"
+----
+
+=== Avro-apicurio +
+
+It uses a _io.apicurio.registry.utils.serde.AvroKafkaSerializer_ for key and value.
+
+A running apicurio schema registry is need to register the avro schema.
+
 Info at: https://github.com/Apicurio/apicurio-registry
-* partitioner: use a custom partitioner for keys.
-A topic with 3 partitions named "demo-2" must exists.
+
+[source,bash]
+----
+cd kafka-producer
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.avro.RunnerApicurio"
+----
+
+=== Partitioner +
+
+It uses a custom partitioner for keys.
+
+[source,bash]
+----
+cd kafka-producer
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.partitioner.custom.Runner"
+----
 
 Execute tests:
 
@@ -94,38 +138,6 @@ cd kafka-producer
 mvn clean test
 ----
 
-Every producer implementation has its own _Runner_ java class producing a bunch of messages.
-At least a kafka broker listening on port 9092 is required.
-
-[source,bash]
-----
-cd kafka-producer
-mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.base.Runner"
-----
-
-[source,bash]
-----
-cd kafka-producer
-mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.json.Runner"
-----
-
-[source,bash]
-----
-cd kafka-producer
-mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.avro.RunnerConfluent"
-----
-
-[source,bash]
-----
-cd kafka-producer
-mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.avro.RunnerApicurio"
-----
-
-[source,bash]
-----
-cd kafka-producer
-mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.partitioner.custom.Runner"
-----
 
 == Kafka consumers
 
@@ -150,7 +162,7 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consum
 
 == Kafka streams
 
-Implementation of a series of kafka streams topologies to analyze car data.
+Implementation of a series of kafka streams topologies.
 
 Execute tests:
 
