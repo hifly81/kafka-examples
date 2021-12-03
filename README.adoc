@@ -328,11 +328,12 @@ kafka-console-consumer --topic ferrari-topic --bootstrap-server broker:9092 --fr
 kafka-console-consumer --topic cars-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
 
-== Kafka streams processor
+== Kafka streams processors
 
-Implementation of a Processor used in a Topology.
+Implementation of a custom Processors.
 
-JSONArrayRemoveProcessor: +
+=== JSONArrayRemoveProcessor +
+
 Remove a specific json field from the record and forward it to the next topology node.
 
 Execute tests:
