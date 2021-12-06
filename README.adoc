@@ -328,9 +328,9 @@ kafka-console-consumer --topic ferrari-topic --bootstrap-server broker:9092 --fr
 kafka-console-consumer --topic cars-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
 
-== Kafka streams processors
+== Kafka streams Processor API
 
-Implementation of a custom Processors.
+Examples with Processor API.
 
 === JSONArrayRemoveProcessor +
 
@@ -344,12 +344,78 @@ cd kafka-streams-processor
 mvn clean test
 ----
 
-Run application:
+Create topics:
+
+[source,bash]
+----
+kafka-topics --bootstrap-server localhost:9092 --create --topic input-topic --replication-factor 1 --partitions 1
+kafka-topics --bootstrap-server localhost:9092 --create --topic output-topic --replication-factor 1 --partitions 1
+----
+
+Run the topology:
+
+[source,bash]
+----
+cd kafka-streams
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.streams.processor.JSONArrayRemoveProcessorApplication"
+----
+
+Send messages to input topics:
+
+[source,bash]
+----
+kafka-console-producer --broker-list localhost:9092 --topic processor-input-topic --property "parse.key=true" --property "key.separator=:"
+1:{"id":"1","brand":"Ferrari","model":"F40"}
+----
+
+Read from output topic:
+
+[source,bash]
+----
+kafka-console-consumer --topic processor-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
+----
+
+=== ExpiredMessagesProcessor +
+
+Remove old entries based on time (expiration time 30 seconds) using a punctuator.
+
+Execute tests:
 
 [source,bash]
 ----
 cd kafka-streams-processor
-mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.streams.processor.JSONArrayRemoveProcessorApplication"
+mvn clean test
+----
+
+Create topics:
+
+[source,bash]
+----
+kafka-topics --bootstrap-server localhost:9092 --create --topic expired-messages-input-topic--replication-factor 1 --partitions 1
+kafka-topics --bootstrap-server localhost:9092 --create --topic expired-messages-output-topic --replication-factor 1 --partitions 1
+----
+
+Run the topology:
+
+[source,bash]
+----
+cd kafka-streams
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.streams.processor.ExpiredMessagesApplication"
+----
+
+Send messages to input topics:
+
+[source,bash]
+----
+kafka-console-producer --broker-list localhost:9092 --topic expired-messages-input-topic --property "parse.key=true" --property "key.separator=:"
+1:{"id":"1","remote-device":"R01","time":"2021-11-02T02:50:12.208Z"}
+----
+
+Read from output topic:
+
+[source,bash]
+----
+kafka-console-consumer --topic expired-messages-input-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
 
 == Kafka Orders App: Example with end-to-end exactly-once semantic between consumer and producer

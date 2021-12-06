@@ -1,5 +1,6 @@
 package org.hifly.kafka.demo.streams.stream;
 
+import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serde;
@@ -13,15 +14,20 @@ import org.hifly.kafka.demo.streams.domain.CarInfo;
 import org.hifly.kafka.demo.streams.serializer.CarInfoDeserializer;
 import org.hifly.kafka.demo.streams.serializer.CarInfoSerializer;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 public class CarBrandStream {
 
     private static final String BROKER_LIST =
             System.getenv("kafka.broker.list") != null ? System.getenv("kafka.broker.list") : "localhost:9092,localhost:9093,localhost:9094";
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException {
         Properties properties = new Properties();
         properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, BROKER_LIST);
         properties.put(StreamsConfig.APPLICATION_ID_CONFIG, "carbrand_app");
@@ -35,6 +41,13 @@ public class CarBrandStream {
         final String carsTopic = "cars-topic";
 
         CarBrandStream carBrandStream = new CarBrandStream();
+        List<NewTopic> topics = Arrays.asList(
+                new NewTopic(inputTopic, Optional.of(2), Optional.empty()),
+                new NewTopic(ferrariTopic, Optional.empty(), Optional.empty()),
+                new NewTopic(carsTopic, Optional.empty(), Optional.empty()));
+
+        StreamUtils.createTopics(properties, topics);
+
         Topology topology = carBrandStream.createTopology(inputTopic, ferrariTopic, carsTopic);
         System.out.println(topology.describe());
 
