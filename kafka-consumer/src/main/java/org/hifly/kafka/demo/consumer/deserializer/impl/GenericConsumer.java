@@ -1,8 +1,8 @@
-package org.hifly.kafka.demo.consumer.deserializer.string;
+package org.hifly.kafka.demo.consumer.deserializer.impl;
 
+import org.hifly.kafka.demo.consumer.deserializer.AbstractConsumerHandle;
 import org.hifly.kafka.demo.consumer.deserializer.IKafkaConsumer;
 import org.hifly.kafka.demo.consumer.deserializer.KafkaConfig;
-import org.hifly.kafka.demo.consumer.deserializer.ConsumerHandle;
 import org.hifly.kafka.demo.consumer.offset.OffsetManager;
 import org.hifly.kafka.demo.consumer.partition.PartitionListener;
 import org.apache.kafka.clients.consumer.*;
@@ -13,18 +13,18 @@ import org.apache.kafka.common.errors.WakeupException;
 import java.time.Duration;
 import java.util.*;
 
-public class StringConsumer<T> implements IKafkaConsumer {
+public class GenericConsumer<K, V> implements IKafkaConsumer {
 
     private Map<TopicPartition, OffsetAndMetadata> offsets = new HashMap<>();
-    private Consumer<String, T> consumer;
-    private ConsumerHandle consumerHandle;
+    private Consumer<K, V> consumer;
+    private AbstractConsumerHandle consumerHandle;
     private Properties properties;
     private String id;
     private String groupId;
     private boolean autoCommit;
     private boolean keepConsuming = true;
 
-    public StringConsumer(Consumer<String, T> consumer, String id, Properties properties, ConsumerHandle consumerHandle) {
+    public GenericConsumer(Consumer<K, V> consumer, String id, Properties properties, AbstractConsumerHandle consumerHandle) {
         this.consumer = consumer;
         this.id = id;
         this.properties = properties;
@@ -41,7 +41,7 @@ public class StringConsumer<T> implements IKafkaConsumer {
     public void subscribe(String groupId, String topic, boolean autoCommit) {
         if (consumer == null)
             consumer = new KafkaConsumer<>(
-                    KafkaConfig.baseConsumerConfig(groupId, properties.getProperty("desererializerClass"), autoCommit));
+                    KafkaConfig.consumerConfig(groupId, properties.getProperty("keyDeserializerClass"), properties.getProperty("valueDeserializerClass"), autoCommit));
         consumer.subscribe(Collections.singletonList(topic), new PartitionListener(consumer, offsets));
         this.autoCommit = autoCommit;
         this.groupId = groupId;
@@ -51,7 +51,7 @@ public class StringConsumer<T> implements IKafkaConsumer {
     public boolean assign(String topic, List partitions, boolean autoCommit) {
         boolean isAssigned = false;
         consumer = new KafkaConsumer<>(
-                KafkaConfig.baseConsumerConfig("", properties.getProperty("desererializerClass"), autoCommit));
+                KafkaConfig.consumerConfig(groupId, properties.getProperty("keyDeserializerClass"), properties.getProperty("valueDeserializerClass"), autoCommit));
         List<PartitionInfo> partitionsInfo = consumer.partitionsFor(topic);
         Collection<TopicPartition> partitionCollection = new ArrayList<>();
         if (partitionsInfo != null) {
@@ -103,7 +103,7 @@ public class StringConsumer<T> implements IKafkaConsumer {
     }
 
     private void consume(int timeout, boolean commitSync) {
-        ConsumerRecords<String, T> records = consumer.poll(Duration.ofMillis(timeout));
+        ConsumerRecords<K, V> records = consumer.poll(Duration.ofMillis(timeout));
         consumerHandle.addOffsets(offsets);
         consumerHandle.process(records);
 

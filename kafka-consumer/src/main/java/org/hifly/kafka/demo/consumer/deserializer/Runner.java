@@ -1,6 +1,7 @@
-package org.hifly.kafka.demo.consumer.deserializer.string;
+package org.hifly.kafka.demo.consumer.deserializer;
 
-import org.hifly.kafka.demo.consumer.deserializer.ConsumerThread;
+import org.hifly.kafka.demo.consumer.deserializer.impl.ConsumerHandle;
+import org.hifly.kafka.demo.consumer.deserializer.impl.ConsumerThread;
 
 public class Runner {
 
@@ -14,17 +15,18 @@ public class Runner {
         for(int i = 0; i < 3; i++) {
             //one consumer will be idle with 3 partitions
             Thread t = new Thread(
-                    new ConsumerThread<String>(
+                    new ConsumerThread<String , String>(
                             String.valueOf(i),
                             "group-user-2",
                             "topic1",
+                            "org.apache.kafka.common.serialization.StringDeserializer",
                             "org.apache.kafka.common.serialization.StringDeserializer",
                             100,
                             5000,
                             true ,
                             false,
                             true,
-                            new StringConsumerHandle(null)));
+                            new ConsumerHandle(null)));
             t.start();
         }
     }
@@ -33,17 +35,18 @@ public class Runner {
         for(int i = 0; i < 4; i++) {
             //one consumer will be idle with 3 partitions
             Thread t = new Thread(
-                    new ConsumerThread<String>(
+                    new ConsumerThread<String , String>(
                             String.valueOf(i),
                             "group-user-2",
                             "demo-3",
+                            "org.apache.kafka.common.serialization.StringDeserializer",
                             "org.apache.kafka.common.serialization.StringDeserializer",
                             100,
                             -1,
                             false,
                             false,
                             true,
-                            new StringConsumerHandle(null)));
+                            new ConsumerHandle(null)));
             t.start();
         }
     }
@@ -56,12 +59,13 @@ public class Runner {
                             String.valueOf(i),
                             "group-user-2",
                             "demo-3", "org.apache.kafka.common.serialization.StringDeserializer",
+                            "org.apache.kafka.common.serialization.StringDeserializer",
                             100,
                             -1,
                             true,
                             false,
                             false,
-                            new StringConsumerHandle(null)));
+                            new ConsumerHandle(null)));
             t.start();
         }
     }

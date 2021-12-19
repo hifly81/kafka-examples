@@ -1,37 +1,40 @@
-package org.hifly.kafka.demo.consumer.deserializer;
+package org.hifly.kafka.demo.consumer.deserializer.impl;
 
-import org.hifly.kafka.demo.consumer.deserializer.string.StringConsumer;
+import org.hifly.kafka.demo.consumer.deserializer.AbstractConsumerHandle;
 
 import java.util.Properties;
 
-public class ConsumerThread<T> implements Runnable {
+public class ConsumerThread<K, V> implements Runnable {
 
         private String id;
         private String groupId;
         private String topic;
-        private String deserializerClass;
+        private String keyDeserializerClass;
+        private String valueDeserializerClass;
         private int timeout;
         private long duration;
         private boolean autoCommit;
         private boolean commitSync;
         private boolean subscribeMode;
-        private ConsumerHandle consumerHandle;
+        private AbstractConsumerHandle consumerHandle;
 
         public ConsumerThread(
                 String id,
                 String groupId,
                 String topic,
-                String deserializerClass,
+                String keyDeserializerClass,
+                String valueDeserializerClass,
                 int timeout,
                 long duration,
                 boolean autoCommit,
                 boolean commitSync,
                 boolean subscribeMode,
-                ConsumerHandle consumerHandle) {
+                AbstractConsumerHandle consumerHandle) {
             this.id = id;
             this.groupId = groupId;
             this.topic = topic;
-            this.deserializerClass = deserializerClass;
+            this.keyDeserializerClass = keyDeserializerClass;
+            this.valueDeserializerClass = valueDeserializerClass;
             this.timeout = timeout;
             this.duration = duration;
             this.autoCommit = autoCommit;
@@ -42,8 +45,9 @@ public class ConsumerThread<T> implements Runnable {
 
         public void run() {
             Properties properties = new Properties();
-            properties.setProperty("desererializerClass", deserializerClass);
-            StringConsumer<T> consumer = new StringConsumer<>(null, id, properties, consumerHandle);
+            properties.setProperty("keyDeserializerClass", keyDeserializerClass);
+            properties.setProperty("valueDeserializerClass", valueDeserializerClass);
+            GenericConsumer<K, V> consumer = new GenericConsumer<>(null, id, properties, consumerHandle);
             if(subscribeMode)
                 consumer.subscribe(groupId, topic, autoCommit);
             else

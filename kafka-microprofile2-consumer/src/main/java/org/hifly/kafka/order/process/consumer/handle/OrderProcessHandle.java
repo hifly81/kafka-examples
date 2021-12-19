@@ -2,7 +2,7 @@ package org.hifly.kafka.order.process.consumer.handle;
 
 import java.util.Map;
 
-import org.hifly.kafka.demo.consumer.deserializer.ConsumerHandle;
+import org.hifly.kafka.demo.consumer.deserializer.AbstractConsumerHandle;
 import org.hifly.kafka.order.process.event.OrderEvent;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class OrderProcessHandle<K,V> extends ConsumerHandle<K,V> {
+public class OrderProcessHandle<K,V> extends AbstractConsumerHandle<K,V> {
 
     private Logger log = LoggerFactory.getLogger(OrderProcessHandle.class);
 

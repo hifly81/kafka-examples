@@ -141,7 +141,7 @@ mvn clean test
 
 == Kafka consumers
 
-Implementation of a kafka consumer that can be used with variuos deserializer classes.
+Implementation of a kafka consumer that can be used with different deserializer classes (for key and value).
 
 Execute tests:
 
@@ -157,7 +157,7 @@ At least a kafka broker listening on port 9092 is required.
 [source,bash]
 ----
 cd kafka-consumer
-mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.deserializer.string.Runner"
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.deserializer.Runner"
 ----
 
 == Kafka streams

@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hifly.kafka.demo.consumer.deserializer.string.StringConsumer;
-import org.hifly.kafka.demo.consumer.deserializer.string.StringConsumerHandle;
+import org.hifly.kafka.demo.consumer.deserializer.impl.GenericConsumer;
+import org.hifly.kafka.demo.consumer.deserializer.impl.ConsumerHandle;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.MockConsumer;
@@ -19,7 +19,7 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class StringConsumerTest {
+public class BasicConsumerTest {
 
     @Test
     public void consumerTest() throws Exception {
@@ -28,9 +28,9 @@ public class StringConsumerTest {
         final TopicPartition topicPartition = new TopicPartition(topic, 0);
         final MockConsumer<String, String> mockConsumer = new MockConsumer<>(OffsetResetStrategy.EARLIEST);
         List<String> actualRecords = new ArrayList<>();
-        final StringConsumerHandle<String, String> recordsHandler = new StringConsumerHandle<>(actualRecords);
+        final ConsumerHandle<String, String> recordsHandler = new ConsumerHandle<>(actualRecords);
 
-        StringConsumer baseConsumer = new StringConsumer(mockConsumer, "1", null, recordsHandler);
+        GenericConsumer baseConsumer = new GenericConsumer(mockConsumer, "1", null, recordsHandler);
 
         // the KafkaConsumerApplication runs synchronously so the test needs to run
         // the application in its own thread

@@ -27,12 +27,12 @@ public class KafkaConfig {
     }
 
 
-    public static Properties baseConsumerConfig(String groupId, String valueSerializerClassName, boolean autoCommit) {
+    public static Properties consumerConfig(String groupId, String keyDeserializerClassName, String valueDeserializerClassName, boolean autoCommit) {
         Properties properties = new Properties();
         properties.put("bootstrap.servers", BROKER_LIST);
         properties.put("group.id", groupId);
-        properties.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        properties.put("value.deserializer", valueSerializerClassName);
+        properties.put("key.deserializer", keyDeserializerClassName);
+        properties.put("value.deserializer", valueDeserializerClassName);
         properties.put("enable.auto.commit", String.valueOf(autoCommit));
         properties.put("auto.offset.reset", "earliest");
         properties.put("max.poll.interval.ms", 300000);

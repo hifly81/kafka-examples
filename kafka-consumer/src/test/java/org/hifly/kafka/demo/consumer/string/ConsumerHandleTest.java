@@ -1,6 +1,6 @@
 package org.hifly.kafka.demo.consumer.string;
 
-import org.hifly.kafka.demo.consumer.deserializer.string.StringConsumerHandle;
+import org.hifly.kafka.demo.consumer.deserializer.impl.ConsumerHandle;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -17,12 +17,12 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class StringConsumerHandleTest {
+public class ConsumerHandleTest {
 
     @Test
     public void testProcess() {
         List<String> actualRecords = new ArrayList<>();
-        final StringConsumerHandle<String, String> recordsHandler = new StringConsumerHandle<>(actualRecords);
+        final ConsumerHandle<String, String> recordsHandler = new ConsumerHandle<>(actualRecords);
         recordsHandler.process(createConsumerRecords());
         actualRecords = recordsHandler.getValueStore();
         final List<String> expectedWords = Arrays.asList("test", "test2", "test3");
