@@ -1,6 +1,6 @@
-package org.hifly.kafka.demo.consumer;
+package org.hifly.kafka.demo.consumer.deserializer;
 
-import org.hifly.kafka.demo.consumer.handle.ConsumerHandle;
+import org.hifly.kafka.demo.consumer.deserializer.string.StringConsumer;
 
 import java.util.Properties;
 
@@ -43,7 +43,7 @@ public class ConsumerThread<T> implements Runnable {
         public void run() {
             Properties properties = new Properties();
             properties.setProperty("desererializerClass", deserializerClass);
-            BaseConsumer<T> consumer = new BaseConsumer<>(null, id, properties, consumerHandle);
+            StringConsumer<T> consumer = new StringConsumer<>(null, id, properties, consumerHandle);
             if(subscribeMode)
                 consumer.subscribe(groupId, topic, autoCommit);
             else

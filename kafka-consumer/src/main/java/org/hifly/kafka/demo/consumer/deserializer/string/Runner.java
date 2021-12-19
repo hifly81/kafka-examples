@@ -1,6 +1,6 @@
-package org.hifly.kafka.demo.consumer;
+package org.hifly.kafka.demo.consumer.deserializer.string;
 
-import org.hifly.kafka.demo.consumer.handle.BaseConsumerHandle;
+import org.hifly.kafka.demo.consumer.deserializer.ConsumerThread;
 
 public class Runner {
 
@@ -24,7 +24,7 @@ public class Runner {
                             true ,
                             false,
                             true,
-                            new BaseConsumerHandle(null)));
+                            new StringConsumerHandle(null)));
             t.start();
         }
     }
@@ -43,7 +43,7 @@ public class Runner {
                             false,
                             false,
                             true,
-                            new BaseConsumerHandle(null)));
+                            new StringConsumerHandle(null)));
             t.start();
         }
     }
@@ -61,7 +61,7 @@ public class Runner {
                             true,
                             false,
                             false,
-                            new BaseConsumerHandle(null)));
+                            new StringConsumerHandle(null)));
             t.start();
         }
     }

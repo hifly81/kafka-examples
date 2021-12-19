@@ -1,6 +1,6 @@
 package org.hifly.kafka.order.process.controller;
 
-import org.hifly.kafka.demo.consumer.ConsumerThread;
+import org.hifly.kafka.demo.consumer.deserializer.ConsumerThread;
 import org.hifly.kafka.order.process.consumer.handle.OrderProcessHandle;
 import org.hifly.kafka.order.process.event.OrderEvent;
 

@@ -1,8 +1,8 @@
-package org.hifly.kafka.demo.consumer;
+package org.hifly.kafka.demo.consumer.deserializer;
 
 import java.util.List;
 
-public interface BaseKafkaConsumer<K, V> {
+public interface IKafkaConsumer<K, V> {
 
     void subscribe(String groupId, String topic, boolean autoCommit);
 
@@ -10,6 +10,6 @@ public interface BaseKafkaConsumer<K, V> {
 
     boolean assign(String topic, List<Integer> partitions, boolean autoCommit);
 
-    public void shutdown();
+    void shutdown();
 
 }

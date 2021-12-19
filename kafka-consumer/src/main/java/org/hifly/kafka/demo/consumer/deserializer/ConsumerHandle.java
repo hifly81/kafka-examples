@@ -1,4 +1,4 @@
-package org.hifly.kafka.demo.consumer.handle;
+package org.hifly.kafka.demo.consumer.deserializer;
 
 import java.util.Map;
 

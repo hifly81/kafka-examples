@@ -1,7 +1,7 @@
 package org.hifly.kafka.demo.producer.serializer.avro;
 
 import org.apache.avro.Schema;
-import org.hifly.kafka.demo.producer.BaseProducerCallback;
+import org.hifly.kafka.demo.producer.ProducerCallback;
 import org.hifly.kafka.demo.producer.RecordMetadataUtil;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -33,7 +33,7 @@ public class Runner {
         Schema.Parser parser = new Schema.Parser();
         Schema schema = parser.parse(userSchema);
 
-        avroDataProducer = new AvroDataProducer(SchemaRegistry.APICURIO, schema);
+        avroDataProducer = new AvroDataProducer(SchemaRegistry.valueOf(schemaRegistry), schema);
         avroDataProducer.start();
         bunchOfMessages(TOPIC, avroDataProducer);
         bunchOfFFMessages(TOPIC, avroDataProducer);
@@ -66,7 +66,7 @@ public class Runner {
             GenericRecord genericRecord = avroDataProducer.getGenericRecord();
             genericRecord.put(MODEL, String.valueOf(i));
             genericRecord.put(BRAND, "The Best Car Company in Town");
-            avroDataProducer.produceAsync(new ProducerRecord<>(topic, genericRecord), new BaseProducerCallback());
+            avroDataProducer.produceAsync(new ProducerRecord<>(topic, genericRecord), new ProducerCallback());
         }
     }
 

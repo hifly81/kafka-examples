@@ -1,4 +1,4 @@
-package org.hifly.kafka.demo.consumer;
+package org.hifly.kafka.demo.consumer.deserializer;
 
 import java.io.FileInputStream;
 import java.io.IOException;

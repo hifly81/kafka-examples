@@ -19,7 +19,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class JsonProducerMockTest {
 
     @Test
-    public void testProduceFireAndForget() throws IOException {
+    public void testProduceFireAndForget() {
         JsonProducer<CustomData> jsonProducer = new JsonProducer<>();
         final MockProducer<String, CustomData> mockProducer = new MockProducer<>(true, new StringSerializer(), new CustomDataJsonSerializer());
         jsonProducer.start(mockProducer);

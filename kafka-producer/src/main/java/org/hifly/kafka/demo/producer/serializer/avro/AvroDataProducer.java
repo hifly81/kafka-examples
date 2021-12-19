@@ -1,9 +1,9 @@
 package org.hifly.kafka.demo.producer.serializer.avro;
 
 import org.hifly.kafka.demo.producer.AbstractKafkaProducer;
-import org.hifly.kafka.demo.producer.BaseProducerCallback;
+import org.hifly.kafka.demo.producer.ProducerCallback;
 import org.hifly.kafka.demo.producer.KafkaConfig;
-import org.hifly.kafka.demo.producer.BaseKafkaProducer;
+import org.hifly.kafka.demo.producer.IKafkaProducer;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecord> implements BaseKafkaProducer<String, GenericRecord> {
+public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecord> implements IKafkaProducer<String, GenericRecord> {
 
     private Schema schema;
     private String avscSchema;
@@ -97,7 +97,7 @@ public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecor
 
     @Override
     public void produceAsync(ProducerRecord<String, GenericRecord> producerRecord, Callback callback) {
-        producer.send(producerRecord, new BaseProducerCallback());
+        producer.send(producerRecord, new ProducerCallback());
     }
 
     public Schema getSchema() {

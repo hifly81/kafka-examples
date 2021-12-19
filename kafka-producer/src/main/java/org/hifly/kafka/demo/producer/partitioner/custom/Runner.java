@@ -2,7 +2,7 @@ package org.hifly.kafka.demo.producer.partitioner.custom;
 
 import org.hifly.kafka.demo.producer.KafkaConfig;
 import org.hifly.kafka.demo.producer.RecordMetadataUtil;
-import org.hifly.kafka.demo.producer.serializer.base.BaseProducer;
+import org.hifly.kafka.demo.producer.serializer.string.StringProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
@@ -17,14 +17,14 @@ public class Runner {
     };
 
     public static void main (String [] args) {
-        BaseProducer baseProducer = new BaseProducer();
+        StringProducer baseProducer = new StringProducer();
         baseProducer.start(new org.apache.kafka.clients.producer.KafkaProducer(KafkaConfig.stringProducerCustomPartitioner()));
         final String topicName = "demo-test";
         bunchOfSynchMessages(topicName, baseProducer);
 
     }
 
-    public static void bunchOfSynchMessages(String topic, BaseProducer baseProducer) {
+    public static void bunchOfSynchMessages(String topic, StringProducer baseProducer) {
         Random random = new Random();
         RecordMetadata lastRecord;
         for (int i= 10; i < 30000; i++ ) {

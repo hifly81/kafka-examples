@@ -1,6 +1,8 @@
-package org.hifly.kafka.demo.consumer;
+package org.hifly.kafka.demo.consumer.deserializer.string;
 
-import org.hifly.kafka.demo.consumer.handle.ConsumerHandle;
+import org.hifly.kafka.demo.consumer.deserializer.IKafkaConsumer;
+import org.hifly.kafka.demo.consumer.deserializer.KafkaConfig;
+import org.hifly.kafka.demo.consumer.deserializer.ConsumerHandle;
 import org.hifly.kafka.demo.consumer.offset.OffsetManager;
 import org.hifly.kafka.demo.consumer.partition.PartitionListener;
 import org.apache.kafka.clients.consumer.*;
@@ -11,7 +13,7 @@ import org.apache.kafka.common.errors.WakeupException;
 import java.time.Duration;
 import java.util.*;
 
-public class BaseConsumer<T> implements BaseKafkaConsumer {
+public class StringConsumer<T> implements IKafkaConsumer {
 
     private Map<TopicPartition, OffsetAndMetadata> offsets = new HashMap<>();
     private Consumer<String, T> consumer;
@@ -22,7 +24,7 @@ public class BaseConsumer<T> implements BaseKafkaConsumer {
     private boolean autoCommit;
     private boolean keepConsuming = true;
 
-    public BaseConsumer(Consumer<String, T> consumer, String id, Properties properties, ConsumerHandle consumerHandle) {
+    public StringConsumer(Consumer<String, T> consumer, String id, Properties properties, ConsumerHandle consumerHandle) {
         this.consumer = consumer;
         this.id = id;
         this.properties = properties;

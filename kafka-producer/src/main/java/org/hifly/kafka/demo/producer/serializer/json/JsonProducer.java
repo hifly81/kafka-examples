@@ -1,9 +1,9 @@
 package org.hifly.kafka.demo.producer.serializer.json;
 
 import org.hifly.kafka.demo.producer.AbstractKafkaProducer;
-import org.hifly.kafka.demo.producer.BaseProducerCallback;
+import org.hifly.kafka.demo.producer.ProducerCallback;
 import org.hifly.kafka.demo.producer.KafkaConfig;
-import org.hifly.kafka.demo.producer.BaseKafkaProducer;
+import org.hifly.kafka.demo.producer.IKafkaProducer;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -12,7 +12,7 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-public class JsonProducer<T> extends AbstractKafkaProducer<String, T> implements BaseKafkaProducer<String, T> {
+public class JsonProducer<T> extends AbstractKafkaProducer<String, T> implements IKafkaProducer<String, T> {
 
     private String valueSerializer;
     
@@ -53,7 +53,7 @@ public class JsonProducer<T> extends AbstractKafkaProducer<String, T> implements
 
     @Override
     public void produceAsync(ProducerRecord<String, T> producerRecord, Callback callback) {
-        producer.send(producerRecord, new BaseProducerCallback());
+        producer.send(producerRecord, new ProducerCallback());
     }
 }
 

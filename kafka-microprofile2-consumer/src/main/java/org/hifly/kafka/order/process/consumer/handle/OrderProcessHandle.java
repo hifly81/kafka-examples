@@ -2,7 +2,7 @@ package org.hifly.kafka.order.process.consumer.handle;
 
 import java.util.Map;
 
-import org.hifly.kafka.demo.consumer.handle.ConsumerHandle;
+import org.hifly.kafka.demo.consumer.deserializer.ConsumerHandle;
 import org.hifly.kafka.order.process.event.OrderEvent;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;

@@ -1,11 +1,11 @@
-package org.hifly.kafka.demo.producer.serializer.base;
+package org.hifly.kafka.demo.producer.serializer.string;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.hifly.kafka.demo.producer.BaseProducerCallback;
+import org.hifly.kafka.demo.producer.ProducerCallback;
 
 import org.apache.kafka.clients.producer.MockProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -16,11 +16,11 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class BaseProducerMockTest {
+public class StringProducerMockTest {
 
     @Test
     public void testProduce() throws IOException {
-        BaseProducer baseProducer = new BaseProducer();
+        StringProducer baseProducer = new StringProducer();
 
         final MockProducer<String, String> mockProducer = new MockProducer<>(true, new StringSerializer(), new StringSerializer());
         baseProducer.start(mockProducer);
@@ -41,15 +41,15 @@ public class BaseProducerMockTest {
 
     @Test
     public void testProduceAsync() throws IOException {
-        BaseProducer baseProducer = new BaseProducer();
+        StringProducer baseProducer = new StringProducer();
 
         final MockProducer<String, String> mockProducer = new MockProducer<>(true, new StringSerializer(), new StringSerializer());
         baseProducer.start(mockProducer);
 
         final ProducerRecord<String, String> producerRecord1 = new ProducerRecord<>("topicOut", "foo", "bar");
         final ProducerRecord<String, String> producerRecord2 = new ProducerRecord<>("topicOut", null, "test");
-        baseProducer.produceAsync(producerRecord1, new BaseProducerCallback());
-        baseProducer.produceAsync(producerRecord2, new BaseProducerCallback());
+        baseProducer.produceAsync(producerRecord1, new ProducerCallback());
+        baseProducer.produceAsync(producerRecord2, new ProducerCallback());
 
         final List<KeyValue<String, String>> expectedList = Arrays.asList(KeyValue.pair("foo", "bar"),
             KeyValue.pair(null,"test"));

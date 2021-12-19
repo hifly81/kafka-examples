@@ -1,6 +1,6 @@
 package org.hifly.kafka.demo.producer.serializer.json;
 
-import org.hifly.kafka.demo.producer.BaseProducerCallback;
+import org.hifly.kafka.demo.producer.ProducerCallback;
 import org.hifly.kafka.demo.producer.RecordMetadataUtil;
 import org.hifly.kafka.demo.producer.serializer.model.CustomData;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -35,6 +35,6 @@ public class Runner {
 
     public static void bunchOfAsynchMessages(String topic, JsonProducer baseProducer) {
         for (int i= 10; i < 30000; i++ )
-            baseProducer.produceAsync(new ProducerRecord<>(topic, new CustomData(i)), new BaseProducerCallback());
+            baseProducer.produceAsync(new ProducerRecord<>(topic, new CustomData(i)), new ProducerCallback());
     }
 }

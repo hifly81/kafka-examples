@@ -1,9 +1,9 @@
-package org.hifly.kafka.demo.producer.serializer.base;
+package org.hifly.kafka.demo.producer.serializer.string;
 
 import org.hifly.kafka.demo.producer.AbstractKafkaProducer;
-import org.hifly.kafka.demo.producer.BaseProducerCallback;
+import org.hifly.kafka.demo.producer.ProducerCallback;
 import org.hifly.kafka.demo.producer.KafkaConfig;
-import org.hifly.kafka.demo.producer.BaseKafkaProducer;
+import org.hifly.kafka.demo.producer.IKafkaProducer;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -12,7 +12,7 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-public class BaseProducer extends AbstractKafkaProducer<String, String> implements BaseKafkaProducer<String, String> {
+public class StringProducer extends AbstractKafkaProducer<String, String> implements IKafkaProducer<String, String> {
 
     public void start() {
         producer = new org.apache.kafka.clients.producer.KafkaProducer(KafkaConfig.stringProducer());
@@ -45,7 +45,7 @@ public class BaseProducer extends AbstractKafkaProducer<String, String> implemen
 
     @Override
     public void produceAsync(ProducerRecord<String, String> producerRecord, Callback callback) {
-        producer.send(producerRecord, new BaseProducerCallback());
+        producer.send(producerRecord, new ProducerCallback());
     }
 
 }

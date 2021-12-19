@@ -72,14 +72,14 @@ link:confluent-for-kubernetes/README.adoc[CFK Example]
 Some implementations of kafka producers.
 
 
-=== Base +
+=== String +
 
 It uses a _org.apache.kafka.common.serialization.StringSerializer_ for key and value
 
 [source,bash]
 ----
 cd kafka-producer
-mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.base.Runner"
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.string.Runner"
 ----
 
 === JSON +
@@ -157,7 +157,7 @@ At least a kafka broker listening on port 9092 is required.
 [source,bash]
 ----
 cd kafka-consumer
-mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.base.Runner"
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.deserializer.string.Runner"
 ----
 
 == Kafka streams

@@ -7,7 +7,7 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 
 import java.util.concurrent.Future;
 
-public interface BaseKafkaProducer<K, V> {
+public interface IKafkaProducer<K, V> {
 
     void start();
 
