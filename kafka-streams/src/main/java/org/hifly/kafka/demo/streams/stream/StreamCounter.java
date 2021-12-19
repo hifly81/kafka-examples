@@ -24,7 +24,7 @@ public class StreamCounter {
     private static final Logger logger = LoggerFactory.getLogger(StreamCounter.class);
 
     private static final String BROKER_LIST =
-            System.getenv("kafka.broker.list") != null ? System.getenv("kafka.broker.list") : "localhost:9092,localhost:9093,localhost:9094";
+            System.getenv("kafka.broker.list") != null ? System.getenv("kafka.broker.list") : "localhost:9091,localhost:9092";
 
     public static void main (String [] args ) throws ExecutionException, InterruptedException, TimeoutException {
         Properties properties = new Properties();

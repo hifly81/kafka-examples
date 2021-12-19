@@ -25,7 +25,7 @@ import java.util.concurrent.TimeoutException;
 public class CarBrandStream {
 
     private static final String BROKER_LIST =
-            System.getenv("kafka.broker.list") != null ? System.getenv("kafka.broker.list") : "localhost:9092,localhost:9093,localhost:9094";
+            System.getenv("kafka.broker.list") != null ? System.getenv("kafka.broker.list") : "localhost:9091,localhost:9092";
 
     public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException {
         Properties properties = new Properties();
@@ -36,9 +36,9 @@ public class CarBrandStream {
         properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         properties.put(StreamsConfig.STATE_DIR_CONFIG, "/tmp/streams-cars");
 
-        final String inputTopic = "input-topic";
-        final String ferrariTopic = "ferrari-topic";
-        final String carsTopic = "cars-topic";
+        final String inputTopic = "cars-input-topic";
+        final String ferrariTopic = "ferrari-input-topic";
+        final String carsTopic = "cars-output-topic";
 
         CarBrandStream carBrandStream = new CarBrandStream();
         List<NewTopic> topics = Arrays.asList(

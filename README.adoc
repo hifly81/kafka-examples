@@ -179,8 +179,8 @@ Create topics:
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic counter-input-topic --replication-factor 1 --partitions 1
-kafka-topics --bootstrap-server localhost:9092 --create --topic counter-output-topic --replication-factor 1 --partitions 1
+kafka-topics --bootstrap-server localhost:9092 --create --topic counter-input-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
+kafka-topics --bootstrap-server localhost:9092 --create --topic counter-output-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
 ----
 
 Run the topology:
@@ -205,7 +205,7 @@ Read from output topic:
 
 [source,bash]
 ----
-kafka-console-consumer --topic counter-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : " --value-deserializer "org.apache.kafka.common.serialization.LongDeserializer"
+kafka-console-consumer --topic counter-output-topic --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property key.separator=" : " --value-deserializer "org.apache.kafka.common.serialization.LongDeserializer"
 ----
 
 === StreamSum +
@@ -215,8 +215,8 @@ Create topics:
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic sum-input-topic --replication-factor 1 --partitions 1
-kafka-topics --bootstrap-server localhost:9092 --create --topic sum-output-topic --replication-factor 1 --partitions 1
+kafka-topics --bootstrap-server localhost:9092 --create --topic sum-input-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
+kafka-topics --bootstrap-server localhost:9092 --create --topic sum-output-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
 ----
 
 Run the topology:
@@ -241,7 +241,7 @@ Read from output topic:
 
 [source,bash]
 ----
-kafka-console-consumer --topic sum-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : " --value-deserializer "org.apache.kafka.common.serialization.IntegerDeserializer"
+kafka-console-consumer --topic sum-output-topic --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property key.separator=" : " --value-deserializer "org.apache.kafka.common.serialization.IntegerDeserializer"
 ----
 
 === CarSensorStream +
@@ -253,9 +253,9 @@ Create topics:
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic carinfo-topic --replication-factor 1 --partitions 1
-kafka-topics --bootstrap-server localhost:9092 --create --topic carsensor-topic --replication-factor 1 --partitions 1
-kafka-topics --bootstrap-server localhost:9092 --create --topic output-topic --replication-factor 1 --partitions 1
+kafka-topics --bootstrap-server localhost:9092 --create --topic carinfo-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
+kafka-topics --bootstrap-server localhost:9092 --create --topic carsensor-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
+kafka-topics --bootstrap-server localhost:9092 --create --topic carsensor-output-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
 ----
 
 Run the topology:
@@ -284,7 +284,7 @@ Read from output topic:
 
 [source,bash]
 ----
-kafka-console-consumer --topic output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
+kafka-console-consumer --topic carsensor-output-topic --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
 
 === CarBrandStream +
@@ -294,9 +294,9 @@ Create topics:
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic input-topic --replication-factor 1 --partitions 1
-kafka-topics --bootstrap-server localhost:9092 --create --topic ferrari-topic --replication-factor 1 --partitions 1
-kafka-topics --bootstrap-server localhost:9092 --create --topic cars-topic --replication-factor 1 --partitions 1
+kafka-topics --bootstrap-server localhost:9092 --create --topic cars-input-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
+kafka-topics --bootstrap-server localhost:9092 --create --topic ferrari-input-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
+kafka-topics --bootstrap-server localhost:9092 --create --topic cars-output-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
 ----
 
 Run the topology:
@@ -311,7 +311,7 @@ Send messages to input topic:
 
 [source,bash]
 ----
-kafka-console-producer --broker-list localhost:9092 --topic input-topic --property "parse.key=true" --property "key.separator=:"
+kafka-console-producer --broker-list localhost:9092 --topic cars-input-topic --property "parse.key=true" --property "key.separator=:"
 1:{"id":"1","brand":"Ferrari","model":"F40"}
 2:{"id":"2","brand":"Bugatti","model":"Chiron"}
 ----
@@ -320,12 +320,12 @@ Read from output topics:
 
 [source,bash]
 ----
-kafka-console-consumer --topic ferrari-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
+kafka-console-consumer --topic ferrari-input-topic --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
 
 [source,bash]
 ----
-kafka-console-consumer --topic cars-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
+kafka-console-consumer --topic cars-output-topic --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
 
 == Kafka streams Processor API
@@ -348,8 +348,8 @@ Create topics:
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic input-topic --replication-factor 1 --partitions 1
-kafka-topics --bootstrap-server localhost:9092 --create --topic output-topic --replication-factor 1 --partitions 1
+kafka-topics --bootstrap-server localhost:9092 --create --topic processor-input-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
+kafka-topics --bootstrap-server localhost:9092 --create --topic processor-output-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
 ----
 
 Run the topology:
@@ -372,7 +372,7 @@ Read from output topic:
 
 [source,bash]
 ----
-kafka-console-consumer --topic processor-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
+kafka-console-consumer --topic processor-output-topic --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
 
 === ExpiredMessagesProcessor +
@@ -391,8 +391,8 @@ Create topics:
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic expired-messages-input-topic--replication-factor 1 --partitions 1
-kafka-topics --bootstrap-server localhost:9092 --create --topic expired-messages-output-topic --replication-factor 1 --partitions 1
+kafka-topics --bootstrap-server localhost:9092 --create --topic expired-messages-input-topic--replication-factor <replication_factor> --partitions <number_of_partitions>
+kafka-topics --bootstrap-server localhost:9092 --create --topic expired-messages-output-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
 ----
 
 Run the topology:
@@ -415,7 +415,7 @@ Read from output topic:
 
 [source,bash]
 ----
-kafka-console-consumer --topic expired-messages-input-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
+kafka-console-consumer --topic expired-messages-input-topic --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
 
 == Kafka Orders App: Example with end-to-end exactly-once semantic between consumer and producer

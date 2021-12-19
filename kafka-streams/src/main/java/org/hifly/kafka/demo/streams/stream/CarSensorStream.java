@@ -26,7 +26,7 @@ public class CarSensorStream {
     private static final Logger logger = LoggerFactory.getLogger(CarSensorStream.class);
 
     private static final String BROKER_LIST =
-            System.getenv("kafka.broker.list") != null ? System.getenv("kafka.broker.list") : "localhost:9092,localhost:9093,localhost:9094";
+            System.getenv("kafka.broker.list") != null ? System.getenv("kafka.broker.list") : "localhost:9091,localhost:9092";
 
     private static final double SPEED_LIMIT = 150.0;
 
@@ -43,7 +43,7 @@ public class CarSensorStream {
 
         final String carSensorTopic = "carsensor-topic";
         final String carInfoTopic = "carinfo-topic";
-        final String outputTopic = "output-topic";
+        final String outputTopic = "carsensor-output-topic";
 
         CarSensorStream carSensorStream = new CarSensorStream();
         List<NewTopic> topics = Arrays.asList(
