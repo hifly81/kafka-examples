@@ -35,19 +35,11 @@ Components list:
 * Connect will listen to _localhost:8083_
 * ksqlDB cli listen to _localhost:8088_
 
-=== Create a connect custom image with _unixstats connector_
-
-[source,bash]
-----
-./kafka-nixstats-connector/build-image.sh
-
-----
-
 Start containers:
 
 [source,bash]
 ----
-docker-compose up -d
+./bootstrap.sh
 
 ----
 
@@ -55,7 +47,7 @@ Stop containers:
 
 [source,bash]
 ----
-docker-compose down --volumes
+./tear-down.sh
 
 ----
 
