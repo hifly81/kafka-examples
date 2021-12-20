@@ -35,7 +35,7 @@ Components list:
 * Connect will listen to _localhost:8083_
 * ksqlDB cli listen to _localhost:8088_
 
-Start containers:
+=== Start containers +
 
 [source,bash]
 ----
@@ -43,7 +43,7 @@ Start containers:
 
 ----
 
-Stop containers:
+=== Stop containers +
 
 [source,bash]
 ----
