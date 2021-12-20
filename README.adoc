@@ -453,8 +453,6 @@ cd kafka-orders-tx
 mvn clean test
 ----
 
-At least a kafka broker listening on port 9092 is required.
-
 Execute the ItemsProducer class: 
 
 [source,bash]
@@ -474,11 +472,8 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="ItemsConsumer"
 == Kafka Spring Boot
 
 Sample of a kafka producer and consumer implemented with Spring Boot 2.x.
-They can also run on Docker and OpenShift.
 
-At least a kafka broker listening on port 9092 is required.
-
-Kafka Consumer implements a DLQ for records not processable (after 3 attemps).
+Kafka Consumer implements a DLQ for records not processable (after 3 attempts).
 
 Run on your local machine: 
 
@@ -504,8 +499,6 @@ curl --data '{"id":5, "name": "ERROR-PS5"}' -H "Content-Type:application/json" h
 Sample of a kafka producer and consumer implemented with Quarkus.
 Every 1s a new message is sent to demo topic.
 
-At least a kafka broker listening on port 9092 is required.
-
 Run on your local machine: 
 
 [source,bash]
@@ -525,7 +518,6 @@ cd kafka-quarkus
 == Kafka microprofile2
 
 Sample of a kafka producer and consumer running on a open liberty MicroProfile v2 runtime.
-They can also run on Docker and OpenShift.
 
 Run on docker: 
 
@@ -554,7 +546,7 @@ curl -v -X POST http://localhost:9090/kafka-microprofile2-consumer-0.0.1-SNAPSHO
 curl -v -X POST http://localhost:9080/kafka-microprofile2-producer-0.0.1-SNAPSHOT/order
 ----
 
-== Kafka nixstats Connector
+== Kafka unixstats connector
 
 Implementation of a sample Source Connector; it executes _nix commands_ (e.g. _ls -ltr, netstat_) and sends its output to a kafka topic.
 This connector relies on Confluent Schema Registry to convert the values using Avro: _CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter_.
@@ -577,7 +569,7 @@ mvn clean package
 
 Create a connect custom Docker image with the connector installed:
 
-This will create an image based on _confluentinc/cp-kafka-connect-base:6.0.2_ using a custom _Dockerfile_.
+This will create an image based on _confluentinc/cp-kafka-connect-base:XXX_ using a custom _Dockerfile_.
 It will use the Confluent utility _confluent-hub install_ to install the plugin in connect.
 
 [source,bash]
