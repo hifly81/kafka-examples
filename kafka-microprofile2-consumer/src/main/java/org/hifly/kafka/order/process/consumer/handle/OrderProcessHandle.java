@@ -2,7 +2,7 @@ package org.hifly.kafka.order.process.consumer.handle;
 
 import java.util.Map;
 
-import org.hifly.kafka.demo.consumer.deserializer.AbstractConsumerHandle;
+import org.hifly.kafka.demo.consumer.deserializer.AbstractConsumerInstance;
 import org.hifly.kafka.order.process.event.OrderEvent;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class OrderProcessHandle<K,V> extends AbstractConsumerHandle<K,V> {
+public class OrderProcessHandle<K,V> extends AbstractConsumerInstance<K,V> {
 
     private Logger log = LoggerFactory.getLogger(OrderProcessHandle.class);
 
@@ -24,7 +24,7 @@ public class OrderProcessHandle<K,V> extends AbstractConsumerHandle<K,V> {
     }
 
     @Override
-    public void process(ConsumerRecords<K, V> consumerRecords) {
+    public void process(ConsumerRecords<K, V> consumerRecords, String groupId) {
         for (ConsumerRecord<K, V> record : consumerRecords) {
             OrderEvent orderEvent = (OrderEvent) record.value();
             log.info("Received record from kafka {}", record.key());

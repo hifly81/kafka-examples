@@ -4,6 +4,8 @@ import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Properties;
 
@@ -15,12 +17,16 @@ public class OffsetManager {
 
     public static Properties load() {
         Properties prop = null;
-        try(InputStream input = new FileInputStream("/tmp/offsets.properties");) {
-            prop = new Properties();
-            prop.load(input);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-         } 
+        String offsetPath = "/tmp/offsets.properties";
+        File tempFile = new File(offsetPath);
+        if(tempFile.exists()) {
+            try (InputStream input = new FileInputStream("/tmp/offsets.properties");) {
+                prop = new Properties();
+                prop.load(input);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
         return prop;
     }
 

@@ -19,12 +19,12 @@ https://kafka.apache.org/documentation/#quickstart
 
 To run a kafka cluster with Docker, use the _docker-compose.yml_ file available in the root directory.
 
-Images are downloaded from _confluentinc_ and are based on _Confluent 7.0_ version:
+Images are downloaded from _confluentinc_ and are based on _Confluent 7.0.1_ version:
 
-* Zookeeper: confluentinc/cp-zookeeper:7.0.0
-* Kafka: confluentinc/cp-kafka:7.0.0
-* Schema Registry: confluentinc/cp-schema-registry:7.0.0
-* Connect: custom image based on confluentinc/cp-kafka-connect-base:7.0.0
+* Zookeeper: confluentinc/cp-zookeeper:7.0.1
+* Kafka: confluentinc/cp-kafka:7.0.1
+* Schema Registry: confluentinc/cp-schema-registry:7.0.1
+* Connect: custom image based on confluentinc/cp-kafka-connect-base:7.0.1
 * ksqlDB server: confluentinc/ksqldb-server:0.21.0
 * ksqlDB cli: confluentinc/ksqldb-cli:0.21.0
 
@@ -55,7 +55,7 @@ Stop containers:
 
 [source,bash]
 ----
-docker-compose stop
+docker-compose down --volumes
 
 ----
 
@@ -94,9 +94,9 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.produc
 
 === Avro-confluent +
 
-It uses a _io.confluent.kafka.serializers.KafkaAvroSerializer_ for key and value.
+It uses a _io.confluent.kafka.serializers.KafkaAvroSerializer_ for value and a GenericRecord.
 
-A running confluent schema registry is need to register the avro schema. +
+Confluent schema registry is needed tu run the example. +
 
 More Info at: https://github.com/confluentinc/schema-registry
 
@@ -108,9 +108,9 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.produc
 
 === Avro-apicurio +
 
-It uses a _io.apicurio.registry.utils.serde.AvroKafkaSerializer_ for key and value.
+It uses a _io.apicurio.registry.utils.serde.AvroKafkaSerializer_ for value and a GenericRecord.
 
-A running apicurio schema registry is need to register the avro schema.
+Apicurio schema registry is needed tu run the example. +
 
 Info at: https://github.com/Apicurio/apicurio-registry
 
@@ -152,12 +152,40 @@ mvn clean test
 ----
 
 Every consumer implementation has its own _Runner_ java class consuming a bunch of sample messages.
-At least a kafka broker listening on port 9092 is required.
 
 [source,bash]
 ----
 cd kafka-consumer
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.deserializer.Runner"
+----
+
+== Confluent Avro Specific Record
+
+Implementation of a kafka producer and a kafka consumer using Avro Specific Record for serializing and deserializing.
+
+Confluent schema registry is needed tu run the example. +
+
+Create topics:
+
+[source,bash]
+----
+kafka-topics --bootstrap-server localhost:9092 --create --topic cars--replication-factor <replication_factor> --partitions <number_of_partitions>
+----
+
+Run the producer:
+
+[source,bash]
+----
+cd confluent-avro-specific-record
+mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.RunnerProducer"
+----
+
+Run the consumer:
+
+[source,bash]
+----
+cd confluent-avro-specific-record
+mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.RunnerConsumer"
 ----
 
 == Kafka streams

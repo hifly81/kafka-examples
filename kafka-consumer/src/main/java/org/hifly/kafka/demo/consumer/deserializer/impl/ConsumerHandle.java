@@ -7,10 +7,10 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
-import org.hifly.kafka.demo.consumer.deserializer.AbstractConsumerHandle;
+import org.hifly.kafka.demo.consumer.deserializer.AbstractConsumerInstance;
 import org.hifly.kafka.demo.consumer.deserializer.ConsumerRecordUtil;
 
-public class ConsumerHandle<K,V> extends AbstractConsumerHandle<K,V> {
+public class ConsumerHandle<K,V> extends AbstractConsumerInstance<K,V> {
 
     private List<String> valueStore;
     private Map<TopicPartition, OffsetAndMetadata> offsets;
@@ -28,9 +28,9 @@ public class ConsumerHandle<K,V> extends AbstractConsumerHandle<K,V> {
     }
 
     @Override
-    public void process(ConsumerRecords<K, V> consumerRecords) {
+    public void process(ConsumerRecords<K, V> consumerRecords, String groupId) {
         for (ConsumerRecord<K, V> record : consumerRecords) {
-            ConsumerRecordUtil.prettyPrinter(null, null, record);
+            ConsumerRecordUtil.prettyPrinter(groupId,  record);
             if(valueStore != null)
                 valueStore.add(String.valueOf(record.value()));
             if(offsets != null)

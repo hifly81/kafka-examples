@@ -1,6 +1,6 @@
 package org.hifly.kafka.order.process.controller;
 
-import org.hifly.kafka.demo.consumer.deserializer.impl.ConsumerThread;
+import org.hifly.kafka.demo.consumer.deserializer.impl.ConsumerInstance;
 import org.hifly.kafka.order.process.consumer.handle.OrderProcessHandle;
 import org.hifly.kafka.order.process.event.OrderEvent;
 
@@ -10,8 +10,7 @@ public class OrderProcessController {
 
     public void receiveOrders(int numberOfConsumer, String groupName, int duration, int pollSize) {
         for(int i = 0; i < numberOfConsumer; i++) {
-            Thread t = new Thread(
-                    new ConsumerThread<String, OrderEvent>(
+                    new ConsumerInstance<String, OrderEvent>(
                             String.valueOf(i),
                             groupName,
                             TOPIC,
@@ -22,8 +21,7 @@ public class OrderProcessController {
                             false ,
                             true,
                             true,
-                            new OrderProcessHandle()));
-            t.start();
+                            new OrderProcessHandle()).consume();
         }
     }
 

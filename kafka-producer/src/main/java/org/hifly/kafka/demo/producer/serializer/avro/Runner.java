@@ -1,6 +1,7 @@
 package org.hifly.kafka.demo.producer.serializer.avro;
 
 import org.apache.avro.Schema;
+import org.apache.kafka.common.record.Record;
 import org.hifly.kafka.demo.producer.ProducerCallback;
 import org.hifly.kafka.demo.producer.RecordMetadataUtil;
 import org.apache.avro.generic.GenericRecord;
@@ -19,7 +20,7 @@ public class Runner {
         String schemaRegistry = args[0];
 
         //Schema from file
-        AvroDataProducer avroDataProducer = new AvroDataProducer(SchemaRegistry.valueOf(schemaRegistry), "car.avsc");
+        AvroDataProducer<String, Record> avroDataProducer = new AvroDataProducer(SchemaRegistry.valueOf(schemaRegistry), "car.avsc");
         avroDataProducer.start();
         bunchOfMessages(TOPIC, avroDataProducer);
         bunchOfFFMessages(TOPIC, avroDataProducer);

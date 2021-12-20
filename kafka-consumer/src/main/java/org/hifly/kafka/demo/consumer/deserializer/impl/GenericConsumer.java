@@ -1,6 +1,6 @@
 package org.hifly.kafka.demo.consumer.deserializer.impl;
 
-import org.hifly.kafka.demo.consumer.deserializer.AbstractConsumerHandle;
+import org.hifly.kafka.demo.consumer.deserializer.AbstractConsumerInstance;
 import org.hifly.kafka.demo.consumer.deserializer.IKafkaConsumer;
 import org.hifly.kafka.demo.consumer.deserializer.KafkaConfig;
 import org.hifly.kafka.demo.consumer.offset.OffsetManager;
@@ -17,14 +17,14 @@ public class GenericConsumer<K, V> implements IKafkaConsumer {
 
     private Map<TopicPartition, OffsetAndMetadata> offsets = new HashMap<>();
     private Consumer<K, V> consumer;
-    private AbstractConsumerHandle consumerHandle;
+    private AbstractConsumerInstance consumerHandle;
     private Properties properties;
     private String id;
     private String groupId;
     private boolean autoCommit;
     private boolean keepConsuming = true;
 
-    public GenericConsumer(Consumer<K, V> consumer, String id, Properties properties, AbstractConsumerHandle consumerHandle) {
+    public GenericConsumer(Consumer<K, V> consumer, String id, Properties properties, AbstractConsumerInstance consumerHandle) {
         this.consumer = consumer;
         this.id = id;
         this.properties = properties;
@@ -105,7 +105,7 @@ public class GenericConsumer<K, V> implements IKafkaConsumer {
     private void consume(int timeout, boolean commitSync) {
         ConsumerRecords<K, V> records = consumer.poll(Duration.ofMillis(timeout));
         consumerHandle.addOffsets(offsets);
-        consumerHandle.process(records);
+        consumerHandle.process(records, consumer.groupMetadata().groupId());
 
         if (!autoCommit)
             if (!commitSync) {

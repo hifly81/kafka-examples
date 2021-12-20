@@ -18,12 +18,16 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecord> implements IKafkaProducer<String, GenericRecord> {
+public class AvroDataProducer<K, Record> extends AbstractKafkaProducer<K, Record> implements IKafkaProducer<K, Record> {
 
     private Schema schema;
     private String avscSchema;
     private SchemaRegistry schemaRegistryEnumValue;
     private GenericRecord genericRecord;
+
+    public AvroDataProducer(SchemaRegistry schemaRegistry) {
+        this.schemaRegistryEnumValue = schemaRegistry;
+    }
 
     public AvroDataProducer(SchemaRegistry schemaRegistry, String avscSchema) {
         this.schemaRegistryEnumValue = schemaRegistry;
@@ -50,7 +54,7 @@ public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecor
                 break;
         }
 
-        if(schema == null) {
+        if(schema == null && (avscSchema != null && !avscSchema.equalsIgnoreCase(""))) {
             Schema.Parser parser = new Schema.Parser();
             try {
                 ClassLoader classLoader = getClass().getClassLoader();
@@ -63,7 +67,7 @@ public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecor
     }
 
     @Override
-    public void start(Producer<String, GenericRecord> kafkaProducer) {
+    public void start(Producer<K, Record> kafkaProducer) {
         producer = kafkaProducer;
     }
 
@@ -78,12 +82,12 @@ public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecor
     }
 
     @Override
-    public Future<RecordMetadata> produceFireAndForget(ProducerRecord<String, GenericRecord> producerRecord) {
+    public Future<RecordMetadata> produceFireAndForget(ProducerRecord<K, Record> producerRecord) {
         return producer.send(producerRecord);
     }
 
     @Override
-    public RecordMetadata produceSync(ProducerRecord<String, GenericRecord> producerRecord) {
+    public RecordMetadata produceSync(ProducerRecord<K, Record> producerRecord) {
         RecordMetadata recordMetadata = null;
         try {
             recordMetadata = producer.send(producerRecord).get();
@@ -96,7 +100,7 @@ public class AvroDataProducer extends AbstractKafkaProducer<String, GenericRecor
     }
 
     @Override
-    public void produceAsync(ProducerRecord<String, GenericRecord> producerRecord, Callback callback) {
+    public void produceAsync(ProducerRecord<K, Record> producerRecord, Callback callback) {
         producer.send(producerRecord, new ProducerCallback());
     }
 

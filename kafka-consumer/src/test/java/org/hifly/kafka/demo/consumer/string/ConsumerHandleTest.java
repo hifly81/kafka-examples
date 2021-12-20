@@ -23,7 +23,7 @@ public class ConsumerHandleTest {
     public void testProcess() {
         List<String> actualRecords = new ArrayList<>();
         final ConsumerHandle<String, String> recordsHandler = new ConsumerHandle<>(actualRecords);
-        recordsHandler.process(createConsumerRecords());
+        recordsHandler.process(createConsumerRecords(), "group-1");
         actualRecords = recordsHandler.getValueStore();
         final List<String> expectedWords = Arrays.asList("test", "test2", "test3");
         assertThat(actualRecords, equalTo(expectedWords));

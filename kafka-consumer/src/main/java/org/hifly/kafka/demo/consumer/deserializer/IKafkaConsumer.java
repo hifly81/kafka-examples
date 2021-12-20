@@ -2,7 +2,7 @@ package org.hifly.kafka.demo.consumer.deserializer;
 
 import java.util.List;
 
-public interface IKafkaConsumer<K, V> {
+public interface IKafkaConsumer {
 
     void subscribe(String groupId, String topic, boolean autoCommit);
 
