@@ -66,7 +66,7 @@ Some implementations of kafka producers.
 
 === String +
 
-It uses a _org.apache.kafka.common.serialization.StringSerializer_ for key and value
+It uses _org.apache.kafka.common.serialization.StringSerializer_ for key and value
 
 [source,bash]
 ----
@@ -76,7 +76,7 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.produc
 
 === JSON +
 
-It uses a _org.apache.kafka.common.serialization.StringSerializer_ for key and a _org.hifly.kafka.demo.producer.serializer.json.JsonSerializer_ for value
+It uses _org.apache.kafka.common.serialization.StringSerializer_ for key and a _org.hifly.kafka.demo.producer.serializer.json.JsonSerializer_ for value
 
 [source,bash]
 ----
@@ -86,7 +86,7 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.produc
 
 === Avro-confluent +
 
-It uses a _io.confluent.kafka.serializers.KafkaAvroSerializer_ for value and a GenericRecord.
+It uses _io.confluent.kafka.serializers.KafkaAvroSerializer_ for value and a GenericRecord.
 
 Confluent schema registry is needed tu run the example. +
 
@@ -100,7 +100,7 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.produc
 
 === Avro-apicurio +
 
-It uses a _io.apicurio.registry.utils.serde.AvroKafkaSerializer_ for value and a GenericRecord.
+It uses _io.apicurio.registry.utils.serde.AvroKafkaSerializer_ for value and a GenericRecord.
 
 Apicurio schema registry is needed tu run the example. +
 
@@ -517,7 +517,7 @@ cd kafka-quarkus
 
 == Kafka microprofile2
 
-Sample of a kafka producer and consumer running on a open liberty MicroProfile v2 runtime.
+Sample of a kafka producer and consumer running on an open liberty MicroProfile v2 runtime.
 
 Run on docker: 
 
@@ -548,16 +548,17 @@ curl -v -X POST http://localhost:9080/kafka-microprofile2-producer-0.0.1-SNAPSHO
 
 == Kafka unixstats connector
 
-Implementation of a sample Source Connector; it executes _nix commands_ (e.g. _ls -ltr, netstat_) and sends its output to a kafka topic.
+Implementation of a sample Source Connector; it executes _unix commands_ (e.g. _ls -ltr, netstat_) and sends its output to a kafka topic.
+
 This connector relies on Confluent Schema Registry to convert the values using Avro: _CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter_.
 
 Connector config is in _kafka-nixstats-connector/config/source.quickstart.json_ file.
 
 Parameters for source connector:
 
-- command –&gt; nix command to execute (e.g. ls -ltr)
-- topic –&gt; output topic
-- poll.ms –&gt; poll interval in milliseconds between every executions 
+- _command_ – nix command to execute (e.g. ls -ltr)
+- _topic_ – output topic
+- _poll.ms_ – poll interval in milliseconds between every execution
 
 Create the connector package:
 
