@@ -27,6 +27,7 @@ Images are downloaded from _confluentinc_ and are based on _Confluent 7.0.1_ ver
 * Connect: custom image based on confluentinc/cp-kafka-connect-base:7.0.1
 * ksqlDB server: confluentinc/ksqldb-server:0.21.0
 * ksqlDB cli: confluentinc/ksqldb-cli:0.21.0
+* PostgreSQL: postgres:10.5
 
 Components list:
 
@@ -34,6 +35,7 @@ Components list:
 * Schema Registry will listen to _localhost:8081_
 * Connect will listen to _localhost:8083_
 * ksqlDB cli listen to _localhost:8088_
+* PostgreSQL listen to _localhost:5432_
 
 === Start containers +
 
@@ -671,4 +673,41 @@ Order Action:{"TX_ID": "TX_AAA_A123", "TX_ACTION": 0, "ACCOUNT": "AAA", "ITEMS":
 Order Action:{"TX_ID": "TX_AAA_A123", "TX_ACTION": 0, "ACCOUNT": "AAA", "ITEMS": ["Item0", "Item1"], "ORDER": "A123"}
 Order Action:{"TX_ID": "TX_AAA_A123", "TX_ACTION": -1, "ACCOUNT": "AAA", "ITEMS": ["Item0", "Item1", "Item2"], "ORDER": "A123"}
  --> compensate:{"TX_ID": "TX_AAA_A123", "TX_ACTION": -1, "ACCOUNT": "AAA", "ITEMS": ["Item0", "Item1", "Item2", "ORDER": "A123"}
+----
+
+== CDC with Debezium PostgreSQL Source Connector
+
+Usage of Debezium Source connector for PostgreSQL to send RDMS table updates into a kafka topic.
+
+The debezium/debezium-connector-postgresql:1.7.1 connector has been installed into connect docker image using confluent hub (see docker-compose.yml file).
+More details on the connector are available at: https://docs.confluent.io/debezium-connect-postgres-source/current/overview.html.
+
+The connector uses _pgoutput_ plugin for replication. This plug-in is always present in PostgreSQL server. The Debezium connector interprets the raw replication event stream directly into change events.
+
+Verify the existence of _account_ table and data in PostgreSQL:
+
+[source,bash]
+----
+docker exec -it postgres psql -h localhost -p 5432 -U postgres -c 'select * from accounts;'
+----
+
+Deploy the connector:
+
+[source,bash]
+----
+curl -v -X POST -H 'Content-Type: application/json' -d @cdc-debezium-postgres/config/debezium-source-pgsql.json http://localhost:8083/connectors
+----
+
+Run a kafka consumer on _postgres.public.accounts_ topic and see the records:
+
+[source,bash]
+----
+kafka-console-consumer --topic postgres.public.accounts --bootstrap-server localhost:9092 --from-beginning
+----
+
+Insert a new record into _account_ table:
+
+[source,bash]
+----
+docker exec -it postgres psql -h localhost -p 5432 -U postgres -c "insert into accounts (user_id, username, password, email, created_on, last_login) values (3, 'foo3', 'bar3', 'foo3@bar.com', current_timestamp, current_timestamp);"
 ----

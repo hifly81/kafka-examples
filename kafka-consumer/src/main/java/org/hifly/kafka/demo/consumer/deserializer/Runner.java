@@ -15,7 +15,7 @@ public class Runner {
     private static void pollAutoCommit() {
 
         new ConsumerInstance<String , String>(
-                "1",
+                UUID.randomUUID().toString(),
                 UUID.randomUUID().toString(),
                 "topic1",
                 StringDeserializer.class.getName(),
@@ -26,7 +26,6 @@ public class Runner {
                 false,
                 true,
                 new ConsumerHandle(null)).consume();
-
     }
 }
 

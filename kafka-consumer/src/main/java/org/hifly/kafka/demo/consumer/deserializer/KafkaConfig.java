@@ -21,8 +21,6 @@ public class KafkaConfig {
             cfg.load(inputStream);
         }
 
-        cfg.put("acks", "all");
-
         return cfg;
     }
 

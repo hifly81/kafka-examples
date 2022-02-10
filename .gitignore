@@ -18,6 +18,8 @@
 target/
 .settings/
 
+postgres-data/
+
 # Package Files #
 *.jar
 *.war
