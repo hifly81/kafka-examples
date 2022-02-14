@@ -766,7 +766,7 @@ Run a kafka producer test using the _client-oauth-properties_ (add your client_s
 kafka_2.12-3.1.0/bin/kafka-producer-perf-test.sh --topic my_topic --num-records 50 --throughput 10 --record-size 1 --producer-props bootstrap.servers=localhost:9093  --producer.config kafka-oauth-kip-768/client-oauth.properties
 ----
 
-Teardonw:
+Teardown:
 
 [source,bash]
 ----
