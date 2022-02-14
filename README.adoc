@@ -711,3 +711,56 @@ Insert a new record into _account_ table:
 ----
 docker exec -it postgres psql -h localhost -p 5432 -U postgres -c "insert into accounts (user_id, username, password, email, created_on, last_login) values (3, 'foo3', 'bar3', 'foo3@bar.com', current_timestamp, current_timestamp);"
 ----
+
+== Kafka OAUTH KIP-768
+
+This example shows how to configure kafka to use SASL/OAUTHBEARER autehtication with Support for OIDC.
+
+To run the sample you need to run Keycloak server and configure openid-connect on it.
+
+Run Keycloak server with PostgreSQL (on port 8080):
+
+[source,bash]
+----
+docker-compose -f kafka-oauth-kip-768/docker-compose-oauth.yml up -d
+----
+
+Keycloak setup:
+
+[source,bash]
+----
+
+ - Login to http://localhost:8080 (admin/Pa55w0rd)
+ - Create a realm called kafka
+ - From the Clients tab, create a client with Cliend ID "kafka_user".
+ - Change Access Type to Confidential
+ - Turn Standard Flow Enabled to OFF
+ - Turn Service Accounts Enabled to ON
+ - In the Advanced Settings below on the settings tab, set Access Token Lifespan to 10 minutes
+ - Switch to the Credentials tab
+ - Set Client Authenticator to "Client Id and Secret"
+ - Save
+----
+
+Kafka 3.1 setup:
+
+Add these properties to your kafka server properties and start kafka:
+
+[source,bash]
+----
+listeners=PLAINTEXT://:9092,CLIENT://:9093
+listener.security.protocol.map=PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL,CLIENT:SASL_PLAINTEXT
+
+listener.name.client.sasl.enabled.mechanisms=OAUTHBEARER
+listener.name.client.sasl.oauthbearer.jwks.endpoint.url=http://localhost:8080/auth/realms/kafka/protocol/openid-connect/certs
+listener.name.client.sasl.oauthbearer.expected.audience=account
+listener.name.client.oauthbearer.sasl.server.callback.handler.class=org.apache.kafka.common.security.oauthbearer.secured.OAuthBearerValidatorCallbackHandler
+listener.name.client.oauthbearer.sasl.jaas.config=org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required;
+----
+
+Run a kafka producer test using the _client-oauth-properties_ (add your client_secret into the file) and listener on port 9093:
+
+[source,bash]
+----
+/home/hifly/Software/kafka_2.12-3.1.0/bin/kafka-producer-perf-test.sh --topic my_topic --num-records 50 --throughput 10 --record-size 1 --producer-props bootstrap.servers=localhost:9093  --producer.config kafka-oauth-kip-768/client-oauth.properties
+----
