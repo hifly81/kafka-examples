@@ -714,7 +714,7 @@ docker exec -it postgres psql -h localhost -p 5432 -U postgres -c "insert into a
 
 == Kafka OAUTH KIP-768
 
-This example shows how to configure kafka to use SASL/OAUTHBEARER autehtication with Support for OIDC.
+This example shows how to configure kafka to use SASL/OAUTHBEARER authentication with Support for OIDC.
 
 To run the sample you need to run Keycloak server and configure openid-connect on it.
 
@@ -739,6 +739,7 @@ Keycloak setup:
  - In the Advanced Settings below on the settings tab, set Access Token Lifespan to 10 minutes
  - Switch to the Credentials tab
  - Set Client Authenticator to "Client Id and Secret"
+ - Copy the client-secret
  - Save
 ----
 
@@ -763,4 +764,11 @@ Run a kafka producer test using the _client-oauth-properties_ (add your client_s
 [source,bash]
 ----
 kafka_2.12-3.1.0/bin/kafka-producer-perf-test.sh --topic my_topic --num-records 50 --throughput 10 --record-size 1 --producer-props bootstrap.servers=localhost:9093  --producer.config kafka-oauth-kip-768/client-oauth.properties
+----
+
+Teardonw:
+
+[source,bash]
+----
+docker-compose -f kafka-oauth-kip-768/docker-compose-oauth.yml down
 ----
