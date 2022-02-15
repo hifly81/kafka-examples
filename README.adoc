@@ -15,11 +15,11 @@
 Details about the installation, info at: +
 https://kafka.apache.org/documentation/#quickstart
 
-== Deploy using Docker
+== Apache Kafka using Docker
 
 To run a kafka cluster with Docker, use the _docker-compose.yml_ file available in the root directory.
 
-Images are downloaded from _confluentinc_ and are based on _Confluent 7.0.1_ version:
+Images are downloaded from _confluentinc_ and are based on _Confluent 7.0.1_ version (kafka version 3.0):
 
 * Zookeeper: confluentinc/cp-zookeeper:7.0.1
 * Kafka: confluentinc/cp-kafka:7.0.1
@@ -53,7 +53,7 @@ Components list:
 
 ----
 
-== Deploy on Kubernetes using Confluent For Kubernetes
+== Apache Kafka on Kubernetes using Confluent For Kubernetes
 
 To run a kafka cluster on Kubernetes, have a look at Confluent for Kubernetes operator (CFK).
 
@@ -743,9 +743,9 @@ Keycloak setup:
  - Save
 ----
 
-Kafka 3.1 setup:
+Apache Kafka 3.1 setup _(at the moment an official docker image is not available for kafka 3.1)_:
 
-Add these properties to your kafka server properties and start kafka:
+Add these properties to your kafka _server.properties_ and start kafka:
 
 [source,bash]
 ----
@@ -759,7 +759,7 @@ listener.name.client.oauthbearer.sasl.server.callback.handler.class=org.apache.k
 listener.name.client.oauthbearer.sasl.jaas.config=org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required;
 ----
 
-Run a kafka producer test using the _client-oauth-properties_ (add your client_secret into the file) and listener on port 9093:
+Run a kafka producer test using the _client-oauth-properties_ (add your client_secret into the file) on listener port 9093:
 
 [source,bash]
 ----
