@@ -761,6 +761,21 @@ listener.name.client.oauthbearer.sasl.jaas.config=org.apache.kafka.common.securi
 
 Run a kafka producer test using the _client-oauth-properties_ (add your client_secret into the file) on listener port 9093:
 
+_client-oauth-properties_:
+
+[source,bash]
+----
+security.protocol=SASL_PLAINTEXT
+sasl.mechanism=OAUTHBEARER
+sasl.login.callback.handler.class=org.apache.kafka.common.security.oauthbearer.secured.OAuthBearerLoginCallbackHandler
+sasl.login.connect.timeout.ms=15000
+sasl.oauthbearer.token.endpoint.url=http://localhost:8080/auth/realms/kafka/protocol/openid-connect/token
+sasl.oauthbearer.expected.audience=account
+sasl.jaas.config=org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required clientId="kafka_user" clientSecret="<client_secret>";
+----
+
+Producer command:
+
 [source,bash]
 ----
 kafka_2.12-3.1.0/bin/kafka-producer-perf-test.sh --topic my_topic --num-records 50 --throughput 10 --record-size 1 --producer-props bootstrap.servers=localhost:9093  --producer.config kafka-oauth-kip-768/client-oauth.properties
