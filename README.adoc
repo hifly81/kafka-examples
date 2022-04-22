@@ -722,7 +722,7 @@ Run Keycloak server with PostgreSQL (on port 8080):
 
 [source,bash]
 ----
-docker-compose -f kafka-oauth-kip-768/docker-compose-oauth.yml up -d
+docker-compose -f kafka-oauth-kip-768/docker-compose-idp.yml up -d
 ----
 
 Keycloak setup:
@@ -743,21 +743,13 @@ Keycloak setup:
  - Save
 ----
 
-Apache Kafka 3.1 setup _(at the moment an official docker image is not available for kafka 3.1)_:
-
-Add these properties to your kafka _server.properties_ and start kafka:
+Run Kafka with OAUTH listener on port 9093:
 
 [source,bash]
 ----
-listeners=PLAINTEXT://:9092,CLIENT://:9093
-listener.security.protocol.map=PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL,CLIENT:SASL_PLAINTEXT
-
-listener.name.client.sasl.enabled.mechanisms=OAUTHBEARER
-listener.name.client.sasl.oauthbearer.jwks.endpoint.url=http://localhost:8080/auth/realms/kafka/protocol/openid-connect/certs
-listener.name.client.sasl.oauthbearer.expected.audience=account
-listener.name.client.oauthbearer.sasl.server.callback.handler.class=org.apache.kafka.common.security.oauthbearer.secured.OAuthBearerValidatorCallbackHandler
-listener.name.client.oauthbearer.sasl.jaas.config=org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required;
+docker-compose -f kafka-oauth-kip-768/docker-compose-oauth.yml up -d
 ----
+
 
 Run a kafka producer test using the _client-oauth-properties_ (add your client_secret into the file) on listener port 9093:
 
@@ -778,12 +770,13 @@ Producer command:
 
 [source,bash]
 ----
-kafka_2.12-3.1.0/bin/kafka-producer-perf-test.sh --topic my_topic --num-records 50 --throughput 10 --record-size 1 --producer-props bootstrap.servers=localhost:9093  --producer.config kafka-oauth-kip-768/client-oauth.properties
+$KAFKA_HOME/bin/kafka-producer-perf-test.sh --topic my_topic --num-records 50 --throughput 10 --record-size 1 --producer-props bootstrap.servers=localhost:9093  --producer.config kafka-oauth-kip-768/client-oauth.properties
 ----
 
 Teardown:
 
 [source,bash]
 ----
+docker-compose -f kafka-oauth-kip-768/docker-compose-idp.yml down
 docker-compose -f kafka-oauth-kip-768/docker-compose-oauth.yml down
 ----

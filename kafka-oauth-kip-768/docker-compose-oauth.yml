@@ -2,36 +2,42 @@
 version: '2'
 
 services:
- 
-  postgres:
-    image: postgres:14.1-alpine
-    container_name: postgres
-    restart: always
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.1.1
+    hostname: zookeeper
+    container_name: zookeeper
     ports:
-      - '5432:5432'
-    volumes: 
-      - db:/var/lib/postgresql/data
-      - ./db/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
-  
-  keycloak:
-    image: quay.io/keycloak/keycloak:legacy
-    container_name: keycloak
+      - "2181:2181"
     environment:
-      DB_VENDOR: POSTGRES
-      DB_ADDR: postgres
-      DB_DATABASE: postgres
-      DB_USER: postgres
-      DB_SCHEMA: public
-      DB_PASSWORD: postgres
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: Pa55w0rd
-    ports:
-      - 8080:8080
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  broker:
+    image: confluentinc/cp-kafka:7.1.1
+    hostname: broker
+    container_name: broker
     depends_on:
-      - postgres
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CLIENT:SASL_PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CLIENT://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092,CLIENT://broker:9093
+      KAFKA_LISTENER_NAME_CLIENT_SASL_ENABLED_MECHANISMS: OAUTHBEARER
+      KAFKA_LISTENER_NAME_CLIENT_SASL_OAUTHBEARER_JWKS_ENDPOINT_URL: http://keycloak:8080/auth/realms/kafka/protocol/openid-connect/certs
+      KAFKA_LISTENER_NAME_CLIENT_SASL_OAUTHBEARER_EXPECTED_AUDIENCE: account
+      KAFKA_LISTENER_NAME_CLIENT_OAUTHBEARER_SASL_SERVER_CALLBACK_HANDLER_CLASS: org.apache.kafka.common.security.oauthbearer.secured.OAuthBearerValidatorCallbackHandler
+      KAFKA_LISTENER_NAME_CLIENT_OAUTHBEARER_SASL_JAAS_CONFIG: org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required;
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TOOLS_LOG4J_LOGLEVEL: ERROR
 
 volumes:
   db:
