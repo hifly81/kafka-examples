@@ -25,9 +25,9 @@
     <properties>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
-        <kafka.version>3.0.0</kafka.version>
+        <kafka.version>3.1.0</kafka.version>
         <avro.version>1.10.0</avro.version>
-        <confluent.version>7.0.1</confluent.version>
+        <confluent.version>7.1.1</confluent.version>
         <apicurio.registry.version>1.2.2.Final</apicurio.registry.version>
         <zookeeper.version>3.5.8</zookeeper.version>
         <slf4j.version>1.7.5</slf4j.version>
