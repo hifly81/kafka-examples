@@ -31,7 +31,7 @@ Images are downloaded from _confluentinc_ and are based on _Confluent 7.1.1_ ver
 
 Components list:
 
-* Broker will listen to _localhost:29092_
+* Broker will listen to _localhost:9092_
 * Schema Registry will listen to _localhost:8081_
 * Connect will listen to _localhost:8083_
 * ksqlDB cli will listen to _localhost:8088_
