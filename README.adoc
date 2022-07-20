@@ -810,11 +810,15 @@ Run the kafka stream application with the OpenTelemetry agent:
 
 [source,bash]
 ----
+cd kafka-streams
+mvn clean package
+cd ..
+
 export OTEL_SERVICE_NAME=stream-sum-service
 export OTEL_TRACES_EXPORTER=otlp
 export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
 
-java -javaagent:kafka-distributed-tracing/app/opentelemetry-javaagent.jar -Dotel.instrumentation.kafka.enabled=true -Dotel.javaagent.debug=true -jar kafka-distributed-tracing/app/kafka-streams-0.0.1-SNAPSHOT.jar
+java -javaagent:kafka-distributed-tracing/app/opentelemetry-javaagent.jar -Dotel.instrumentation.kafka.enabled=true -Dotel.javaagent.debug=true -jar kafka-streams/target/kafka-streams-0.0.1-SNAPSHOT.jar
 ----
 
 Send messages to input topics:
