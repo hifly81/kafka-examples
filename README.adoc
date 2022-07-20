@@ -836,6 +836,8 @@ kafka-console-consumer --topic sum-output-topic --bootstrap-server localhost:909
 
 Open the JaegerUI on http://localhost:16686 and you will have a list of traces from the streaming application.
 
+image::images/traces.png[Traces]
+
 Teardown:
 
 [source,bash]
