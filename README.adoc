@@ -780,3 +780,65 @@ Teardown:
 docker-compose -f kafka-oauth-kip-768/docker-compose-idp.yml down
 docker-compose -f kafka-oauth-kip-768/docker-compose-oauth.yml down
 ----
+
+== Distributed Tracing with OpenTelemetry for kafka applications
+
+This example shows how to configure OpenTelemetry java auto-instrumentation for a kafka streams application enabling distributed tracing.
+
+In this example it is used _opentelemetry-java-instrumentation_  to inject OpenTelemetry auto instrumentation as a JVM agent requiring no modifications at source code to add the traces.
+
+Apache Kafka producers, consumers and streams are part of the supported libraries as documented at:
+
+https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/docs/supported-libraries.md#libraries--frameworks
+
+Run OpenTelemetry collector (otlp protocol on port 4317) and Jaeger (on port 16686):
+
+[source,bash]
+----
+docker-compose -f kafka-distributed-tracing/docker-compose-tracing.yml up -d
+----
+
+Create topics:
+
+[source,bash]
+----
+kafka-topics --bootstrap-server localhost:9092 --create --topic sum-input-topic --replication-factor 1 --partitions 1
+kafka-topics --bootstrap-server localhost:9092 --create --topic sum-output-topic --replication-factor 1 --partitions 1
+----
+
+Run the kafka stream application with the OpenTelemetry agent:
+
+[source,bash]
+----
+export OTEL_SERVICE_NAME=stream-sum-service
+export OTEL_TRACES_EXPORTER=otlp
+export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
+
+java -javaagent:kafka-distributed-tracing/app/opentelemetry-javaagent.jar -Dotel.instrumentation.kafka.enabled=true -Dotel.javaagent.debug=true -jar kafka-distributed-tracing/app/kafka-streams-0.0.1-SNAPSHOT.jar
+----
+
+Send messages to input topics:
+
+[source,bash]
+----
+kafka-console-producer --broker-list localhost:9092 --topic sum-input-topic --property "parse.key=true" --property "key.separator=:"
+"John":1
+"Mark":2
+"John":5
+----
+
+Read from output topic:
+
+[source,bash]
+----
+kafka-console-consumer --topic sum-output-topic --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property key.separator=" : " --value-deserializer "org.apache.kafka.common.serialization.IntegerDeserializer"
+----
+
+Open the JaegerUI on http://localhost:16686 and you will have a list of traces from the streaming application.
+
+Teardown:
+
+[source,bash]
+----
+docker-compose -f kafka-distributed-tracing/docker-compose-tracing.yml down
+----
