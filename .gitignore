@@ -21,7 +21,6 @@ target/
 postgres-data/
 
 # Package Files #
-*.jar
 *.war
 *.ear
 *.zip
