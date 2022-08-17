@@ -19,7 +19,7 @@
         <module>kafka-springboot-consumer</module>
         <module>kafka-quarkus</module>
         <module>kafka-nixstats-connector</module>
-        <module>ksqldb-sample</module>
+        <module>ksqldb-saga-example</module>
     </modules>
 
     <properties>

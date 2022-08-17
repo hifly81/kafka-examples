@@ -594,7 +594,7 @@ Deploy the connector:
 curl -X POST -H Accept:application/json -H Content-Type:application/json http://localhost:8083/connectors/ -d @kafka-nixstats-connector/config/source.quickstart.json
 ----
 
-== ksqlDB Sample App
+== ksqlDB Saga Example
 
 Implementation of a sample App (kafka producer and consumer) sending and receiving orders; ksqlDB acts as an orchestrator to coordinate a sample Saga.
 

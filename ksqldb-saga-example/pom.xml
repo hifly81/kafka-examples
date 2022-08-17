@@ -8,7 +8,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ksqldb-sample</artifactId>
+    <artifactId>ksqldb-saga-example</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
