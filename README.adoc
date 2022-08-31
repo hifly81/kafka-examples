@@ -848,3 +848,10 @@ Teardown:
 ----
 docker-compose -f kafka-distributed-tracing/docker-compose-tracing.yml down
 ----
+
+== Mirror Maker 2 tests
+
+Example of a Mirror Maker v2 configuration Active/Active
+
+link:mirror-maker2-tests/README.md[Mirror Maker 2 tests]
+
