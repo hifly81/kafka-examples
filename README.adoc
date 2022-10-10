@@ -182,6 +182,17 @@ cd confluent-avro-specific-record
 mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.RunnerConsumer"
 ----
 
+== Kafka Admin Client
+
+It uses _org.apache.kafka.clients.admin.AdminClient_ to execute Kafka Admin API.
+
+
+[source,bash]
+----
+cd admin-client
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.admin.AdminClientWrapper" -Dexec.args="<location_of_admin_property_file>"
+----
+
 == Kafka streams
 
 Implementation of a series of kafka streams topologies.
