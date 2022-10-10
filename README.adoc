@@ -189,6 +189,7 @@ It uses _org.apache.kafka.clients.admin.AdminClient_ to execute Kafka Admin API.
 Operations added:
 
  - list of cluster nodes
+ - list topics
 
 [source,bash]
 ----
