@@ -186,6 +186,9 @@ mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.dem
 
 It uses _org.apache.kafka.clients.admin.AdminClient_ to execute Kafka Admin API.
 
+Operations added:
+
+ - list of cluster nodes
 
 [source,bash]
 ----
