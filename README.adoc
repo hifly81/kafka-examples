@@ -792,8 +792,8 @@ Teardown:
 
 [source,bash]
 ----
-docker-compose -f kafka-oauth-kip-768/docker-compose-idp.yml down
-docker-compose -f kafka-oauth-kip-768/docker-compose-oauth.yml down
+docker-compose -f kafka-oauth-kip-768/docker-compose-idp.yml down --volumes
+docker-compose -f kafka-oauth-kip-768/docker-compose-oauth.yml down --volumes
 ----
 
 == Distributed Tracing with OpenTelemetry for kafka applications
@@ -933,14 +933,13 @@ Consumer command:
 
 [source,bash]
 ----
-$KAFKA_HOME/bin/kafka-console-consumer    --bootstrap-server localhost:9092 --topic test --from-beginning --consumer.config ./src/main/resources/consumer.properties
+$KAFKA_HOME/bin/kafka-console-consumer --bootstrap-server localhost:9092 --topic test --from-beginning --consumer.config ./src/main/resources/consumer.properties
 ----
 
 Teardown:
 
 [source,bash]
 ----
-docker-compose -f kafka-oauth-kip-768/docker-compose-idp.yml down
-docker-compose -f kafka-oauth-kip-768/docker-compose-oauth.yml down
+docker-compose down --volumes
 ----
 
