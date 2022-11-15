@@ -943,3 +943,44 @@ Teardown:
 docker-compose down --volumes
 ----
 
+== Kafka Interceptors
+
+This example shows how to create a custom producer interceptor. This class will mask a sensitive info on producer record (credit card).
+
+Compile and package:
+
+[source,bash]
+----
+cd interceptors
+mvn clean package
+----
+
+Run kafka on port 9092:
+
+[source,bash]
+----
+./boostrap.sh
+----
+
+Run a kafka producer on listener port 9092:
+
+[source,bash]
+----
+mvn exec:java -Dexec.mainClass="org.hifly.kafka.interceptor.producer.Runner"
+----
+
+Run a kafka consumer on listener port 9092:
+
+[source,bash]
+----
+mvn exec:java -Dexec.mainClass="org.hifly.kafka.interceptor.consumer.Runner"
+----
+
+
+Teardown:
+
+[source,bash]
+----
+./tear-down.sh
+----
+

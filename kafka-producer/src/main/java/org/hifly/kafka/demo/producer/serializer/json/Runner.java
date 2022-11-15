@@ -6,14 +6,10 @@ import org.hifly.kafka.demo.producer.serializer.model.CustomData;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
-import java.util.Properties;
-
 public class Runner {
 
     public static void main (String [] args) {
-        JsonProducer<CustomData> jsonProducer = new JsonProducer<CustomData>();
-        Properties properties = new Properties();
-        properties.put("valueSerializer", "org.hifly.kafka.demo.producer.serializer.json.CustomDataJsonSerializer");
+        JsonProducer<CustomData> jsonProducer = new JsonProducer<CustomData>("org.hifly.kafka.demo.producer.serializer.json.CustomDataJsonSerializer");
         jsonProducer.start();
         bunchOfMessages("test_custom_data", jsonProducer);
         bunchOfFFMessages("test_custom_data", jsonProducer);

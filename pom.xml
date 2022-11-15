@@ -22,6 +22,7 @@
         <module>ksqldb-saga-example</module>
         <module>admin-client</module>
         <module>authorizers</module>
+        <module>interceptors</module>
     </modules>
 
     <properties>
