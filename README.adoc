@@ -945,7 +945,7 @@ docker-compose down --volumes
 
 == Kafka Interceptors
 
-This example shows how to create a custom producer interceptor. This class will mask a sensitive info on producer record (credit card).
+This example shows how to create a custom producer interceptor. class _CreditCardProducerInterceptor_ will mask a sensitive info on producer record (credit card).
 
 Compile and package:
 
