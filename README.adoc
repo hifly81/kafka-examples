@@ -19,14 +19,14 @@ https://kafka.apache.org/documentation/#quickstart
 
 To run a kafka cluster with Docker, use the _docker-compose.yml_ file available in the root directory.
 
-Images are downloaded from _confluentinc_ and are based on _Confluent 7.2.2_ Community licensed (kafka version 3.2.0):
+Images are downloaded from _confluentinc_ and are based on _Confluent 7.3.0 Community licensed (kafka version 3.3.0):
 
-* Zookeeper: confluentinc/cp-zookeeper:7.2.2
-* Kafka: confluentinc/cp-kafka:7.2.2
-* Schema Registry: confluentinc/cp-schema-registry:7.2.2
-* Connect: custom image based on confluentinc/cp-kafka-connect-base:7.2.2
-* ksqlDB server: confluentinc/ksqldb-server:0.26.0
-* ksqlDB cli: confluentinc/ksqldb-cli:0.26.0
+* Zookeeper: confluentinc/cp-zookeeper:7.3.0
+* Kafka: confluentinc/cp-kafka:7.3.0
+* Schema Registry: confluentinc/cp-schema-registry:7.3.0
+* Connect: custom image based on confluentinc/cp-kafka-connect-base:7.3.0
+* ksqlDB server: confluentinc/ksqldb-server:0.28.2
+* ksqlDB cli: confluentinc/ksqldb-cli:0.28.2
 * PostgreSQL: postgres:10.5
 
 Components list:
@@ -861,7 +861,7 @@ Teardown:
 
 [source,bash]
 ----
-docker-compose -f kafka-distributed-tracing/docker-compose-tracing.yml down
+docker-compose -f kafka-distributed-tracing/docker-compose-tracing.yml down --volumes
 ----
 
 == Mirror Maker 2 tests

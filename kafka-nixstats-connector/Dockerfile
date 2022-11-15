@@ -1,4 +1,4 @@
-FROM confluentinc/cp-kafka-connect-base:7.2.2
+FROM confluentinc/cp-kafka-connect-base:7.3.0
 
 COPY target/kafka-nixstats-connector-0.0.1-SNAPSHOT-package.zip /tmp/kafka-nixstats-connector-0.0.1-SNAPSHOT-package.zip
 
