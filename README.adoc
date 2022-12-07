@@ -41,7 +41,7 @@ Components list:
 
 [source,bash]
 ----
-./bootstrap.sh
+scripts/bootstrap.sh
 
 ----
 
@@ -49,7 +49,7 @@ Components list:
 
 [source,bash]
 ----
-./tear-down.sh
+scripts/tear-down.sh
 
 ----
 
@@ -733,11 +733,11 @@ This example shows how to configure kafka to use SASL/OAUTHBEARER authentication
 
 To run the sample you need to run Keycloak server and configure openid-connect on it.
 
-Run Keycloak server with PostgreSQL (on port 8080):
+Run Keycloak server with PostgreSQL (on port 8080) and Run Kafka with OAUTH listener on port 9093:
 
 [source,bash]
 ----
-docker-compose -f kafka-oauth-kip-768/docker-compose-idp.yml --env-file .env up -d
+scripts/bootstrap-oauth.sh
 ----
 
 Keycloak setup:
@@ -757,14 +757,6 @@ Keycloak setup:
  - Copy the client-secret
  - Save
 ----
-
-Run Kafka with OAUTH listener on port 9093:
-
-[source,bash]
-----
-docker-compose -f kafka-oauth-kip-768/docker-compose-oauth.yml --env-file .env up -d
-----
-
 
 Run a kafka producer test using the _client-oauth-properties_ (add your client_secret into the file) on listener port 9093:
 
@@ -792,8 +784,7 @@ Teardown:
 
 [source,bash]
 ----
-docker-compose -f kafka-oauth-kip-768/docker-compose-idp.yml down --volumes
-docker-compose -f kafka-oauth-kip-768/docker-compose-oauth.yml down --volumes
+scripts/tear-down-oauth.sh
 ----
 
 == Distributed Tracing with OpenTelemetry for kafka applications
@@ -810,7 +801,7 @@ Run OpenTelemetry collector (otlp protocol on port 4317) and Jaeger (on port 166
 
 [source,bash]
 ----
-docker-compose -f kafka-distributed-tracing/docker-compose-tracing.yml --env-file .env up -d
+scripts/bootstrap-tracing.sh
 ----
 
 Create topics:
@@ -861,7 +852,7 @@ Teardown:
 
 [source,bash]
 ----
-docker-compose -f kafka-distributed-tracing/docker-compose-tracing.yml down --volumes
+scripts/tear-down-oauth.sh
 ----
 
 == Mirror Maker 2 tests
