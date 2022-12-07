@@ -53,6 +53,10 @@ scripts/tear-down.sh
 
 ----
 
+=== Change Images Version
+
+Change the docker image version for the specific component, updating file _.env_ in root directory.
+
 == Apache Kafka on Kubernetes using Confluent For Kubernetes
 
 To run a kafka cluster on Kubernetes, have a look at Confluent for Kubernetes operator (CFK).
