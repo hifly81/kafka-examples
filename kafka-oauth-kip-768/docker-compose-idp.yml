@@ -4,7 +4,7 @@ version: '2'
 services:
 
   postgres:
-    image: postgres:14.1-alpine
+    image: postgres:${POSTGRES_ALPINE_VERSION}
     container_name: postgres
     restart: always
     environment:
@@ -17,7 +17,7 @@ services:
       - ./db/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
   
   keycloak:
-    image: quay.io/keycloak/keycloak:legacy
+    image: quay.io/keycloak/keycloak:${KEYCLOAK_VERSION}
     container_name: keycloak
     environment:
       DB_VENDOR: POSTGRES

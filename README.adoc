@@ -737,7 +737,7 @@ Run Keycloak server with PostgreSQL (on port 8080):
 
 [source,bash]
 ----
-docker-compose -f kafka-oauth-kip-768/docker-compose-idp.yml up -d
+docker-compose -f kafka-oauth-kip-768/docker-compose-idp.yml --env-file .env up -d
 ----
 
 Keycloak setup:
@@ -762,7 +762,7 @@ Run Kafka with OAUTH listener on port 9093:
 
 [source,bash]
 ----
-docker-compose -f kafka-oauth-kip-768/docker-compose-oauth.yml up -d
+docker-compose -f kafka-oauth-kip-768/docker-compose-oauth.yml --env-file .env up -d
 ----
 
 
@@ -810,7 +810,7 @@ Run OpenTelemetry collector (otlp protocol on port 4317) and Jaeger (on port 166
 
 [source,bash]
 ----
-docker-compose -f kafka-distributed-tracing/docker-compose-tracing.yml up -d
+docker-compose -f kafka-distributed-tracing/docker-compose-tracing.yml --env-file .env up -d
 ----
 
 Create topics:

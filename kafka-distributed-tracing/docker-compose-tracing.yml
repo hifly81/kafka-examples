@@ -4,7 +4,7 @@ version: '2'
 services:
 
   zookeeper:
-    image: confluentinc/cp-zookeeper:7.2.0
+    image: confluentinc/cp-zookeeper:${CONFLUENT_VERSION}
     hostname: zookeeper
     container_name: zookeeper
     ports:
@@ -14,7 +14,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
 
   broker:
-    image: confluentinc/cp-kafka:7.2.0
+    image: confluentinc/cp-kafka:${CONFLUENT_VERSION}
     hostname: broker
     container_name: broker
     depends_on:
@@ -35,7 +35,7 @@ services:
 
   jaeger:
     container_name: jaeger
-    image: jaegertracing/all-in-one:latest
+    image: jaegertracing/all-in-one:${JAEGER_VERSION}
     ports:
       - "16686:16686"
       - "14268"
@@ -43,7 +43,7 @@ services:
 
   otel-collector:
     container_name: otel
-    image: otel/opentelemetry-collector:latest
+    image: otel/opentelemetry-collector:${OTEL_VERSION}
     command: [ "--config=/etc/otel-collector-config.yaml" ]
     volumes:
       - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
