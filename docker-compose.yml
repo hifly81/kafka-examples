@@ -3,7 +3,7 @@ version: '2'
 
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:7.3.0
+    image: confluentinc/cp-zookeeper:${CONFLUENT_VERSION}
     hostname: zookeeper
     container_name: zookeeper
     ports:
@@ -13,7 +13,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
 
   broker:
-    image: confluentinc/cp-kafka:7.3.0
+    image: confluentinc/cp-kafka:${CONFLUENT_VERSION}
     hostname: broker
     container_name: broker
     depends_on:
@@ -32,7 +32,7 @@ services:
       KAFKA_TOOLS_LOG4J_LOGLEVEL: ERROR
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:7.3.0
+    image: confluentinc/cp-schema-registry:${CONFLUENT_VERSION}
     hostname: schema-registry
     container_name: schema-registry
     depends_on:
@@ -82,7 +82,7 @@ services:
         sleep infinity
 
   ksqldb-server:
-    image: confluentinc/ksqldb-server:0.28.2
+    image: confluentinc/ksqldb-server:${KSQL_VERSION}
     hostname: ksqldb-server
     container_name: ksqldb-server
     depends_on:
@@ -119,7 +119,7 @@ services:
       KSQL_CONNECT_PLUGIN_PATH: "/usr/share/kafka/plugins"
 
   ksqldb-cli:
-    image: confluentinc/ksqldb-cli:0.28.2
+    image: confluentinc/ksqldb-cli:${KSQL_VERSION}
     container_name: ksqldb-cli
     depends_on:
       - broker
@@ -128,7 +128,7 @@ services:
     tty: true
  
   postgres:
-    image: postgres:10.5
+    image: postgres:${POSTGRES_VERSION}
     container_name: postgres
     restart: always
     environment:
