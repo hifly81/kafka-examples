@@ -15,11 +15,11 @@
 Details about the installation, info at: +
 https://kafka.apache.org/documentation/#quickstart
 
-== Apache Kafka using Docker
+== Apache Kafka using docker compose
 
 To run a kafka cluster with Docker, use the _docker-compose.yml_ file available in the root directory.
 
-Images are downloaded from _confluentinc_ and are based on _Confluent 7.3.0 Community licensed (kafka version 3.3.0):
+Images are downloaded from _confluentinc_ and are based on _Confluent 7.3.0 Community_ licensed (kafka version 3.3.0):
 
 * Zookeeper: confluentinc/cp-zookeeper:7.3.0
 * Kafka: confluentinc/cp-kafka:7.3.0
@@ -640,7 +640,7 @@ Launch Docker Compose:
 
 [source,bash]
 ----
-docker-compose up
+scripts/boostrap.sh
 ----
 
 Connect to ksqlDB and set auto.offset.reset:
@@ -701,6 +701,13 @@ Order Action:{"TX_ID": "TX_AAA_A123", "TX_ACTION": -1, "ACCOUNT": "AAA", "ITEMS"
  --> compensate:{"TX_ID": "TX_AAA_A123", "TX_ACTION": -1, "ACCOUNT": "AAA", "ITEMS": ["Item0", "Item1", "Item2", "ORDER": "A123"}
 ----
 
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down.sh
+----
+
 == CDC with Debezium PostgreSQL Source Connector
 
 Usage of Debezium Source connector for PostgreSQL to send RDMS table updates into a kafka topic.
@@ -715,6 +722,13 @@ Verify the existence of _account_ table and data in PostgreSQL:
 [source,bash]
 ----
 docker exec -it postgres psql -h localhost -p 5432 -U postgres -c 'select * from accounts;'
+----
+
+Run kafka on port 9092:
+
+[source,bash]
+----
+scripts/boostrap.sh
 ----
 
 Deploy the connector:
@@ -736,6 +750,13 @@ Insert a new record into _account_ table:
 [source,bash]
 ----
 docker exec -it postgres psql -h localhost -p 5432 -U postgres -c "insert into accounts (user_id, username, password, email, created_on, last_login) values (3, 'foo3', 'bar3', 'foo3@bar.com', current_timestamp, current_timestamp);"
+----
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down.sh
 ----
 
 == Kafka OAUTH KIP-768
@@ -788,7 +809,7 @@ Producer command:
 
 [source,bash]
 ----
-$KAFKA_HOME/bin/kafka-producer-perf-test.sh --topic my_topic --num-records 50 --throughput 10 --record-size 1 --producer-props bootstrap.servers=localhost:9093  --producer.config kafka-oauth-kip-768/client-oauth.properties
+kafka-producer-perf-test --topic my_topic --num-records 50 --throughput 10 --record-size 1 --producer-props bootstrap.servers=localhost:9093  --producer.config kafka-oauth-kip-768/client-oauth.properties
 ----
 
 Teardown:
@@ -894,7 +915,7 @@ Run kafka with custom authorizer on port 9092:
 
 [source,bash]
 ----
-docker-compose up -d
+scripts/boostrap.sh
 ----
 
 Run a kafka producer test using the _producer.properties_ on listener port 9092:
@@ -914,7 +935,7 @@ Producer command:
 
 [source,bash]
 ----
-$KAFKA_HOME/bin/kafka-console-producer --bootstrap-server localhost:9092 --topic test --producer.config ./src/main/resources/producer.properties
+kafka-console-producer --bootstrap-server localhost:9092 --topic test --producer.config ./src/main/resources/producer.properties
 ----
 
 Run a kafka consumer test using the _consumer.properties_ on listener port 9092:
@@ -935,14 +956,14 @@ Consumer command:
 
 [source,bash]
 ----
-$KAFKA_HOME/bin/kafka-console-consumer --bootstrap-server localhost:9092 --topic test --from-beginning --consumer.config ./src/main/resources/consumer.properties
+kafka-console-consumer --bootstrap-server localhost:9092 --topic test --from-beginning --consumer.config ./src/main/resources/consumer.properties
 ----
 
 Teardown:
 
 [source,bash]
 ----
-docker-compose down --volumes
+scripts/tear-down.sh
 ----
 
 == Kafka Interceptors
@@ -961,7 +982,7 @@ Run kafka on port 9092:
 
 [source,bash]
 ----
-./boostrap.sh
+scripts/boostrap.sh
 ----
 
 Run a kafka producer on listener port 9092:
@@ -978,11 +999,24 @@ Run a kafka consumer on listener port 9092:
 mvn exec:java -Dexec.mainClass="org.hifly.kafka.interceptor.consumer.Runner"
 ----
 
-
 Teardown:
 
 [source,bash]
 ----
-./tear-down.sh
+scripts/tear-down.sh
 ----
 
+== Kafka CLI Tools
+
+Kafka CLI are located in _$KAFKA_HOME/bin_ directory.
+
+. _kafka-acls_ - manage acls
+. _kafka-topics - create, delete, describe, or change a topic
+. _kafka-configs_ - create, delete, describe, or change cluster settings
+. _kafka-consumer-groups_ - manage consumer groups
+. _kafka-console-consumer_ - read data from Kafka topics and outputs it to standard output
+. _kafka-console-producer_ - produce data to Kafka topics
+. _kafka-consumer-perf-test_ - consume high volumes of data through your Kafka cluster
+. _kafka-producer-perf-test_ - produce high volumes of data through your Kafka cluster
+. _kafka-avro-console-producer_ - produce Avro data to Kafka topics with a schema _(only with confluent installation)_
+. _kafka-avro-console-consumer_ - read Avro data from Kafka topics with a schema and outputs it to standard output _(only with confluent installation)_
