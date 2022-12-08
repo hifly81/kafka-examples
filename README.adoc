@@ -596,14 +596,14 @@ It will use the Confluent utility _confluent-hub install_ to install the plugin 
 
 [source,bash]
 ----
-/kafka-nixstats-connector/./build-image.sh
+kafka-nixstats-connector/build-image.sh
 ----
 
 Run the Docker container:
 
 [source,bash]
 ----
-docker-compose up -d
+scripts/bootstrap-nixconnector.sh
 ----
 
 Deploy the connector:
@@ -611,6 +611,13 @@ Deploy the connector:
 [source,bash]
 ----
 curl -X POST -H Accept:application/json -H Content-Type:application/json http://localhost:8083/connectors/ -d @kafka-nixstats-connector/config/source.quickstart.json
+----
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-nixconnector.sh
 ----
 
 == ksqlDB Saga Example

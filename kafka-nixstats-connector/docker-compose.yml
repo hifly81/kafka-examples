@@ -44,7 +44,7 @@ services:
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:9092'
 
   connect:
-    image: confluentinc/cp-kafka-connect-base:${CONFLUENT_VERSION}
+    image: connect-custom-image:1.0.0
     hostname: connect
     container_name: connect
     depends_on:
