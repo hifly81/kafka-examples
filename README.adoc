@@ -1011,7 +1011,7 @@ scripts/tear-down.sh
 Kafka CLI are located in _$KAFKA_HOME/bin_ directory.
 
 . _kafka-acls_ - manage acls
-. _kafka-topics - create, delete, describe, or change a topic
+. _kafka-topics_ - create, delete, describe, or change a topic
 . _kafka-configs_ - create, delete, describe, or change cluster settings
 . _kafka-consumer-groups_ - manage consumer groups
 . _kafka-console-consumer_ - read data from Kafka topics and outputs it to standard output
