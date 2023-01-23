@@ -11,8 +11,6 @@
     <artifactId>kafka-consumer</artifactId>
     <packaging>jar</packaging>
 
-
-
     <dependencies>
         <dependency>
             <groupId>org.apache.kafka</groupId>

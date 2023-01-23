@@ -1,4 +1,4 @@
-package org.hifly.kafka.demo.consumer.deserializer;
+package org.hifly.kafka.demo.consumer.tx;
 
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.hifly.kafka.demo.consumer.deserializer.impl.ConsumerHandle;
@@ -20,7 +20,7 @@ public class Runner {
                 "topic1",
                 StringDeserializer.class.getName(),
                 StringDeserializer.class.getName(),
-                "read_uncommitted",
+                "read_committed",
                 100,
                 -1,
                 true,

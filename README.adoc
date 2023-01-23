@@ -92,7 +92,7 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.produc
 
 === Transactional Producer [[tx_producer]] +
 
-It uses _org.apache.kafka.common.serialization.StringSerializer_ for key and value
+It uses _org.apache.kafka.common.serialization.StringSerializer_ for key and value and set _enable.idempoteceny_ and _transactional.id_
 
 [source,bash]
 ----
@@ -151,6 +151,28 @@ mvn clean test
 
 Implementation of a kafka consumer that can be used with different deserializer classes (for key and value).
 
+Class _org.hifly.kafka.demo.consumer.deserializer.impl.ConsumerInstance_ can be customized with:
+
+ - clientId (string)
+ - groupId (string)
+ - topic name
+ - key deserializer class
+ - value deserializer class
+ - isolation.level (read_uncommitted/read_committed)
+ - poll timeout (ms)
+ - consume duration (ms)
+ - autoCommit (true/false)
+ - commit sync (true/false)
+ - subscribe mode (true/false)
+
+"topic1",
+StringDeserializer.class.getName(),
+StringDeserializer.class.getName(),
+100,
+-1,
+true,
+false,
+true,
 Execute tests:
 
 [source,bash]
@@ -159,12 +181,26 @@ cd kafka-consumer
 mvn clean test
 ----
 
-Every consumer implementation has its own _Runner_ java class consuming a bunch of sample messages.
+=== StringDeserializer
+
+It uses _org.apache.kafka.common.serialization.StringDeserializer_ for key and value
 
 [source,bash]
 ----
 cd kafka-consumer
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.deserializer.Runner"
+----
+
+=== read committed [[readcommitted_consumer]] +
+
+It uses _org.apache.kafka.common.serialization.StringDeserializer_ for key and value and set _isolation.level_ to _read_committed_.
+
+It must be only used with a transactional producer.
+
+[source,bash]
+----
+cd kafka-consumer
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.tx.Runner"
 ----
 
 == Confluent Avro Specific Record
@@ -474,6 +510,10 @@ kafka-console-consumer --topic expired-messages-input-topic --bootstrap-server l
 === Transactional producer
 
 see section <<tx_producer>>
+
+=== Read Committed consumer
+
+see section <<readcommitted_consumer>>
 
 === Kafka Orders App: Example with end-to-end exactly-once semantic between consumer and producer
 
