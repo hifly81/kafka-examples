@@ -1,5 +1,7 @@
 package org.hifly.kafka.demo.producer;
 
+import org.apache.kafka.clients.producer.ProducerConfig;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +32,6 @@ public class KafkaConfig {
 
         return cfg;
     }
-
     public static Properties stringProducer() {
         Properties producerProperties = new Properties();
         producerProperties.put("bootstrap.servers", BROKER_LIST);
@@ -39,6 +40,19 @@ public class KafkaConfig {
         producerProperties.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         return producerProperties;
     }
+
+    public static Properties stringTXProducer(String clientId, String transactionalId) {
+        Properties producerProperties = new Properties();
+        producerProperties.put("bootstrap.servers", BROKER_LIST);
+        producerProperties.put("max.block.ms", 15000);
+        producerProperties.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        producerProperties.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        producerProperties.put(ProducerConfig.CLIENT_ID_CONFIG, clientId);
+        producerProperties.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
+        producerProperties.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, transactionalId);
+        return producerProperties;
+    }
+
 
     public static Properties stringProducerCustomPartitioner() {
         Properties producerProperties = new Properties();

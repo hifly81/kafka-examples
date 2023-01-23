@@ -19,12 +19,12 @@ https://kafka.apache.org/documentation/#quickstart
 
 To run a kafka cluster with Docker, use the _docker-compose.yml_ file available in the root directory.
 
-Images are downloaded from _confluentinc_ and are based on _Confluent 7.3.0 Community_ licensed (kafka version 3.3.0):
+Images are downloaded from _confluentinc_ and are based on _Confluent 7.3.1 Community_ licensed (kafka version 3.3.0):
 
-* Zookeeper: confluentinc/cp-zookeeper:7.3.0
-* Kafka: confluentinc/cp-kafka:7.3.0
-* Schema Registry: confluentinc/cp-schema-registry:7.3.0
-* Connect: custom image based on confluentinc/cp-kafka-connect-base:7.3.0
+* Zookeeper: confluentinc/cp-zookeeper:7.3.1
+* Kafka: confluentinc/cp-kafka:7.3.1
+* Schema Registry: confluentinc/cp-schema-registry:7.3.1
+* Connect: custom image based on confluentinc/cp-kafka-connect-base:7.3.1
 * ksqlDB server: confluentinc/ksqldb-server:0.28.2
 * ksqlDB cli: confluentinc/ksqldb-cli:0.28.2
 * PostgreSQL: postgres:10.5
@@ -88,6 +88,16 @@ It uses _org.apache.kafka.common.serialization.StringSerializer_ for key and a _
 ----
 cd kafka-producer
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.json.Runner"
+----
+
+=== Transactional Producer [[tx_producer]] +
+
+It uses _org.apache.kafka.common.serialization.StringSerializer_ for key and value
+
+[source,bash]
+----
+cd kafka-producer
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.tx.Runner"
 ----
 
 === Avro-confluent +
@@ -459,7 +469,13 @@ Read from output topic:
 kafka-console-consumer --topic expired-messages-input-topic --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
 
-== Kafka Orders App: Example with end-to-end exactly-once semantic between consumer and producer
+== Transactions
+
+=== Transactional producer
+
+see section <<tx_producer>>
+
+=== Kafka Orders App: Example with end-to-end exactly-once semantic between consumer and producer
 
 Example of a cart application implementing end-to-end exactly-once semantic between consumer and producer. +
 The ItemsProducer class sends 2 items in a single transaction. +
