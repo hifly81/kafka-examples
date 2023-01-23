@@ -165,14 +165,6 @@ Class _org.hifly.kafka.demo.consumer.deserializer.impl.ConsumerInstance_ can be 
  - commit sync (true/false)
  - subscribe mode (true/false)
 
-"topic1",
-StringDeserializer.class.getName(),
-StringDeserializer.class.getName(),
-100,
--1,
-true,
-false,
-true,
 Execute tests:
 
 [source,bash]
