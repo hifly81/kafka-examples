@@ -619,6 +619,8 @@ curl -v -X POST http://localhost:9080/kafka-microprofile2-producer-0.0.1-SNAPSHO
 
 Implementation of a sample Source Connector; it executes _unix commands_ (e.g. _fortune_, _ls -ltr, netstat_) and sends its output to a kafka topic.
 
+IMPORTANT: commands are executed on kafka connect worker node.
+
 This connector relies on Confluent Schema Registry to convert the values using Avro: _CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter_.
 
 Connector config is in _kafka-unixcommand-connector/config/source.quickstart.json_ file.
