@@ -1,7 +1,7 @@
 {
-  "name" : "kafka-nixstats",
+  "name" : "kafka-unixcommand",
   "version" : "0.0.1",
-  "title" : "Kafka Connect *Nix stats",
+  "title" : "Kafka Connect unixcommand",
   "description" : "For demos only: A Kafka Connect connector for generating mock data, not suitable for production",
   "owner" : {
     "username" : "hifly81",

@@ -615,17 +615,17 @@ curl -v -X POST http://localhost:9090/kafka-microprofile2-consumer-0.0.1-SNAPSHO
 curl -v -X POST http://localhost:9080/kafka-microprofile2-producer-0.0.1-SNAPSHOT/order
 ----
 
-== Kafka unixstats connector
+== Kafka unixcommand connector
 
-Implementation of a sample Source Connector; it executes _unix commands_ (e.g. _ls -ltr, netstat_) and sends its output to a kafka topic.
+Implementation of a sample Source Connector; it executes _unix commands_ (e.g. _fortune_, _ls -ltr, netstat_) and sends its output to a kafka topic.
 
 This connector relies on Confluent Schema Registry to convert the values using Avro: _CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter_.
 
-Connector config is in _kafka-nixstats-connector/config/source.quickstart.json_ file.
+Connector config is in _kafka-unixcommand-connector/config/source.quickstart.json_ file.
 
 Parameters for source connector:
 
-- _command_ – nix command to execute (e.g. ls -ltr)
+- _command_ – unix command to execute (e.g. ls -ltr)
 - _topic_ – output topic
 - _poll.ms_ – poll interval in milliseconds between every execution
 
@@ -633,7 +633,7 @@ Create the connector package:
 
 [source,bash]
 ----
-cd kafka-nixtstats-connector
+cd kafka-unixcommand-connector
 mvn clean package
 ----
 
@@ -644,28 +644,28 @@ It will use the Confluent utility _confluent-hub install_ to install the plugin 
 
 [source,bash]
 ----
-kafka-nixstats-connector/build-image.sh
+kafka-unixcommand-connector/build-image.sh
 ----
 
 Run the Docker container:
 
 [source,bash]
 ----
-scripts/bootstrap-nixconnector.sh
+scripts/bootstrap-unixcommand-connector.sh
 ----
 
 Deploy the connector:
 
 [source,bash]
 ----
-curl -X POST -H Accept:application/json -H Content-Type:application/json http://localhost:8083/connectors/ -d @kafka-nixstats-connector/config/source.quickstart.json
+curl -X POST -H Accept:application/json -H Content-Type:application/json http://localhost:8083/connectors/ -d @kafka-unixcommand-connector/config/source.quickstart.json
 ----
 
 Teardown:
 
 [source,bash]
 ----
-scripts/tear-down-nixconnector.sh
+scripts/tear-down-unixcommand-.connector.sh
 ----
 
 == ksqlDB Saga Example

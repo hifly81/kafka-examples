@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
-public class NixStatsSourceTask extends SourceTask {
+public class UnixCommandSourceTask extends SourceTask {
 
     private String command;
     private String topic;
@@ -21,7 +21,7 @@ public class NixStatsSourceTask extends SourceTask {
 
     private static final String COMMAND = "command";
 
-    private static final Logger LOG = LoggerFactory.getLogger(NixStatsSourceTask.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UnixCommandSourceTask.class);
 
     @Override
     public String version() {
@@ -30,9 +30,9 @@ public class NixStatsSourceTask extends SourceTask {
 
     @Override
     public void start(Map<String, String> map) {
-        command = map.get(NixStatsSourceConnector.COMMAND_CONFIG);
-        topic = map.get(NixStatsSourceConnector.TOPIC_CONFIG);
-        pollMs = Long.valueOf(map.get(NixStatsSourceConnector.POLL_CONFIG));
+        command = map.get(UnixCommandSourceConnector.COMMAND_CONFIG);
+        topic = map.get(UnixCommandSourceConnector.TOPIC_CONFIG);
+        pollMs = Long.valueOf(map.get(UnixCommandSourceConnector.POLL_CONFIG));
 
         Map<String, Object> offset = context.offsetStorageReader().offset(Collections.singletonMap(COMMAND, command));
         if (offset != null) {

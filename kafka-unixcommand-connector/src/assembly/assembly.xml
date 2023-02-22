@@ -10,14 +10,14 @@
     <fileSets>
         <fileSet>
             <directory>${project.basedir}/src/assembly</directory>
-            <outputDirectory>./nixstats-connector</outputDirectory>
+            <outputDirectory>./unixcommand-connector</outputDirectory>
             <includes>
                 <include>manifest.json</include>
             </includes>
         </fileSet>
         <fileSet>
             <directory>${project.basedir}/config</directory>
-            <outputDirectory>nixstats-connector/etc/</outputDirectory>
+            <outputDirectory>unixcommand-connector/etc/</outputDirectory>
             <includes>
                 <include>*</include>
             </includes>
@@ -26,7 +26,7 @@
 
     <dependencySets>
         <dependencySet>
-            <outputDirectory>nixstats-connector/lib/</outputDirectory>
+            <outputDirectory>unixcommand-connector/lib/</outputDirectory>
             <useProjectArtifact>true</useProjectArtifact>
             <useTransitiveFiltering>true</useTransitiveFiltering>
             <excludes>

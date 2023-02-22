@@ -18,7 +18,7 @@
         <module>kafka-springboot-producer</module>
         <module>kafka-springboot-consumer</module>
         <module>kafka-quarkus</module>
-        <module>kafka-nixstats-connector</module>
+        <module>kafka-unixcommand-connector</module>
         <module>ksqldb-saga-example</module>
         <module>admin-client</module>
         <module>authorizers</module>

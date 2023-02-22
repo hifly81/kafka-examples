@@ -8,7 +8,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kafka-nixstats-connector</artifactId>
+    <artifactId>kafka-unixcommand-connector</artifactId>
     <packaging>jar</packaging>
 
     <properties>

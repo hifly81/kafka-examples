@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NixStatsSourceConnector extends SourceConnector {
+public class UnixCommandSourceConnector extends SourceConnector {
 
     public static final String COMMAND_CONFIG = "command";
     public static final String TOPIC_CONFIG = "topic";
@@ -28,20 +28,20 @@ public class NixStatsSourceConnector extends SourceConnector {
             .define(TOPIC_CONFIG, ConfigDef.Type.LIST, ConfigDef.Importance.HIGH, "The topic to publish data to")
             .define(POLL_CONFIG, ConfigDef.Type.LONG, ConfigDef.Importance.HIGH, "Poll interval");
 
-    private static final Logger LOG = LoggerFactory.getLogger(NixStatsSourceConnector.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UnixCommandSourceConnector.class);
 
     @Override
     public void start(Map<String, String> map) {
         AbstractConfig parsedConfig = new AbstractConfig(CONFIG_DEF, map);
         List<String> commands = parsedConfig.getList(COMMAND_CONFIG);
         if (commands == null || commands.size() != 1) {
-            throw new ConfigException("'command' in NixStatsSourceConnector configuration requires definition of a single command");
+            throw new ConfigException("'command' configuration requires definition of a single command");
         }
         command = commands.get(0);
 
         List<String> topics = parsedConfig.getList(TOPIC_CONFIG);
         if (topics == null || topics.size() != 1) {
-            throw new ConfigException("'topic' in NixStatsSourceConnector configuration requires definition of a single topic");
+            throw new ConfigException("'topic' configuration requires definition of a single topic");
         }
         topic = topics.get(0);
 
@@ -52,7 +52,7 @@ public class NixStatsSourceConnector extends SourceConnector {
 
     @Override
     public Class<? extends Task> taskClass() {
-        return NixStatsSourceTask.class;
+        return UnixCommandSourceTask.class;
     }
 
     @Override

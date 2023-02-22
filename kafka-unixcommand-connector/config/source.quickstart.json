@@ -1,0 +1,10 @@
+{
+    "name" : "unixcommandsource",
+    "config": {
+        "connector.class" : "org.hifly.kafka.demo.connector.UnixCommandSourceConnector",
+        "command" : "fortune",
+        "topic": "unixcommands",
+        "poll.ms" : 5000,
+        "tasks.max": 1
+    }
+}
