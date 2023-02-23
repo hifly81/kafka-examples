@@ -1,3 +1,5 @@
+#!/bin/bash
+
 tr '\n' ' ' < statements.sql | \
 sed 's/;/;\'$'\n''/g' | \
 while read stmt; do

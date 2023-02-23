@@ -534,7 +534,7 @@ Create DDL on ksqlDB:
 [source,bash]
 ----
 cd ksqldb-saga-example/ksql
-./ksql-statements.sh
+ksql-statements.sh
 ----
 
 Create fat jar of Sample application (1 Saga):
@@ -614,7 +614,7 @@ Create DDL on ksqlDB:
 [source,bash]
 ----
 cd ksqldb-window-tumbling-heartbeat/ksql
-./ksql-statements.sh
+ksql-statements.sh
 ----
 
 Insert entries on ksqlDB:
@@ -622,7 +622,7 @@ Insert entries on ksqlDB:
 [source,bash]
 ----
 cd ksqldb-window-tumbling-heartbeat/ksql
-./ksql-inserts.sh
+ksql-inserts.sh
 ----
 
 Verify results:
