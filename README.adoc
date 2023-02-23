@@ -407,13 +407,10 @@ kafka-console-consumer --topic ferrari-input-topic --bootstrap-server localhost:
 kafka-console-consumer --topic cars-output-topic --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
 
-== Kafka streams Processor API
-
-Examples with Processor API.
-
 === JSONArrayRemoveProcessor +
 
 Remove a specific json field from the record and forward it to the next topology node.
+This example uses  Kafka streams Processor API.
 
 Execute tests:
 
@@ -457,6 +454,7 @@ kafka-console-consumer --topic processor-output-topic --bootstrap-server localho
 === ExpiredMessagesProcessor +
 
 Remove old entries based on time (expiration time 30 seconds) using a punctuator.
+This example uses  Kafka streams Processor API.
 
 Execute tests:
 
