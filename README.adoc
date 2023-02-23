@@ -505,7 +505,7 @@ Compile:
 
 [source,bash]
 ----
-cd ksqldb-sample
+cd ksqldb-saga-example
 mvn schema-registry:download
 mvn generate-sources
 mvn clean compile
@@ -526,20 +526,22 @@ Connect to ksqlDB and set auto.offset.reset:
 ----
 ksql http://ksqldb-server:8088
 SET 'auto.offset.reset' = 'earliest';
+exit
 ----
 
 Create DDL on ksqlDB:
 
 [source,bash]
 ----
-/ksqldb-sample/ksql/./ksql-statements.sh
+cd ksqldb-saga-example/ksql
+./ksql-statements.sh
 ----
 
 Create fat jar of Sample application (1 Saga):
 
 [source,bash]
 ----
-cd ksqldb-sample
+cd ksqldb-saga-example
 mvn clean compile assembly:single
 ----
 
@@ -547,7 +549,7 @@ Execute fat jar of Sample application (1 Saga):
 
 [source,bash]
 ----
-cd ksqldb-sample
+cd ksqldb-saga-example
 java -jar target/ksqldb-sample-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 ----
 
@@ -576,6 +578,71 @@ Order Action:{"TX_ID": "TX_AAA_A123", "TX_ACTION": 0, "ACCOUNT": "AAA", "ITEMS":
 Order Action:{"TX_ID": "TX_AAA_A123", "TX_ACTION": 0, "ACCOUNT": "AAA", "ITEMS": ["Item0", "Item1"], "ORDER": "A123"}
 Order Action:{"TX_ID": "TX_AAA_A123", "TX_ACTION": -1, "ACCOUNT": "AAA", "ITEMS": ["Item0", "Item1", "Item2"], "ORDER": "A123"}
  --> compensate:{"TX_ID": "TX_AAA_A123", "TX_ACTION": -1, "ACCOUNT": "AAA", "ITEMS": ["Item0", "Item1", "Item2", "ORDER": "A123"}
+----
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down.sh
+----
+
+=== Window Tumbling example: heart rate monitoring
+
+Implementation of a window tumbling (1 minute) to monitor heart rate. Values over a threshold of 120 beats per minute are reported.
+
+Launch on local environment:
+
+Launch Docker Compose:
+
+[source,bash]
+----
+scripts/boostrap.sh
+----
+
+Connect to ksqlDB and set auto.offset.reset:
+
+[source,bash]
+----
+ksql http://ksqldb-server:8088
+SET 'auto.offset.reset' = 'earliest';
+exit
+----
+
+Create DDL on ksqlDB:
+
+[source,bash]
+----
+cd ksqldb-window-tumbling-heartbeat/ksql
+./ksql-statements.sh
+----
+
+Insert entries on ksqlDB:
+
+[source,bash]
+----
+cd ksqldb-window-tumbling-heartbeat/ksql
+./ksql-inserts.sh
+----
+
+Verify results:
+
+[source,bash]
+----
+ksql http://ksqldb-server:8088
+
+SELECT person_id,
+       beat_over_threshold_count,
+       TIMESTAMPTOSTRING(window_start, 'yyy-MM-dd HH:mm:ss', 'UTC') as window_start,
+       TIMESTAMPTOSTRING(window_end, 'yyy-MM-dd HH:mm:ss', 'UTC') as window_end
+FROM heartbeat_60sec
+EMIT CHANGES;
+
++---------------------------------------------------------+---------------------------------------------------------+---------------------------------------------------------+---------------------------------------------------------+
+|PERSON_ID                                                |BEAT_OVER_THRESHOLD_COUNT                                |WINDOW_START                                             |WINDOW_END                                               |
++---------------------------------------------------------+---------------------------------------------------------+---------------------------------------------------------+---------------------------------------------------------+
+|MGG1                                                     |3                                                        |2023-02-18 15:10:00                                      |2023-02-18 15:11:00                                      |
+|MGG1                                                     |10                                                       |2023-02-18 15:15:00                                      |2023-02-18 15:16:00                                      |
 ----
 
 Teardown:
