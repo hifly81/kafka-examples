@@ -21,6 +21,7 @@
         <module>kafka-unixcommand-connector</module>
         <module>ksqldb-saga-example</module>
         <module>ksqldb-window-tumbling-heartbeat</module>
+        <module>ksqldb-window-session-tripsegments</module>
         <module>admin-client</module>
         <module>authorizers</module>
         <module>interceptors</module>

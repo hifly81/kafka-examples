@@ -241,7 +241,7 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.admin.Admin
 
 == Kafka Connect
 
-=== Kafka unixcommand connector
+=== Kafka unixcommand Source Connector
 
 Implementation of a sample Source Connector; it executes _unix commands_ (e.g. _fortune_, _ls -ltr, netstat_) and sends its output to a kafka topic.
 
@@ -695,9 +695,9 @@ Teardown:
 scripts/tear-down.sh
 ----
 
-=== Window Tumbling example: heart rate monitoring
+=== Tumbling Window example: heart rate monitoring
 
-Implementation of a window tumbling (1 minute) to monitor heart rate. Values over a threshold of 120 beats per minute are reported.
+Implementation of a tumbling window (1 minute) to monitor heart rate. Values over a threshold of 120 beats per minute are reported.
 
 Launch on local environment:
 
@@ -751,6 +751,76 @@ EMIT CHANGES;
 +---------------------------------------------------------+---------------------------------------------------------+---------------------------------------------------------+---------------------------------------------------------+
 |MGG1                                                     |3                                                        |2023-02-18 15:10:00                                      |2023-02-18 15:11:00                                      |
 |MGG1                                                     |10                                                       |2023-02-18 15:15:00                                      |2023-02-18 15:16:00                                      |
+----
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down.sh
+----
+
+=== Session Window example: Vehicle Positions
+
+Implementation of a session window (5 minutes of inactive). Vehicle positions (latitude and logitude) are collected and a new window opens when the vehicle does not send its position for 5 minutes. This is considered as a new "trip".
+
+Launch on local environment:
+
+Launch Docker Compose:
+
+[source,bash]
+----
+scripts/boostrap.sh
+----
+
+Connect to ksqlDB and set auto.offset.reset:
+
+[source,bash]
+----
+ksql http://ksqldb-server:8088
+SET 'auto.offset.reset' = 'earliest';
+exit
+----
+
+Create DDL on ksqlDB:
+
+[source,bash]
+----
+cd ksqldb-window-session-tripsegments/ksql
+ksql-statements.sh
+----
+
+Insert entries on ksqlDB:
+
+[source,bash]
+----
+cd ksqldb-window-session-tripsegments/ksql
+ksql-inserts.sh
+----
+
+Verify results:
+
+[source,bash]
+----
+ksql http://ksqldb-server:8088
+
+SELECT vehicle_id,
+       positions_sent,
+       start_latitude,
+       start_longitude,
+       end_latitude,
+       end_longitude,
+       TIMESTAMPTOSTRING(window_start, 'yyy-MM-dd HH:mm:ss', 'UTC') as window_start,
+       TIMESTAMPTOSTRING(window_end, 'yyy-MM-dd HH:mm:ss', 'UTC') as window_end
+FROM trips
+EMIT CHANGES;
+
+
++---------------------------+---------------------------+---------------------------+---------------------------+---------------------------+---------------------------+---------------------------+---------------------------+
+|VEHICLE_ID                 |POSITIONS_SENT             |START_LATITUDE             |START_LONGITUDE            |END_LATITUDE               |END_LONGITUDE              |WINDOW_START               |WINDOW_END                 |
++---------------------------+---------------------------+---------------------------+---------------------------+---------------------------+---------------------------+---------------------------+---------------------------+
+|VH1                        |5                          |42.21                      |17.12                      |42.28                      |17.16                      |2023-02-18 15:10:00        |2023-02-18 15:13:00        |
+|VH1                        |2                          |42.31                      |17.17                      |42.33                      |17.18                      |2023-02-18 15:20:00        |2023-02-18 15:22:00        |
 ----
 
 Teardown:
