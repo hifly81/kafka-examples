@@ -1,1 +1,0 @@
-{"type":"record","name":"Account","namespace":"org.hifly.saga.payment.model","fields":[{"name":"FULLNAME","type":["null","string"],"default":null}],"connect.name":"org.hifly.saga.payment.model.Account"}

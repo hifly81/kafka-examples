@@ -20,6 +20,7 @@
         <module>kafka-quarkus</module>
         <module>kafka-unixcommand-connector</module>
         <module>ksqldb-saga-example</module>
+        <module>ksqldb-window-tumbling-heartbeat</module>
         <module>admin-client</module>
         <module>authorizers</module>
         <module>interceptors</module>
