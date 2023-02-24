@@ -762,7 +762,7 @@ scripts/tear-down.sh
 
 === Session Window example: Vehicle Positions
 
-Implementation of a session window (5 minutes of inactive). Vehicle positions (latitude and logitude) are collected and a new window opens when the vehicle does not send its position for 5 minutes. This is considered as a new "trip".
+Implementation of a session window (5 minutes inactive). Vehicle positions (latitude and logitude) are collected and a new window opens when the vehicle does not send its position for 5 minutes. This is considered as a new "trip".
 
 Launch on local environment:
 
@@ -871,7 +871,9 @@ cd kafka-orders-tx
 mvn clean compile && mvn exec:java -Dexec.mainClass="ItemsConsumer"
 ----
 
-== Kafka Spring Boot
+== Framework
+
+=== Kafka Spring Boot
 
 Sample of a kafka producer and consumer implemented with Spring Boot 2.x.
 
@@ -896,7 +898,7 @@ curl --data '{"id":5, "name": "PS5"}' -H "Content-Type:application/json" http://
 curl --data '{"id":5, "name": "ERROR-PS5"}' -H "Content-Type:application/json" http://localhost:8010/api/order
 ----
 
-== Kafka Quarkus
+=== Kafka Quarkus
 
 Sample of a kafka producer and consumer implemented with Quarkus.
 Every 1s a new message is sent to demo topic.
@@ -917,7 +919,7 @@ cd kafka-quarkus
 ./mvnw clean package -Dquarkus.container-image.build=true -Dquarkus.kubernetes.deploy=true
 ----
 
-== Kafka microprofile2
+=== Kafka microprofile2
 
 Sample of a kafka producer and consumer running on an open liberty MicroProfile v2 runtime.
 
