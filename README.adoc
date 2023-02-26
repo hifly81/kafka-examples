@@ -1144,6 +1144,54 @@ Teardown:
 scripts/tear-down-oauth.sh
 ----
 
+== Mirroring
+
+=== Mirror Maker 2 tests
+
+Example of a Mirror Maker v2 configuration Active/Active
+
+link:mirror-maker2-tests/README.md[Mirror Maker 2 tests]
+
+== Kafka Interceptors
+
+This example shows how to create a custom producer interceptor. class _CreditCardProducerInterceptor_ will mask a sensitive info on producer record (credit card).
+
+Compile and package:
+
+[source,bash]
+----
+cd interceptors
+mvn clean package
+----
+
+Run kafka on port 9092:
+
+[source,bash]
+----
+scripts/boostrap.sh
+----
+
+Run a kafka producer on listener port 9092:
+
+[source,bash]
+----
+mvn exec:java -Dexec.mainClass="org.hifly.kafka.interceptor.producer.Runner"
+----
+
+Run a kafka consumer on listener port 9092:
+
+[source,bash]
+----
+mvn exec:java -Dexec.mainClass="org.hifly.kafka.interceptor.consumer.Runner"
+----
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down.sh
+----
+
 == Distributed Tracing with OpenTelemetry for kafka applications
 
 This example shows how to configure OpenTelemetry java auto-instrumentation for a kafka streams application enabling distributed tracing.
@@ -1210,50 +1258,4 @@ Teardown:
 [source,bash]
 ----
 scripts/tear-down-oauth.sh
-----
-
-== Mirror Maker 2 tests
-
-Example of a Mirror Maker v2 configuration Active/Active
-
-link:mirror-maker2-tests/README.md[Mirror Maker 2 tests]
-
-== Kafka Interceptors
-
-This example shows how to create a custom producer interceptor. class _CreditCardProducerInterceptor_ will mask a sensitive info on producer record (credit card).
-
-Compile and package:
-
-[source,bash]
-----
-cd interceptors
-mvn clean package
-----
-
-Run kafka on port 9092:
-
-[source,bash]
-----
-scripts/boostrap.sh
-----
-
-Run a kafka producer on listener port 9092:
-
-[source,bash]
-----
-mvn exec:java -Dexec.mainClass="org.hifly.kafka.interceptor.producer.Runner"
-----
-
-Run a kafka consumer on listener port 9092:
-
-[source,bash]
-----
-mvn exec:java -Dexec.mainClass="org.hifly.kafka.interceptor.consumer.Runner"
-----
-
-Teardown:
-
-[source,bash]
-----
-scripts/tear-down.sh
 ----
