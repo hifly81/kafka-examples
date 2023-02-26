@@ -1192,7 +1192,9 @@ Example of a Mirror Maker v2 configuration Active/Active
 
 link:mirror-maker2-tests/README.md[Mirror Maker 2 tests]
 
-== Distributed Tracing with OpenTelemetry for kafka applications
+== Observability
+
+=== Distributed Tracing with OpenTelemetry for kafka applications
 
 This example shows how to configure OpenTelemetry java auto-instrumentation for a kafka streams application enabling distributed tracing.
 
