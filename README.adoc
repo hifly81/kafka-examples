@@ -9,13 +9,14 @@
 // Need some preamble to get TOC:
 {empty}
 
+== Installation
 
-== Apache Kafka installation
+=== Apache Kafka installation
 
 Details about the installation, info at: +
 https://kafka.apache.org/documentation/#quickstart
 
-== Apache Kafka using docker compose
+=== Apache Kafka using docker compose
 
 To run a kafka cluster with Docker, use the _docker-compose.yml_ file available in the root directory.
 
@@ -37,7 +38,7 @@ Components list:
 * ksqlDB cli will listen to _localhost:8088_
 * PostgreSQL will listen to _localhost:5432_
 
-=== Start containers +
+==== Start containers +
 
 [source,bash]
 ----
@@ -45,7 +46,7 @@ scripts/bootstrap.sh
 
 ----
 
-=== Stop containers +
+==== Stop containers +
 
 [source,bash]
 ----
@@ -53,11 +54,11 @@ scripts/tear-down.sh
 
 ----
 
-=== Change Images Version
+==== Change Images Version
 
 Change the docker image version for the specific component, updating file _.env_ in root directory.
 
-== Apache Kafka on Kubernetes using Confluent For Kubernetes
+=== Apache Kafka on Kubernetes using Confluent For Kubernetes
 
 To run a kafka cluster on Kubernetes, have a look at Confluent for Kubernetes operator (CFK).
 
