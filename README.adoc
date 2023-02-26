@@ -147,7 +147,6 @@ cd kafka-producer
 mvn clean test
 ----
 
-
 == Kafka consumers
 
 Implementation of a kafka consumer that can be used with different deserializer classes (for key and value).
@@ -194,35 +193,6 @@ It must be only used with a transactional producer.
 ----
 cd kafka-consumer
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.tx.Runner"
-----
-
-== Confluent Avro Specific Record
-
-Implementation of a kafka producer and a kafka consumer using Avro Specific Record for serializing and deserializing.
-
-Confluent schema registry is needed tu run the example. +
-
-Create topics:
-
-[source,bash]
-----
-kafka-topics --bootstrap-server localhost:9092 --create --topic cars--replication-factor <replication_factor> --partitions <number_of_partitions>
-----
-
-Run the producer:
-
-[source,bash]
-----
-cd confluent-avro-specific-record
-mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.RunnerProducer"
-----
-
-Run the consumer:
-
-[source,bash]
-----
-cd confluent-avro-specific-record
-mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.RunnerConsumer"
 ----
 
 == Admin & Management
@@ -295,6 +265,38 @@ Operations added:
 cd admin-client
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.admin.AdminClientWrapper" -Dexec.args="<location_of_admin_property_file>"
 ----
+
+== Schema Registry
+
+=== Confluent Avro Specific Record
+
+Implementation of a kafka producer and a kafka consumer using Avro Specific Record for serializing and deserializing.
+
+Confluent schema registry is needed to run the example. +
+
+Create topics:
+
+[source,bash]
+----
+kafka-topics --bootstrap-server localhost:9092 --create --topic cars--replication-factor <replication_factor> --partitions <number_of_partitions>
+----
+
+Run the producer:
+
+[source,bash]
+----
+cd confluent-avro-specific-record
+mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.RunnerProducer"
+----
+
+Run the consumer:
+
+[source,bash]
+----
+cd confluent-avro-specific-record
+mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.RunnerConsumer"
+----
+
 
 == Kafka Connect
 
