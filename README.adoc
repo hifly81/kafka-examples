@@ -225,7 +225,63 @@ cd confluent-avro-specific-record
 mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.RunnerConsumer"
 ----
 
-== Kafka Admin Client
+== Admin & Management
+
+=== Kafka CLI Tools
+
+Kafka CLI are located in _$KAFKA_HOME/bin_ directory.
+
+. _kafka-acls_ - manage acls
+. _kafka-topics_ - create, delete, describe, or change a topic
+. _kafka-configs_ - create, delete, describe, or change cluster settings
+. _kafka-consumer-groups_ - manage consumer groups
+. _kafka-console-consumer_ - read data from Kafka topics and outputs it to standard output
+. _kafka-console-producer_ - produce data to Kafka topics
+. _kafka-consumer-perf-test_ - consume high volumes of data through your Kafka cluster
+. _kafka-producer-perf-test_ - produce high volumes of data through your Kafka cluster
+. _kafka-avro-console-producer_ - produce Avro data to Kafka topics with a schema _(only with confluent installation)_
+. _kafka-avro-console-consumer_ - read Avro data from Kafka topics with a schema and outputs it to standard output _(only with confluent installation)_
+
+=== Kafka Topics: segments and retention
+
+Bootstrap:
+
+[source,bash]
+----
+scripts/boostrap.sh
+----
+
+Create a topic _cars_ with retention for old segments set to 5 minutes and size of segments set to 100 KB.
+
+Be aware that _log.retention.check.interval.ms_ is set by default to 5 minutes and this is the frequency in milliseconds that the log cleaner checks whether any log is eligible for deletion.
+
+[source,bash]
+----
+kafka-topics --bootstrap-server localhost:9092 --create --topic cars --replication-factor 1 --partitions 1 --config segment.bytes=100000 --config segment.ms=604800000 --config retention.ms=300000 --config retention.bytes=-1
+----
+
+Launch a producer perf test:
+
+[source,bash]
+----
+kafka-producer-perf-test --topic cars --num-records 99999999999999 --throughput -1 --record-size 1 --producer-props bootstrap.servers=localhost:9092
+----
+
+Check the log dir for cars topic and wait for deletion of old segments (5 minutes + log cleaner trigger delta)
+
+[source,bash]
+----
+docker exec -it broker watch ls -ltr /var/lib/kafka/data/cars-0/
+----
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down.sh
+----
+
+=== Kafka Admin Client
 
 It uses _org.apache.kafka.clients.admin.AdminClient_ to execute Kafka Admin API.
 
@@ -1199,57 +1255,3 @@ Teardown:
 ----
 scripts/tear-down.sh
 ----
-
-== Kafka Topics: segments and retention
-
-Bootstrap:
-
-[source,bash]
-----
-scripts/boostrap.sh
-----
-
-Create a topic _cars_ with retention for old segments set to 5 minutes and size of segments set to 100 KB.
-
-Be aware that _log.retention.check.interval.ms_ is set by default to 5 minutes and this is the frequency in milliseconds that the log cleaner checks whether any log is eligible for deletion.
-
-[source,bash]
-----
-kafka-topics --bootstrap-server localhost:9092 --create --topic cars --replication-factor 1 --partitions 1 --config segment.bytes=100000 --config segment.ms=604800000 --config retention.ms=300000 --config retention.bytes=-1
-----
-
-Launch a producer perf test:
-
-[source,bash]
-----
-kafka-producer-perf-test --topic cars --num-records 99999999999999 --throughput -1 --record-size 1 --producer-props bootstrap.servers=localhost:9092
-----
-
-Check the log dir for cars topic and wait for deletion of old segments (5 minutes + log cleaner trigger delta)
-
-[source,bash]
-----
-docker exec -it broker watch ls -ltr /var/lib/kafka/data/cars-0/
-----
-
-Teardown:
-
-[source,bash]
-----
-scripts/tear-down.sh
-----
-
-== Kafka CLI Tools
-
-Kafka CLI are located in _$KAFKA_HOME/bin_ directory.
-
-. _kafka-acls_ - manage acls
-. _kafka-topics_ - create, delete, describe, or change a topic
-. _kafka-configs_ - create, delete, describe, or change cluster settings
-. _kafka-consumer-groups_ - manage consumer groups
-. _kafka-console-consumer_ - read data from Kafka topics and outputs it to standard output
-. _kafka-console-producer_ - produce data to Kafka topics
-. _kafka-consumer-perf-test_ - consume high volumes of data through your Kafka cluster
-. _kafka-producer-perf-test_ - produce high volumes of data through your Kafka cluster
-. _kafka-avro-console-producer_ - produce Avro data to Kafka topics with a schema _(only with confluent installation)_
-. _kafka-avro-console-consumer_ - read Avro data from Kafka topics with a schema and outputs it to standard output _(only with confluent installation)_
