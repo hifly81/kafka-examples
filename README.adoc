@@ -950,7 +950,82 @@ curl -v -X POST http://localhost:9090/kafka-microprofile2-consumer-0.0.1-SNAPSHO
 curl -v -X POST http://localhost:9080/kafka-microprofile2-producer-0.0.1-SNAPSHOT/order
 ----
 
-== Kafka OAUTH KIP-768
+== Security
+
+=== Kafka Custom Authorizer
+
+This example shows how to create a custom authorizer for Kafka
+
+IMPORTANT: this example is only for demo purposes and it's not intended to be deployed in production.
+
+Custom Authorizer _org.hifly.kafka.authorizer.DummyAuthirizer_ extends the basic _AclAuthorizer_ and allows authenticated users to execute
+operations on kafka topics without setting any ACLs on them.
+
+Compile and package:
+
+[source,bash]
+----
+cd authorizers
+mvn clean package
+cp -rf ./target/authorizers-0.0.1-SNAPSHOT.jar ./jars
+----
+
+Run kafka with custom authorizer on port 9092:
+
+[source,bash]
+----
+scripts/boostrap-auth.sh
+----
+
+Run a kafka producer test using the _producer.properties_ on listener port 9092:
+
+_producer.properties_:
+
+[source,bash]
+----
+sasl.mechanism=PLAIN
+security.protocol=SASL_PLAINTEXT
+sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required \
+  username="kafkabroker1" \
+  password="kafkabroker1-secret";
+----
+
+Producer command:
+
+[source,bash]
+----
+kafka-console-producer --bootstrap-server localhost:9092 --topic test --producer.config ./src/main/resources/producer.properties
+----
+
+Run a kafka consumer test using the _consumer.properties_ on listener port 9092:
+
+_consumer.properties_:
+
+[source,bash]
+----
+sasl.mechanism=PLAIN
+security.protocol=SASL_PLAINTEXT
+sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required \
+  username="kafkabroker1" \
+  password="kafkabroker1-secret";
+group.id=test
+----
+
+Consumer command:
+
+[source,bash]
+----
+kafka-console-consumer --bootstrap-server localhost:9092 --topic test --from-beginning --consumer.config ./src/main/resources/consumer.properties
+----
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-auth.sh
+----
+
+=== Kafka OAUTH KIP-768
 
 This example shows how to configure kafka to use SASL/OAUTHBEARER authentication with Support for OIDC.
 
@@ -1083,79 +1158,6 @@ scripts/tear-down-oauth.sh
 Example of a Mirror Maker v2 configuration Active/Active
 
 link:mirror-maker2-tests/README.md[Mirror Maker 2 tests]
-
-== Kafka Custom Authorizer
-
-This example shows how to create a custom authorizer for Kafka
-
-IMPORTANT: this example is only for demo purposes and it's not intended to be deployed in production.
-
-Custom Authorizer _org.hifly.kafka.authorizer.DummyAuthirizer_ extends the basic _AclAuthorizer_ and allows authenticated users to execute
-operations on kafka topics without setting any ACLs on them.
-
-Compile and package:
-
-[source,bash]
-----
-cd authorizers
-mvn clean package
-cp -rf ./target/authorizers-0.0.1-SNAPSHOT.jar ./jars
-----
-
-Run kafka with custom authorizer on port 9092:
-
-[source,bash]
-----
-scripts/boostrap.sh
-----
-
-Run a kafka producer test using the _producer.properties_ on listener port 9092:
-
-_producer.properties_:
-
-[source,bash]
-----
-sasl.mechanism=PLAIN
-security.protocol=SASL_PLAINTEXT
-sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required \
-  username="kafkabroker1" \
-  password="kafkabroker1-secret";
-----
-
-Producer command:
-
-[source,bash]
-----
-kafka-console-producer --bootstrap-server localhost:9092 --topic test --producer.config ./src/main/resources/producer.properties
-----
-
-Run a kafka consumer test using the _consumer.properties_ on listener port 9092:
-
-_consumer.properties_:
-
-[source,bash]
-----
-sasl.mechanism=PLAIN
-security.protocol=SASL_PLAINTEXT
-sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required \
-  username="kafkabroker1" \
-  password="kafkabroker1-secret";
-group.id=test
-----
-
-Consumer command:
-
-[source,bash]
-----
-kafka-console-consumer --bootstrap-server localhost:9092 --topic test --from-beginning --consumer.config ./src/main/resources/consumer.properties
-----
-
-Teardown:
-
-[source,bash]
-----
-scripts/tear-down.sh
-----
 
 == Kafka Interceptors
 
