@@ -13,6 +13,9 @@ import org.apache.kafka.common.errors.WakeupException;
 import java.time.Duration;
 import java.util.*;
 
+import static org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG;
+import static org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG;
+
 public class GenericConsumer<K, V> implements IKafkaConsumer {
 
     private Map<TopicPartition, OffsetAndMetadata> offsets = new HashMap<>();
@@ -41,7 +44,7 @@ public class GenericConsumer<K, V> implements IKafkaConsumer {
     public void subscribe(String groupId, String topic, boolean autoCommit) {
         if (consumer == null)
             consumer = new KafkaConsumer<>(
-                    KafkaConfig.consumerConfig(groupId, properties.getProperty("keyDeserializerClass"), properties.getProperty("valueDeserializerClass"), autoCommit));
+                    KafkaConfig.consumerConfig(groupId, properties.getProperty(KEY_DESERIALIZER_CLASS_CONFIG), properties.getProperty(VALUE_DESERIALIZER_CLASS_CONFIG), autoCommit));
         consumer.subscribe(Collections.singletonList(topic), new PartitionListener(consumer, offsets));
         this.autoCommit = autoCommit;
         this.groupId = groupId;

@@ -70,6 +70,13 @@ link:confluent-for-kubernetes/README.adoc[CFK Example]
 
 Some implementations of kafka producers.
 
+To launch the examples run kafka on port 9092:
+
+[source,bash]
+----
+scripts/bootstrap.sh
+----
+
 
 === String +
 
@@ -159,13 +166,6 @@ cd interceptors
 mvn clean package
 ----
 
-Run kafka on port 9092:
-
-[source,bash]
-----
-scripts/boostrap.sh
-----
-
 Run a kafka producer on listener port 9092:
 
 [source,bash]
@@ -213,6 +213,13 @@ cd kafka-consumer
 mvn clean test
 ----
 
+To launch the examples run kafka on port 9092:
+
+[source,bash]
+----
+scripts/bootstrap.sh
+----
+
 === StringDeserializer
 
 It uses _org.apache.kafka.common.serialization.StringDeserializer_ for key and value
@@ -258,7 +265,7 @@ Bootstrap:
 
 [source,bash]
 ----
-scripts/boostrap.sh
+scripts/bootstrap.sh
 ----
 
 Create a topic _cars_ with retention for old segments set to 5 minutes and size of segments set to 100 KB.
@@ -415,7 +422,7 @@ Run kafka on port 9092:
 
 [source,bash]
 ----
-scripts/boostrap.sh
+scripts/bootstrap.sh
 ----
 
 Deploy the connector:
@@ -724,7 +731,7 @@ Launch Docker Compose:
 
 [source,bash]
 ----
-scripts/boostrap.sh
+scripts/bootstrap.sh
 ----
 
 Connect to ksqlDB and set auto.offset.reset:
@@ -804,7 +811,7 @@ Launch Docker Compose:
 
 [source,bash]
 ----
-scripts/boostrap.sh
+scripts/bootstrap.sh
 ----
 
 Connect to ksqlDB and set auto.offset.reset:
@@ -869,7 +876,7 @@ Launch Docker Compose:
 
 [source,bash]
 ----
-scripts/boostrap.sh
+scripts/bootstrap.sh
 ----
 
 Connect to ksqlDB and set auto.offset.reset:
