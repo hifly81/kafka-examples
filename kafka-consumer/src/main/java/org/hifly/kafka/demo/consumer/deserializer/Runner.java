@@ -9,15 +9,19 @@ import java.util.UUID;
 public class Runner {
 
     public static void main (String [] args) {
-        pollAutoCommit();
+        String topics = null;
+        if(args != null && args.length == 1) {
+            topics = args[0];
+        }
+        pollAutoCommit(topics);
     }
 
-    private static void pollAutoCommit() {
+    private static void pollAutoCommit(String topics) {
 
         new ConsumerInstance<String , String>(
                 UUID.randomUUID().toString(),
-                UUID.randomUUID().toString(),
-                "topic1",
+                "group-XX",
+                topics == null? "topic1": topics,
                 StringDeserializer.class.getName(),
                 StringDeserializer.class.getName(),
                 "read_uncommitted",

@@ -28,9 +28,9 @@ public class ConsumerHandle<K,V> extends AbstractConsumerInstance<K,V> {
     }
 
     @Override
-    public void process(ConsumerRecords<K, V> consumerRecords, String groupId) {
+    public void process(ConsumerRecords<K, V> consumerRecords, String groupId, String consumerId) {
         for (ConsumerRecord<K, V> record : consumerRecords) {
-            ConsumerRecordUtil.prettyPrinter(groupId,  record);
+            ConsumerRecordUtil.prettyPrinter(groupId,  consumerId, record);
             if(valueStore != null)
                 valueStore.add(String.valueOf(record.value()));
             if(offsets != null)

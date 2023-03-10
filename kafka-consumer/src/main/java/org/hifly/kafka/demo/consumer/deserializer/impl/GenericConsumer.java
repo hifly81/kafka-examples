@@ -45,7 +45,7 @@ public class GenericConsumer<K, V> implements IKafkaConsumer {
         if (consumer == null)
             consumer = new KafkaConsumer<>(
                     KafkaConfig.consumerConfig(groupId, properties.getProperty(KEY_DESERIALIZER_CLASS_CONFIG), properties.getProperty(VALUE_DESERIALIZER_CLASS_CONFIG), autoCommit));
-        consumer.subscribe(Collections.singletonList(topic), new PartitionListener(consumer, offsets));
+        consumer.subscribe(Collections.list(Collections.enumeration(Arrays.asList(topic.split(",")))), new PartitionListener(consumer, offsets));
         this.autoCommit = autoCommit;
         this.groupId = groupId;
     }
@@ -54,7 +54,7 @@ public class GenericConsumer<K, V> implements IKafkaConsumer {
     public boolean assign(String topic, List partitions, boolean autoCommit) {
         boolean isAssigned = false;
         consumer = new KafkaConsumer<>(
-                KafkaConfig.consumerConfig(groupId, properties.getProperty("keyDeserializerClass"), properties.getProperty("valueDeserializerClass"), autoCommit));
+                KafkaConfig.consumerConfig(groupId, properties.getProperty(KEY_DESERIALIZER_CLASS_CONFIG), properties.getProperty(VALUE_DESERIALIZER_CLASS_CONFIG), autoCommit));
         List<PartitionInfo> partitionsInfo = consumer.partitionsFor(topic);
         Collection<TopicPartition> partitionCollection = new ArrayList<>();
         if (partitionsInfo != null) {
@@ -108,7 +108,7 @@ public class GenericConsumer<K, V> implements IKafkaConsumer {
     private void consume(int timeout, boolean commitSync) {
         ConsumerRecords<K, V> records = consumer.poll(Duration.ofMillis(timeout));
         consumerHandle.addOffsets(offsets);
-        consumerHandle.process(records, consumer.groupMetadata().groupId());
+        consumerHandle.process(records, consumer.groupMetadata().groupId(), consumer.groupMetadata().memberId());
 
         if (!autoCommit)
             if (!commitSync) {

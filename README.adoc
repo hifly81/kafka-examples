@@ -222,12 +222,20 @@ scripts/bootstrap.sh
 
 === StringDeserializer
 
-It uses _org.apache.kafka.common.serialization.StringDeserializer_ for key and value
+It uses _org.apache.kafka.common.serialization.StringDeserializer_ for key and value. Default topic is topic1.
 
 [source,bash]
 ----
 cd kafka-consumer
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.deserializer.Runner"
+----
+
+Send messages to the topic:
+
+[source,bash]
+----
+kafka-console-producer --broker-list localhost:9092 --topic topic1 --property "parse.key=true" --property "key.separator=:"
+> Frank:1
 ----
 
 === read committed [[readcommitted_consumer]] +
@@ -240,6 +248,44 @@ It must be only used with a transactional producer.
 ----
 cd kafka-consumer
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.tx.Runner"
+----
+
+=== Consumer Partition Assignor
+
+==== Range (default)
+
+Create 2 topics with same number of partitions:
+
+[source,bash]
+----
+kafka-topics --bootstrap-server localhost:9092 --create --topic users --replication-factor 1 --partitions 3
+kafka-topics --bootstrap-server localhost:9092 --create --topic users_clicks --replication-factor 1 --partitions 3
+----
+
+Run 2 consumer instances (2 different shell/terminal) belonging to the same group and subscribed to user and user_clicks topics:
+
+[source,bash]
+----
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.deserializer.Runner" -Dexec.args="users,users_clicks"
+----
+
+Send messages to the topics using the same key (Frank):
+
+[source,bash]
+----
+kafka-console-producer --broker-list localhost:9092 --topic users --property "parse.key=true" --property "key.separator=:"
+> Frank:1
+kafka-console-producer --broker-list localhost:9092 --topic users_clicks --property "parse.key=true" --property "key.separator=:"
+> Frank:1
+----
+
+
+Verify that the same consumer instance will read both messages.
+
+[source,bash]
+----
+Group id group-XX - Consumer id: consumer-group-XX-1-421db3e2-6501-45b1-acfd-275ce8d18368 - Topic: users - Partition: 1 - Offset: 0 - Key: frank - Value: 1
+Group id group-XX - Consumer id: consumer-group-XX-1-421db3e2-6501-45b1-acfd-275ce8d18368 - Topic: users_clicks - Partition: 1 - Offset: 0 - Key: frank - Value: 1
 ----
 
 == Admin & Management

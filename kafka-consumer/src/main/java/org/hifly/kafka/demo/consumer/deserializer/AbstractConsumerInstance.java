@@ -9,5 +9,5 @@ import org.apache.kafka.common.TopicPartition;
 public abstract class AbstractConsumerInstance<K,V> {
 
     public abstract void addOffsets(Map<TopicPartition, OffsetAndMetadata> offsets);
-    public abstract void process(ConsumerRecords<K, V> consumerRecords, String groupId);
+    public abstract void process(ConsumerRecords<K, V> consumerRecords, String groupId, String consumerId);
 }

@@ -24,7 +24,7 @@ public class OrderProcessHandle<K,V> extends AbstractConsumerInstance<K,V> {
     }
 
     @Override
-    public void process(ConsumerRecords<K, V> consumerRecords, String groupId) {
+    public void process(ConsumerRecords<K, V> consumerRecords, String groupId, String consumerId) {
         for (ConsumerRecord<K, V> record : consumerRecords) {
             OrderEvent orderEvent = (OrderEvent) record.value();
             log.info("Received record from kafka {}", record.key());
