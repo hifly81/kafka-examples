@@ -195,7 +195,7 @@ Class _org.hifly.kafka.demo.consumer.deserializer.impl.ConsumerInstance_ can be 
 
  - clientId (string)
  - groupId (string)
- - topic name
+ - topics (string separated by comma)
  - key deserializer class
  - value deserializer class
  - isolation.level (read_uncommitted/read_committed)
