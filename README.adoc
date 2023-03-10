@@ -38,6 +38,8 @@ Components list:
 * ksqlDB cli will listen to _localhost:8088_
 * PostgreSQL will listen to _localhost:5432_
 
+image::images/arch.png[Components]
+
 ==== Start containers +
 
 [source,bash]
