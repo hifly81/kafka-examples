@@ -331,7 +331,7 @@ kafka-console-producer --broker-list localhost:9092 --topic users_clicks --prope
 ----
 
 
-Verify that the same consumer instance will read both messages.
+Verify that messages are read by different consumers.
 
 [source,bash]
 ----
