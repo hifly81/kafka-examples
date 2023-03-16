@@ -28,7 +28,6 @@ Images are downloaded from _confluentinc_ and are based on _Confluent 7.3.1 Comm
 * Connect: custom image based on confluentinc/cp-kafka-connect-base:7.3.1
 * ksqlDB server: confluentinc/ksqldb-server:0.28.2
 * ksqlDB cli: confluentinc/ksqldb-cli:0.28.2
-* PostgreSQL: postgres:10.5
 
 Components list:
 
@@ -36,7 +35,6 @@ Components list:
 * Schema Registry will listen to _localhost:8081_
 * Connect will listen to _localhost:8083_
 * ksqlDB cli will listen to _localhost:8088_
-* PostgreSQL will listen to _localhost:5432_
 
 image::images/arch.png[Components]
 
@@ -574,6 +572,13 @@ Usage of Debezium Source connector for PostgreSQL to send RDMS table updates int
 The _debezium/debezium-connector-postgresql:1.7.1_ connector has been installed into connect docker image using confluent hub (see _docker-compose.yml_ file).
 More details on the connector are available at: https://docs.confluent.io/debezium-connect-postgres-source/current/overview.html.
 
+Run kafka on port 9092:
+
+[source,bash]
+----
+scripts/bootstrap-cdc.sh
+----
+
 The connector uses _pgoutput_ plugin for replication. This plug-in is always present in PostgreSQL server. The Debezium connector interprets the raw replication event stream directly into change events.
 
 Verify the existence of _account_ table and data in PostgreSQL:
@@ -581,13 +586,6 @@ Verify the existence of _account_ table and data in PostgreSQL:
 [source,bash]
 ----
 docker exec -it postgres psql -h localhost -p 5432 -U postgres -c 'select * from accounts;'
-----
-
-Run kafka on port 9092:
-
-[source,bash]
-----
-scripts/bootstrap.sh
 ----
 
 Deploy the connector:
@@ -615,7 +613,7 @@ Teardown:
 
 [source,bash]
 ----
-scripts/tear-down.sh
+scripts/tear-down-cdc.sh
 ----
 
 == Kafka streams
