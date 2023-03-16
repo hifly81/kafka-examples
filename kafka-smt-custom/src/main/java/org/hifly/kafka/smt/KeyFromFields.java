@@ -52,12 +52,11 @@ public class KeyFromFields<R extends ConnectRecord<R>> implements Transformation
 
     private List<String> fields;
 
-    private Map<String, Schema> schemaMapping  = new HashMap<>() {{
+    private Map<String, Schema> schemaMapping = new HashMap<>() {{
         put(String.class.getName(), OPTIONAL_STRING_SCHEMA);
         put(Integer.class.getName(), OPTIONAL_INT32_SCHEMA);
         put("org.json.JSONObject$Null", OPTIONAL_STRING_SCHEMA);
     }};
-
 
 
     @Override
@@ -80,17 +79,17 @@ public class KeyFromFields<R extends ConnectRecord<R>> implements Transformation
         //Create a composite key (concat of fields) with Schema as a String
         Schema schemaString = Schema.STRING_SCHEMA;
         StringBuilder keySb = new StringBuilder();
-        for(String field:fields) {
+        for (String field : fields) {
             try {
                 keySb.append(obj.get(field));
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 System.out.println("Can't parse:" + field + "-" + ex.getMessage());
             }
         }
 
         //Create schema for value
         SchemaBuilder schemaStruct = SchemaBuilder.struct();
-        for (Object keyObj: obj.keySet()) {
+        for (Object keyObj : obj.keySet()) {
             String key = (String) keyObj;
             //Inner json objects are treated as String
             if (obj.get(key) instanceof JSONObject) {
@@ -102,22 +101,17 @@ public class KeyFromFields<R extends ConnectRecord<R>> implements Transformation
 
         //Create Struct for value
         Struct valueStruct = new Struct(schemaStruct.schema());
-        for (Object keyObj: obj.keySet()) {
+        for (Object keyObj : obj.keySet()) {
             String key = (String) keyObj;
-            if(!(obj.get(key).getClass().getName().equalsIgnoreCase("org.json.JSONObject$Null"))) {
-                //Inner json objects are treated as String
-                if(obj.get(key).getClass().getName().equalsIgnoreCase(JSONObject.class.getName())) {
-                    JSONObject innerObj = (JSONObject) obj.get(key);
-                    String innerValue = innerObj.toString();
-                    valueStruct.put(key, innerValue);
 
-                } else {
-                    valueStruct.put(key, obj.get(key));
-                }
+            //Inner json objects are treated as String
+            if (obj.get(key).getClass().getName().equalsIgnoreCase(JSONObject.class.getName())) {
+                JSONObject innerObj = (JSONObject) obj.get(key);
+                String innerValue = innerObj.toString();
+                valueStruct.put(key, innerValue);
+
             } else {
-                //null value
-                //FIXME null object as a STRUCT and not as a String
-                valueStruct.put(key, "null");
+                valueStruct.put(key, obj.get(key));
             }
         }
 
@@ -131,6 +125,7 @@ public class KeyFromFields<R extends ConnectRecord<R>> implements Transformation
     }
 
     @Override
-    public void close() {}
+    public void close() {
+    }
 
 }

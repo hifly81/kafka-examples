@@ -18,23 +18,20 @@ public class KeyFromFieldsTest {
 
     @Test
     public void schemaless() {
-        xform.configure(Collections.singletonMap("fields", "C_IST,C_AG,PRGR_GGL_RAPP"));
+        xform.configure(Collections.singletonMap("fields", "FIELD1,FIELD2,FIELD3"));
         String str = "{\n" +
-                "  \"C_IST\": \"01\",\n" +
-                "  \"C_AG\": \"20400\",\n" +
-                "  \"C_TP_RAPP\": \"001\",\n" +
-                "  \"N_RAPP\": \"0006084655017\",\n" +
-                "  \"DT_CNT\": \"20221117\",\n" +
-                "  \"PRGR_GGL_RAPP\": 9000018,\n" +
-                "   \"C_MATR\": null,\n" +
-                "   \"NT\": { \"string\": \"N-/FRACCT/0449960801\" },\n" +
-                "   \"CTV_DV_FN\": { \"long\": 7000 }}";
+                "  \"FIELD1\": \"01\",\n" +
+                "  \"FIELD2\": \"20400\",\n" +
+                "  \"FIELD3\": \"001\",\n" +
+                "  \"FIELD4\": \"0006084655017\",\n" +
+                "  \"FIELD5\": \"20221117\",\n" +
+                "  \"FIELD6\": 9000018}";
         
         final SinkRecord record = new SinkRecord("", 0, null, null, null, str, 0);
         final SinkRecord transformedRecord = xform.apply(record);
 
         assertEquals(transformedRecord.keySchema(), Schema.STRING_SCHEMA);
-        assertEquals(transformedRecord.key().toString(), "01204009000018");
+        assertEquals(transformedRecord.key().toString(), "0120400001");
 
         System.out.println(transformedRecord.key());
         System.out.println(transformedRecord.value());

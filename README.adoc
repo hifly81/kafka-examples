@@ -2,7 +2,7 @@
 ==============================
 :toc:
 :toc-placement: preamble
-:toclevels: 2
+:toclevels: 3
 :showtitle:
 :Some attr: Some value
 
@@ -195,17 +195,30 @@ Implementation of a kafka consumer that can be used with different deserializer 
 
 Class _org.hifly.kafka.demo.consumer.deserializer.impl.ConsumerInstance_ can be customized with:
 
- - clientId (string)
- - groupId (string)
- - topics (string separated by comma)
- - key deserializer class
- - value deserializer class
- - isolation.level (read_uncommitted/read_committed)
- - poll timeout (ms)
- - consume duration (ms)
- - autoCommit (true/false)
- - commit sync (true/false)
- - subscribe mode (true/false)
+ - clientId _(string)_
+ - groupId _(string)_
+ - topics _(string separated by comma)_
+ - key deserializer class _(string)_
+ - value deserializer class _(string)_
+ - partition assignment strategy _(org.apache.kafka.clients.consumer.RangeAssignor|org.apache.kafka.clients.consumer.RoundRobinAssignor|org.apache.kafka.clients.consumer.StickyAssignor|org.apache.kafka.clients.consumer.CooperativeStickyAssignor)_
+ - isolation.level _(read_uncommitted|read_committed)_
+ - poll timeout _(ms)_
+ - consume duration _(ms)_
+ - autoCommit _(true|false)_
+ - commit sync _(true|false)_
+ - subscribe mode _(true|false)_
+
+Topics can be passed as argument 1 of the main program:
+[source,bash]
+----
+-Dexec.args="users,users_clicks"
+----
+
+Partition assignment strategy can be passed as argument 2 of the main program:
+[source,bash]
+----
+-Dexec.args="users,users_clicks org.apache.kafka.clients.consumer.RoundRobinAssignor"
+----
 
 Execute tests:
 
@@ -264,11 +277,49 @@ kafka-topics --bootstrap-server localhost:9092 --create --topic users --replicat
 kafka-topics --bootstrap-server localhost:9092 --create --topic users_clicks --replication-factor 1 --partitions 3
 ----
 
-Run 2 consumer instances (2 different shell/terminal) belonging to the same group and subscribed to user and user_clicks topics:
+Run 2 consumer instances (2 different shell/terminal) belonging to the same group and subscribed to _user_ and _user_clicks_ topics; consumers uses
+_org.apache.kafka.clients.consumer.RangeAssignor_ to distribute partition ownership.
 
 [source,bash]
 ----
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.deserializer.Runner" -Dexec.args="users,users_clicks"
+----
+
+Send messages to the topics using the same key (Frank):
+
+[source,bash]
+----
+kafka-console-producer --broker-list localhost:9092 --topic users --property "parse.key=true" --property "key.separator=:"
+> Frank:1
+kafka-console-producer --broker-list localhost:9092 --topic users_clicks --property "parse.key=true" --property "key.separator=:"
+> Frank:1
+----
+
+
+Verify that the same consumer instance will read both messages.
+
+[source,bash]
+----
+Group id group-XX - Consumer id: consumer-group-XX-1-421db3e2-6501-45b1-acfd-275ce8d18368 - Topic: users - Partition: 1 - Offset: 0 - Key: frank - Value: 1
+Group id group-XX - Consumer id: consumer-group-XX-1-421db3e2-6501-45b1-acfd-275ce8d18368 - Topic: users_clicks - Partition: 1 - Offset: 0 - Key: frank - Value: 1
+----
+
+==== Round Robin
+
+Create 2 topics with same number of partitions:
+
+[source,bash]
+----
+kafka-topics --bootstrap-server localhost:9092 --create --topic users --replication-factor 1 --partitions 3
+kafka-topics --bootstrap-server localhost:9092 --create --topic users_clicks --replication-factor 1 --partitions 3
+----
+
+Run 2 consumer instances (2 different shell/terminal) belonging to the same group and subscribed to _user_ and _user_clicks_ topics; consumers uses
+_org.apache.kafka.clients.consumer.RoundRobinAssignor_ to distribute partition ownership.
+
+[source,bash]
+----
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.deserializer.Runner" -Dexec.args="users,users_clicks org.apache.kafka.clients.consumer.RoundRobinAssignor"
 ----
 
 Send messages to the topics using the same key (Frank):
@@ -449,6 +500,72 @@ Teardown:
 ----
 scripts/tear-down-unixcommand-.connector.sh
 ----
+
+=== Custom SMT Json KeyFromValues
+
+Implementation of a custom Single Message Transformation (SMT);
+it creates a key from a list of json fields taken from message record value. Fields are configurable using SMT property _fields_.
+
+Example:
+
+Original record:
+
+[source,bash]
+----
+key: null
+value: {"FIELD1": "01","FIELD2": "20400","FIELD3": "001","FIELD4": "0006084655017","FIELD5": "20221117","FIELD6": 9000018}
+----
+
+Result after SMT:
+
+[source,bash]
+----
+"transforms.createKey.fields": "FIELD1,FIELD2,FIELD3"
+
+key: 0120400001
+value: {"FIELD1": "01","FIELD2": "20400","FIELD3": "001","FIELD4": "0006084655017","FIELD5": "20221117","FIELD6": 9000018}
+----
+
+The example applies the SMT to a mongodb sink connector.
+
+Run the example:
+
+[source,bash]
+----
+scripts/bootstrap-smt-connector.sh
+----
+
+A mongodb sink connector will be created with this config:
+
+[source,bash]
+----
+{
+  "name": "mongo-sink",
+  "config": {
+    "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
+    "topics": "test",
+    "connection.uri": "mongodb://admin:password@mongo:27017",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "key.converter.schemas.enable": false,
+    "value.converter.schemas.enable": false,
+    "database": "Tutorial2",
+    "collection": "pets",
+    "transforms": "createKey",
+    "transforms.createKey.type": "org.hifly.kafka.smt.KeyFromFields",
+    "transforms.createKey.fields": "FIELD1,FIELD2,FIELD3"
+----
+
+Original json messages will be sent to _test_ topic.
+Sink connector will apply the SMT and store the records in mongodb _pets_ collection from _Tutorial2_ database.
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-smt-.connector.sh
+----
+
 
 === CDC with Debezium PostgreSQL Source Connector
 

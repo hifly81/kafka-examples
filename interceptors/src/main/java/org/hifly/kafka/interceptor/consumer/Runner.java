@@ -20,6 +20,7 @@ public class Runner {
                 "test_custom_data",
                 StringDeserializer.class.getName(),
                 CreditCardJsonDeserializer.class.getName(),
+                "org.apache.kafka.clients.consumer.RangeAssignor",
                 "read_uncommitted",
                 100,
                 500,

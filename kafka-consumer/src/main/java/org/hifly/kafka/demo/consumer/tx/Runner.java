@@ -20,6 +20,7 @@ public class Runner {
                 "topic1",
                 StringDeserializer.class.getName(),
                 StringDeserializer.class.getName(),
+                "org.apache.kafka.clients.consumer.RangeAssignor",
                 "read_committed",
                 100,
                 -1,

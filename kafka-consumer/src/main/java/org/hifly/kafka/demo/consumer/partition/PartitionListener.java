@@ -22,8 +22,7 @@ public class PartitionListener<T> implements ConsumerRebalanceListener {
 
     @Override
     public void onPartitionsRevoked(Collection<TopicPartition> collection) {
-        //TODO save on db
-        //commitDBTransaction();
+
     }
 
     @Override
@@ -32,13 +31,13 @@ public class PartitionListener<T> implements ConsumerRebalanceListener {
         //seek from offset
         for (TopicPartition partition : partitions) {
             try {
-                String offset = properties.getProperty(partition.topic() + "-" + String.valueOf(partition.partition()));
+                String offset = properties.getProperty(partition.topic() + "-" + partition.partition());
                 if (offset != null) {
                     consumer.seek(partition, Long.valueOf(offset));
                     System.out.printf("Consumer - partition %s - initOffset %s\n", partition.partition(), offset);
                 }
             } catch (Exception ex) {
-                System.out.printf("Consumer - partition %s - initOffset not from DB\n", partition.partition());
+                //Ignore
             }
 
         }

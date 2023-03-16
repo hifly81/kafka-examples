@@ -18,6 +18,7 @@
         <module>kafka-springboot-producer</module>
         <module>kafka-springboot-consumer</module>
         <module>kafka-quarkus</module>
+        <module>kafka-smt-custom</module>
         <module>kafka-unixcommand-connector</module>
         <module>ksqldb-saga-example</module>
         <module>ksqldb-window-tumbling-heartbeat</module>
@@ -68,12 +69,6 @@
 
             <dependency>
                 <groupId>org.apache.kafka</groupId>
-                <artifactId>connect-api</artifactId>
-                <version>${kafka.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.kafka</groupId>
                 <artifactId>kafka-streams</artifactId>
                 <version>${kafka.version}</version>
             </dependency>
@@ -102,6 +97,38 @@
                 <artifactId>kafka-avro-serializer</artifactId>
                 <version>${confluent.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>connect-api</artifactId>
+                <version>${kafka.version}</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>connect-api</artifactId>
+                <version>${kafka.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>connect-runtime</artifactId>
+                <version>${kafka.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>connect-json</artifactId>
+                <version>${kafka.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>connect-transforms</artifactId>
+                <version>${kafka.version}</version>
+            </dependency>
+
 
             <dependency>
                 <groupId>io.apicurio</groupId>

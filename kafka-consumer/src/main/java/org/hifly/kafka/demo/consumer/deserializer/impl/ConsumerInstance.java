@@ -13,6 +13,7 @@ public class ConsumerInstance<K, V>  {
         private String topic;
         private String keyDeserializerClass;
         private String valueDeserializerClass;
+        private String partitionStrategy;
         private String isolationLevel;
         private int timeout;
         private long duration;
@@ -50,6 +51,7 @@ public class ConsumerInstance<K, V>  {
                 String topic,
                 String keyDeserializerClass,
                 String valueDeserializerClass,
+                String partitionStrategy,
                 String isolationLevel,
                 int timeout,
                 long duration,
@@ -62,6 +64,7 @@ public class ConsumerInstance<K, V>  {
             this.topic = topic;
             this.keyDeserializerClass = keyDeserializerClass;
             this.valueDeserializerClass = valueDeserializerClass;
+            this.partitionStrategy = partitionStrategy;
             this.isolationLevel = isolationLevel;
             this.timeout = timeout;
             this.duration = duration;
@@ -77,6 +80,7 @@ public class ConsumerInstance<K, V>  {
                 properties = new Properties();
                 properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, keyDeserializerClass);
                 properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, valueDeserializerClass);
+                properties.setProperty(ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG, partitionStrategy);
                 properties.setProperty(ConsumerConfig.ISOLATION_LEVEL_CONFIG, isolationLevel);
             }
             GenericConsumer<K, V> consumer = new GenericConsumer<>(kafkaConsumer, id, properties, consumerHandle);

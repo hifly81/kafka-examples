@@ -16,6 +16,7 @@ public class OrderProcessController {
                             TOPIC,
                             "org.apache.kafka.common.serialization.StringDeserializer",
                             "org.hifly.kafka.order.process.consumer.OrderEventJsonDeserializer",
+                            "org.apache.kafka.clients.consumer.RangeAssignor",
                             "read_committed",
                             pollSize,
                             duration,
