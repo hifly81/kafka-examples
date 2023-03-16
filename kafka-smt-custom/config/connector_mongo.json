@@ -1,0 +1,17 @@
+{
+  "name": "mongo-tutorial-sink2",
+  "config": {
+    "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
+    "topics": "tests",
+    "connection.uri": "mongodb://admin:password@mongo:27017",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "key.converter.schemas.enable": false,
+    "value.converter.schemas.enable": false,
+    "database": "Tutorial2",
+    "collection": "pets",
+    "transforms": "createKey",
+    "transforms.createKey.type": "sa.com.alrajhi.bank.kafkaconnect_smt.KeyFromFields",
+    "transforms.createKey.fields": "C_IST,C_AG,PRGR_GGL_RAPP"
+  }
+}
