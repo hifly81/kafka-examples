@@ -446,7 +446,7 @@ mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.dem
 
 == Kafka Connect
 
-=== Kafka unixcommand Source Connector
+=== Unixcommand Source Connector
 
 Implementation of a sample Source Connector; it executes _unix commands_ (e.g. _fortune_, _ls -ltr, netstat_) and sends its output to a kafka topic.
 
@@ -501,7 +501,7 @@ Teardown:
 scripts/tear-down-unixcommand-.connector.sh
 ----
 
-=== Custom SMT Json KeyFromValues
+=== Custom SMT: composite key from json records.
 
 Implementation of a custom Single Message Transformation (SMT);
 it creates a key from a list of json fields taken from message record value. Fields are configurable using SMT property _fields_.
