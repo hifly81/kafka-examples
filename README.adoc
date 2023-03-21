@@ -78,7 +78,7 @@ scripts/bootstrap.sh
 ----
 
 
-=== String +
+=== StringSerializer +
 
 It uses _org.apache.kafka.common.serialization.StringSerializer_ for key and value
 
@@ -88,7 +88,7 @@ cd kafka-producer
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.string.Runner"
 ----
 
-=== JSON +
+=== JsonSerializer +
 
 It uses _org.apache.kafka.common.serialization.StringSerializer_ for key and a _org.hifly.kafka.demo.producer.serializer.json.JsonSerializer_ for value
 
