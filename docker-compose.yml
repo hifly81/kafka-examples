@@ -74,7 +74,7 @@ services:
       - -c
       - |
         echo "Installing Connector"
-        confluent-hub install --no-prompt debezium/debezium-connector-postgresql:1.7.1
+        confluent-hub install --no-prompt confluentinc/kafka-connect-jdbc:10.6.4
         #
         echo "Launching Kafka Connect worker"
         /etc/confluent/docker/run &
