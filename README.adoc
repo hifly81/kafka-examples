@@ -616,6 +616,41 @@ Teardown:
 scripts/tear-down-cdc.sh
 ----
 
+=== Tasks distribution.
+
+This example will show how tasks are automatically balanced between Runnin worker nodes.
+
+A kafka connect cluster will be created with 2 workers, _connect_ and _connect2_ and with a _datagen_ source connector with 4 tasks continuously inserting data.
+
+After some seconds _connect2_ will be stopped and all tasks will be redistributed to _connect_ worker node.
+
+Run sample:
+
+[source,bash]
+----
+scripts/bootstrap-connect-tasks.sh
+----
+
+You will first see tasks distributed between the 2 Running workers:
+[source,bash]
+----
+{"datagen-sample":{"status":{"name":"datagen-sample","connector":{"state":"RUNNING","worker_id":"connect:8083"},"tasks":[{"id":0,"state":"RUNNING","worker_id":"connect:8083"},{"id":1,"state":"RUNNING","worker_id":"connect2:8083"},{"id":2,"state":"RUNNING","worker_id":"connect:8083"},{"id":3,"state":"RUNNING","worker_id":"connect2:8083"}],"type":"source"}}}
+----
+
+After stopping _connect2_ you will see tasks only distributed to _connect_ worker:
+[source,bash]
+----
+{"datagen-sample":{"status":{"name":"datagen-sample","connector":{"state":"RUNNING","worker_id":"connect:8083"},"tasks":[{"id":0,"state":"RUNNING","worker_id":"connect:8083"},{"id":1,"state":"RUNNING","worker_id":"connect:8083"},{"id":2,"state":"RUNNING","worker_id":"connect:8083"},{"id":3,"state":"RUNNING","worker_id":"connect:8083"}],"type":"source"}}}
+----
+
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-connect-tasks.sh
+----
+
 == Kafka streams
 
 Implementation of a series of kafka streams topologies.
