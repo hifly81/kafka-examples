@@ -616,7 +616,7 @@ Teardown:
 scripts/tear-down-cdc.sh
 ----
 
-=== Tasks distribution.
+=== Tasks distributions
 
 This example will show how tasks are automatically balanced between Runnin worker nodes.
 
