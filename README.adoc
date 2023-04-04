@@ -187,6 +187,31 @@ Teardown:
 scripts/tear-down.sh
 ----
 
+=== Python Producer
+
+Install python lib _confluent-kafka_:
+
+[source,bash]
+----
+pip install confluent-kafka
+----
+
+Create topic:
+
+[source,bash]
+----
+kafka-topics --bootstrap-server localhost:9092 --create --topic kafka-topic --replication-factor 1 --partitions 1
+----
+
+Run producer:
+
+[source,bash]
+----
+cd kafka-python-producer
+python producer.py
+----
+
+
 == Kafka consumers
 
 Implementation of a kafka consumer that can be used with different deserializer classes (for key and value).
