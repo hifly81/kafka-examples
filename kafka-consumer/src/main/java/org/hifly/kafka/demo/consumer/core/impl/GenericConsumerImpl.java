@@ -1,7 +1,7 @@
 package org.hifly.kafka.demo.consumer.core.impl;
 
 import org.hifly.kafka.demo.consumer.core.AbstractConsumerHandle;
-import org.hifly.kafka.demo.consumer.core.IKafkaConsumer;
+import org.hifly.kafka.demo.consumer.core.GenericConsumer;
 import org.hifly.kafka.demo.consumer.core.KafkaConfig;
 import org.hifly.kafka.demo.consumer.offset.OffsetManager;
 import org.hifly.kafka.demo.consumer.partition.PartitionListener;
@@ -16,7 +16,7 @@ import java.util.*;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG;
 
-public class GenericConsumer<K, V> implements IKafkaConsumer {
+public class GenericConsumerImpl<K, V> implements GenericConsumer {
 
     private Map<TopicPartition, OffsetAndMetadata> offsets = new HashMap<>();
     private Consumer<K, V> consumer;
@@ -27,7 +27,7 @@ public class GenericConsumer<K, V> implements IKafkaConsumer {
     private boolean autoCommit;
     private boolean keepConsuming = true;
 
-    public GenericConsumer(Consumer<K, V> consumer, String id, Properties properties, AbstractConsumerHandle consumerHandle) {
+    public GenericConsumerImpl(Consumer<K, V> consumer, String id, Properties properties, AbstractConsumerHandle consumerHandle) {
         this.consumer = consumer;
         this.id = id;
         this.properties = properties;

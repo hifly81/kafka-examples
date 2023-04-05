@@ -2,7 +2,7 @@ package org.hifly.kafka.demo.consumer.core;
 
 import java.util.List;
 
-public interface IKafkaConsumer {
+public interface GenericConsumer {
 
     void subscribe(String groupId, String topic, boolean autoCommit);
 

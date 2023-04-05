@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hifly.kafka.demo.consumer.core.impl.GenericConsumer;
+import org.hifly.kafka.demo.consumer.core.impl.GenericConsumerImpl;
 import org.hifly.kafka.demo.consumer.core.impl.ConsumerHandle;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -30,7 +30,7 @@ public class BasicConsumerTest {
         List<String> actualRecords = new ArrayList<>();
         final ConsumerHandle<String, String> recordsHandler = new ConsumerHandle<>(actualRecords);
 
-        GenericConsumer baseConsumer = new GenericConsumer(mockConsumer, "1", null, recordsHandler);
+        GenericConsumerImpl baseConsumer = new GenericConsumerImpl(mockConsumer, "1", null, recordsHandler);
 
         // the KafkaConsumerApplication runs synchronously so the test needs to run
         // the application in its own thread

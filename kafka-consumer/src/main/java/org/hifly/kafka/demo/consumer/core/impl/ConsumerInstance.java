@@ -83,7 +83,7 @@ public class ConsumerInstance<K, V>  {
                 properties.setProperty(ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG, partitionStrategy);
                 properties.setProperty(ConsumerConfig.ISOLATION_LEVEL_CONFIG, isolationLevel);
             }
-            GenericConsumer<K, V> consumer = new GenericConsumer<>(kafkaConsumer, id, properties, consumerHandle);
+            GenericConsumerImpl<K, V> consumer = new GenericConsumerImpl<>(kafkaConsumer, id, properties, consumerHandle);
             if(subscribeMode)
                 consumer.subscribe(groupId, topic, autoCommit);
             else

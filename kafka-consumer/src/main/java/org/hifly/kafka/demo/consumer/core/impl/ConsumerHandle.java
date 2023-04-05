@@ -38,4 +38,14 @@ public class ConsumerHandle<K,V> extends AbstractConsumerHandle<K,V> {
                 offsets.put(new TopicPartition(record.topic(), record.partition()), new OffsetAndMetadata(record.offset() + 1, "null"));
         }
     }
+
+    @Override
+    public void pause(ConsumerRecords<K, V> consumerRecords, String groupId, String consumerId) {
+
+    }
+
+    @Override
+    public void resume(ConsumerRecords<K, V> consumerRecords, String groupId, String consumerId) {
+
+    }
 }
