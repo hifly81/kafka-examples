@@ -11,7 +11,6 @@ def ack(error, message):
     print("offset={}".format(message.offset()))
 
 
-
 conf = {'bootstrap.servers': "localhost:9092"}
 
 producer = Producer(conf)

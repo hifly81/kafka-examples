@@ -364,6 +364,38 @@ Group id group-XX - Consumer id: consumer-group-XX-1-421db3e2-6501-45b1-acfd-275
 Group id group-XX - Consumer id: consumer-group-XX-1-421db3e2-6501-45b1-acfd-275ce8d18368 - Topic: users_clicks - Partition: 1 - Offset: 0 - Key: frank - Value: 1
 ----
 
+=== Python Consumer
+
+Install python lib _confluent-kafka_:
+
+[source,bash]
+----
+pip install confluent-kafka
+----
+
+Create topic:
+
+[source,bash]
+----
+kafka-topics --bootstrap-server localhost:9092 --create --topic kafka-topic --replication-factor 1 --partitions 1
+----
+
+Run producer:
+
+[source,bash]
+----
+cd kafka-python-producer
+python producer.py
+----
+
+Run consumer:
+
+[source,bash]
+----
+cd kafka-python-consumer
+python consumer.py
+----
+
 == Admin & Management
 
 === Kafka CLI Tools
