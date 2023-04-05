@@ -6,7 +6,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.hifly.kafka.demo.consumer.core.impl.ConsumerHandle;
-import org.hifly.kafka.demo.consumer.core.impl.ConsumerInstance;
+import org.hifly.kafka.demo.consumer.core.ConsumerInstance;
 
 import java.util.Properties;
 import java.util.UUID;

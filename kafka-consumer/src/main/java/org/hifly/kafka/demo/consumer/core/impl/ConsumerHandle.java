@@ -39,13 +39,4 @@ public class ConsumerHandle<K,V> extends AbstractConsumerHandle<K,V> {
         }
     }
 
-    @Override
-    public void pause(ConsumerRecords<K, V> consumerRecords, String groupId, String consumerId) {
-
-    }
-
-    @Override
-    public void resume(ConsumerRecords<K, V> consumerRecords, String groupId, String consumerId) {
-
-    }
 }

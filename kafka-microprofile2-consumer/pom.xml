@@ -9,10 +9,9 @@
     <packaging>war</packaging>
 
     <properties>
-
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
-
+        <surefire-plugin.version>2.22.0</surefire-plugin.version>
     </properties>
 
     <dependencies>
@@ -78,6 +77,14 @@
                 <version>2.6</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+            <!-- FIXME https://stackoverflow.com/questions/69896191/powermock-compatibility-with-jdk-17 -->
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire-plugin.version}</version>
+                <configuration>
+                    <argLine>--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.net=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED</argLine>
                 </configuration>
             </plugin>
         </plugins>

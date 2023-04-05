@@ -1,8 +1,8 @@
-package org.hifly.kafka.demo.consumer.core.impl;
+package org.hifly.kafka.demo.consumer.core;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.hifly.kafka.demo.consumer.core.AbstractConsumerHandle;
+import org.hifly.kafka.demo.consumer.core.impl.GenericConsumerImpl;
 
 import java.util.Properties;
 
