@@ -609,6 +609,8 @@ A mongodb sink connector will be created with this config:
     "transforms": "createKey",
     "transforms.createKey.type": "org.hifly.kafka.smt.KeyFromFields",
     "transforms.createKey.fields": "FIELD1,FIELD2,FIELD3"
+  }
+}
 ----
 
 Original json messages will be sent to _test_ topic.
@@ -618,7 +620,89 @@ Teardown:
 
 [source,bash]
 ----
-scripts/tear-down-smt-.connector.sh
+scripts/tear-down-smt-connector.sh
+----
+
+=== Sink Connector Error Handling with a DLQ
+
+MongoDB sink connector example configured to send bad messages to a DLQ topic named _dlq.mongo_
+
+Run the example:
+
+[source,bash]
+----
+scripts/bootstrap-connect-dlq.sh
+----
+
+Create the topics:
+
+[source,bash]
+----
+kafka-topics --bootstrap-server localhost:9092 --create --topic test --replication-factor 1 --partitions 1
+kafka-topics --bootstrap-server localhost:9092 --create --topic dlq.mongo --replication-factor 1 --partitions 1
+----
+
+Deploy the connector:
+
+[source,bash]
+----
+curl -X POST -H Accept:application/json -H Content-Type:application/json http://localhost:8083/connectors/ -d @kafka-connect-sink-dlq/config/connector_mongo_sink.json
+----
+
+A mongodb sink connector will be created with this config:
+
+[source,bash]
+----
+{
+  "name" : "mongo-sample-sink",
+  "config": {
+    "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
+    "topics": "test",
+    "connection.uri": "mongodb://admin:password@mongo:27017",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "key.converter.schemas.enable": false,
+    "value.converter.schemas.enable": false,
+    "database": "Tutorial2",
+    "collection": "pets",
+    "errors.tolerance": "all",
+    "errors.deadletterqueue.topic.name":"dlq.mongo",
+    "errors.deadletterqueue.topic.replication.factor": 1
+  }
+}
+----
+
+Send json messages to _test_ topic (second message is a bad json message):
+
+[source,bash]
+----
+kafka-console-producer --broker-list localhost:9092 --topic test --property "parse.key=true" --property "key.separator=:"
+> 1:{"FIELD1": "01","FIELD2": "20400","FIELD3": "001","FIELD4": "0006084655017","FIELD5": "20221117","FIELD6": 9000018}
+> 2:{"FIELD1": "01","FIELD2": "20400","FIELD3": "001","FIELD4": "0006084655017","FIELD5": "20221117",
+
+----
+
+Sink connector will send only the first record in mongodb _pets_ collection from _Tutorial2_ database.
+
+Second message will be stored in _dlq.mongo_ topic.
+
+[source,bash]
+----
+kafka-console-consumer --topic dlq.mongo --bootstrap-server localhost:9092 --from-beginning
+----
+
+Verify that the connector is still in RUNNING status:
+
+[source,bash]
+----
+curl -v http://localhost:8083/connectors?expand=status
+----
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-connect-dlq.sh
 ----
 
 
