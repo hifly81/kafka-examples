@@ -660,7 +660,7 @@ A mongodb sink connector will be created with this config:
     "topics": "test",
     "connection.uri": "mongodb://admin:password@mongo:27017",
     "key.converter": "org.apache.kafka.connect.storage.StringConverter",
-    "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
     "key.converter.schemas.enable": false,
     "value.converter.schemas.enable": false,
     "database": "Tutorial2",
