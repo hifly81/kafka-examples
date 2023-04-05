@@ -1,6 +1,6 @@
 package org.hifly.kafka.demo.consumer.string;
 
-import org.hifly.kafka.demo.consumer.deserializer.impl.ConsumerHandle;
+import org.hifly.kafka.demo.consumer.core.impl.ConsumerHandle;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;

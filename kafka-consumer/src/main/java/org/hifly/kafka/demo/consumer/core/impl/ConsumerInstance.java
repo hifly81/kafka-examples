@@ -1,8 +1,8 @@
-package org.hifly.kafka.demo.consumer.deserializer.impl;
+package org.hifly.kafka.demo.consumer.core.impl;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.hifly.kafka.demo.consumer.deserializer.AbstractConsumerInstance;
+import org.hifly.kafka.demo.consumer.core.AbstractConsumerHandle;
 
 import java.util.Properties;
 
@@ -21,7 +21,7 @@ public class ConsumerInstance<K, V>  {
         private boolean commitSync;
         private boolean subscribeMode;
         private KafkaConsumer kafkaConsumer;
-        private AbstractConsumerInstance consumerHandle;
+        private AbstractConsumerHandle consumerHandle;
 
         public ConsumerInstance(
                 String id,
@@ -32,7 +32,7 @@ public class ConsumerInstance<K, V>  {
                 boolean autoCommit,
                 boolean commitSync,
                 boolean subscribeMode,
-                AbstractConsumerInstance consumerHandle
+                AbstractConsumerHandle consumerHandle
         ) {
             this.id = id;
             this.topic = topic;
@@ -58,7 +58,7 @@ public class ConsumerInstance<K, V>  {
                 boolean autoCommit,
                 boolean commitSync,
                 boolean subscribeMode,
-                AbstractConsumerInstance consumerHandle) {
+                AbstractConsumerHandle consumerHandle) {
             this.id = id;
             this.groupId = groupId;
             this.topic = topic;

@@ -1,4 +1,4 @@
-package org.hifly.kafka.demo.consumer.deserializer;
+package org.hifly.kafka.demo.consumer.core;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 

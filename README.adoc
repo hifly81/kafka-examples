@@ -265,7 +265,7 @@ It uses _org.apache.kafka.common.serialization.StringDeserializer_ for key and v
 [source,bash]
 ----
 cd kafka-consumer
-mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.deserializer.Runner"
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.core.Runner"
 ----
 
 Send messages to the topic:
@@ -305,7 +305,7 @@ _org.apache.kafka.clients.consumer.RangeAssignor_ to distribute partition owners
 
 [source,bash]
 ----
-mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.deserializer.Runner" -Dexec.args="users,users_clicks"
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.core.Runner" -Dexec.args="users,users_clicks"
 ----
 
 Send messages to the topics using the same key (Frank):
@@ -342,7 +342,7 @@ _org.apache.kafka.clients.consumer.RoundRobinAssignor_ to distribute partition o
 
 [source,bash]
 ----
-mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.deserializer.Runner" -Dexec.args="users,users_clicks org.apache.kafka.clients.consumer.RoundRobinAssignor"
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.core.Runner" -Dexec.args="users,users_clicks org.apache.kafka.clients.consumer.RoundRobinAssignor"
 ----
 
 Send messages to the topics using the same key (Frank):

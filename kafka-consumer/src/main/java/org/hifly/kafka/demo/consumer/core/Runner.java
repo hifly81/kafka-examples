@@ -1,9 +1,8 @@
-package org.hifly.kafka.demo.consumer.deserializer;
+package org.hifly.kafka.demo.consumer.core;
 
-import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.hifly.kafka.demo.consumer.deserializer.impl.ConsumerHandle;
-import org.hifly.kafka.demo.consumer.deserializer.impl.ConsumerInstance;
+import org.hifly.kafka.demo.consumer.core.impl.ConsumerHandle;
+import org.hifly.kafka.demo.consumer.core.impl.ConsumerInstance;
 
 import java.util.UUID;
 

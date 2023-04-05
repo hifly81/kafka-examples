@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hifly.kafka.demo.consumer.deserializer.impl.GenericConsumer;
-import org.hifly.kafka.demo.consumer.deserializer.impl.ConsumerHandle;
+import org.hifly.kafka.demo.consumer.core.impl.GenericConsumer;
+import org.hifly.kafka.demo.consumer.core.impl.ConsumerHandle;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.MockConsumer;

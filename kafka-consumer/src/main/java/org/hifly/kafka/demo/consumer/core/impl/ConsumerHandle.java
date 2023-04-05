@@ -1,4 +1,4 @@
-package org.hifly.kafka.demo.consumer.deserializer.impl;
+package org.hifly.kafka.demo.consumer.core.impl;
 
 import java.util.List;
 import java.util.Map;
@@ -7,10 +7,10 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
-import org.hifly.kafka.demo.consumer.deserializer.AbstractConsumerInstance;
-import org.hifly.kafka.demo.consumer.deserializer.ConsumerRecordUtil;
+import org.hifly.kafka.demo.consumer.core.AbstractConsumerHandle;
+import org.hifly.kafka.demo.consumer.core.ConsumerRecordUtil;
 
-public class ConsumerHandle<K,V> extends AbstractConsumerInstance<K,V> {
+public class ConsumerHandle<K,V> extends AbstractConsumerHandle<K,V> {
 
     private List<String> valueStore;
     private Map<TopicPartition, OffsetAndMetadata> offsets;
