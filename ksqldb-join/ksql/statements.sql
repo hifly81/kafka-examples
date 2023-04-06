@@ -1,23 +1,18 @@
-CREATE STREAM heartbeat (
-    person_id VARCHAR,
-    heartbeat_value DOUBLE, 
-    timestamp VARCHAR
-) WITH (
-    kafka_topic = 'heartbeat',
-    timestamp='timestamp',
-    timestamp_format='yyyy-MM-dd HH:mm:ss',
-    partitions = 1,
-    value_format = 'avro'
-);
+SET 'auto.offset.reset' = 'earliest';
+
+CREATE STREAM TEMPERATURE_DATA (id BIGINT, body BIGINT) WITH (KAFKA_TOPIC='temperature.data',VALUE_FORMAT='JSON');
+CREATE STREAM TEMPERATURE_DATA_STL AS SELECT ID,BODY FROM TEMPERATURE_DATA PARTITION BY id;
+
+CREATE STREAM DEVICE (id BIGINT, fullname VARCHAR) WITH (KAFKA_TOPIC='device',VALUE_FORMAT='AVRO');
+CREATE STREAM DEVICE_DATA AS SELECT ID,FULLNAME FROM DEVICE PARTITION BY id;
+CREATE TABLE DEVICE_DATA_TBL(id BIGINT PRiMARY KEY, FULLNAME VARCHAR) WITH (KAFKA_TOPIC='DEVICE_DATA',VALUE_FORMAT='AVRO');
+
+CREATE STREAM DEVICE_TEMPERATURE AS
+      SELECT A.ID as DEVICE_ID,
+             FULLNAME,
+             BODY as TEMPERATURE
+        FROM TEMPERATURE_DATA_STL A
+             JOIN DEVICE_DATA_TBL B
+             ON A.ID = B.ID;
 
 
-CREATE TABLE heartbeat_60sec
-    WITH (kafka_topic='heartbeat_60sec') AS
-    SELECT person_id,
-           COUNT(*) AS beat_over_threshold_count,
-           WINDOWSTART AS window_start,
-           WINDOWEND AS window_end
-    FROM heartbeat
-    WINDOW TUMBLING (SIZE 1 MINUTES)
-    where heartbeat_value > 120
-    GROUP BY person_id;

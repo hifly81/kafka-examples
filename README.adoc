@@ -1275,6 +1275,84 @@ Teardown:
 scripts/tear-down.sh
 ----
 
+=== Inner Join: Devices and temperature measurement
+
+This example shows how to join a STREAM with air temperatures captured by devices and a TABLE containing the information of devices.
+
+Air Temperatures are ingested into a kafka topic _temperature.data_ with a RabbitMQ source connector.
+
+Device Info are ingested into a kafka topic _device_ with a JDBC Source Connector.
+
+Launch Docker Compose:
+
+[source,bash]
+----
+scripts/bootstrap-ksqldb-join.sh
+----
+
+Create input topics:
+
+[source,bash]
+----
+kafka-topics --bootstrap-server localhost:9092 --create --topic device --replication-factor 1 --partitions 1
+kafka-topics --bootstrap-server localhost:9092 --create --topic temperature.data --replication-factor 1 --partitions 1
+----
+
+Deploy the JDBC Source connector:
+
+[source,bash]
+----
+curl -X POST -H Accept:application/json -H Content-Type:application/json http://localhost:8083/connectors/ -d @ksqldb-join/config/connector_jdbc_source.json
+----
+
+Send data to a RabbitMQ queue _temperature.queue_ with a python producer (5 different devices):
+
+[source,bash]
+----
+pip3 install pika --upgrade
+ksqldb-join/config/rabbit_producer.py temperature.queue 5
+
+-->
+count:	5
+queue:	temperature.queue
+Send	{'id': 0, 'body': 35}
+Send	{'id': 1, 'body': 18}
+Send	{'id': 2, 'body': 2}
+Send	{'id': 3, 'body': 5}
+Send	{'id': 4, 'body': 32}
+Exiting
+----
+
+Deploy the RabbitMQ Source connector:
+
+[source,bash]
+----
+curl -X POST -H Accept:application/json -H Content-Type:application/json http://localhost:8083/connectors/ -d @ksqldb-join/config/connector_rabbitmq_source.json
+----
+
+Execute the ksqlDB statements; Stream _DEVICE_TEMPERATURE_ is a INNER JOIN between DEVICE and TEMPERATURE.DATA
+
+[source,bash]
+----
+cd ksqldb-join/ksql
+./ksql-statements.sh
+----
+
+Verify the enrichment with a query:
+
+[source,bash]
+----
+docker exec -it ksqldb-cli ksql http://ksqldb-server:8088 --execute "select * from DEVICE_TEMPERATURE EMIT CHANGES"
+
+-->
++-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+|DEVICE_ID                                                                    |FULLNAME                                                                     |TEMPERATURE                                                                         |
++-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+|1                                                                            |foo11111                                                                     |18                                                                           |
+|2                                                                            |foo22222                                                                     |2                                                                            |
+----
+
+
 == Transactions
 
 === Transactional producer

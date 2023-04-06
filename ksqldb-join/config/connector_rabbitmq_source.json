@@ -1,0 +1,15 @@
+{
+  "name" : "rabbitmq-sample-source",
+  "config": {
+    "connector.class": "io.confluent.connect.rabbitmq.RabbitMQSourceConnector",
+    "confluent.topic.bootstrap.servers": "broker:9092",
+    "confluent.topic.replication.factor": "1",
+    "kafka.topic": "temperature.data",
+    "rabbitmq.queue" : "temperature.queue",
+    "rabbitmq.host" : "rabbitmq",
+    "rabbitmq.username" : "guest",
+    "rabbitmq.password" : "guest",
+    "value.converter": "org.apache.kafka.connect.converters.ByteArrayConverter",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter"
+  }
+}
