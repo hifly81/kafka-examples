@@ -541,11 +541,11 @@ curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
 http://localhost:8081/subjects/cars-value/versions
 ----
 
-Produce data with new schema id=2:
+Produce data with new schema id=2 and containing new field:
 
 [source,bash]
 ----
-sh prodce-avro-records.sh
+sh produce-avro-records.sh
 ----
 
 Verify that consumer will not break and continue to process messages.
