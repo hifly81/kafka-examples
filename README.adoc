@@ -482,6 +482,16 @@ Create topics:
 kafka-topics --bootstrap-server localhost:9092 --create --topic cars --replication-factor <replication_factor> --partitions <number_of_partitions>
 ----
 
+Register first version of schema:
+
+[source,bash]
+----
+curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
+--data @src/main/resources/car_v1.avsc \
+http://localhost:8081/subjects/cars-value/versions
+----
+
+
 Run the producer:
 
 [source,bash]
@@ -509,6 +519,31 @@ Create topics:
 kafka-topics --bootstrap-server localhost:9092 --create --topic cars --replication-factor <replication_factor> --partitions <number_of_partitions>
 ----
 
+Register first version of schema:
+
+[source,bash]
+----
+curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
+--data @src/main/resources/car_v1.avsc \
+http://localhost:8081/subjects/cars-value/versions
+----
+
+Put compatibility on BACKWARD:
+
+[source,bash]
+----
+curl -X PUT -H "Content-Type: application/vnd.schemaregistry.v1+json" \
+--data '{"compatibility": "BACKWARD"}' \
+http://localhost:8081/config/cars-value
+----
+
+Get compatibility for subject cars-value:
+
+[source,bash]
+----
+curl -X GET http://localhost:8081/config/cars-value
+----
+
 Run the producer:
 
 [source,bash]
@@ -516,6 +551,7 @@ Run the producer:
 cd confluent-avro-specific-record
 mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.RunnerProducer"
 ----
+
 
 Run the consumer (keep it running):
 
@@ -549,6 +585,22 @@ sh produce-avro-records.sh
 ----
 
 Verify that consumer will not break and continue to process messages.
+
+Register new version of schema, with the addition of a field with a required value:
+
+[source,bash]
+----
+curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
+--data @src/main/resources/car_v3.avsc \
+http://localhost:8081/subjects/cars-value/versions
+----
+
+you will get an error:
+
+[source,bash]
+----
+{"error_code":42201,"message":"Invalid schema
+----
 
 
 == Kafka Connect
