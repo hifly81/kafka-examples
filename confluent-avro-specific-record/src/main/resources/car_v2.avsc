@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "Car",
+  "namespace": "org.hifly.kafka.demo.avro",
+  "fields": [
+    {
+      "name": "model",
+      "type": "string"
+    },
+    {
+      "name": "brand",
+      "type": "string"
+    }
+  ]
+}
