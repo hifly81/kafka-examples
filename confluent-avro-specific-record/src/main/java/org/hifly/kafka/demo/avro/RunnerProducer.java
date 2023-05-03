@@ -35,7 +35,7 @@ public class RunnerProducer {
     public static class CarProducer extends AbstractKafkaProducer<String, Car> implements IKafkaProducer<String, Car> {
 
         private static final String BROKER_LIST =
-                System.getenv("kafka.broker.list") != null? System.getenv("kafka.broker.list") :"localhost:29092";
+                System.getenv("kafka.broker.list") != null? System.getenv("kafka.broker.list") :"localhost:9092";
         private static final String CONFLUENT_SCHEMA_REGISTRY_URL =
                 System.getenv("confluent.schema.registry") != null? System.getenv("confluent.schema.registry"):"http://localhost:8081";
 

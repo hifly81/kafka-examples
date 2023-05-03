@@ -20,12 +20,12 @@ https://kafka.apache.org/documentation/#quickstart
 
 To run a kafka cluster with Docker, use the _docker-compose.yml_ file available in the root directory.
 
-Images are downloaded from _confluentinc_ and are based on _Confluent 7.3.1 Community_ licensed (kafka version 3.3.0):
+Images are downloaded from _confluentinc_ and are based on _Confluent 7.3.3 Community_ licensed (kafka version 3.3.0):
 
-* Zookeeper: confluentinc/cp-zookeeper:7.3.1
-* Kafka: confluentinc/cp-kafka:7.3.1
-* Schema Registry: confluentinc/cp-schema-registry:7.3.1
-* Connect: custom image based on confluentinc/cp-kafka-connect-base:7.3.1
+* Zookeeper: confluentinc/cp-zookeeper:7.3.3
+* Kafka: confluentinc/cp-kafka:7.3.3
+* Schema Registry: confluentinc/cp-schema-registry:7.3.3
+* Connect: custom image based on confluentinc/cp-kafka-connect-base:7.3.3
 * ksqlDB server: confluentinc/ksqldb-server:0.28.2
 * ksqlDB cli: confluentinc/ksqldb-cli:0.28.2
 
@@ -479,7 +479,7 @@ Create topics:
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic cars--replication-factor <replication_factor> --partitions <number_of_partitions>
+kafka-topics --bootstrap-server localhost:9092 --create --topic cars --replication-factor <replication_factor> --partitions <number_of_partitions>
 ----
 
 Run the producer:
@@ -497,6 +497,58 @@ Run the consumer:
 cd confluent-avro-specific-record
 mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.RunnerConsumer"
 ----
+
+=== Confluent Avro Compatibility Checks
+
+==== Backward
+
+Create topics:
+
+[source,bash]
+----
+kafka-topics --bootstrap-server localhost:9092 --create --topic cars --replication-factor <replication_factor> --partitions <number_of_partitions>
+----
+
+Run the producer:
+
+[source,bash]
+----
+cd confluent-avro-specific-record
+mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.RunnerProducer"
+----
+
+Run the consumer (keep it running):
+
+[source,bash]
+----
+cd confluent-avro-specific-record
+mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.RunnerConsumer"
+----
+
+View the latest schema for this subject:
+
+[source,bash]
+----
+curl -X GET http://localhost:8081/subjects/cars-value/versions/latest | jq .
+----
+
+Register new version of schema, with the addition of a field with default value:
+
+[source,bash]
+----
+curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
+--data @src/main/resources/car_v2.avsc \
+http://localhost:8081/subjects/cars-value/versions
+----
+
+Produce data with new schema id=2:
+
+[source,bash]
+----
+sh prodce-avro-records.sh
+----
+
+Verify that consumer will not break and continue to process messages.
 
 
 == Kafka Connect

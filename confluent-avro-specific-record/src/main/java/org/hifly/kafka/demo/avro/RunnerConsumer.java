@@ -16,7 +16,7 @@ public class RunnerConsumer {
     private static final String TOPIC = "cars";
 
     private static final String BROKER_LIST =
-            System.getenv("kafka.broker.list") != null? System.getenv("kafka.broker.list") :"localhost:29092";
+            System.getenv("kafka.broker.list") != null? System.getenv("kafka.broker.list") :"localhost:9092";
     private static final String CONFLUENT_SCHEMA_REGISTRY_URL =
             System.getenv("confluent.schema.registry") != null? System.getenv("confluent.schema.registry"):"http://localhost:8081";
 
@@ -42,7 +42,7 @@ public class RunnerConsumer {
                 TOPIC,
                 consumer,
                 100,
-                500,
+                -1,
                 true,
                 false,
                 true,
