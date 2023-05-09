@@ -1,0 +1,10 @@
+<aspectj>
+    <aspects>
+        <aspect name="org.hifly.kafka.smt.aspectj.SMTAspect"/>
+        <weaver>
+            <!-- only weave classes in our application-specific packages -->
+            <include within="org.apache.kafka.connect.transforms.*"/>
+        </weaver>
+
+    </aspects>
+</aspectj>

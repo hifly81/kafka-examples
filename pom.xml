@@ -19,6 +19,7 @@
         <module>kafka-springboot-consumer</module>
         <module>kafka-quarkus</module>
         <module>kafka-smt-custom</module>
+        <module>kafka-smt-aspectj</module>
         <module>kafka-unixcommand-connector</module>
         <module>ksqldb-saga-example</module>
         <module>admin-client</module>
