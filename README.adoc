@@ -724,8 +724,12 @@ scripts/tear-down-smt-connector.sh
 
 === SMT: log records with AOP
 
-Usage of a standard SMT Filter in a mongo sink connector; SMT _apply_ method is intercepted by a Java AOP Aspect
-implemented using AspectJ framework. The _@Aspect_, implemented in class _org.hifly.kafka.smt.aspectj.SMTAspect_ logs the input arg (_SinkRecord_ object) to the standard output.
+Usage of a standard SMT in a mongo sink connector.
+
+_apply_ method for SMT classes in package _org.apache.kafka.connect.transforms_  is intercepted by a Java AOP Aspect
+implemented using link:https://www.eclipse.org/aspectj/[AspectJ] framework.
+
+The _@Aspect_, implemented in class _org.hifly.kafka.smt.aspectj.SMTAspect_, logs the input arg (_SinkRecord_ object) to the standard output.
 
 
 [source,bash]
