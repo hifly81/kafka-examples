@@ -734,7 +734,7 @@ The _@Aspect_, implemented in class _org.hifly.kafka.smt.aspectj.SMTAspect_, log
 
 [source,bash]
 ----
- @Pointcut("execution(* org.apache.kafka.connect.transforms.Filter.apply(..))")
+ @Pointcut("execution(* org.apache.kafka.connect.transforms.*.apply(..))")
     public void standardMethod() {}
 
     @Before("standardMethod()")
