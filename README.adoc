@@ -799,6 +799,23 @@ scripts/tear-down-smt-connector.sh
 Usage of a standard SMT Filter in a mongo sink connector; SMT _apply_ method is intercepted by a Java AOP Aspect
 implemented using AspectJ framework. The @Aspect, implemented in class _org.hifly.kafka.smt.aspectj.SMTAspect_ logs the input arg to the standard output.
 
+
+[source,bash]
+----
+ @Pointcut("execution(* org.apache.kafka.connect.transforms.Filter.apply(..))")
+    public void standardMethod() {}
+
+    @Before("standardMethod()")
+    public void log(JoinPoint jp) throws Throwable {
+        Object[] array = jp.getArgs();
+        if(array != null) {
+            System.out.println("Size:" + array.length);
+            for(Object tmp: array)
+                System.out.println(tmp);
+        }
+    }
+----
+
 Connect log will show sink records entries:
 
 [source,bash]
@@ -812,6 +829,15 @@ Run the example:
 ----
 scripts/bootstrap-smt-aspectj.sh
 ----
+
+Kafka Connect will start with aspectjweaver java agent:
+
+[source,bash]
+----
+-Dorg.aspectj.weaver.showWeaveInfo=true -Daj.weaving.verbose=true -javaagent:/usr/share/java/aspectjweaver-1.9.19.jar
+----
+
+Aspects are deployed as standard jars and copied to Kafka Connect classpath _/etc/kafka-connect/jars/kafka-smt-aspectj-0.0.1-SNAPSHOT.jar_
 
 A mongodb sink connector will be created with this config:
 
