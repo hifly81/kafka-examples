@@ -1,0 +1,9 @@
+<aspectj>
+    <aspects>
+        <aspect name="org.hifly.kafka.smt.aspectj.SMTAspect"/>
+        <weaver options="-verbose -showWeaveInfo">
+            <include within="*"/>
+        </weaver>
+
+  </aspects>
+</aspectj>

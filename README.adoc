@@ -727,6 +727,129 @@ Teardown:
 scripts/tear-down-smt-connector.sh
 ----
 
+=== Custom SMT: composite key from json records.
+
+Implementation of a custom Single Message Transformation (SMT);
+it creates a key from a list of json fields taken from message record value. Fields are configurable using SMT property _fields_.
+
+Example:
+
+Original record:
+
+[source,bash]
+----
+key: null
+value: {"FIELD1": "01","FIELD2": "20400","FIELD3": "001","FIELD4": "0006084655017","FIELD5": "20221117","FIELD6": 9000018}
+----
+
+Result after SMT:
+
+[source,bash]
+----
+"transforms.createKey.fields": "FIELD1,FIELD2,FIELD3"
+
+key: 0120400001
+value: {"FIELD1": "01","FIELD2": "20400","FIELD3": "001","FIELD4": "0006084655017","FIELD5": "20221117","FIELD6": 9000018}
+----
+
+The example applies the SMT to a mongodb sink connector.
+
+Run the example:
+
+[source,bash]
+----
+scripts/bootstrap-smt-connector.sh
+----
+
+A mongodb sink connector will be created with this config:
+
+[source,bash]
+----
+{
+  "name": "mongo-sink",
+  "config": {
+    "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
+    "topics": "test",
+    "connection.uri": "mongodb://admin:password@mongo:27017",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "key.converter.schemas.enable": false,
+    "value.converter.schemas.enable": false,
+    "database": "Tutorial2",
+    "collection": "pets",
+    "transforms": "createKey",
+    "transforms.createKey.type": "org.hifly.kafka.smt.KeyFromFields",
+    "transforms.createKey.fields": "FIELD1,FIELD2,FIELD3"
+  }
+}
+----
+
+Original json messages will be sent to _test_ topic.
+Sink connector will apply the SMT and store the records in mongodb _pets_ collection from _Tutorial2_ database.
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-smt-connector.sh
+----
+
+=== SMT: log records with AOP
+
+Usage of a standard SMT, Filter in a mongo sink connector; SMT _apply_ method is intercepted by a Java AOP Aspect
+implemented using AspectJ framework. The @Aspect, implemented in class org.hifly.kafka.smt.aspectj.SMTAspect log the input arg to the standard output.
+
+Connect log will show sinck records entries:
+
+[source,bash]
+----
+SinkRecord{kafkaOffset=0, timestampType=CreateTime} ConnectRecord{topic='test', kafkaPartition=2, key=null, keySchema=Schema{STRING}, value={"FIELD1": "01","FIELD2": "20400","FIELD3": "001","FIELD4": "0006084655017","FIELD5": "20221117","FIELD6": 9000018}, valueSchema=Schema{STRING}, timestamp=1683701851358, headers=ConnectHeaders(headers=)}
+----
+
+Run the example:
+
+[source,bash]
+----
+scripts/bootstrap-smt-aspectj.sh
+----
+
+A mongodb sink connector will be created with this config:
+
+[source,bash]
+----
+{
+  "name": "mongo-sink",
+  "config": {
+    "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
+    "topics": "test",
+    "connection.uri": "mongodb://admin:password@mongo:27017",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "key.converter.schemas.enable": false,
+    "value.converter.schemas.enable": false,
+    "database": "Tutorial2",
+    "collection": "pets",
+    "transforms": "Filter",
+    "transforms.Filter.type": "org.apache.kafka.connect.transforms.Filter",
+    "transforms.Filter.predicate": "IsFoo",
+    "predicates": "IsFoo",
+    "predicates.IsFoo.type": "org.apache.kafka.connect.transforms.predicates.TopicNameMatches",
+    "predicates.IsFoo.pattern": "test"
+
+  }
+}
+----
+
+Original json messages will be sent to _test_ topic.
+Sink connector will apply the SMT and store the records in mongodb _pets_ collection from _Tutorial2_ database.
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-smt-aspectj.sh
+----
+
 === Sink Connector Error Handling with a DLQ
 
 MongoDB sink connector example configured to send bad messages to a DLQ topic named _dlq.mongo_
