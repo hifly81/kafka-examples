@@ -358,11 +358,6 @@ kafka-console-producer --broker-list localhost:9092 --topic users_clicks --prope
 
 Verify that messages are read by different consumers.
 
-[source,bash]
-----
-Group id group-XX - Consumer id: consumer-group-XX-1-421db3e2-6501-45b1-acfd-275ce8d18368 - Topic: users - Partition: 1 - Offset: 0 - Key: frank - Value: 1
-Group id group-XX - Consumer id: consumer-group-XX-1-421db3e2-6501-45b1-acfd-275ce8d18368 - Topic: users_clicks - Partition: 1 - Offset: 0 - Key: frank - Value: 1
-----
 
 === Python Consumer
 
