@@ -17,9 +17,9 @@ cd ..
 echo "Starting docker containers..."
 docker-compose -f kafka-smt-aspectj/docker-compose.yml --env-file .env up -d
 
-echo "Wait 50 seconds..."
+echo "Wait 30 seconds..."
 
-sleep 50
+sleep 30
 
 echo "Create topic test..."
 kafka-topics --bootstrap-server localhost:9092 --create --topic test --replication-factor 1 --partitions 3

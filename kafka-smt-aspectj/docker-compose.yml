@@ -69,7 +69,7 @@ services:
       CONNECT_ZOOKEEPER_CONNECT: 'zookeeper:2181'
       CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
       CONNECT_LOG4J_LOGGERS: org.apache.zookeeper=ERROR,org.I0Itec.zkclient=ERROR,org.reflections=ERROR
-      EXTRA_ARGS: -Dorg.aspectj.weaver.showWeaveInfo=true -Daj.weaving.verbose=true -javaagent:/usr/share/java/aspectjweaver-1.8.9.jar
+      EXTRA_ARGS: -Dorg.aspectj.weaver.showWeaveInfo=true -Daj.weaving.verbose=true -javaagent:/usr/share/java/aspectjweaver-1.9.19.jar
     command:
       - bash
       - -c
