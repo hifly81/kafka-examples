@@ -1562,13 +1562,13 @@ docker exec -it ksqldb-cli ksql http://ksqldb-server:8088 --execute "select * fr
 |4                                                                          |null                                                                       |8                                                                          |
 ----
 
-=== Right join: Devices and devices maintenance
+==== Joins: Devices and devices maintenance - Right Join
 
 This example shows how to join a Table and a Table
 
 Device Info are ingested into a kafka topic _device_ with a JDBC Source Connector.
 
-Device Maintenance are ingested into a kafka topic _device_maintenance_ with a JDBC Source Connector.
+Maintenances are ingested into a kafka topic _maintenance_ with a JDBC Source Connector.
 
 Launch Docker Compose:
 
@@ -1595,7 +1595,7 @@ curl -X POST -H Accept:application/json -H Content-Type:application/json http://
 curl -X POST -H Accept:application/json -H Content-Type:application/json http://localhost:8083/connectors/ -d @ksqldb-join/config/connector_device_maintenance_jdbc_source.json
 ----
 
-Execute the ksqlDB statements: TABLE _DEVICE_MAINTENANCE_ RIGHT JOIN TABLE _DEVICE_
+Execute the ksqlDB statements: TABLE _MAINTENANCE_ RIGHT JOIN TABLE _DEVICE_
 
 [source,bash]
 ----
