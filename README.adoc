@@ -20,12 +20,12 @@ https://kafka.apache.org/documentation/#quickstart
 
 To run a kafka cluster with Docker, use the _docker-compose.yml_ file available in the root directory.
 
-Images are downloaded from _confluentinc_ and are based on _Confluent 7.3.3 Community_ licensed (kafka version 3.3.0):
+Images are downloaded from _confluentinc_ and are based on _Confluent 7.4.0 Community_ licensed (kafka version 3.4.0):
 
-* Zookeeper: confluentinc/cp-zookeeper:7.3.3
-* Kafka: confluentinc/cp-kafka:7.3.3
-* Schema Registry: confluentinc/cp-schema-registry:7.3.3
-* Connect: custom image based on confluentinc/cp-kafka-connect-base:7.3.3
+* Zookeeper: confluentinc/cp-zookeeper
+* Kafka: confluentinc/cp-kafka
+* Schema Registry: confluentinc/cp-schema-registry
+* Connect: custom image based on confluentinc/cp-kafka-connect-base
 * ksqlDB server: confluentinc/ksqldb-server:0.28.2
 * ksqlDB cli: confluentinc/ksqldb-cli:0.28.2
 
@@ -1526,7 +1526,7 @@ cd ksqldb-join/ksql
 ./ksql-statements.sh
 ----
 
-=== Inner Join
+==== Inner Join
 
 Verify the enrichment with a query:
 
@@ -1542,7 +1542,7 @@ docker exec -it ksqldb-cli ksql http://ksqldb-server:8088 --execute "select * fr
 |2                                                                            |foo22222                                                                     |2                                                                            |
 ----
 
-=== Left Join
+==== Left Join
 
 Verify the enrichment with a query:
 
