@@ -1483,6 +1483,7 @@ Create input topics:
 [source,bash]
 ----
 kafka-topics --bootstrap-server localhost:9092 --create --topic device --replication-factor 1 --partitions 1
+
 kafka-topics --bootstrap-server localhost:9092 --create --topic temperature.data --replication-factor 1 --partitions 1
 ----
 
@@ -1559,6 +1560,62 @@ docker exec -it ksqldb-cli ksql http://ksqldb-server:8088 --execute "select * fr
 |2                                                                          |foo22222                                                                   |16                                                                         |
 |3                                                                          |null                                                                       |34                                                                         |
 |4                                                                          |null                                                                       |8                                                                          |
+----
+
+=== Right join: Devices and devices maintenance
+
+This example shows how to join a Table and a Table
+
+Device Info are ingested into a kafka topic _device_ with a JDBC Source Connector.
+
+Device Maintenance are ingested into a kafka topic _device_maintenance_ with a JDBC Source Connector.
+
+Launch Docker Compose:
+
+[source,bash]
+----
+scripts/bootstrap-ksqldb-join.sh
+----
+
+Create input topics:
+
+[source,bash]
+----
+kafka-topics --bootstrap-server localhost:9092 --create --topic device --replication-factor 1 --partitions 1
+
+kafka-topics --bootstrap-server localhost:9092 --create --topic maintenance --replication-factor 1 --partitions 1
+----
+
+Deploy the JDBC Source connector:
+
+[source,bash]
+----
+curl -X POST -H Accept:application/json -H Content-Type:application/json http://localhost:8083/connectors/ -d @ksqldb-join/config/connector_jdbc_source.json
+
+curl -X POST -H Accept:application/json -H Content-Type:application/json http://localhost:8083/connectors/ -d @ksqldb-join/config/connector_device_maintenance_jdbc_source.json
+----
+
+Execute the ksqlDB statements: TABLE _DEVICE_MAINTENANCE_ RIGHT JOIN TABLE _DEVICE_
+
+[source,bash]
+----
+cd ksqldb-join/ksql
+./ksql-statements-rj.sh
+----
+
+[source,bash]
+----
+docker exec -it ksqldb-cli ksql http://ksqldb-server:8088 --execute "select * from DEVICE_MAINTENANCE EMIT CHANGES"
+
+-->
++---------------------------------------------------------------------------+---------------------------------------------------------------------------+---------------------------------------------------------------------------+
+|DEVICE_ID                                                                  |FULLNAME                                                                   |MAINTENANCE                                                                |
++---------------------------------------------------------------------------+---------------------------------------------------------------------------+---------------------------------------------------------------------------+
+|1                                                                          |foo11111                                                                   |2023-03-01 15:00:00 16:00:00                                               |
+|2                                                                          |foo22222                                                                   |null                                                                       |
+|10                                                                         |foo1010101010                                                              |null                                                                       |
+|15                                                                         |foo1515151515                                                              |null                                                                       |
+
 ----
 
 

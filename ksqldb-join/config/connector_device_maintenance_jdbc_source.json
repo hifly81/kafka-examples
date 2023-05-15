@@ -1,0 +1,19 @@
+{
+  "name" : "pgsql-sample2-source",
+  "config": {
+    "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+    "connection.url": "jdbc:postgresql://postgres:5432/postgres",
+    "connection.user": "postgres",
+    "connection.password": "postgres",
+    "topic.prefix": "",
+    "poll.interval.ms" : 3600000,
+    "table.whitelist" : "public.maintenance",
+    "mode":"bulk",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "transforms":"createKey,extractInt",
+    "transforms.createKey.type":"org.apache.kafka.connect.transforms.ValueToKey",
+    "transforms.createKey.fields":"id",
+    "transforms.extractInt.type":"org.apache.kafka.connect.transforms.ExtractField$Key",
+    "transforms.extractInt.field":"id"
+  }
+}
