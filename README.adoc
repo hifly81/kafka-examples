@@ -112,7 +112,7 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.produc
 
 It uses _io.confluent.kafka.serializers.KafkaAvroSerializer_ for value and a GenericRecord.
 
-Confluent schema registry is needed tu run the example. +
+Confluent schema registry is needed to run the example. +
 
 More Info at: https://github.com/confluentinc/schema-registry
 
@@ -126,7 +126,7 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.produc
 
 It uses _io.apicurio.registry.utils.serde.AvroKafkaSerializer_ for value and a GenericRecord.
 
-Apicurio schema registry is needed tu run the example. +
+Apicurio schema registry is needed to run the example. +
 
 Info at: https://github.com/Apicurio/apicurio-registry
 
@@ -992,7 +992,7 @@ cd kafka-streams
 mvn clean test
 ----
 
-=== StreamCounter +
+=== Events counter Stream +
 Count number of events grouped by key.
 
 Create topics:
@@ -1028,7 +1028,7 @@ Read from output topic:
 kafka-console-consumer --topic counter-output-topic --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property key.separator=" : " --value-deserializer "org.apache.kafka.common.serialization.LongDeserializer"
 ----
 
-=== StreamSum +
+=== Sum values Stream +
 Sum values grouping by key.
 
 Create topics:
@@ -1064,7 +1064,7 @@ Read from output topic:
 kafka-console-consumer --topic sum-output-topic --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property key.separator=" : " --value-deserializer "org.apache.kafka.common.serialization.IntegerDeserializer"
 ----
 
-=== CarSensorStream +
+=== Cars sensor Stream +
 The stream filters out speed data from car data sensor records. Speed limit is set to 150km/h and only events exceeding the limits are filtered out. +
 A ktable stores the car info data. +
 A left join between the kstream and the ktable produces a new aggregated object published to an output topic.
@@ -1107,7 +1107,7 @@ Read from output topic:
 kafka-console-consumer --topic carsensor-output-topic --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
 
-=== CarBrandStream +
+=== Cars brand Stream +
 The stream splits the original data into 2 different topics, one for Ferrari cars and one for all other car brands.
 
 Create topics:
@@ -1148,7 +1148,7 @@ kafka-console-consumer --topic ferrari-input-topic --bootstrap-server localhost:
 kafka-console-consumer --topic cars-output-topic --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
 
-=== JSONArrayRemoveProcessor +
+=== JSONArray Fields removal Processor +
 
 Remove a specific json field from the record and forward it to the next topology node.
 This example uses  Kafka streams Processor API.
@@ -1192,7 +1192,7 @@ Read from output topic:
 kafka-console-consumer --topic processor-output-topic --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
 
-=== ExpiredMessagesProcessor +
+=== Expired Messages Processor +
 
 Remove old entries based on time (expiration time 30 seconds) using a punctuator.
 This example uses  Kafka streams Processor API.
@@ -1238,7 +1238,7 @@ kafka-console-consumer --topic expired-messages-input-topic --bootstrap-server l
 
 == ksqlDB
 
-=== Saga Example
+=== Saga Pattern Example
 
 Implementation of a sample App (kafka producer and consumer) sending and receiving orders; ksqlDB acts as an orchestrator to coordinate a sample Saga.
 
@@ -1814,7 +1814,7 @@ Teardown:
 scripts/tear-down-auth.sh
 ----
 
-=== Kafka OAUTH KIP-768
+=== Kafka OAUTH Authentication KIP-768
 
 This example shows how to configure kafka to use SASL/OAUTHBEARER authentication with Support for OIDC.
 
