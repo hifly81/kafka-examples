@@ -519,7 +519,7 @@ Register first version of schema:
 [source,bash]
 ----
 curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
---data @src/main/resources/car_v1.avsc \
+--data @avro/car_v1.avsc \
 http://localhost:8081/subjects/cars-value/versions
 ----
 
@@ -568,7 +568,7 @@ Register new version of schema, with the addition of a field with default value:
 [source,bash]
 ----
 curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
---data @src/main/resources/car_v2.avsc \
+--data @avro/car_v2.avsc \
 http://localhost:8081/subjects/cars-value/versions
 ----
 
@@ -586,7 +586,7 @@ Register new version of schema, with the addition of a field with a required val
 [source,bash]
 ----
 curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
---data @src/main/resources/car_v3.avsc \
+--data @avro/car_v3.avsc \
 http://localhost:8081/subjects/cars-value/versions
 ----
 
