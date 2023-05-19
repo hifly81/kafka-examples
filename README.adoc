@@ -1951,3 +1951,80 @@ Teardown:
 ----
 scripts/tear-down-tracing.sh
 ----
+
+== Performance
+
+=== Producer
+
+Usage of kafka utility _kafka-producer-perf-test_ to test producer performances for java applications.
+
+Kafka cluster is formed with 3 brokers (9092, 9093, 9094).
+
+1 client machine, named _kafka_perf_ is used to run _kafka-producer-perf-test_ against the kafka cluster.
+
+Run the cluster and kafka_perf machine:
+
+[source,bash]
+----
+scripts/bootstrap-performance.sh
+----
+
+==== Scenario 1: effects with compression
+
+Create a topic:
+
+[source,bash]
+----
+docker exec kafka-perf sh kafka-topics.sh --bootstrap-server broker:9092,broker2:9093,broker3:9094 --create --topic topic-perf --replication-factor 3 --partitions 6 --config min.insync.replicas=2
+----
+
+Run a scenario with:
+
+ - 1000000 records
+ - record size 2k
+ - no compression
+
+[source,bash]
+----
+docker exec kafka-perf sh kafka-producer-perf-test.sh --topic topic-perf --num-records 1000000 --record-size 2000 --throughput -1 --producer-props bootstrap.servers=broker:9092,broker2:9093,broker3:9094 --print-metrics
+----
+
+Run a scenario with:
+
+- 1000000 records
+- record size 2k
+- lz4 compression
+
+[source,bash]
+----
+docker exec kafka-perf sh kafka-producer-perf-test.sh --topic topic-perf --num-records 1000000 --record-size 2000 --throughput -1 --producer-props bootstrap.servers=broker:9092,broker2:9093,broker3:9094 compression.type=lz4 --print-metrics
+----
+
+Run a scenario with:
+
+- 1000000 records
+- record size 2k
+- gzip compression
+
+[source,bash]
+----
+docker exec kafka-perf sh kafka-producer-perf-test.sh --topic topic-perf --num-records 1000000 --record-size 2000 --throughput -1 --producer-props bootstrap.servers=broker:9092,broker2:9093,broker3:9094 compression.type=gzip --print-metrics
+----
+
+Run a scenario with:
+
+- 1000000 records
+- record size 2k
+- snappy compression
+
+[source,bash]
+----
+docker exec kafka-perf sh kafka-producer-perf-test.sh --topic topic-perf --num-records 1000000 --record-size 2000 --throughput -1 --producer-props bootstrap.servers=broker:9092,broker2:9093,broker3:9094 compression.type=snappy --print-metrics
+----
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-performance.sh
+----

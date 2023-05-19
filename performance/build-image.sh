@@ -1,0 +1,1 @@
+docker build . -t kafka-perf-image:1.0.0
