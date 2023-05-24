@@ -13,12 +13,15 @@ public class KafkaConfig {
             System.getenv("kafka.broker.list") != null? System.getenv("kafka.broker.list") :"localhost:9092,localhost:9093,localhost:9094";
 
     public static Properties loadConfig(final String configFile) throws IOException {
-        if (!Files.exists(Paths.get(configFile))) {
-            throw new IOException(configFile + " not found.");
-        }
         final Properties cfg = new Properties();
-        try (InputStream inputStream = new FileInputStream(configFile)) {
-            cfg.load(inputStream);
+
+        ClassLoader classLoader = KafkaConfig.class.getClassLoader();
+        InputStream inputStream = classLoader.getResourceAsStream(configFile);
+
+        if (inputStream == null) {
+            throw new IllegalArgumentException("file not found! " + configFile);
+        } else {
+                cfg.load(inputStream);
         }
 
         return cfg;

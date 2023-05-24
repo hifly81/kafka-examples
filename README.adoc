@@ -187,6 +187,14 @@ Run a kafka consumer on listener port 9092:
 mvn exec:java -Dexec.mainClass="org.hifly.kafka.interceptor.consumer.Runner"
 ----
 
+Verify output:
+
+[source,bash]
+----
+record is:XXXXXX
+Topic: test_custom_data - Partition: 0 - Offset: 1
+----
+
 Teardown:
 
 [source,bash]
@@ -364,6 +372,48 @@ kafka-console-producer --broker-list localhost:9092 --topic users_clicks --prope
 
 
 Verify that messages are read by different consumers.
+
+=== Interceptor
+
+This example shows how to create a custom consumer interceptor. class _CreditCardConsumerInterceptor_ will intercept records before deserialization and print headers.
+
+Compile and package:
+
+[source,bash]
+----
+cd interceptors
+mvn clean package
+----
+
+Run a kafka producer on listener port 9092:
+
+[source,bash]
+----
+mvn exec:java -Dexec.mainClass="org.hifly.kafka.interceptor.producer.Runner"
+----
+
+Run a kafka consumer on listener port 9092:
+
+[source,bash]
+----
+mvn exec:java -Dexec.mainClass="org.hifly.kafka.interceptor.consumer.Runner"
+----
+
+Verify output:
+
+[source,bash]
+----
+record headers:RecordHeaders(headers = [], isReadOnly = false)
+Group id consumer-interceptor-g2 - Consumer id: consumer-consumer-interceptor-g2-1-0e20b2b6-3269-4bc5-bfdb-ca787cf68aa8 - Topic: test_custom_data - Partition: 0 - Offset: 0 - Key: null - Value: XXXXXX
+Consumer 23d06b51-5780-4efc-9c33-a93b3caa3b48 - partition 0 - lastOffset 1
+----
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down.sh
+----
 
 
 === Python Consumer
