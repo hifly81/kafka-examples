@@ -16,7 +16,7 @@ public class Runner {
         try {
             //Begin TX
             baseProducer.getProducer().beginTransaction();
-            groupOfSynchMessages("topic1", baseProducer);
+            groupOfSynchMessages("test-idempotent", baseProducer);
             //Commit TX
             baseProducer.getProducer().commitTransaction();
         } catch (KafkaException e) {

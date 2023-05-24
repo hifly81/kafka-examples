@@ -17,7 +17,7 @@ public class Runner {
         new ConsumerInstance<String , String>(
                 UUID.randomUUID().toString(),
                 UUID.randomUUID().toString(),
-                "topic1",
+                "test-idempotent",
                 StringDeserializer.class.getName(),
                 StringDeserializer.class.getName(),
                 "org.apache.kafka.clients.consumer.RangeAssignor",

@@ -102,6 +102,13 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.produc
 
 It uses _org.apache.kafka.common.serialization.StringSerializer_ for key and value and set _enable.idempoteceny_ and _transactional.id_
 
+Create a topic with 3 partitions:
+
+[source,bash]
+----
+kafka-topics --bootstrap-server localhost:9092 --create --topic test-idempotent --replication-factor 1 --partitions 3
+----
+
 [source,bash]
 ----
 cd kafka-producer
