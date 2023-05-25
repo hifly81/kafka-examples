@@ -126,7 +126,7 @@ More Info at: https://github.com/confluentinc/schema-registry
 [source,bash]
 ----
 cd kafka-producer
-mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.avro.RunnerConfluent"
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.avro.Runner" -Dexec.args="CONFLUENT"
 ----
 
 === Avro-apicurio +
@@ -137,10 +137,24 @@ Apicurio schema registry is needed to run the example. +
 
 Info at: https://github.com/Apicurio/apicurio-registry
 
+Start Apicurio:
+
+[source,bash]
+----
+./scripts/bootstrap-apicurio.sh
+----
+
 [source,bash]
 ----
 cd kafka-producer
-mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.avro.RunnerApicurio"
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.avro.Runner" -Dexec.args="APICURIO"
+----
+
+Teardown:
+
+[source,bash]
+----
+./scripts/bootstrap-apicurio.sh
 ----
 
 === Partitioner +

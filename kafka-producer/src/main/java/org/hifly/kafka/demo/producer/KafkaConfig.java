@@ -16,7 +16,7 @@ public class KafkaConfig {
     private static final String CONFLUENT_SCHEMA_REGISTRY_URL =
             System.getenv("confluent.schema.registry") != null? System.getenv("confluent.schema.registry"):"http://localhost:8081";
     private static final String APICURIO_SCHEMA_REGISTRY_URL =
-            System.getenv("apicurio.schema.registry") != null? System.getenv("apicurio.schema.registry"):"http://localhost:8081/api";
+            System.getenv("apicurio.registry.url") != null? System.getenv("apicurio.registry.url"):"http://localhost:8080/apis/registry/v2";
 
 
     public static Properties loadConfig(final String configFile) throws IOException {
@@ -87,9 +87,10 @@ public class KafkaConfig {
         Properties producerProperties = new Properties();
         producerProperties.put("bootstrap.servers", BROKER_LIST);
         producerProperties.put("max.block.ms", 15000);
-        producerProperties.put("key.serializer", "io.apicurio.registry.utils.serde.AvroKafkaSerializer");
-        producerProperties.put("value.serializer", "io.apicurio.registry.utils.serde.AvroKafkaSerializer");
-        producerProperties.put("schema.registry.url", APICURIO_SCHEMA_REGISTRY_URL);
+        producerProperties.put("key.serializer", "io.apicurio.registry.serde.avro.AvroKafkaSerializer");
+        producerProperties.put("value.serializer", "io.apicurio.registry.serde.avro.AvroKafkaSerializer");
+        producerProperties.put("apicurio.registry.url", APICURIO_SCHEMA_REGISTRY_URL);
+        producerProperties.put("apicurio.registry.auto-register", Boolean.TRUE);
         return producerProperties;
     }
     
