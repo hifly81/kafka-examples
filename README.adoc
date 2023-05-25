@@ -154,7 +154,7 @@ Teardown:
 
 [source,bash]
 ----
-./scripts/bootstrap-apicurio.sh
+./scripts/teardown-apicurio.sh
 ----
 
 === Partitioner +
