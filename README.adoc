@@ -539,6 +539,7 @@ This example will show that messages sent to the same topic with different _comp
 
 Compressions supported on producer side are:
 
+ - none (no compression)
  - gzip
  - snappy
  - lz4
@@ -551,7 +552,13 @@ Bootstrap:
 scripts/bootstrap.sh
 ----
 
-Send messages with different compression type:
+Send messages with different compression type and with batching disabled:
+
+[source,bash]
+----
+kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config compression/client-none.properties --property "parse.key=true" --property "key.separator=:"
+0:none
+----
 
 [source,bash]
 ----
@@ -582,6 +589,11 @@ Run a kafka consumer on _topic1_ topic and see the records:
 [source,bash]
 ----
 kafka-console-consumer --topic topic1 --bootstrap-server localhost:9092 --from-beginning
+none
+gzip
+snappy
+lz4
+zstd
 ----
 
 Teardown:
