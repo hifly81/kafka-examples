@@ -533,6 +533,64 @@ cd admin-client
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.admin.AdminClientWrapper" -Dexec.args="<location_of_admin_property_file>"
 ----
 
+=== Compression
+
+This example will show that messages sent to the same topic with different _compression.type_ can be read by the same consumer instance.
+
+Compressions supported on producer side are:
+
+ - gzip
+ - snappy
+ - lz4
+ - zstd
+
+Bootstrap:
+
+[source,bash]
+----
+scripts/bootstrap.sh
+----
+
+Send messages with different compression type:
+
+[source,bash]
+----
+kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config compression/client-gzip.properties --property "parse.key=true" --property "key.separator=:"
+1:gzip
+----
+
+[source,bash]
+----
+kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config compression/client-snappy.properties --property "parse.key=true" --property "key.separator=:"
+2:snappy
+----
+
+[source,bash]
+----
+kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config compression/client-lz4.properties --property "parse.key=true" --property "key.separator=:"
+3:lz4
+----
+
+[source,bash]
+----
+kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config compression/client-zstd.properties --property "parse.key=true" --property "key.separator=:"
+4:zstd
+----
+
+Run a kafka consumer on _topic1_ topic and see the records:
+
+[source,bash]
+----
+kafka-console-consumer --topic topic1 --bootstrap-server localhost:9092 --from-beginning
+----
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down.sh
+----
+
 == Schema Registry
 
 === Confluent Avro Specific Record
