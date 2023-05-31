@@ -2304,6 +2304,17 @@ Run a scenario with:
 docker exec kafka-perf sh kafka-producer-perf-test.sh --topic topic-perf --num-records 1000000 --record-size 2000 --throughput -1 --producer-props bootstrap.servers=broker:9092,broker2:9093,broker3:9094 compression.type=snappy --print-metrics
 ----
 
+Run a scenario with:
+
+- 1000000 records
+- record size 2k
+- zstd compression
+
+[source,bash]
+----
+docker exec kafka-perf sh kafka-producer-perf-test.sh --topic topic-perf --num-records 1000000 --record-size 2000 --throughput -1 --producer-props bootstrap.servers=broker:9092,broker2:9093,broker3:9094 compression.type=zstd --print-metrics
+----
+
 Teardown:
 
 [source,bash]
