@@ -25,6 +25,7 @@
         <module>admin-client</module>
         <module>authorizers</module>
         <module>interceptors</module>
+        <module>principal-builder</module>
     </modules>
 
     <properties>

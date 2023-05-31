@@ -1816,6 +1816,8 @@ curl -v -X POST http://localhost:9080/kafka-microprofile2-producer-0.0.1-SNAPSHO
 
 This example shows how to define a mTLS listener in kafka on port 9092.
 
+mTLS ensures that both parties in the communication, client and broker, will trust each other exchanging SSL certificates.
+
 Run the example:
 
 [source,bash]
@@ -1844,7 +1846,7 @@ Then a broker with mTLS on port 9092 will be started.
 
 To test the mTLS connection, you can try producing some data to a kafka topic with the client keystore already generated and using mTLS _client.properties_
 
-IMPORTANT: mTLS listner has been configured with hostname verification: _ssl.endpoint.identification.algorithm= https_
+IMPORTANT: mTLS listener has been configured with hostname verification: _ssl.endpoint.identification.algorithm= https_
 
 client CN is: _CN=client,OU=Hifly,O=Hifly,L=Rome,ST=Lazio,C=IT_
 
@@ -1934,6 +1936,95 @@ Teardown:
 ----
 scripts/tear-down-auth.sh
 ----
+
+=== Custom Principal Builder
+
+This example shows how to create a custom _KafkaPrincipalBuilder_ to validate the value of _CN_ attribute in SSL certificate.
+
+Only the following CN are allowed:
+
+ - CN=broker
+ - CN=client
+
+IMPORTANT: this example is only for demo purposes and it's not intended to be deployed in production.
+
+Run the example:
+
+[source,bash]
+----
+scripts/bootstrap-principal.sh
+----
+
+The script will create all the required security files for broker and 2 client applications in _principal-builder/ssl_ folder.
+
+CA is a fake authority: _C=IT/ST=Lazio/L=Rome/O=Hifly/OU=Hifly_
+
+List of files generated:
+
+- CA certificate
+- CA key
+- broker csr
+- broker certificate
+- broker keystore
+- broker truststore
+- client csr
+- client certificate
+- client keystore
+- client truststore
+- client2 csr
+- client2 certificate
+- client2 keystore
+- client2 truststore
+
+Then a broker with mTLS on port 9092 will be started.
+
+IMPORTANT: mTLS listener has been configured with hostname verification: _ssl.endpoint.identification.algorithm= https_
+
+To test the mTLS connection, you can try producing some data to a kafka topic with the client keystore already generated and using mTLS _client.properties_
+
+client CN is: _CN=client,OU=Hifly,O=Hifly,L=Rome,ST=Lazio,C=IT_
+
+[source,bash]
+----
+kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config principal-builder/client.properties --property "parse.key=true" --property "key.separator=:"
+1:test
+2:test2
+----
+
+Messages will be sent with no error; in broker log, you will notice:
+
+[source,bash]
+----
+[2023-05-31 09:26:03,909] INFO SUBJECT:CN=client,OU=Hifly,O=Hifly,L=Rome,ST=Lazio,C=IT (org.hifly.kafka.principal.CustomPrincipalBuilder)
+----
+
+To test the mTLS connection with a not-allowed client, use the property file _client2.properties_
+
+client CN is: _CN=client2,OU=Hifly,O=Hifly,L=Rome,ST=Lazio,C=IT_
+
+[source,bash]
+----
+kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config principal-builder/client2.properties --property "parse.key=true" --property "key.separator=:"
+1:test
+2:test2
+----
+
+Messages will not be sent; in broker log, you will notice:
+
+[source,bash]
+----
+[2023-05-31 09:34:27,868] ERROR Exception while processing request from 192.168.80.3:9092-192.168.80.1:54098-18 (kafka.network.Processor)
+java.lang.IllegalStateException: Can't gather SSL certificates!
+	at org.hifly.kafka.principal.CustomPrincipalBuilder.build(CustomPrincipalBuilder.java:61)
+----
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-principal.sh
+----
+
 
 === Kafka OAUTH Authentication KIP-768
 
