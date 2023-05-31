@@ -1823,7 +1823,22 @@ Run the example:
 scripts/bootstrap-mtls.sh
 ----
 
-The script will create all the required security files (certs, trusstores, keystores) for broker and client application in _mtls-listener/ssl_ folder.
+The script will create all the required security files for broker and a client application in _mtls-listener/ssl_ folder.
+
+CA is a fake authority: _C=IT/ST=Lazio/L=Rome/O=Hifly/OU=Hifly_
+
+List of files generated:
+
+ - CA certificate
+ - CA key
+ - broker csr
+ - broker certificate
+ - broker keystore
+ - broker truststore
+ - client csr
+ - client certificate
+ - client keystore
+ - client truststore
 
 Then a broker with mTLS on port 9092 will be started.
 
