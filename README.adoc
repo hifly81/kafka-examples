@@ -1812,6 +1812,41 @@ curl -v -X POST http://localhost:9080/kafka-microprofile2-producer-0.0.1-SNAPSHO
 
 == Security
 
+=== mTLS listener
+
+This example shows how to define a mTLS listener in kafka on port 9092.
+
+Run the example:
+
+[source,bash]
+----
+scripts/bootstrap-mtls.sh
+----
+
+The script will create all the required security files (certs, trusstores, keystores) for broker and client application in _mtls-listener/ssl_ folder.
+
+Then a broker with mTLS on port 9092 will be started.
+
+To test the mTLS connection, you can try producing some data to a kafka topic with the client keystore already generated and using mTLS _client.properties_
+
+IMPORTANT: mTLS listner has been configured with hostname verification: _ssl.endpoint.identification.algorithm= https_
+
+client CN is: _CN=client,OU=Hifly,O=Hifly,L=Rome,ST=Lazio,C=IT_
+
+[source,bash]
+----
+kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config mtls-listener/client.properties --property "parse.key=true" --property "key.separator=:"
+1:test
+2:test2
+----
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-mtls.sh
+----
+
 === Kafka Custom Authorizer
 
 This example shows how to create a custom authorizer for Kafka
