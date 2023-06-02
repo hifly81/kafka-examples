@@ -1922,7 +1922,8 @@ client CN is: _CN=client,OU=Hifly,O=Hifly,L=Rome,ST=Lazio,C=IT_
 
 [source,bash]
 ----
-kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config mtls-listener/client.properties --property "parse.key=true" --property "key.separator=:"
+cd mtls-listener
+kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config client.properties --property "parse.key=true" --property "key.separator=:"
 1:test
 2:test2
 ----
@@ -1932,6 +1933,48 @@ Teardown:
 [source,bash]
 ----
 scripts/tear-down-mtls.sh
+----
+
+=== Multiple listeners
+
+This example shows how to define 2 listeners, 1 INTERNAL on port 9092 and 1 for external clients on port 9093 with SASL PLAIN authentication and SSL enabled.
+
+Run the example:
+
+[source,bash]
+----
+scripts/bootstrap-multi-listener.sh
+----
+
+The script will create all the required security files for broker and a client application in _multi-listener/ssl_ folder.
+
+CA is a fake authority: _C=IT/ST=Lazio/L=Rome/O=Hifly/OU=Hifly_
+
+List of files generated:
+
+- CA certificate
+- CA key
+- broker csr
+- broker certificate
+- broker keystore
+- broker truststore
+- client truststore
+
+To test the SASL PLAIN SSL connection, you can try producing some data to a kafka topic using _client.properties_
+
+[source,bash]
+----
+cd multi-listener
+kafka-console-producer --broker-list broker:9093 --topic topic1 --producer.config client.properties --property "parse.key=true" --property "key.separator=:"
+1:test
+2:test2
+----
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-multi-listener.sh
 ----
 
 === Kafka Custom Authorizer
