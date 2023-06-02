@@ -1960,7 +1960,7 @@ List of files generated:
 - broker truststore
 - client truststore
 
-To test the SASL PLAIN SSL connection, you can try producing some data to a kafka topic using _client.properties_ with user _admin/admin_secret_
+= To test the SASL PLAIN SSL connection, you can try producing some data to a kafka topic using _client.properties_ with user _admin/admin_secret_
 
 [source,bash]
 ----

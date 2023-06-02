@@ -35,8 +35,7 @@ services:
         org.apache.kafka.common.security.plain.PlainLoginModule required \
         username="admin" \
         password="admin-secret" \
-        user_admin="admin-secret" \
-        user_mds="mds-secret";
+        user_admin="admin-secret"
       KAFKA_SSL_KEYSTORE_FILENAME: kafka.broker.keystore.jks
       KAFKA_SSL_KEYSTORE_CREDENTIALS: kafka.broker.keystore.jks_creds
       KAFKA_SSL_KEY_CREDENTIALS: kafka.broker.pkey_creds
