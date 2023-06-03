@@ -9,6 +9,8 @@
 // Need some preamble to get TOC:
 {empty}
 
+[![Greetings](https://github.com/hifly81/kafka-examples/actions/workflows/greetings.yml/badge.svg?branch=master&event=pull_request)](https://github.com/hifly81/kafka-examples/actions/workflows/greetings.yml)
+
 == Installation
 
 === Apache Kafka installation
