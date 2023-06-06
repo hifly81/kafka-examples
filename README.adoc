@@ -12,12 +12,7 @@
 
 == Installation
 
-=== Apache Kafka installation
-
-Details about the installation, info at: +
-https://kafka.apache.org/documentation/#quickstart
-
-=== Apache Kafka using docker compose
+=== Zookeeper mode
 
 To run a kafka cluster with Docker, use the _docker-compose.yml_ file available in the root directory.
 
@@ -55,6 +50,42 @@ scripts/tear-down.sh
 
 ----
 
+=== KRaft mode
+
+To run a kafka cluster with Docker, use the _docker-compose-kraft.yml_ file available in the root directory.
+
+Images are downloaded from _confluentinc_ and are based on _Confluent 7.4.0 Community_ licensed (kafka version 3.4.0):
+
+* Kafka: confluentinc/cp-kafka
+* Schema Registry: confluentinc/cp-schema-registry
+* Connect: custom image based on confluentinc/cp-kafka-connect-base
+* ksqlDB server: confluentinc/ksqldb-server:0.28.2
+* ksqlDB cli: confluentinc/ksqldb-cli:0.28.2
+
+Components list:
+
+* Broker will listen to _localhost:9092_
+* Schema Registry will listen to _localhost:8081_
+* Connect will listen to _localhost:8083_
+* ksqlDB cli will listen to _localhost:8088_
+
+
+==== Start containers +
+
+[source,bash]
+----
+scripts/bootstrap-kraft.sh
+
+----
+
+==== Stop containers +
+
+[source,bash]
+----
+scripts/tear-down-kraft.sh
+
+----
+
 ==== Change Images Version
 
 Change the docker image version for the specific component, updating file _.env_ in root directory.
@@ -72,12 +103,6 @@ link:confluent-for-kubernetes/README.adoc[CFK Example]
 Some implementations of kafka producers.
 
 To launch the examples run kafka on port 9092:
-
-[source,bash]
-----
-scripts/bootstrap.sh
-----
-
 
 === StringSerializer +
 
@@ -158,6 +183,7 @@ Teardown:
 ./scripts/teardown-apicurio.sh
 ----
 
+
 === Partitioner +
 
 It uses a custom partitioner for keys.
@@ -208,13 +234,6 @@ Verify output:
 ----
 record is:XXXXXX
 Topic: test_custom_data - Partition: 0 - Offset: 1
-----
-
-Teardown:
-
-[source,bash]
-----
-scripts/tear-down.sh
 ----
 
 === Python Producer
@@ -279,13 +298,6 @@ Execute tests:
 ----
 cd kafka-consumer
 mvn clean test
-----
-
-To launch the examples run kafka on port 9092:
-
-[source,bash]
-----
-scripts/bootstrap.sh
 ----
 
 === StringDeserializer
@@ -423,13 +435,6 @@ Group id consumer-interceptor-g2 - Consumer id: consumer-consumer-interceptor-g2
 Consumer 23d06b51-5780-4efc-9c33-a93b3caa3b48 - partition 0 - lastOffset 1
 ----
 
-Teardown:
-
-[source,bash]
-----
-scripts/tear-down.sh
-----
-
 
 === Python Consumer
 
@@ -482,13 +487,6 @@ Kafka CLI are located in _$KAFKA_HOME/bin_ directory.
 
 === Kafka Topics: segments and retention
 
-Bootstrap:
-
-[source,bash]
-----
-scripts/bootstrap.sh
-----
-
 Create a topic _cars_ with retention for old segments set to 5 minutes and size of segments set to 100 KB.
 
 Be aware that _log.retention.check.interval.ms_ is set by default to 5 minutes and this is the frequency in milliseconds that the log cleaner checks whether any log is eligible for deletion.
@@ -510,13 +508,6 @@ Check the log dir for cars topic and wait for deletion of old segments (5 minute
 [source,bash]
 ----
 docker exec -it broker watch ls -ltr /var/lib/kafka/data/cars-0/
-----
-
-Teardown:
-
-[source,bash]
-----
-scripts/tear-down.sh
 ----
 
 === Kafka Admin Client
@@ -545,13 +536,6 @@ Compressions supported on producer side are:
  - snappy
  - lz4
  - zstd
-
-Bootstrap:
-
-[source,bash]
-----
-scripts/bootstrap.sh
-----
 
 Send messages with different compression type and with batching disabled:
 
@@ -595,13 +579,6 @@ gzip
 snappy
 lz4
 zstd
-----
-
-Teardown:
-
-[source,bash]
-----
-scripts/tear-down.sh
 ----
 
 == Schema Registry
@@ -794,7 +771,7 @@ Teardown:
 
 [source,bash]
 ----
-scripts/tear-down-unixcommand-.connector.sh
+scripts/tear-down-unixcommand-connector.sh
 ----
 
 === Custom SMT: composite key from json records.
@@ -1394,15 +1371,6 @@ mvn generate-sources
 mvn clean compile
 ----
 
-Launch on local environment:
-
-Launch Docker Compose:
-
-[source,bash]
-----
-scripts/bootstrap.sh
-----
-
 Connect to ksqlDB and set auto.offset.reset:
 
 [source,bash]
@@ -1463,25 +1431,9 @@ Order Action:{"TX_ID": "TX_AAA_A123", "TX_ACTION": -1, "ACCOUNT": "AAA", "ITEMS"
  --> compensate:{"TX_ID": "TX_AAA_A123", "TX_ACTION": -1, "ACCOUNT": "AAA", "ITEMS": ["Item0", "Item1", "Item2", "ORDER": "A123"}
 ----
 
-Teardown:
-
-[source,bash]
-----
-scripts/tear-down.sh
-----
-
 === Tumbling Window example: heart rate monitoring
 
 Implementation of a tumbling window (1 minute) to monitor heart rate. Values over a threshold of 120 beats per minute are reported.
-
-Launch on local environment:
-
-Launch Docker Compose:
-
-[source,bash]
-----
-scripts/bootstrap.sh
-----
 
 Connect to ksqlDB and set auto.offset.reset:
 
@@ -1528,25 +1480,9 @@ EMIT CHANGES;
 |MGG1                                                     |10                                                       |2023-02-18 15:15:00                                      |2023-02-18 15:16:00                                      |
 ----
 
-Teardown:
-
-[source,bash]
-----
-scripts/tear-down.sh
-----
-
 === Session Window example: Vehicle Positions
 
 Implementation of a session window (5 minutes inactive). Vehicle positions (latitude and logitude) are collected and a new window opens when the vehicle does not send its position for 5 minutes. This is considered as a new "trip".
-
-Launch on local environment:
-
-Launch Docker Compose:
-
-[source,bash]
-----
-scripts/bootstrap.sh
-----
 
 Connect to ksqlDB and set auto.offset.reset:
 
@@ -1596,13 +1532,6 @@ EMIT CHANGES;
 +---------------------------+---------------------------+---------------------------+---------------------------+---------------------------+---------------------------+---------------------------+---------------------------+
 |VH1                        |5                          |42.21                      |17.12                      |42.28                      |17.16                      |2023-02-18 15:10:00        |2023-02-18 15:13:00        |
 |VH1                        |2                          |42.31                      |17.17                      |42.33                      |17.18                      |2023-02-18 15:20:00        |2023-02-18 15:22:00        |
-----
-
-Teardown:
-
-[source,bash]
-----
-scripts/tear-down.sh
 ----
 
 === Joins: Devices and temperature measurement
