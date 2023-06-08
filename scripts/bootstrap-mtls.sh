@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sh scripts/tear-down.sh
+
 mkdir -p mtls-listener/ssl
 
 echo "Create CA certificates and CA key..."

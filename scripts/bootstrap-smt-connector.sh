@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sh scripts/tear-down.sh
+
 echo $PWD
 
 cd kafka-smt-custom

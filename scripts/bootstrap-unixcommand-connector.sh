@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sh scripts/tear-down.sh
+
 echo "Build unixcommand Connector image..."
 kafka-unixcommand-connector/build-image.sh
 

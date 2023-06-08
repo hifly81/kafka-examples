@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sh scripts/tear-down.sh
+
 cd principal-builder
 mvn clean package
 
