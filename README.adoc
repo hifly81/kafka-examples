@@ -151,14 +151,14 @@ tar xvf confluent-for-kubernetes-2.6.0.tar.gz
 helm upgrade --install confluent-operator ./confluent-for-kubernetes-2.6.0/helm/confluent-for-kubernetes
 ----
 
-Option 1: Install Confluent components: 3 zk, 3 brokers, 1 connect, 1 ksqldb, 2 schema registry, 1 control center:
+Option 1: Install Confluent components: 3 zk, 3 brokers, 1 connect, 1 ksqldb, 2 schema registry:
 
 [source,bash]
 ----
 kubectl apply -f confluent-for-kubernetes/k8s/confluent-platform.yaml
 ----
 
-Option 2: Install Confluent components: 3 zk, 3 brokers, 1 control center:
+Option 2: Install Confluent components: 3 zk, 3 brokers:
 
 [source,bash]
 ----
@@ -173,12 +173,6 @@ watch -n 5 "kubectl get events --sort-by='.lastTimestamp'"
 watch -n 5 "kubectl get pods"
 ----
 
-Expose Control center on port 9021:
-
-[source,bash]
-----
-kubectl port-forward controlcenter-0 9021:9021
-----
 
 ==== Topic create
 
