@@ -4,22 +4,20 @@ import org.apache.kafka.clients.consumer.ConsumerInterceptor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
-import org.apache.kafka.clients.producer.ProducerInterceptor;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.TopicPartition;
-import org.hifly.kafka.demo.consumer.core.ConsumerRecordUtil;
-import org.hifly.kafka.interceptor.producer.CreditCard;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
 public class CreditCardConsumerInterceptor<K, V> implements ConsumerInterceptor<K, V> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CreditCardConsumerInterceptor.class);
 
     @Override
     public ConsumerRecords<K, V> onConsume(ConsumerRecords<K, V> consumerRecords) {
         for (ConsumerRecord<K, V> record : consumerRecords) {
-            System.out.println("record headers:" + record.headers());
+            LOGGER.info("record headers: {}", record.headers());
         }
         return consumerRecords;
     }

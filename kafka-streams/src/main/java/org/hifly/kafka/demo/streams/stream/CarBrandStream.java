@@ -13,6 +13,8 @@ import org.apache.kafka.streams.kstream.Produced;
 import org.hifly.kafka.demo.streams.domain.CarInfo;
 import org.hifly.kafka.demo.streams.serializer.CarInfoDeserializer;
 import org.hifly.kafka.demo.streams.serializer.CarInfoSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +25,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 public class CarBrandStream {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CarBrandStream.class);
 
     private static final String BROKER_LIST =
             System.getenv("kafka.broker.list") != null ? System.getenv("kafka.broker.list") : "localhost:9091,localhost:9092";
@@ -49,7 +53,7 @@ public class CarBrandStream {
         StreamUtils.createTopics(properties, topics);
 
         Topology topology = carBrandStream.createTopology(inputTopic, ferrariTopic, carsTopic);
-        System.out.println(topology.describe());
+        LOGGER.debug(topology.describe().toString());
 
         KafkaStreams kafkaStreams = new KafkaStreams(topology, properties);
         final CountDownLatch latch = new CountDownLatch(1);
@@ -85,7 +89,7 @@ public class CarBrandStream {
         final Serde<CarInfo> carInfoSerde = Serdes.serdeFrom(carInfoSerializer, carInfoDeserializer);
 
         builder.stream(inputTopic, Consumed.as("Cars_input_topic").with(Serdes.String(), carInfoSerde))
-                .peek((key, value) -> System.out.println("Incoming record - key " +key +" value " + value))
+                .peek((key, value) -> LOGGER.info("Incoming record - key {}  value {}", key, value))
                 //split into 2 different output topics
                 .split()
                 .branch(

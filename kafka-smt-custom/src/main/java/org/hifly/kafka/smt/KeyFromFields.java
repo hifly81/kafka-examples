@@ -25,6 +25,8 @@ import org.apache.kafka.connect.transforms.Transformation;
 import org.apache.kafka.connect.transforms.util.NonEmptyListValidator;
 import org.apache.kafka.connect.transforms.util.SimpleConfig;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +51,8 @@ public class KeyFromFields<R extends ConnectRecord<R>> implements Transformation
                     "Field names on the record value to extract as the record key.");
 
     private static final String PURPOSE = "copying and concat fields from value to key";
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(KeyFromFields.class);
 
     private List<String> fields;
 
@@ -83,7 +87,7 @@ public class KeyFromFields<R extends ConnectRecord<R>> implements Transformation
             try {
                 keySb.append(obj.get(field));
             } catch (Exception ex) {
-                System.out.println("Can't parse:" + field + "-" + ex.getMessage());
+                LOGGER.error("Can't parse: {} - {}", field, ex.getMessage());
             }
         }
 

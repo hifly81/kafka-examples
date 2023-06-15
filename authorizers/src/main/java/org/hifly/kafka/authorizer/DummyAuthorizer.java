@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class DummyAuthorizer extends AclAuthorizer {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(DummyAuthorizer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DummyAuthorizer.class);
 
     @Override
     public void configure(final Map<String, ?> javaConfigs) {
@@ -84,7 +84,7 @@ public class DummyAuthorizer extends AclAuthorizer {
         }
 
         if(toPrint) {
-            System.out.println(sb);
+            LOGGER.info(sb.toString());
         }
 
 

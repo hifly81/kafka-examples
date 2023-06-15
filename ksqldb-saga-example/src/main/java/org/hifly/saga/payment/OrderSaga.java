@@ -17,6 +17,8 @@ import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -26,6 +28,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 public class OrderSaga {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderSaga.class);
 
     private static final String BOOTSTRAP_SERVERS = "localhost:29092";
     private static final String SCHEMA_REGISTRY_URL = "http://localhost:8081";
@@ -63,7 +67,7 @@ public class OrderSaga {
     }
 
     private static void compensate(OrderAction orderAction) {
-        System.out.printf("\n --> compensate:%s", orderAction);
+        LOGGER.info("\n --> compensate:{}", orderAction);
         OrderActionAck orderActionAck = new OrderActionAck();
         orderActionAck.setORDERID(orderAction.getORDER());
         orderActionAck.setTXID(orderAction.getTXID());
@@ -91,7 +95,7 @@ public class OrderSaga {
                     final OrderAction orderAction = record.value();
 
                     if (orderAction != null) {
-                        System.out.printf("\nOrder Action:%s", orderAction);
+                        LOGGER.info("\nOrder Action:{}", orderAction);
 
                         if(orderAction.getTXACTION() == -1)
                             compensate(orderAction);

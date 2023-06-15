@@ -859,13 +859,10 @@ The _@Aspect_, implemented in class _org.hifly.kafka.smt.aspectj.SMTAspect_, log
     @Before("standardMethod()")
     public void log(JoinPoint jp) throws Throwable {
 
-        System.out.println(jp);
-
         Object[] array = jp.getArgs();
         if(array != null) {
-            System.out.println("Size:" + array.length);
             for(Object tmp: array)
-                System.out.println(tmp);
+                LOGGER.info(tmp.toString());
         }
     }
 ----

@@ -3,10 +3,14 @@ package org.hifly.kafka.demo.producer.serializer.json;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hifly.kafka.demo.producer.serializer.model.CustomData;
 import org.apache.kafka.common.serialization.Serializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
 public class CustomDataJsonSerializer implements Serializer<CustomData> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomDataJsonSerializer.class);
 
     @Override
     public void configure(Map<String, ?> configs, boolean isKey) {}
@@ -18,7 +22,7 @@ public class CustomDataJsonSerializer implements Serializer<CustomData> {
         try {
             retVal = objectMapper.writeValueAsString(data).getBytes();
         } catch (Exception exception) {
-            System.out.println("Error in serializing object"+ data);
+            LOGGER.error("Error in serializing object {}", data);
         }
         return retVal;
 

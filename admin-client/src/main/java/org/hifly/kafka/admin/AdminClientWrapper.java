@@ -6,6 +6,8 @@ import org.apache.kafka.clients.admin.ListTopicsResult;
 import org.apache.kafka.clients.admin.TopicListing;
 import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.Node;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -18,6 +20,8 @@ import java.util.Properties;
 import java.util.Scanner;
 
 public class AdminClientWrapper {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdminClientWrapper.class);
 
     public static void main(String args []) {
 
@@ -61,7 +65,7 @@ public class AdminClientWrapper {
             Iterator iterator = nodes.iterator();
             while ( iterator.hasNext()){
                 Node node = (Node)iterator.next();
-                System.out.printf("Host:%s-Port:%s-Rack:%s\n", node.host(), node.port(), node.rack());
+                LOGGER.info("Host:{}-Port:{}-Rack:{}\n", node.host(), node.port(), node.rack());
             }
 
         } catch (Exception e) {
@@ -77,7 +81,7 @@ public class AdminClientWrapper {
             Iterator iterator = topicListings.iterator();
             while ( iterator.hasNext()){
                 TopicListing topicListing = (TopicListing)iterator.next();
-                System.out.printf("Name:%s-Internal?%s\n", topicListing.name(), topicListing.isInternal()?"true":"false");
+                LOGGER.info("Name:{}-Internal?{}\n", topicListing.name(), topicListing.isInternal()?"true":"false");
             }
 
         } catch (Exception e) {

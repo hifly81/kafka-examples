@@ -9,6 +9,8 @@ import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.*;
@@ -17,6 +19,8 @@ import static org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_
 import static org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG;
 
 public class GenericConsumerImpl<K, V> implements GenericConsumer {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GenericConsumerImpl.class);
 
     private Map<TopicPartition, OffsetAndMetadata> offsets = new HashMap<>();
     private Consumer<K, V> consumer;
@@ -94,13 +98,13 @@ public class GenericConsumerImpl<K, V> implements GenericConsumer {
                 // sync does retries, we want to use it in case of last commit or rebalancing
                 consumer.commitSync();
                 for (Map.Entry<TopicPartition, OffsetAndMetadata> entry : offsets.entrySet())
-                    System.out.printf("Consumer %s - partition %s - lastOffset %s\n", this.id,
+                    LOGGER.info("Consumer {} - partition {} - lastOffset {}\n", this.id,
                             entry.getKey().partition(), entry.getValue().offset());
                 // Store offsets
                 OffsetManager.store(offsets);
             } finally {
                 consumer.close();
-                System.out.printf("Bye Bye...\n");
+                LOGGER.info("Bye Bye...\n");
             }
         }
     }

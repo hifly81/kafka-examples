@@ -3,10 +3,14 @@ package org.hifly.kafka.demo.streams.serializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.common.serialization.Serializer;
 import org.hifly.kafka.demo.streams.domain.CarSensor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
 public class CarSensorSerializer implements Serializer<CarSensor> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CarSensorSerializer.class);
 
     @Override
     public void configure(Map<String, ?> configs, boolean isKey) {}
@@ -18,7 +22,7 @@ public class CarSensorSerializer implements Serializer<CarSensor> {
         try {
             retVal = objectMapper.writeValueAsString(data).getBytes();
         } catch (Exception exception) {
-            System.out.println("Error in serializing object"+ data);
+            LOGGER.error("Error in serializing object {}", data);
         }
         return retVal;
 

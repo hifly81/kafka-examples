@@ -4,11 +4,15 @@ package org.hifly.kafka.demo.producer.partitioner.custom;
 import org.apache.kafka.clients.producer.Partitioner;
 import org.apache.kafka.common.Cluster;
 import org.apache.kafka.common.PartitionInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
 
 public class UserPartitioner implements Partitioner {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserPartitioner.class);
 
     public void configure(Map<String, ?> configs) { }
 
@@ -18,7 +22,7 @@ public class UserPartitioner implements Partitioner {
         List<PartitionInfo> partitions = cluster.partitionsForTopic(topic);
         int numPartitions = partitions.size();
 
-        System.out.printf("Number of partitions: %d\n", numPartitions);
+        LOGGER.debug("Number of partitions: {}\n", numPartitions);
 
         if(numPartitions < 3)
             throw new IllegalStateException("not enough partitions!");
