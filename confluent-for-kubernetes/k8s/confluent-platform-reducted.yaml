@@ -5,7 +5,7 @@ metadata:
   name: zookeeper
   namespace: confluent
 spec:
-  replicas: 3
+  replicas: 1
   image:
     application: confluentinc/cp-zookeeper:7.4.0
     init: confluentinc/confluent-init-container:2.6.0

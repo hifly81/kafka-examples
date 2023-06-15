@@ -95,7 +95,15 @@ Change the docker image version for the specific component, updating file _.env_
 Examples will run using:
 
  . Minikube
- . Confluent for Kubernetes operator (CFK)
+ . Confluent for Kubernetes operator (CFK): https://docs.confluent.io/operator/current/overview.html
+
+Images are downloaded from _confluentinc_ and are based on _Confluent 7.4.0 Community_ licensed (kafka version 3.4.0):
+
+* Kafka: confluentinc/cp-kafka
+* Schema Registry: confluentinc/cp-schema-registry
+* Connect: custom image based on confluentinc/cp-kafka-connect-base
+* ksqlDB server: confluentinc/ksqldb-server:0.28.2
+* ksqlDB cli: confluentinc/ksqldb-cli:0.28.2
 
 === Minikube installation in Linux with KVM/QEMU
 
@@ -151,18 +159,27 @@ tar xvf confluent-for-kubernetes-2.6.0.tar.gz
 helm upgrade --install confluent-operator ./confluent-for-kubernetes-2.6.0/helm/confluent-for-kubernetes
 ----
 
-Option 1: Install Confluent components: 3 zk, 3 brokers, 1 connect, 1 ksqldb, 2 schema registry:
+Option 1: Install Confluent components: 1 zk, 3 brokers, 1 connect, 1 ksqldb, 1 schema registry:
 
 [source,bash]
 ----
 kubectl apply -f confluent-for-kubernetes/k8s/confluent-platform.yaml
 ----
 
-Option 2: Install Confluent components: 3 zk, 3 brokers:
+Option 2: Install Confluent components: 1 zk, 3 brokers:
 
 [source,bash]
 ----
 kubectl apply -f confluent-for-kubernetes/k8s/confluent-platform-reducted.yaml
+
+(master)$ kubectl get pods
+NAME                                  READY   STATUS    RESTARTS   AGE
+confluent-operator-665db446b7-j52rj   1/1     Running   0          6m35s
+kafka-0                               1/1     Running   0          65s
+kafka-1                               1/1     Running   0          65s
+kafka-2                               1/1     Running   0          65s
+zookeeper-0                           1/1     Running   0          5m5s
+
 ----
 
 Verify events and pods:
@@ -178,10 +195,11 @@ watch -n 5 "kubectl get pods"
 
 [source,bash]
 ----
-kubectl apply -f k8s/topic.yml
+kubectl exec --stdin --tty kafka-0 -- /bin/bash
+kafka-topics --bootstrap-server localhost:9092 --create --topic test-1
 ----
 
-List Topics:
+==== Topic list
 
 [source,bash]
 ----
@@ -201,7 +219,16 @@ kafka-topics --bootstrap-server localhost:9092 --topic test-1 --describe
 
 [source,bash]
 ----
-kubectl apply -f k8s/producer.yml
+kubectl exec --stdin --tty kafka-0 -- /bin/bash
+kafka-producer-perf-test --num-records 1000000 --record-size 1000 --throughput -1 --topic test-1 --producer-props bootstrap.servers=localhost:9092
+----
+
+==== Consume messages from Topic
+
+[source,bash]
+----
+kubectl exec --stdin --tty kafka-0 -- /bin/bash
+kafka-console-consumer --bootstrap-server localhost:9092 --topic test-1 --from-beginning
 ----
 
 ==== Tear Down
