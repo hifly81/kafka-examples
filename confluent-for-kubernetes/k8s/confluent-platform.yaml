@@ -7,8 +7,8 @@ metadata:
 spec:
   replicas: 3
   image:
-    application: confluentinc/cp-zookeeper:7.0.0
-    init: confluentinc/confluent-init-container:2.2.0
+    application: confluentinc/cp-zookeeper:7.4.0
+    init: confluentinc/confluent-init-container:2.6.0
   dataVolumeCapacity: 1Gi
   logVolumeCapacity: 1Gi
 ---
@@ -18,15 +18,13 @@ metadata:
   name: kafka
   namespace: confluent
 spec:
-  license:
-    globalLicense: true
   replicas: 3
   image:
-    application: confluentinc/cp-server:7.0.0
-    init: confluentinc/confluent-init-container:2.2.0
+    application: confluentinc/cp-kafka:7.4.0
+    init: confluentinc/confluent-init-container:2.6.0
   dataVolumeCapacity: 1Gi
   metricReporter:
-    enabled: true
+    enabled: false
 ---
 apiVersion: platform.confluent.io/v1beta1
 kind: Connect
@@ -34,16 +32,13 @@ metadata:
   name: connect
   namespace: confluent
 spec:
-  license:
-    globalLicense: true
   replicas: 1
   image:
-    application: confluentinc/cp-server-connect:7.0.0
-    init: confluentinc/confluent-init-container:2.2.0
+    application: confluentinc/cp-kafka-connect-base:7.4.0
+    init: confluentinc/confluent-init-container:2.6.0
   dependencies:
     kafka:
       bootstrapEndpoint: kafka:9071
-
 ---
 apiVersion: platform.confluent.io/v1beta1
 kind: KsqlDB
@@ -51,36 +46,11 @@ metadata:
   name: ksqldb
   namespace: confluent
 spec:
-  license:
-    globalLicense: true
   replicas: 1
   image:
-    application: confluentinc/cp-ksqldb-server:7.0.0
-    init: confluentinc/confluent-init-container:2.2.0
+    application: confluentinc/ksqldb-server:0.28.2
+    init: confluentinc/confluent-init-container:2.6.0
   dataVolumeCapacity: 1Gi
----
-apiVersion: platform.confluent.io/v1beta1
-kind: ControlCenter
-metadata:
-  name: controlcenter
-  namespace: confluent
-spec:
-  license:
-    globalLicense: true
-  replicas: 1
-  image:
-    application: confluentinc/cp-enterprise-control-center:7.0.0
-    init: confluentinc/confluent-init-container:2.2.0
-  dataVolumeCapacity: 1Gi
-  dependencies:
-    schemaRegistry:
-      url: http://schemaregistry.confluent.svc.cluster.local:8081
-    ksqldb:
-      - name: ksqldb
-        url: http://ksqldb.confluent.svc.cluster.local:8088
-    connect:
-      - name: connect
-        url: http://connect.confluent.svc.cluster.local:8083
 ---
 apiVersion: platform.confluent.io/v1beta1
 kind: SchemaRegistry
@@ -88,9 +58,7 @@ metadata:
   name: schemaregistry
   namespace: confluent
 spec:
-  license:
-    globalLicense: true
   replicas: 2
   image:
-    application: confluentinc/cp-schema-registry:7.0.0
-    init: confluentinc/confluent-init-container:2.2.0
+    application: confluentinc/cp-schema-registry:7.4.0
+    init: confluentinc/confluent-init-container:2.6.0

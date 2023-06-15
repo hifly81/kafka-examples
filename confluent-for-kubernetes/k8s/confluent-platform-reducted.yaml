@@ -7,8 +7,8 @@ metadata:
 spec:
   replicas: 3
   image:
-    application: confluentinc/cp-zookeeper:7.0.0
-    init: confluentinc/confluent-init-container:2.2.0
+    application: confluentinc/cp-zookeeper:7.4.0
+    init: confluentinc/confluent-init-container:2.6.0
   dataVolumeCapacity: 1Gi
   logVolumeCapacity: 1Gi
 ---
@@ -18,26 +18,11 @@ metadata:
   name: kafka
   namespace: confluent
 spec:
-  license:
-    globalLicense: true
   replicas: 3
   image:
-    application: confluentinc/cp-server:7.0.0
-    init: confluentinc/confluent-init-container:2.2.0
+    application: confluentinc/cp-kafka:7.4.0
+    init: confluentinc/confluent-init-container:2.6.0
   dataVolumeCapacity: 1Gi
   metricReporter:
-    enabled: true
+    enabled: false
 ---
-apiVersion: platform.confluent.io/v1beta1
-kind: ControlCenter
-metadata:
-  name: controlcenter
-  namespace: confluent
-spec:
-  license:
-    globalLicense: true
-  replicas: 1
-  image:
-    application: confluentinc/cp-enterprise-control-center:7.0.0
-    init: confluentinc/confluent-init-container:2.2.0
-  dataVolumeCapacity: 1Gi

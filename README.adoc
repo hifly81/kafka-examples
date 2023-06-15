@@ -142,27 +142,27 @@ Option 1: Install confluent-for-kubernetes operator from Confluent’s Helm repo
 helm upgrade --install confluent-operator confluentinc/confluent-for-kubernetes
 ----
 
-Option 2: Install confluent-for-kubernetes operator using the download bundle with license key:
+Option 2: Install confluent-for-kubernetes operator using the download bundle:
 
 [source,bash]
 ----
-wget https://confluent-for-kubernetes.s3-us-west-1.amazonaws.com/confluent-for-kubernetes-2.2.0.tar.gz
-tar xvf confluent-for-kubernetes-2.2.0.tar.gz
-helm upgrade --install confluent-operator ./confluent-for-kubernetes-2.2.0-20211101/helm/confluent-for-kubernetes --set licenseKey=<CFK license key>
+wget https://confluent-for-kubernetes.s3-us-west-1.amazonaws.com/confluent-for-kubernetes-2.6.0.tar.gz
+tar xvf confluent-for-kubernetes-2.6.0.tar.gz
+helm upgrade --install confluent-operator ./confluent-for-kubernetes-2.6.0/helm/confluent-for-kubernetes
 ----
 
 Option 1: Install Confluent components: 3 zk, 3 brokers, 1 connect, 1 ksqldb, 2 schema registry, 1 control center:
 
 [source,bash]
 ----
-kubectl apply -f k8s/confluent-platform.yaml
+kubectl apply -f confluent-for-kubernetes/k8s/confluent-platform.yaml
 ----
 
 Option 2: Install Confluent components: 3 zk, 3 brokers, 1 control center:
 
 [source,bash]
 ----
-kubectl apply -f k8s/confluent-platform-reducted.yaml
+kubectl apply -f confluent-for-kubernetes/k8s/confluent-platform-reducted.yaml
 ----
 
 Verify events and pods:
