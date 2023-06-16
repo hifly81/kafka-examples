@@ -2293,7 +2293,7 @@ scripts/bootstrap-mm2.sh
 
 A source cluster on port 9092 and a destination cluster on port 9082 will be created.
 
-Create TopicA on source cluster and TopicB on destination cluster
+Create TopicA on source cluster and TopicB on destination cluster:
 
 [source,bash]
 ----
@@ -2301,7 +2301,12 @@ docker exec broker kafka-topics --bootstrap-server broker:9092 --create --topic 
 docker exec broker-destination kafka-topics --bootstrap-server broker-destination:9082 --create --topic TopicB --replication-factor 1 --partitions 3
 ----
 
-Launch Mirror Maker, both direction:
+Launch Mirror Maker, both directions:
+
+ - source cluster is identified with name DC-X
+ - destination cluster is identified with name DC-Y
+ - TopicA will be copied on destination cluster with naming DC-X.TopicA
+ - TopicB will be copied on source cluster with naming DC-Y.TopicB
 
 [source,bash]
 ----
@@ -2340,21 +2345,21 @@ mm2-offsets.DC-X.internal
 mm2-status.DC-X.internal
 ----
 
-Run Producer Perf Test on cluster source for TopicA:
+Run Producer Perf Test on source cluster for TopicA:
 
 [source,bash]
 ----
 docker exec broker kafka-producer-perf-test --topic TopicA --num-records 10000 --record-size 100 --throughput -1 --producer-props acks=1 bootstrap.servers=broker:9092 buffer.memory=67108864 batch.size=8196
 ----
 
-Run Producer Perf Test on cluster destination for TopicB:
+Run Producer Perf Test on destination cluster for TopicB:
 
 [source,bash]
 ----
 docker exec broker-destination kafka-producer-perf-test --topic TopicB --num-records 10000 --record-size 100 --throughput -1 --producer-props acks=1 bootstrap.servers=broker-destination:9082 buffer.memory=67108864 batch.size=8196
 ----
 
-Verify Topic message size for TopicA (cluster 1) and for DCX.TopicA (cluster2):
+Verify Topic message size for TopicA (source cluster) and for DCX.TopicA (destination cluster):
 
 [source,bash]
 ----
@@ -2366,7 +2371,7 @@ docker exec broker ls -ltr /tmp/kraft-combined-logs/TopicA-2
 docker exec broker-destination ls -ltr /tmp/kraft-combined-logs/DC-X.TopicA-2
 ----
 
-Verify Topic message size for TopicB (cluster 2) and for DCY.TopicB (cluster1):
+Verify Topic message size for TopicB (destination cluster) and for DCY.TopicB (source cluster):
 
 [source,bash]
 ----
