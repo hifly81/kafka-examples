@@ -1,0 +1,81 @@
+---
+version: '2'
+
+services:
+
+  broker:
+    image: confluentinc/cp-kafka:${CONFLUENT_VERSION}
+    hostname: broker
+    container_name: broker
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    volumes:
+      - ./src/main/resources/assignment.json:/tmp/assignment.json
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_BROKER_RACK: "dc1"
+      KAFKA_REPLICA_SELECTOR_CLASS: org.apache.kafka.common.replica.RackAwareReplicaSelector
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://broker:9092,CONTROLLER://broker:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@broker:9093,2@broker2:9083,3@broker3:9073'
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TOOLS_LOG4J_LOGLEVEL: ERROR
+      CLUSTER_ID: 'QTnB2tAgTWa1ec5wYon2jg'
+
+  broker2:
+    image: confluentinc/cp-kafka:${CONFLUENT_VERSION}
+    hostname: broker2
+    container_name: broker2
+    ports:
+      - "9082:9082"
+      - "9083:9083"
+    environment:
+      KAFKA_NODE_ID: 2
+      KAFKA_BROKER_RACK: "dc2"
+      KAFKA_REPLICA_SELECTOR_CLASS: org.apache.kafka.common.replica.RackAwareReplicaSelector
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://broker2:9082,CONTROLLER://broker2:9083
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker2:9082
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@broker:9093,2@broker2:9083,3@broker3:9073'
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TOOLS_LOG4J_LOGLEVEL: ERROR
+      CLUSTER_ID: 'QTnB2tAgTWa1ec5wYon2jg'
+
+  broker3:
+    image: confluentinc/cp-kafka:${CONFLUENT_VERSION}
+    hostname: broker3
+    container_name: broker3
+    ports:
+      - "9072:9072"
+      - "9073:9073"
+    environment:
+      KAFKA_NODE_ID: 3
+      KAFKA_BROKER_RACK: "dc3"
+      KAFKA_REPLICA_SELECTOR_CLASS: org.apache.kafka.common.replica.RackAwareReplicaSelector
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://broker3:9072,CONTROLLER://broker3:9073
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker3:9072
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@broker:9093,2@broker2:9083,3@broker3:9073'
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TOOLS_LOG4J_LOGLEVEL: ERROR
+      CLUSTER_ID: 'QTnB2tAgTWa1ec5wYon2jg'

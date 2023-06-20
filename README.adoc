@@ -78,12 +78,27 @@ scripts/bootstrap-kraft.sh
 
 ----
 
+Check metadata quorum:
+
+[source,bash]
+----
+docker exec -it broker kafka-metadata-quorum --bootstrap-server broker:9092 describe --status
+
+ClusterId:              QTnB2tAgTWa1ec5wYon2jg
+LeaderId:               1
+LeaderEpoch:            1
+HighWatermark:          387
+MaxFollowerLag:         0
+MaxFollowerLagTimeMs:   253
+CurrentVoters:          [1]
+CurrentObservers:       []
+----
+
 ==== Stop containers +
 
 [source,bash]
 ----
 scripts/tear-down-kraft.sh
-
 ----
 
 ==== Change Images Version
@@ -551,6 +566,62 @@ kafka-console-producer --broker-list localhost:9092 --topic users_clicks --prope
 
 
 Verify that messages are read by different consumers.
+
+=== Read from closest replica
+
+This example shows how to use the feature (since AK 2.4+) for consumers to read messages from the closest replica.
+
+Start a cluster with 3 brokers on 3 different racks, dc1, dc2 and dc3:
+
+[source,bash]
+----
+scripts/bootstrap-racks.sh
+----
+
+Create a topic and assign partition leaderships only on broker 1 and 3 (dc1 and dc3):
+
+[source,bash]
+----
+docker exec -it broker kafka-reassign-partitions --bootstrap-server broker:9092 --reassignment-json-file /tmp/assignment.json --execute
+
+docker exec -it broker kafka-leader-election --bootstrap-server broker:9092 --topic topic-regional --election-type PREFERRED --partition 0
+docker exec -it broker kafka-leader-election --bootstrap-server broker:9092 --topic topic-regional --election-type PREFERRED --partition 1
+docker exec -it broker kafka-leader-election --bootstrap-server broker:9092 --topic topic-regional --election-type PREFERRED --partition 2
+----
+
+Verify topic describe:
+
+[source,bash]
+----
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --topic topic-regional --describe
+
+Topic: topic-regional	TopicId: p-sy0qiQTtSTLTJSG7s7Ew	PartitionCount: 3	ReplicationFactor: 3	Configs:
+	Topic: topic-regional	Partition: 0	Leader: 1	Replicas: 1,2,3	Isr: 2,3,1	Offline:
+	Topic: topic-regional	Partition: 1	Leader: 3	Replicas: 3,2,1	Isr: 3,1,2	Offline:
+	Topic: topic-regional	Partition: 2	Leader: 1	Replicas: 1,3,2	Isr: 1,2,3	Offline:
+----
+
+Produce 5 messages:
+
+[source,bash]
+----
+docker exec -it broker kafka-producer-perf-test --topic topic-regional --num-records 50 --throughput 10 --record-size 1 --producer-props bootstrap.servers=broker:9092
+----
+
+Run a consumer that will read messages from replica broker in rack dc2:
+
+[source,bash]
+----
+cd kafka-consumer
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.rack.Runner"
+----
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-racks.sh
+----
 
 === Interceptor
 

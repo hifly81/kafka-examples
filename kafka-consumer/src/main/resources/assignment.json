@@ -1,0 +1,1 @@
+{"version":1,"partitions":[{"topic":"topic-regional","partition":0,"replicas":[1,2,3]},{"topic":"topic-regional","partition":1,"replicas":[3,2,1]},{"topic":"topic-regional","partition":2,"replicas":[1,3,2]}]}
