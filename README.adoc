@@ -12,44 +12,6 @@
 
 == Installation with Docker
 
-=== Zookeeper mode
-
-To run a kafka cluster with Docker, use the _docker-compose.yml_ file available in the root directory.
-
-Images are downloaded from _confluentinc_ and are based on _Confluent 7.4.0 Community_ licensed (kafka version 3.4.0):
-
-* Zookeeper: confluentinc/cp-zookeeper
-* Kafka: confluentinc/cp-kafka
-* Schema Registry: confluentinc/cp-schema-registry
-* Connect: custom image based on confluentinc/cp-kafka-connect-base
-* ksqlDB server: confluentinc/ksqldb-server:0.28.2
-* ksqlDB cli: confluentinc/ksqldb-cli:0.28.2
-
-Components list:
-
-* Broker will listen to _localhost:9092_
-* Schema Registry will listen to _localhost:8081_
-* Connect will listen to _localhost:8083_
-* ksqlDB cli will listen to _localhost:8088_
-
-image::images/arch.png[Components]
-
-==== Start containers +
-
-[source,bash]
-----
-scripts/bootstrap.sh
-
-----
-
-==== Stop containers +
-
-[source,bash]
-----
-scripts/tear-down.sh
-
-----
-
 === KRaft mode
 
 To run a kafka cluster with Docker, use the _docker-compose-kraft.yml_ file available in the root directory.
@@ -99,6 +61,44 @@ CurrentObservers:       []
 [source,bash]
 ----
 scripts/tear-down-kraft.sh
+----
+
+=== Zookeeper mode
+
+To run a kafka cluster with Docker, use the _docker-compose.yml_ file available in the root directory.
+
+Images are downloaded from _confluentinc_ and are based on _Confluent 7.4.0 Community_ licensed (kafka version 3.4.0):
+
+* Zookeeper: confluentinc/cp-zookeeper
+* Kafka: confluentinc/cp-kafka
+* Schema Registry: confluentinc/cp-schema-registry
+* Connect: custom image based on confluentinc/cp-kafka-connect-base
+* ksqlDB server: confluentinc/ksqldb-server:0.28.2
+* ksqlDB cli: confluentinc/ksqldb-cli:0.28.2
+
+Components list:
+
+* Broker will listen to _localhost:9092_
+* Schema Registry will listen to _localhost:8081_
+* Connect will listen to _localhost:8083_
+* ksqlDB cli will listen to _localhost:8088_
+
+image::images/arch.png[Components]
+
+==== Start containers +
+
+[source,bash]
+----
+scripts/bootstrap.sh
+
+----
+
+==== Stop containers +
+
+[source,bash]
+----
+scripts/tear-down.sh
+
 ----
 
 ==== Change Images Version
