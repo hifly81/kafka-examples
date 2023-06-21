@@ -83,7 +83,6 @@ Components list:
 * Connect will listen to _localhost:8083_
 * ksqlDB cli will listen to _localhost:8088_
 
-image::images/arch.png[Components]
 
 ==== Start containers +
 
