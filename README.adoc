@@ -174,7 +174,9 @@ helm upgrade --install confluent-operator ./confluent-for-kubernetes-2.6.0/helm/
 ----
 
 
-==== Install Confluent components: 1 zk, 3 brokers:
+==== Deploy Confluent components
+
+1 zk, 3 brokers:
 
 [source,bash]
 ----
