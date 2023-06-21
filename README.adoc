@@ -129,7 +129,7 @@ https://dev.to/xs/kubernetes-minikube-with-qemu-kvm-on-arch-312a
 
 https://minikube.sigs.k8s.io/docs/start/
 
-=== Setup a Kafka cluster with Confluent for Kubernetes Operator
+=== Deployment of a Kafka cluster with Confluent for Kubernetes Operator
 
 Start Minikube with kvm2 driver:
 
@@ -157,14 +157,14 @@ helm repo add confluentinc https://packages.confluent.io/helm
 helm repo update
 ----
 
-Option 1: Install confluent-for-kubernetes operator from Confluent’s Helm repo:
+==== Option 1: Install confluent-for-kubernetes operator from Confluent’s Helm repo:
 
 [source,bash]
 ----
 helm upgrade --install confluent-operator confluentinc/confluent-for-kubernetes
 ----
 
-Option 2: Install confluent-for-kubernetes operator using the download bundle:
+==== Option 2: Install confluent-for-kubernetes operator using the download bundle:
 
 [source,bash]
 ----
@@ -173,14 +173,8 @@ tar xvf confluent-for-kubernetes-2.6.0.tar.gz
 helm upgrade --install confluent-operator ./confluent-for-kubernetes-2.6.0/helm/confluent-for-kubernetes
 ----
 
-Option 1: Install Confluent components: 1 zk, 3 brokers, 1 connect, 1 ksqldb, 1 schema registry:
 
-[source,bash]
-----
-kubectl apply -f confluent-for-kubernetes/k8s/confluent-platform.yaml
-----
-
-Option 2: Install Confluent components: 1 zk, 3 brokers:
+==== Install Confluent components: 1 zk, 3 brokers:
 
 [source,bash]
 ----
@@ -204,8 +198,16 @@ watch -n 5 "kubectl get events --sort-by='.lastTimestamp'"
 watch -n 5 "kubectl get pods"
 ----
 
+alternately, you can install additional Confluent components: 1 zk, 3 brokers, 1 connect, 1 ksqldb, 1 schema registry:
 
-==== Topic create
+[source,bash]
+----
+kubectl apply -f confluent-for-kubernetes/k8s/confluent-platform.yaml
+----
+
+==== Kafka Operations
+
+Topic create:
 
 [source,bash]
 ----
@@ -213,7 +215,7 @@ kubectl exec --stdin --tty kafka-0 -- /bin/bash
 kafka-topics --bootstrap-server localhost:9092 --create --topic test-1
 ----
 
-==== Topic list
+Topic list:
 
 [source,bash]
 ----
@@ -221,7 +223,7 @@ kubectl exec --stdin --tty kafka-0 -- /bin/bash
 kafka-topics --bootstrap-server localhost:9092 --list
 ----
 
-==== Topic describe
+Topic describe:
 
 [source,bash]
 ----
@@ -229,7 +231,7 @@ kubectl exec --stdin --tty kafka-0 -- /bin/bash
 kafka-topics --bootstrap-server localhost:9092 --topic test-1 --describe
 ----
 
-==== Produce messages to Topic
+Produce messages to Topic:
 
 [source,bash]
 ----
@@ -237,7 +239,7 @@ kubectl exec --stdin --tty kafka-0 -- /bin/bash
 kafka-producer-perf-test --num-records 1000000 --record-size 1000 --throughput -1 --topic test-1 --producer-props bootstrap.servers=localhost:9092
 ----
 
-==== Consume messages from Topic
+Consume messages from Topic:
 
 [source,bash]
 ----
