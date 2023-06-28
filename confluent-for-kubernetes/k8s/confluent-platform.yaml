@@ -62,3 +62,17 @@ spec:
   image:
     application: confluentinc/cp-schema-registry:7.4.0
     init: confluentinc/confluent-init-container:2.6.0
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: KafkaRestProxy
+metadata:
+  name: kafkarestproxy
+  namespace: confluent
+spec:
+  dependencies:
+    schemaRegistry:
+      url: http://schemaregistry.confluent.svc.cluster.local:8081
+  image:
+    application: confluentinc/cp-kafka-rest:7.4.0
+    init: confluentinc/confluent-init-container:2.6.0
+  replicas: 1

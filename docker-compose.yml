@@ -121,3 +121,18 @@ services:
       - ksqldb-server
     entrypoint: /bin/sh
     tty: true
+
+  rest-proxy:
+    image: confluentinc/cp-kafka-rest:${CONFLUENT_VERSION}
+    depends_on:
+      - broker
+      - schema-registry
+    ports:
+      - "8082:8082"
+    hostname: rest-proxy
+    container_name: rest-proxy
+    environment:
+      KAFKA_REST_HOST_NAME: rest-proxy
+      KAFKA_REST_BOOTSTRAP_SERVERS: broker:9092
+      KAFKA_REST_LISTENERS: "http://0.0.0.0:8082"
+      KAFKA_REST_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'

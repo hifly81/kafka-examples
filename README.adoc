@@ -23,6 +23,7 @@ Images are downloaded from _confluentinc_ and are based on _Confluent 7.4.0 Comm
 * Connect: custom image based on confluentinc/cp-kafka-connect-base
 * ksqlDB server: confluentinc/ksqldb-server:0.28.2
 * ksqlDB cli: confluentinc/ksqldb-cli:0.28.2
+* rest proxy: confluentinc/cp-kafka-rest
 
 Components list:
 
@@ -30,6 +31,7 @@ Components list:
 * Schema Registry will listen to _localhost:8081_
 * Connect will listen to _localhost:8083_
 * ksqlDB cli will listen to _localhost:8088_
+* rest proxy will listen to _localhost:8082_
 
 
 ==== Start containers +
@@ -75,6 +77,7 @@ Images are downloaded from _confluentinc_ and are based on _Confluent 7.4.0 Comm
 * Connect: custom image based on confluentinc/cp-kafka-connect-base
 * ksqlDB server: confluentinc/ksqldb-server:0.28.2
 * ksqlDB cli: confluentinc/ksqldb-cli:0.28.2
+* rest proxy: confluentinc/cp-kafka-rest
 
 Components list:
 
@@ -82,6 +85,7 @@ Components list:
 * Schema Registry will listen to _localhost:8081_
 * Connect will listen to _localhost:8083_
 * ksqlDB cli will listen to _localhost:8088_
+* rest proxy will listen to _localhost:8082_
 
 
 ==== Start containers +
@@ -200,7 +204,7 @@ watch -n 5 "kubectl get events --sort-by='.lastTimestamp'"
 watch -n 5 "kubectl get pods"
 ----
 
-alternately, you can install additional Confluent components: 1 zk, 3 brokers, 1 connect, 1 ksqldb, 1 schema registry:
+alternately, you can install additional Confluent components: 1 zk, 3 brokers, 1 connect, 1 ksqldb, 1 schema registry, 1 rest proxy:
 
 [source,bash]
 ----
