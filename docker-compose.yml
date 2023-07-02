@@ -88,8 +88,7 @@ services:
     depends_on:
       - broker
       - schema-registry
-    volumes:
-      - ./extensions:/etc/ksqldb/ext
+      - connect
     ports:
       - "8088:8088"
     environment:
@@ -98,20 +97,12 @@ services:
       KSQL_CONFIG_DIR: "/etc/ksqldb"
       KSQL_KSQL_EXTENSION_DIR: "/etc/ksqldb/ext/"
       KSQL_KSQL_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      KSQL_KSQL_CONNECT_URL: "http://connect:8083"
       KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: "true"
       KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: "true"
       KSQL_KSQL_STREAMS_AUTO_OFFSET_RESET: "earliest"
       KSQL_KSQL_STREAMS_CACHE_MAX_BYTES_BUFFERING: "20000000"
-      KSQL_CONNECT_GROUP_ID: "ksql-connect-cluster"
-      KSQL_CONNECT_BOOTSTRAP_SERVERS: "broker:9092"
-      KSQL_CONNECT_CONFIG_STORAGE_TOPIC: "ksql-connect-configs"
-      KSQL_CONNECT_OFFSET_STORAGE_TOPIC: "ksql-connect-offsets"
-      KSQL_CONNECT_STATUS_STORAGE_TOPIC: "ksql-connect-statuses"
       KSQL_KSQL_LOGGING_PROCESSING_TOPIC_REPLICATION_FACTOR: 1
-      KSQL_CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
-      KSQL_CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
-      KSQL_CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
-      KSQL_CONNECT_PLUGIN_PATH: "/usr/share/kafka/plugins"
 
   ksqldb-cli:
     image: confluentinc/ksqldb-cli:${KSQL_VERSION}

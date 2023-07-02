@@ -12,6 +12,19 @@
 
 == Installation with Docker
 
+=== Prerequisites
+
+Examples have been tested with a Linux machine.
+
+List of programs required to run the examples:
+
+ - docker
+ - curl
+ - wget
+ - openssl
+ - keytool
+
+
 === KRaft mode
 
 To run a kafka cluster with Docker, use the _docker-compose-kraft.yml_ file available in the root directory.
@@ -2466,6 +2479,40 @@ Teardown:
 [source,bash]
 ----
 scripts/tear-down-mm2.sh
+----
+
+== Monitoring
+
+=== JMX
+
+Expose JMX port on components and test MBeans.
+
+ - jmx port broker: 9101 bind localhost
+
+Start scenario:
+
+[source,bash]
+----
+scripts/bootstrap-monitoring.sh
+----
+
+Get Under Replicated Partitions:
+
+[source,bash]
+----
+kafka-run-class kafka.tools.JmxTool --jmx-url service:jmx:rmi:///jndi/rmi://localhost:9101/jmxrmi --object-name kafka.server:name=UnderMinIsrPartitionCount,type=ReplicaManager --one-time true
+
+Trying to connect to JMX url: service:jmx:rmi:///jndi/rmi://localhost:9101/jmxrmi.
+"time","kafka.server:type=ReplicaManager,name=UnderMinIsrPartitionCount:Value"
+1688272551582,0
+
+----
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-monitoring.sh
 ----
 
 == Observability

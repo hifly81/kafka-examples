@@ -9,6 +9,7 @@ services:
     container_name: broker
     ports:
       - "9092:9092"
+      - "9101:9101"
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: 'broker,controller'
@@ -25,6 +26,8 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TOOLS_LOG4J_LOGLEVEL: ERROR
       CLUSTER_ID: 'QTnB2tAgTWa1ec5wYon2jg'
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: "localhost"
 
   schema-registry:
     image: confluentinc/cp-schema-registry:${CONFLUENT_VERSION}
@@ -83,8 +86,6 @@ services:
       - broker
       - schema-registry
       - connect
-    volumes:
-      - ./extensions:/etc/ksqldb/ext
     ports:
       - "8088:8088"
     environment:
