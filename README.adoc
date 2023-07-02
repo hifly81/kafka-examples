@@ -2496,6 +2496,18 @@ Start scenario:
 scripts/bootstrap-monitoring.sh
 ----
 
+Offline Partitions:
+
+[source,bash]
+----
+kafka-run-class kafka.tools.JmxTool --jmx-url service:jmx:rmi:///jndi/rmi://localhost:9101/jmxrmi --object-name kafka.controller:type=KafkaController,name=OfflinePartitionsCount --one-time true
+
+Trying to connect to JMX url: service:jmx:rmi:///jndi/rmi://localhost:9101/jmxrmi.
+"time","kafka.controller:type=KafkaController,name=OfflinePartitionsCount:Value"
+1688273226797,0
+
+----
+
 Get Under Replicated Partitions:
 
 [source,bash]
@@ -2505,6 +2517,19 @@ kafka-run-class kafka.tools.JmxTool --jmx-url service:jmx:rmi:///jndi/rmi://loca
 Trying to connect to JMX url: service:jmx:rmi:///jndi/rmi://localhost:9101/jmxrmi.
 "time","kafka.server:type=ReplicaManager,name=UnderMinIsrPartitionCount:Value"
 1688272551582,0
+
+----
+
+Number od Active controllers:
+
+[source,bash]
+----
+kafka-run-class kafka.tools.JmxTool --jmx-url service:jmx:rmi:///jndi/rmi://localhost:9101/jmxrmi --object-name kafka.controller:type=KafkaController,name=ActiveControllerCount
+
+Trying to connect to JMX url: service:jmx:rmi:///jndi/rmi://localhost:9101/jmxrmi.
+"time","kafka.controller:type=KafkaController,name=ActiveControllerCount:Value"
+1688273125932,1
+
 
 ----
 
