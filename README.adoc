@@ -291,7 +291,7 @@ Some implementations of kafka producers.
 
 To launch the examples run kafka on port 9092:
 
-=== StringSerializer +
+=== String Serializer +
 
 It uses _org.apache.kafka.common.serialization.StringSerializer_ for key and value
 
@@ -301,7 +301,7 @@ cd kafka-producer
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.string.Runner"
 ----
 
-=== JsonSerializer +
+=== Json Serializer +
 
 It uses _org.apache.kafka.common.serialization.StringSerializer_ for key and a _org.hifly.kafka.demo.producer.serializer.json.JsonSerializer_ for value
 
@@ -2520,7 +2520,7 @@ Trying to connect to JMX url: service:jmx:rmi:///jndi/rmi://localhost:9101/jmxrm
 
 ----
 
-Number od Active controllers:
+Number of Active controllers:
 
 [source,bash]
 ----
