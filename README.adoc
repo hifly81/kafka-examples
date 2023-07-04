@@ -2371,6 +2371,8 @@ scripts/tear-down-oauth.sh
 
 == Quota
 
+=== Network bandwidth
+
 This scenario will show how to set network bandwidth quotas on principal (user).
 The scenario requires a kafka listener with authentication.
 
