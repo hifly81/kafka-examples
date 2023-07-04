@@ -2369,6 +2369,52 @@ Teardown:
 scripts/tear-down-oauth.sh
 ----
 
+== Quota
+
+This scenario will show how to set network bandwidth quotas on principal (user).
+The scenario requires a kafka listener with authentication.
+
+Start scenario:
+
+[source,bash]
+----
+scripts/bootstrap-quotas.sh
+----
+
+Define network bandwidth quotas for user _alice_:
+
+ - producer byte rate: 1MB
+ - consumer byte rate: 1MB
+
+[source,bash]
+----
+docker exec broker kafka-configs  --bootstrap-server broker:9092 --command-config /tmp/alice.properties --alter --add-config 'producer_byte_rate=1000000,consumer_byte_rate=1000000' --entity-type users --entity-name alice
+----
+
+Run a producer perf test and see how throttling applies:
+
+[source,bash]
+----
+docker exec broker kafka-producer-perf-test --topic test --num-records 1000000 --record-size 100 --throughput -1 --producer.config /tmp/alice.properties --producer-props bootstrap.servers=broker:9092
+----
+
+Run a consumer perf test and see how throttling applies:
+
+[source,bash]
+----
+docker exec broker kafka-consumer-perf-test --topic test --messages 1000000 --consumer.config /tmp/alice.properties --broker-list broker:9092
+----
+
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-quotas.sh
+----
+
+
+
 == Mirroring
 
 === Mirror Maker 2 tests
