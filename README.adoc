@@ -372,49 +372,6 @@ cd kafka-producer
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.tx.Runner"
 ----
 
-=== Avro-confluent +
-
-It uses _io.confluent.kafka.serializers.KafkaAvroSerializer_ for value and a GenericRecord.
-
-Confluent Schema Registry is needed to run the example. +
-
-More Info at: https://github.com/confluentinc/schema-registry
-
-[source,bash]
-----
-cd kafka-producer
-mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.avro.Runner" -Dexec.args="CONFLUENT"
-----
-
-=== Avro-apicurio +
-
-It uses _io.apicurio.registry.utils.serde.AvroKafkaSerializer_ for value and a GenericRecord.
-
-Apicurio Schema Registry is needed to run the example. +
-
-Info at: https://github.com/Apicurio/apicurio-registry
-
-Start Apicurio:
-
-[source,bash]
-----
-./scripts/bootstrap-apicurio.sh
-----
-
-[source,bash]
-----
-cd kafka-producer
-mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.avro.Runner" -Dexec.args="APICURIO"
-----
-
-Teardown:
-
-[source,bash]
-----
-./scripts/teardown-apicurio.sh
-----
-
-
 === Partitioner +
 
 It uses a custom partitioner for keys.
@@ -874,6 +831,49 @@ zstd
 <<<
 
 == Schema Registry
+
+=== Confluent Avro Generic Record
+
+It uses _io.confluent.kafka.serializers.KafkaAvroSerializer_ for value and a GenericRecord.
+
+Confluent Schema Registry is needed to run the example. +
+
+More Info at: https://github.com/confluentinc/schema-registry
+
+[source,bash]
+----
+cd kafka-producer
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.avro.Runner" -Dexec.args="CONFLUENT"
+----
+
+=== Apicurio Avro Generic Record
+
+It uses _io.apicurio.registry.utils.serde.AvroKafkaSerializer_ for value and a GenericRecord.
+
+Apicurio Schema Registry is needed to run the example. +
+
+Info at: https://github.com/Apicurio/apicurio-registry
+
+Start Apicurio:
+
+[source,bash]
+----
+./scripts/bootstrap-apicurio.sh
+----
+
+[source,bash]
+----
+cd kafka-producer
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.avro.Runner" -Dexec.args="APICURIO"
+----
+
+Teardown:
+
+[source,bash]
+----
+./scripts/teardown-apicurio.sh
+----
+
 
 === Confluent Avro Specific Record
 
