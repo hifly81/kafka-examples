@@ -16,7 +16,7 @@ public class Runner {
 
     public static void main (String [] args) {
 
-        //Get schema from args (CONFLUENT or APICURIO)
+        //Get schema from args (CONFLUENT, APICURIO, HORTONWORKS)
         String schemaRegistry = args[0];
 
         //Schema from file

@@ -49,6 +49,10 @@ public class AvroDataProducer<K, Record> extends AbstractKafkaProducer<K, Record
                 producer = new org.apache.kafka.clients.producer.KafkaProducer(KafkaConfig.apicurioAvroProducer());
                 break;
 
+            case HORTONWORKS:
+                producer = new org.apache.kafka.clients.producer.KafkaProducer(KafkaConfig.hortonworksAvroProducer());
+                break;
+
             default:
                 producer = new org.apache.kafka.clients.producer.KafkaProducer(KafkaConfig.confluentAvroProducer());
                 break;

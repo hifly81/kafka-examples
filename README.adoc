@@ -874,6 +874,34 @@ Teardown:
 ./scripts/teardown-apicurio.sh
 ----
 
+=== Hortonworks Avro Generic Record
+
+It uses _com.hortonworks.registries.schemaregistry.serdes.avro.kafka.KafkaAvroSerializer_ for value and a GenericRecord.
+
+Hortonworks Schema Registry is needed to run the example. +
+
+Info at: https://registry-project.readthedocs.io/en/latest/schema-registry.html#running-kafka-example
+
+Start Hortonworks Schema Registry:
+
+[source,bash]
+----
+./scripts/bootstrap-hortonworks-sr.sh
+----
+
+[source,bash]
+----
+cd kafka-producer
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.avro.Runner" -Dexec.args="HORTONWORKS"
+----
+
+Teardown:
+
+[source,bash]
+----
+./scripts/teardown-hortonworks-sr.sh
+----
+
 
 === Confluent Avro Specific Record
 

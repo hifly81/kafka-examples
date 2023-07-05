@@ -1,6 +1,8 @@
 package org.hifly.kafka.demo.producer;
 
+import com.hortonworks.registries.schemaregistry.serdes.avro.kafka.KafkaAvroSerializer;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,6 +19,8 @@ public class KafkaConfig {
             System.getenv("confluent.schema.registry") != null? System.getenv("confluent.schema.registry"):"http://localhost:8081";
     private static final String APICURIO_SCHEMA_REGISTRY_URL =
             System.getenv("apicurio.registry.url") != null? System.getenv("apicurio.registry.url"):"http://localhost:8080/apis/registry/v2";
+    private static final String HORTONWORKS_SCHEMA_REGISTRY_URL =
+            System.getenv("hortonworks.registry.url") != null? System.getenv("hortonworks.registry.url"):"http://localhost:9090/api/v1";
 
 
     public static Properties loadConfig(final String configFile) throws IOException {
@@ -91,6 +95,16 @@ public class KafkaConfig {
         producerProperties.put("value.serializer", "io.apicurio.registry.serde.avro.AvroKafkaSerializer");
         producerProperties.put("apicurio.registry.url", APICURIO_SCHEMA_REGISTRY_URL);
         producerProperties.put("apicurio.registry.auto-register", Boolean.TRUE);
+        return producerProperties;
+    }
+
+    public static Properties hortonworksAvroProducer() {
+        Properties producerProperties = new Properties();
+        producerProperties.put("bootstrap.servers", BROKER_LIST);
+        producerProperties.put("max.block.ms", 15000);
+        producerProperties.put("key.serializer", StringSerializer.class.getName());
+        producerProperties.put("value.serializer", KafkaAvroSerializer.class.getName());
+        producerProperties.put("schema.registry.url", HORTONWORKS_SCHEMA_REGISTRY_URL);
         return producerProperties;
     }
     
