@@ -6,10 +6,9 @@
 :showtitle:
 :Some attr: Some value
 
-// Need some preamble to get TOC:
-{empty}
 
 <<<
+// page break
 
 == Info for this repository
 
@@ -161,6 +160,8 @@ scripts/tear-down.sh
 ==== Change Images Version
 
 Change the docker image version for the specific component, updating file _.env_ in root directory.
+
+<<<
 
 == Installation on Kubernetes using Confluent For Kubernetes
 
@@ -326,6 +327,8 @@ Delete namespace "confluent":
 kubectl delete namespace confluent
 ----
 
+<<<
+
 == Apache Kafka® producers
 
 Some implementations of Apache Kafka® producers.
@@ -488,6 +491,7 @@ cd kafka-python-producer
 python producer.py
 ----
 
+<<<
 
 == Apache Kafka® consumers
 
@@ -752,6 +756,8 @@ cd kafka-python-consumer
 python consumer.py
 ----
 
+<<<
+
 == Admin & Management
 
 === Apache Kafka® CLI Tools
@@ -864,6 +870,8 @@ snappy
 lz4
 zstd
 ----
+
+<<<
 
 == Schema Registry
 
@@ -1000,6 +1008,7 @@ you will get an error:
 {"error_code":42201,"message":"Invalid schema
 ----
 
+<<<
 
 == Apache Kafka® Connect
 
@@ -1380,6 +1389,8 @@ Teardown:
 scripts/tear-down-connect-tasks.sh
 ----
 
+<<<
+
 == Apache Kafka® Streams
 
 Implementation of a series of Apache Kafka® Streams topologies.
@@ -1635,6 +1646,8 @@ Read from output topic:
 ----
 kafka-console-consumer --topic expired-messages-input-topic --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
+
+<<<
 
 == ksqlDB
 
@@ -1970,6 +1983,7 @@ docker exec -it ksqldb-cli ksql http://ksqldb-server:8088 --execute "select * fr
 
 ----
 
+<<<
 
 == Transactions
 
@@ -2012,7 +2026,9 @@ cd kafka-orders-tx
 mvn clean compile && mvn exec:java -Dexec.mainClass="ItemsConsumer"
 ----
 
-== Framework
+<<<
+
+== Frameworks
 
 === Apache Kafka® Spring Boot
 
@@ -2090,6 +2106,8 @@ curl -v -X POST http://localhost:9090/kafka-microprofile2-consumer-0.0.1-SNAPSHO
 #Send orders (500)
 curl -v -X POST http://localhost:9080/kafka-microprofile2-producer-0.0.1-SNAPSHOT/order
 ----
+
+<<<
 
 == Security
 
@@ -2410,6 +2428,8 @@ Teardown:
 scripts/tear-down-oauth.sh
 ----
 
+<<<
+
 == Quota
 
 === Network bandwidth
@@ -2456,7 +2476,7 @@ Teardown:
 scripts/tear-down-quotas.sh
 ----
 
-
+<<<
 
 == Mirroring
 
@@ -2570,6 +2590,8 @@ Teardown:
 scripts/tear-down-mm2.sh
 ----
 
+<<<
+
 == Monitoring
 
 === JMX
@@ -2628,6 +2650,8 @@ Teardown:
 ----
 scripts/tear-down-monitoring.sh
 ----
+
+<<<
 
 == Observability
 
@@ -2697,6 +2721,8 @@ Teardown:
 ----
 scripts/tear-down-tracing.sh
 ----
+
+<<<
 
 == Performance
 
