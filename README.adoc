@@ -836,9 +836,30 @@ zstd
 
 It uses _io.confluent.kafka.serializers.KafkaAvroSerializer_ for value and a GenericRecord.
 
-Confluent Schema Registry is needed to run the example. +
+Confluent Schema Registry is needed to run the example.
 
 More Info at: https://github.com/confluentinc/schema-registry
+
+Avro schema _car.avsc_:
+
+[source,json]
+----
+{
+ "type": "record",
+ "name": "Car",
+ "namespace": "org.hifly.kafka.demo.producer.serializer.avro",
+ "fields": [
+  {
+   "name": "model",
+   "type": "string"
+  },
+  {
+   "name": "brand",
+   "type": "string"
+  }
+ ]
+}
+----
 
 [source,bash]
 ----
@@ -850,9 +871,30 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.produc
 
 It uses _io.apicurio.registry.utils.serde.AvroKafkaSerializer_ for value and a GenericRecord.
 
-Apicurio Schema Registry is needed to run the example. +
+Apicurio Schema Registry is needed to run the example.
 
 Info at: https://github.com/Apicurio/apicurio-registry
+
+Avro schema _car.avsc_:
+
+[source,json]
+----
+{
+ "type": "record",
+ "name": "Car",
+ "namespace": "org.hifly.kafka.demo.producer.serializer.avro",
+ "fields": [
+  {
+   "name": "model",
+   "type": "string"
+  },
+  {
+   "name": "brand",
+   "type": "string"
+  }
+ ]
+}
+----
 
 Start Apicurio:
 
@@ -881,6 +923,27 @@ It uses _com.hortonworks.registries.schemaregistry.serdes.avro.kafka.KafkaAvroSe
 Hortonworks Schema Registry is needed to run the example. +
 
 Info at: https://registry-project.readthedocs.io/en/latest/schema-registry.html#running-kafka-example
+
+Avro schema _car.avsc_:
+
+[source,json]
+----
+{
+ "type": "record",
+ "name": "Car",
+ "namespace": "org.hifly.kafka.demo.producer.serializer.avro",
+ "fields": [
+  {
+   "name": "model",
+   "type": "string"
+  },
+  {
+   "name": "brand",
+   "type": "string"
+  }
+ ]
+}
+----
 
 Start Hortonworks Schema Registry:
 
