@@ -40,6 +40,9 @@ asciidoctor-pdf README.adoc
  - link:https://github.com/hifly81/kafka-examples/blob/master/CONTRIBUTING.adoc[How to Contribute]
  - link:https://star-history.com/#hifly81/kafka-examples&Date[Star History Chart]
 
+=== License
+
+ - link:https://github.com/hifly81/kafka-examples/blob/master/LICENSE[MIT License]
 
 == Installation with Docker
 
