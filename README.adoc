@@ -21,7 +21,7 @@ Clone the repo:
 git clone git@github.com:hifly81/kafka-examples.git
 ----
 
-Install asciidoctor-pdf:
+Install _asciidoctor-pdf_:
 
 [source,bash]
 ----
@@ -63,11 +63,6 @@ List of programs required to run the examples:
  - _wget_
  - _openssl_
  - _keytool_
-
-To run example for Kubenetes, you also need:
-
- - helm
- - kubectl
 
 
 === KRaft mode
@@ -170,6 +165,13 @@ Change the docker image version for the specific component, updating file _.env_
 
 == Installation on Kubernetes using Confluent For Kubernetes
 
+=== Prerequisites
+
+List of programs required to run the examples:
+
+- _helm_
+- _kubectl_
+
 Examples will run using:
 
  . Minikube
@@ -193,7 +195,7 @@ https://dev.to/xs/kubernetes-minikube-with-qemu-kvm-on-arch-312a
 
 https://minikube.sigs.k8s.io/docs/start/
 
-=== Deployment of a cluster with Confluent for Kubernetes Operator
+=== Deployment of a cluster with Confluent for Kubernetes Operator (CFK)
 
 Start Minikube with kvm2 driver:
 
