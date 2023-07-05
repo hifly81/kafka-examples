@@ -9,6 +9,7 @@
 // Need some preamble to get TOC:
 {empty}
 
+<<<
 
 == Info for this repository
 
@@ -47,6 +48,8 @@ asciidoctor-pdf README.adoc
 === License
 
  - link:https://github.com/hifly81/kafka-examples/blob/master/LICENSE[MIT License]
+
+<<<
 
 == Installation with Docker
 
