@@ -1,4 +1,4 @@
-= Apache Kafka examples
+= Apache Kafka® examples
 ==============================
 :toc:
 :toc-placement: preamble
@@ -27,11 +27,11 @@ List of programs required to run the examples:
 
 === KRaft mode
 
-To run a kafka cluster with Docker, use the _docker-compose-kraft.yml_ file available in the root directory.
+To run a cluster using Docker, run the _docker-compose-kraft.yml_ file available in the root directory.
 
-Images are downloaded from _confluentinc_ and are based on _Confluent 7.4.0 Community_ licensed (kafka version 3.4.0):
+Images are downloaded from _confluentinc_ and are based on _Confluent 7.4.0 Community_ licensed (Apache Kafka® version 3.4.0):
 
-* Kafka: confluentinc/cp-kafka
+* Broker: confluentinc/cp-kafka
 * Schema Registry: confluentinc/cp-schema-registry
 * Connect: custom image based on confluentinc/cp-kafka-connect-base
 * ksqlDB server: confluentinc/ksqldb-server:0.28.2
@@ -80,12 +80,12 @@ scripts/tear-down-kraft.sh
 
 === Zookeeper mode
 
-To run a kafka cluster with Docker, use the _docker-compose.yml_ file available in the root directory.
+To run a cluster using Docker in Zookeeper mode, run the _docker-compose.yml_ file available in the root directory.
 
-Images are downloaded from _confluentinc_ and are based on _Confluent 7.4.0 Community_ licensed (kafka version 3.4.0):
+Images are downloaded from _confluentinc_ and are based on _Confluent 7.4.0 Community_ licensed (Apache Kafka® version 3.4.0):
 
 * Zookeeper: confluentinc/cp-zookeeper
-* Kafka: confluentinc/cp-kafka
+* Broker: confluentinc/cp-kafka
 * Schema Registry: confluentinc/cp-schema-registry
 * Connect: custom image based on confluentinc/cp-kafka-connect-base
 * ksqlDB server: confluentinc/ksqldb-server:0.28.2
@@ -128,9 +128,9 @@ Examples will run using:
  . Minikube
  . Confluent for Kubernetes operator (CFK): https://docs.confluent.io/operator/current/overview.html
 
-Images are downloaded from _confluentinc_ and are based on _Confluent 7.4.0 Community_ licensed (kafka version 3.4.0):
+Images are downloaded from _confluentinc_ and are based on _Confluent 7.4.0 Community_ licensed (Apache Kafka® version 3.4.0):
 
-* Kafka: confluentinc/cp-kafka
+* Broker: confluentinc/cp-kafka
 * Schema Registry: confluentinc/cp-schema-registry
 * Connect: custom image based on confluentinc/cp-kafka-connect-base
 * ksqlDB server: confluentinc/ksqldb-server:0.28.2
@@ -146,7 +146,7 @@ https://dev.to/xs/kubernetes-minikube-with-qemu-kvm-on-arch-312a
 
 https://minikube.sigs.k8s.io/docs/start/
 
-=== Deployment of a Kafka cluster with Confluent for Kubernetes Operator
+=== Deployment of a cluster with Confluent for Kubernetes Operator
 
 Start Minikube with kvm2 driver:
 
@@ -158,7 +158,7 @@ touch /tmp/config && export KUBECONFIG=/tmp/config
 minikube start --memory 16384 --cpus 4
 ----
 
-Create confluent k8s namespace:
+Create a k8s namespace named "confluent":
 
 [source,bash]
 ----
@@ -224,7 +224,7 @@ alternately, you can install additional Confluent components: 1 zk, 3 brokers, 1
 kubectl apply -f confluent-for-kubernetes/k8s/confluent-platform.yaml
 ----
 
-==== Kafka Operations
+==== Apache Kafka® Operations
 
 Topic create:
 
@@ -278,18 +278,18 @@ kubectl delete -f k8s/confluent-platform.yaml
 helm delete confluent-operator
 ----
 
-Delete namespace confluent:
+Delete namespace "confluent":
 
 [source,bash]
 ----
 kubectl delete namespace confluent
 ----
 
-== Kafka producers
+== Apache Kafka® producers
 
-Some implementations of kafka producers.
+Some implementations of Apache Kafka® producers.
 
-To launch the examples run kafka on port 9092:
+To launch the examples run cluster on port 9092:
 
 === String Serializer +
 
@@ -332,7 +332,7 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.produc
 
 It uses _io.confluent.kafka.serializers.KafkaAvroSerializer_ for value and a GenericRecord.
 
-Confluent schema registry is needed to run the example. +
+Confluent Schema Registry is needed to run the example. +
 
 More Info at: https://github.com/confluentinc/schema-registry
 
@@ -346,7 +346,7 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.produc
 
 It uses _io.apicurio.registry.utils.serde.AvroKafkaSerializer_ for value and a GenericRecord.
 
-Apicurio schema registry is needed to run the example. +
+Apicurio Schema Registry is needed to run the example. +
 
 Info at: https://github.com/Apicurio/apicurio-registry
 
@@ -401,14 +401,14 @@ cd interceptors
 mvn clean package
 ----
 
-Run a kafka producer on listener port 9092:
+Run a producer sending data to listener port 9092:
 
 [source,bash]
 ----
 mvn exec:java -Dexec.mainClass="org.hifly.kafka.interceptor.producer.Runner"
 ----
 
-Run a kafka consumer on listener port 9092:
+Run a consumer on listener port 9092:
 
 [source,bash]
 ----
@@ -448,9 +448,9 @@ python producer.py
 ----
 
 
-== Kafka consumers
+== Apache Kafka® consumers
 
-Implementation of a kafka consumer that can be used with different deserializer classes (for key and value).
+Implementation of a consumer that can be used with different deserializer classes (for key and value).
 
 Class _org.hifly.kafka.demo.consumer.deserializer.impl.ConsumerInstance_ can be customized with:
 
@@ -587,9 +587,9 @@ kafka-console-producer --broker-list localhost:9092 --topic users_clicks --prope
 
 Verify that messages are read by different consumers.
 
-=== Read from closest replica
+=== Read from the closest replica
 
-This example shows how to use the feature (since AK 2.4+) for consumers to read messages from the closest replica.
+This example shows how to use the feature (since Apache Kafka® 2.4+) for consumers to read messages from the closest replica.
 
 Start a cluster with 3 brokers on 3 different racks, dc1, dc2 and dc3:
 
@@ -609,7 +609,7 @@ docker exec -it broker kafka-leader-election --bootstrap-server broker:9092 --to
 docker exec -it broker kafka-leader-election --bootstrap-server broker:9092 --topic topic-regional --election-type PREFERRED --partition 2
 ----
 
-Verify topic describe:
+Verify partitions with topic describe:
 
 [source,bash]
 ----
@@ -655,14 +655,14 @@ cd interceptors
 mvn clean package
 ----
 
-Run a kafka producer on listener port 9092:
+Run a producer sending messages on listener port 9092:
 
 [source,bash]
 ----
 mvn exec:java -Dexec.mainClass="org.hifly.kafka.interceptor.producer.Runner"
 ----
 
-Run a kafka consumer on listener port 9092:
+Run a consumer on listener port 9092:
 
 [source,bash]
 ----
@@ -713,22 +713,22 @@ python consumer.py
 
 == Admin & Management
 
-=== Kafka CLI Tools
+=== Apache Kafka® CLI Tools
 
-Kafka CLI are located in _$KAFKA_HOME/bin_ directory.
+Apache Kafka® CLI are located in _$KAFKA_HOME/bin_ directory.
 
 . _kafka-acls_ - manage acls
 . _kafka-topics_ - create, delete, describe, or change a topic
 . _kafka-configs_ - create, delete, describe, or change cluster settings
 . _kafka-consumer-groups_ - manage consumer groups
-. _kafka-console-consumer_ - read data from Kafka topics and outputs it to standard output
-. _kafka-console-producer_ - produce data to Kafka topics
-. _kafka-consumer-perf-test_ - consume high volumes of data through your Kafka cluster
-. _kafka-producer-perf-test_ - produce high volumes of data through your Kafka cluster
-. _kafka-avro-console-producer_ - produce Avro data to Kafka topics with a schema _(only with confluent installation)_
-. _kafka-avro-console-consumer_ - read Avro data from Kafka topics with a schema and outputs it to standard output _(only with confluent installation)_
+. _kafka-console-consumer_ - read data from topics and outputs it to standard output
+. _kafka-console-producer_ - produce data to topics
+. _kafka-consumer-perf-test_ - consume high volumes of data through your cluster
+. _kafka-producer-perf-test_ - produce high volumes of data through your cluster
+. _kafka-avro-console-producer_ - produce Avro data to topics with a schema _(only with confluent installation)_
+. _kafka-avro-console-consumer_ - read Avro data from topics with a schema and outputs it to standard output _(only with confluent installation)_
 
-=== Kafka Topics: segments and retention
+=== Apache Kafka® Topics: segments and retention
 
 Create a topic _cars_ with retention for old segments set to 5 minutes and size of segments set to 100 KB.
 
@@ -753,9 +753,9 @@ Check the log dir for cars topic and wait for deletion of old segments (5 minute
 docker exec -it broker watch ls -ltr /var/lib/kafka/data/cars-0/
 ----
 
-=== Kafka Admin Client
+=== Apache Kafka® Admin Client
 
-It uses _org.apache.kafka.clients.admin.AdminClient_ to execute Kafka Admin API.
+It uses _org.apache.kafka.clients.admin.AdminClient_ to execute Admin API.
 
 Operations added:
 
@@ -812,7 +812,7 @@ kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.confi
 4:zstd
 ----
 
-Run a kafka consumer on _topic1_ topic and see the records:
+Run a consumer on _topic1_ topic and see the records:
 
 [source,bash]
 ----
@@ -828,9 +828,9 @@ zstd
 
 === Confluent Avro Specific Record
 
-Implementation of a kafka producer and a kafka consumer using Avro Specific Record for serializing and deserializing.
+Implementation of a producer and a consumer using Avro Specific Record for serializing and deserializing.
 
-Confluent schema registry is needed to run the example. +
+Confluent Schema Registry is needed to run the example. +
 
 Create topics:
 
@@ -885,7 +885,7 @@ curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
 http://localhost:8081/subjects/cars-value/versions
 ----
 
-Put compatibility on BACKWARD:
+Set compatibility on BACKWARD:
 
 [source,bash]
 ----
@@ -894,7 +894,7 @@ curl -X PUT -H "Content-Type: application/vnd.schemaregistry.v1+json" \
 http://localhost:8081/config/cars-value
 ----
 
-Get compatibility for subject cars-value:
+Verify compatibility for subject cars-value:
 
 [source,bash]
 ----
@@ -918,7 +918,7 @@ cd confluent-avro-specific-record
 mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.RunnerConsumer"
 ----
 
-View the latest schema for this subject:
+View the latest schema for cars-value subject:
 
 [source,bash]
 ----
@@ -960,13 +960,13 @@ you will get an error:
 ----
 
 
-== Kafka Connect
+== Apache Kafka® Connect
 
 === Unixcommand Source Connector
 
-Implementation of a sample Source Connector; it executes _unix commands_ (e.g. _fortune_, _ls -ltr, netstat_) and sends its output to a kafka topic.
+Implementation of a sample Source Connector; it executes _unix commands_ (e.g. _fortune_, _ls -ltr, netstat_) and sends its output to a topic.
 
-IMPORTANT: commands are executed on kafka connect worker node.
+IMPORTANT: commands are executed on connect worker node.
 
 This connector relies on Confluent Schema Registry to convert the values using Avro: _CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter_.
 
@@ -1124,7 +1124,7 @@ Run the example:
 scripts/bootstrap-smt-aspectj.sh
 ----
 
-Kafka Connect will start with aspectjweaver java agent:
+Connect will start with aspectjweaver java agent:
 
 [source,bash]
 ----
@@ -1255,12 +1255,12 @@ scripts/tear-down-connect-dlq.sh
 
 === CDC with Debezium PostgreSQL Source Connector
 
-Usage of Debezium Source connector for PostgreSQL to send RDMS table updates into a kafka topic.
+Usage of Debezium Source connector for PostgreSQL to send RDMS table updates into a topic.
 
 The _debezium/debezium-connector-postgresql:1.7.1_ connector has been installed into connect docker image using confluent hub (see _docker-compose.yml_ file).
 More details on the connector are available at: https://docs.confluent.io/debezium-connect-postgres-source/current/overview.html.
 
-Run kafka on port 9092:
+Run cluster on port 9092:
 
 [source,bash]
 ----
@@ -1283,7 +1283,7 @@ Deploy the connector:
 curl -v -X POST -H 'Content-Type: application/json' -d @cdc-debezium-postgres/config/debezium-source-pgsql.json http://localhost:8083/connectors
 ----
 
-Run a kafka consumer on _postgres.public.accounts_ topic and see the records:
+Run a consumer on _postgres.public.accounts_ topic and see the records:
 
 [source,bash]
 ----
@@ -1308,7 +1308,7 @@ scripts/tear-down-cdc.sh
 
 This example will show how tasks are automatically balanced between Running worker nodes.
 
-A kafka connect cluster will be created with 2 workers, _connect_ and _connect2_ and with a _datagen_ source connector with 4 tasks continuously inserting data.
+A connect cluster will be created with 2 workers, _connect_ and _connect2_ and with a _datagen_ source connector with 4 tasks continuously inserting data.
 
 After some seconds _connect2_ will be stopped and all tasks will be redistributed to _connect_ worker node.
 
@@ -1339,9 +1339,9 @@ Teardown:
 scripts/tear-down-connect-tasks.sh
 ----
 
-== Kafka streams
+== Apache Kafka® Streams
 
-Implementation of a series of kafka streams topologies.
+Implementation of a series of Apache Kafka® Streams topologies.
 
 Execute tests:
 
@@ -1425,7 +1425,7 @@ kafka-console-consumer --topic sum-output-topic --bootstrap-server localhost:909
 
 === Cars sensor Stream +
 The stream filters out speed data from car data sensor records. Speed limit is set to 150km/h and only events exceeding the limits are filtered out. +
-A ktable stores the car info data. +
+A KTable stores the car info data. +
 A left join between the kstream and the ktable produces a new aggregated object published to an output topic.
 
 Create topics:
@@ -1510,7 +1510,7 @@ kafka-console-consumer --topic cars-output-topic --bootstrap-server localhost:90
 === JSONArray Fields removal Processor +
 
 Remove a specific json field from the record and forward it to the next topology node.
-This example uses  Kafka streams Processor API.
+This example uses Streams Processor API.
 
 Execute tests:
 
@@ -1554,7 +1554,7 @@ kafka-console-consumer --topic processor-output-topic --bootstrap-server localho
 === Expired Messages Processor +
 
 Remove old entries based on time (expiration time 30 seconds) using a punctuator.
-This example uses  Kafka streams Processor API.
+This example uses Streams Processor API.
 
 Execute tests:
 
@@ -1599,7 +1599,7 @@ kafka-console-consumer --topic expired-messages-input-topic --bootstrap-server l
 
 === Saga Pattern Example
 
-Implementation of a sample App (kafka producer and consumer) sending and receiving orders; ksqlDB acts as an orchestrator to coordinate a sample Saga.
+Implementation of a sample App (producer and consumer) sending and receiving orders; ksqlDB acts as an orchestrator to coordinate a sample Saga.
 
 Compile:
 
@@ -1778,9 +1778,9 @@ EMIT CHANGES;
 
 This example shows how to join a STREAM with air temperatures captured by devices and a TABLE containing the information of devices.
 
-Air Temperatures are ingested into a kafka topic _temperature.data_ with a RabbitMQ source connector.
+Air Temperatures are ingested into a topic _temperature.data_ with a RabbitMQ source connector.
 
-Device Info are ingested into a kafka topic _device_ with a JDBC Source Connector.
+Device Info are ingested into a topic _device_ with a JDBC Source Connector.
 
 Launch Docker Compose:
 
@@ -1877,9 +1877,9 @@ docker exec -it ksqldb-cli ksql http://ksqldb-server:8088 --execute "select * fr
 
 This example shows how to join a Table and a Table
 
-Device Info are ingested into a kafka topic _device_ with a JDBC Source Connector.
+Device Info are ingested into a topic _device_ with a JDBC Source Connector.
 
-Maintenances are ingested into a kafka topic _maintenance_ with a JDBC Source Connector.
+Maintenances are ingested into a topic _maintenance_ with a JDBC Source Connector.
 
 Launch Docker Compose:
 
@@ -1940,7 +1940,7 @@ see section <<tx_producer>>
 
 see section <<readcommitted_consumer>>
 
-=== Kafka Orders App: Example with end-to-end exactly-once semantic between consumer and producer
+=== Orders App: Example with end-to-end exactly-once semantic between consumer and producer
 
 Example of a cart application implementing end-to-end exactly-once semantic between consumer and producer. +
 The ItemsProducer class sends 2 items in a single transaction. +
@@ -1973,11 +1973,11 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="ItemsConsumer"
 
 == Framework
 
-=== Kafka Spring Boot
+=== Apache Kafka® Spring Boot
 
-Sample of a kafka producer and consumer implemented with Spring Boot 2.x.
+Example for a producer and consumer implemented with Spring Boot 2.x.
 
-Kafka Consumer implements a DLQ for records not processable (after 3 attempts).
+Consumer implements a DLQ for records not processable (after 3 attempts).
 
 Run on your local machine: 
 
@@ -1998,9 +1998,9 @@ curl --data '{"id":5, "name": "PS5"}' -H "Content-Type:application/json" http://
 curl --data '{"id":5, "name": "ERROR-PS5"}' -H "Content-Type:application/json" http://localhost:8010/api/order
 ----
 
-=== Kafka Quarkus
+=== Apache Kafka® Quarkus
 
-Sample of a kafka producer and consumer implemented with Quarkus.
+Example for a producer and consumer implemented with Quarkus.
 Every 1s a new message is sent to demo topic.
 
 Run on your local machine: 
@@ -2019,9 +2019,9 @@ cd kafka-quarkus
 ./mvnw clean package -Dquarkus.container-image.build=true -Dquarkus.kubernetes.deploy=true
 ----
 
-=== Kafka microprofile2
+=== Apache Kafka® microprofile2
 
-Sample of a kafka producer and consumer running on an open liberty MicroProfile v2 runtime.
+Example for a kafka producer and consumer running on an open liberty MicroProfile v2 runtime.
 
 Run on docker: 
 
@@ -2054,7 +2054,7 @@ curl -v -X POST http://localhost:9080/kafka-microprofile2-producer-0.0.1-SNAPSHO
 
 === mTLS listener
 
-This example shows how to define a mTLS listener in kafka on port 9092.
+This example shows how to define a mTLS listener on listener port 9092.
 
 mTLS ensures that both parties in the communication, client and broker, will trust each other exchanging SSL certificates.
 
@@ -2084,7 +2084,7 @@ List of files generated:
 
 Then a broker with mTLS on port 9092 will be started.
 
-To test the mTLS connection, you can try producing some data to a kafka topic with the client keystore already generated and using mTLS _client.properties_
+To test the mTLS connection, you can try producing some data to a topic with the client keystore already generated and using mTLS _client.properties_
 
 IMPORTANT: mTLS listener has been configured with hostname verification: _ssl.endpoint.identification.algorithm= https_
 
@@ -2130,7 +2130,7 @@ List of files generated:
 - broker truststore
 - client truststore
 
-To test the SASL PLAIN SSL connection, you can try producing some data to a kafka topic using _client.properties_ with user _admin/admin_secret_
+To test the SASL PLAIN SSL connection, you can try producing some data to a topic using _client.properties_ with user _admin/admin_secret_
 
 [source,bash]
 ----
@@ -2147,14 +2147,14 @@ Teardown:
 scripts/tear-down-multi-listener.sh
 ----
 
-=== Kafka Custom Authorizer
+=== Custom Authorizer
 
-This example shows how to create a custom authorizer for Kafka
+This example shows how to create a custom authorizer
 
 IMPORTANT: this example is only for demo purposes and it's not intended to be deployed in production.
 
 Custom Authorizer _org.hifly.kafka.authorizer.DummyAuthirizer_ extends the basic _AclAuthorizer_ and allows authenticated users to execute
-operations on kafka topics without setting any ACLs on them.
+operations on topics without setting any ACLs on them.
 
 Compile and package:
 
@@ -2165,14 +2165,14 @@ mvn clean package
 cp -rf ./target/authorizers-0.0.1-SNAPSHOT.jar ./jars
 ----
 
-Run kafka with custom authorizer on port 9092:
+Run broker with custom authorizer on port 9092:
 
 [source,bash]
 ----
 scripts/boostrap-auth.sh
 ----
 
-Run a kafka producer test using the _producer.properties_ on listener port 9092:
+Run a producer test using the _producer.properties_ on listener port 9092:
 
 _producer.properties_:
 
@@ -2192,7 +2192,7 @@ Producer command:
 kafka-console-producer --bootstrap-server localhost:9092 --topic test --producer.config ./src/main/resources/producer.properties
 ----
 
-Run a kafka consumer test using the _consumer.properties_ on listener port 9092:
+Run a consumer test using the _consumer.properties_ on listener port 9092:
 
 _consumer.properties_:
 
@@ -2263,7 +2263,7 @@ Then a broker with mTLS on port 9092 will be started.
 
 IMPORTANT: mTLS listener has been configured with hostname verification: _ssl.endpoint.identification.algorithm= https_
 
-To test the mTLS connection, you can try producing some data to a kafka topic with the client keystore already generated and using mTLS _client.properties_
+To test the mTLS connection, you can try producing some data to a topic with the client keystore already generated and using mTLS _client.properties_
 
 client CN is: _CN=client,OU=Hifly,O=Hifly,L=Rome,ST=Lazio,C=IT_
 
@@ -2309,13 +2309,13 @@ scripts/tear-down-principal.sh
 ----
 
 
-=== Kafka OAUTH Authentication KIP-768
+=== OAUTH Authentication KIP-768
 
-This example shows how to configure kafka to use SASL/OAUTHBEARER authentication with Support for OIDC.
+This example shows how to configure broker to use SASL/OAUTHBEARER authentication with Support for OIDC.
 
 To run the sample you need to run Keycloak server and configure openid-connect on it.
 
-Run Keycloak server with PostgreSQL (on port 8080) and Run Kafka with OAUTH listener on port 9093:
+Run Keycloak server with PostgreSQL (on port 8080) and then run cluster with OAUTH listener on port 9093:
 
 [source,bash]
 ----
@@ -2340,7 +2340,7 @@ Keycloak setup:
  - Save
 ----
 
-Run a kafka producer test using the _client-oauth-properties_ (add your client_secret into the file) on listener port 9093:
+Run a producer test using the _client-oauth-properties_ (add your client_secret into the file) on listener port 9093:
 
 _client-oauth-properties_:
 
@@ -2374,7 +2374,7 @@ scripts/tear-down-oauth.sh
 === Network bandwidth
 
 This scenario will show how to set network bandwidth quotas on principal (user).
-The scenario requires a kafka listener with authentication.
+The scenario requires a listener with SASL_PLAIN authentication.
 
 Start scenario:
 
@@ -2590,13 +2590,13 @@ scripts/tear-down-monitoring.sh
 
 == Observability
 
-=== Distributed Tracing with OpenTelemetry for kafka applications
+=== Distributed Tracing with OpenTelemetry for Apache Kafka® applications
 
-This example shows how to configure OpenTelemetry java auto-instrumentation for a kafka streams application enabling distributed tracing.
+This example shows how to configure OpenTelemetry java auto-instrumentation for a stream application enabling distributed tracing.
 
 In this example it is used _opentelemetry-java-instrumentation_  to inject OpenTelemetry auto instrumentation as a JVM agent requiring no modifications at source code to add the traces.
 
-Apache Kafka producers, consumers and streams are part of the supported libraries as documented at:
+Producers, consumers and streams are part of the supported libraries as documented at:
 
 https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/docs/supported-libraries.md#libraries--frameworks
 
@@ -2615,7 +2615,7 @@ kafka-topics --bootstrap-server localhost:9092 --create --topic sum-input-topic 
 kafka-topics --bootstrap-server localhost:9092 --create --topic sum-output-topic --replication-factor 1 --partitions 1
 ----
 
-Run the kafka stream application with the OpenTelemetry agent:
+Run the stream application with the OpenTelemetry agent:
 
 [source,bash]
 ----
@@ -2662,9 +2662,9 @@ scripts/tear-down-tracing.sh
 
 === Producer
 
-Usage of kafka utility _kafka-producer-perf-test_ to test producer performances for java applications.
+Usage of utility _kafka-producer-perf-test_ to test producer performances for java applications.
 
-Kafka cluster is formed with 3 brokers (9092, 9093, 9094).
+Cluster is formed with 3 brokers (9092, 9093, 9094).
 
 1 client machine, named _kafka_perf_ is used to run _kafka-producer-perf-test_ against the kafka cluster.
 
