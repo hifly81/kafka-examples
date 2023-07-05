@@ -58,11 +58,16 @@ Examples have been tested with a Linux machine.
 
 List of programs required to run the examples:
 
- - docker
- - curl
- - wget
- - openssl
- - keytool
+ - _docker_
+ - _curl_
+ - _wget_
+ - _openssl_
+ - _keytool_
+
+To run example for Kubenetes, you also need:
+
+ - helm
+ - kubectl
 
 
 === KRaft mode
@@ -588,6 +593,54 @@ kafka-console-producer --broker-list localhost:9092 --topic users_clicks --prope
 
 
 Verify that messages are read by different consumers.
+
+==== Static membership
+
+This example will show how to configure different consumer instances to use a unique group instance id and define a static membership for topic partitions.
+
+After shutting down and then restarting the consumer instance, this will consume from the same partitions avoiding re-balancing.
+
+Create 1 topic with 12 partitions:
+
+[source,bash]
+----
+docker exec broker kafka-topics --bootstrap-server broker:9092 --create --topic topic1 --replication-factor 1 --partitions 12
+----
+
+Run a producer perf test to send messages to topic1:
+
+[source,bash]
+----
+docker exec -it broker kafka-producer-perf-test --topic topic1 --num-records 100000000 --throughput -1 --record-size 2000 --producer-props bootstrap.servers=broker:9092
+----
+
+Run 3 different consumer instances (from 3 different shells) belonging to the same consumer group:
+
+[source,bash]
+----
+cd kafka-consumer
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.staticmembership.Runner" -Dexec.args="consumer-member1.properties"
+----
+
+[source,bash]
+----
+cd kafka-consumer
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.staticmembership.Runner" -Dexec.args="consumer-member2.properties"
+----
+
+[source,bash]
+----
+cd kafka-consumer
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.staticmembership.Runner" -Dexec.args="consumer-member3.properties"
+----
+
+Consumers will start reading messages from partitions, for example:
+
+ - member1 (1,2,3,4)
+ - member2 (5,6,7,8)
+ - member3 (9,10,11,12)
+
+Try to shut down consumer instances (CTRL+C) and then re-start them again; verify that re-balancing will not happen and consumers will always read from the same partitions.
 
 === Read from the closest replica
 

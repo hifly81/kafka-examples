@@ -98,7 +98,7 @@ public class GenericConsumerImpl<K, V> implements GenericConsumer {
                 // sync does retries, we want to use it in case of last commit or rebalancing
                 consumer.commitSync();
                 for (Map.Entry<TopicPartition, OffsetAndMetadata> entry : offsets.entrySet())
-                    LOGGER.info("Consumer {} - partition {} - lastOffset {}\n", this.id,
+                    LOGGER.info("Consumer client.id {} - partition {} - lastOffset {}\n", this.id,
                             entry.getKey().partition(), entry.getValue().offset());
                 // Store offsets
                 OffsetManager.store(offsets);
