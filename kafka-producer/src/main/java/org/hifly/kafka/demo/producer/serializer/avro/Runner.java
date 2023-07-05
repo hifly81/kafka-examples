@@ -43,7 +43,7 @@ public class Runner {
 
     public static void bunchOfMessages(String topic, AvroDataProducer avroDataProducer) {
         RecordMetadata lastRecord = null;
-        for (int i= 10; i < 30000; i++ ) {
+        for (int i= 10; i < 100; i++ ) {
             GenericRecord genericRecord = avroDataProducer.getGenericRecord();
             genericRecord.put(MODEL, String.valueOf(i));
             genericRecord.put(BRAND, "The Best Car Company in Town");

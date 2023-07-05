@@ -103,7 +103,7 @@ public class KafkaConfig {
         producerProperties.put("bootstrap.servers", BROKER_LIST);
         producerProperties.put("max.block.ms", 15000);
         producerProperties.put("key.serializer", StringSerializer.class.getName());
-        producerProperties.put("value.serializer", KafkaAvroSerializer.class.getName());
+        producerProperties.put("value.serializer", "com.hortonworks.registries.schemaregistry.serdes.avro.kafka.KafkaAvroSerializer");
         producerProperties.put("schema.registry.url", HORTONWORKS_SCHEMA_REGISTRY_URL);
         return producerProperties;
     }
