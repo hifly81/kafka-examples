@@ -614,27 +614,30 @@ Run a producer perf test to send messages to topic1:
 docker exec -it broker kafka-producer-perf-test --topic topic1 --num-records 100000000 --throughput -1 --record-size 2000 --producer-props bootstrap.servers=broker:9092
 ----
 
-Run 3 different consumer instances (from 3 different shells) belonging to the same consumer group:
+Run 3 different consumer instances (from 3 different terminals) belonging to the same consumer group:
 
+member1:
 [source,bash]
 ----
 cd kafka-consumer
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.staticmembership.Runner" -Dexec.args="consumer-member1.properties"
 ----
 
+member2:
 [source,bash]
 ----
 cd kafka-consumer
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.staticmembership.Runner" -Dexec.args="consumer-member2.properties"
 ----
 
+member3:
 [source,bash]
 ----
 cd kafka-consumer
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.staticmembership.Runner" -Dexec.args="consumer-member3.properties"
 ----
 
-Consumers will start reading messages from partitions, for example:
+Consumers will start reading messages from partitions (e.g.):
 
  - member1 (1,2,3,4)
  - member2 (5,6,7,8)
