@@ -33,16 +33,21 @@
             <version>2.10.0</version>
         </dependency>
 
+        <!-- Confluent Schema Registry -->
         <dependency>
             <groupId>io.confluent</groupId>
             <artifactId>kafka-avro-serializer</artifactId>
         </dependency>
+        <!-- Confluent Schema Registry -->
 
+        <!-- Apicurio Schema Registry -->
         <dependency>
             <groupId>io.apicurio</groupId>
             <artifactId>apicurio-registry-serdes-avro-serde</artifactId>
         </dependency>
+        <!-- Apicurio Schema Registry -->
 
+        <!-- Hortonworks Schema Registry -->
         <dependency>
             <groupId>com.hortonworks.registries</groupId>
             <artifactId>schema-registry-serdes</artifactId>
@@ -58,8 +63,7 @@
             <artifactId>jaxb-api</artifactId>
             <version>2.3.0</version>
         </dependency>
-
-
+        <!-- Hortonworks Schema Registry -->
 
         <dependency>
             <groupId>org.slf4j</groupId>
