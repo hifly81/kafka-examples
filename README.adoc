@@ -8,7 +8,9 @@
 
 == Info for this repository
 
-=== Export Documentation as PDF
+=== Export Documentation
+
+==== PDF
 
 Clone the repo:
 
@@ -31,7 +33,7 @@ Generate a PDF for _README.adoc_ file:
 asciidoctor-pdf README.adoc
 ----
 
-=== Export Documentation as HTML
+==== HTML
 
 Clone the repo:
 
@@ -71,17 +73,20 @@ asciidoctor README.adoc
 
 == Installation with Docker
 
+Official documentation on how to install Docker on your environment:
+https://docs.docker.com/engine/install/
+
 === Prerequisites
 
 Examples have been tested with a Linux machine.
 
 List of programs required to run the examples:
 
- - _docker_
  - _curl_
  - _wget_
  - _openssl_
  - _keytool_
+ - _apache maven_
 
 
 === KRaft mode
@@ -389,7 +394,7 @@ Create a topic with 3 partitions:
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic test-idempotent --replication-factor 1 --partitions 3
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic test-idempotent --replication-factor 1 --partitions 3
 ----
 
 [source,bash]
@@ -463,7 +468,7 @@ Create topic:
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic kafka-topic --replication-factor 1 --partitions 1
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic kafka-topic --replication-factor 1 --partitions 1
 ----
 
 Run producer:
@@ -529,7 +534,7 @@ Send messages to the topic:
 
 [source,bash]
 ----
-kafka-console-producer --broker-list localhost:9092 --topic topic1 --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic topic1 --property "parse.key=true" --property "key.separator=:"
 > Frank:1
 ----
 
@@ -553,8 +558,8 @@ Create 2 topics with same number of partitions:
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic users --replication-factor 1 --partitions 3
-kafka-topics --bootstrap-server localhost:9092 --create --topic users_clicks --replication-factor 1 --partitions 3
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic users --replication-factor 1 --partitions 3
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic users_clicks --replication-factor 1 --partitions 3
 ----
 
 Run 2 consumer instances (2 different shell/terminal) belonging to the same group and subscribed to _user_ and _user_clicks_ topics; consumers uses
@@ -569,9 +574,9 @@ Send messages to the topics using the same key (Frank):
 
 [source,bash]
 ----
-kafka-console-producer --broker-list localhost:9092 --topic users --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic users --property "parse.key=true" --property "key.separator=:"
 > Frank:1
-kafka-console-producer --broker-list localhost:9092 --topic users_clicks --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic users_clicks --property "parse.key=true" --property "key.separator=:"
 > Frank:1
 ----
 
@@ -590,8 +595,8 @@ Create 2 topics with same number of partitions:
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic users --replication-factor 1 --partitions 3
-kafka-topics --bootstrap-server localhost:9092 --create --topic users_clicks --replication-factor 1 --partitions 3
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic users --replication-factor 1 --partitions 3
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic users_clicks --replication-factor 1 --partitions 3
 ----
 
 Run 2 consumer instances (2 different shell/terminal) belonging to the same group and subscribed to _user_ and _user_clicks_ topics; consumers uses
@@ -606,9 +611,9 @@ Send messages to the topics using the same key (Frank):
 
 [source,bash]
 ----
-kafka-console-producer --broker-list localhost:9092 --topic users --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic users --property "parse.key=true" --property "key.separator=:"
 > Frank:1
-kafka-console-producer --broker-list localhost:9092 --topic users_clicks --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic users_clicks --property "parse.key=true" --property "key.separator=:"
 > Frank:1
 ----
 
@@ -771,7 +776,7 @@ Create topic:
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic kafka-topic --replication-factor 1 --partitions 1
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic kafka-topic --replication-factor 1 --partitions 1
 ----
 
 Run producer:
@@ -798,6 +803,8 @@ python consumer.py
 
 Apache Kafka® CLI are located in _$KAFKA_HOME/bin_ directory.
 
+Docker images provided are already shipped with CLI.
+
 . _kafka-acls_ - manage acls
 . _kafka-topics_ - create, delete, describe, or change a topic
 . _kafka-configs_ - create, delete, describe, or change cluster settings
@@ -817,14 +824,14 @@ Be aware that _log.retention.check.interval.ms_ is set by default to 5 minutes a
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic cars --replication-factor 1 --partitions 1 --config segment.bytes=100000 --config segment.ms=604800000 --config retention.ms=300000 --config retention.bytes=-1
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic cars --replication-factor 1 --partitions 1 --config segment.bytes=100000 --config segment.ms=604800000 --config retention.ms=300000 --config retention.bytes=-1
 ----
 
 Launch a producer perf test:
 
 [source,bash]
 ----
-kafka-producer-perf-test --topic cars --num-records 99999999999999 --throughput -1 --record-size 1 --producer-props bootstrap.servers=localhost:9092
+docker exec -it broker kafka-producer-perf-test --topic cars --num-records 99999999999999 --throughput -1 --record-size 1 --producer-props bootstrap.servers=broker:9092
 ----
 
 Check the log dir for cars topic and wait for deletion of old segments (5 minutes + log cleaner trigger delta)
@@ -865,31 +872,31 @@ Send messages with different compression type and with batching disabled:
 
 [source,bash]
 ----
-kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config compression/client-none.properties --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config compression/client-none.properties --property "parse.key=true" --property "key.separator=:"
 0:none
 ----
 
 [source,bash]
 ----
-kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config compression/client-gzip.properties --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config compression/client-gzip.properties --property "parse.key=true" --property "key.separator=:"
 1:gzip
 ----
 
 [source,bash]
 ----
-kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config compression/client-snappy.properties --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config compression/client-snappy.properties --property "parse.key=true" --property "key.separator=:"
 2:snappy
 ----
 
 [source,bash]
 ----
-kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config compression/client-lz4.properties --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config compression/client-lz4.properties --property "parse.key=true" --property "key.separator=:"
 3:lz4
 ----
 
 [source,bash]
 ----
-kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config compression/client-zstd.properties --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config compression/client-zstd.properties --property "parse.key=true" --property "key.separator=:"
 4:zstd
 ----
 
@@ -897,7 +904,7 @@ Run a consumer on _topic1_ topic and see the records:
 
 [source,bash]
 ----
-kafka-console-consumer --topic topic1 --bootstrap-server localhost:9092 --from-beginning
+docker exec -it broker kafka-console-consumer --topic topic1 --bootstrap-server broker:9092 --from-beginning
 none
 gzip
 snappy
@@ -1053,7 +1060,7 @@ Create topics:
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic cars --replication-factor <replication_factor> --partitions <number_of_partitions>
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic cars --replication-factor <replication_factor> --partitions <number_of_partitions>
 ----
 
 Register first version of schema:
@@ -1090,7 +1097,7 @@ Create topics:
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic cars --replication-factor <replication_factor> --partitions <number_of_partitions>
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic cars --replication-factor <replication_factor> --partitions <number_of_partitions>
 ----
 
 Register first version of schema:
@@ -1403,8 +1410,8 @@ Create the topics:
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic test --replication-factor 1 --partitions 1
-kafka-topics --bootstrap-server localhost:9092 --create --topic dlq.mongo --replication-factor 1 --partitions 1
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic test --replication-factor 1 --partitions 1
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic dlq.mongo --replication-factor 1 --partitions 1
 ----
 
 Deploy the connector:
@@ -1441,7 +1448,7 @@ Send json messages to _test_ topic (second message is a bad json message):
 
 [source,bash]
 ----
-kafka-console-producer --broker-list localhost:9092 --topic test --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic test --property "parse.key=true" --property "key.separator=:"
 > 1:{"FIELD1": "01","FIELD2": "20400","FIELD3": "001","FIELD4": "0006084655017","FIELD5": "20221117","FIELD6": 9000018}
 > 2:{"FIELD1": "01","FIELD2": "20400","FIELD3": "001","FIELD4": "0006084655017","FIELD5": "20221117",
 
@@ -1453,7 +1460,7 @@ Second message will be stored in _dlq.mongo_ topic.
 
 [source,bash]
 ----
-kafka-console-consumer --topic dlq.mongo --bootstrap-server localhost:9092 --from-beginning
+docker exec -it broker kafka-console-consumer --topic dlq.mongo --bootstrap-server broker:9092 --from-beginning
 ----
 
 Verify that the connector is still in RUNNING status:
@@ -1505,7 +1512,7 @@ Run a consumer on _postgres.public.accounts_ topic and see the records:
 
 [source,bash]
 ----
-kafka-console-consumer --topic postgres.public.accounts --bootstrap-server localhost:9092 --from-beginning
+docker exec -it broker kafka-console-consumer --topic postgres.public.accounts --bootstrap-server broker:9092 --from-beginning
 ----
 
 Insert a new record into _account_ table:
@@ -1578,8 +1585,8 @@ Create topics:
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic counter-input-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
-kafka-topics --bootstrap-server localhost:9092 --create --topic counter-output-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic counter-input-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic counter-output-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
 ----
 
 Run the topology:
@@ -1594,7 +1601,7 @@ Send messages to input topics:
 
 [source,bash]
 ----
-kafka-console-producer --broker-list localhost:9092 --topic counter-input-topic --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic counter-input-topic --property "parse.key=true" --property "key.separator=:"
 "John":"transaction_1"
 "Mark":"transaction_1"
 "John":"transaction_2"
@@ -1604,7 +1611,7 @@ Read from output topic:
 
 [source,bash]
 ----
-kafka-console-consumer --topic counter-output-topic --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property key.separator=" : " --value-deserializer "org.apache.kafka.common.serialization.LongDeserializer"
+docker exec -it broker kafka-console-consumer --topic counter-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : " --value-deserializer "org.apache.kafka.common.serialization.LongDeserializer"
 ----
 
 === Sum values Stream +
@@ -1614,8 +1621,8 @@ Create topics:
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic sum-input-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
-kafka-topics --bootstrap-server localhost:9092 --create --topic sum-output-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic sum-input-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic sum-output-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
 ----
 
 Run the topology:
@@ -1630,7 +1637,7 @@ Send messages to input topics:
 
 [source,bash]
 ----
-kafka-console-producer --broker-list localhost:9092 --topic sum-input-topic --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic sum-input-topic --property "parse.key=true" --property "key.separator=:"
 "John":1
 "Mark":2
 "John":5
@@ -1640,7 +1647,7 @@ Read from output topic:
 
 [source,bash]
 ----
-kafka-console-consumer --topic sum-output-topic --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property key.separator=" : " --value-deserializer "org.apache.kafka.common.serialization.IntegerDeserializer"
+docker exec -it broker kafka-console-consumer --topic sum-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : " --value-deserializer "org.apache.kafka.common.serialization.IntegerDeserializer"
 ----
 
 === Cars sensor Stream +
@@ -1652,9 +1659,9 @@ Create topics:
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic carinfo-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
-kafka-topics --bootstrap-server localhost:9092 --create --topic carsensor-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
-kafka-topics --bootstrap-server localhost:9092 --create --topic carsensor-output-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic carinfo-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic carsensor-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic carsensor-output-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
 ----
 
 Run the topology:
@@ -1669,13 +1676,13 @@ Send messages to input topics:
 
 [source,bash]
 ----
-kafka-console-producer --broker-list localhost:9092 --topic carinfo-topic --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic carinfo-topic --property "parse.key=true" --property "key.separator=:"
 1:{"id":"1","brand":"Ferrari","model":"F40"}
 ----
 
 [source,bash]
 ----
-kafka-console-producer --broker-list localhost:9092 --topic carsensor-topic --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic carsensor-topic --property "parse.key=true" --property "key.separator=:"
 1:{"id":"1","speed":350}
 ----
 
@@ -1683,7 +1690,7 @@ Read from output topic:
 
 [source,bash]
 ----
-kafka-console-consumer --topic carsensor-output-topic --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property key.separator=" : "
+docker exec -it broker kafka-console-consumer --topic carsensor-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
 
 === Cars brand Stream +
@@ -1693,9 +1700,9 @@ Create topics:
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic cars-input-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
-kafka-topics --bootstrap-server localhost:9092 --create --topic ferrari-input-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
-kafka-topics --bootstrap-server localhost:9092 --create --topic cars-output-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic cars-input-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic ferrari-input-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic cars-output-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
 ----
 
 Run the topology:
@@ -1710,7 +1717,7 @@ Send messages to input topic:
 
 [source,bash]
 ----
-kafka-console-producer --broker-list localhost:9092 --topic cars-input-topic --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic cars-input-topic --property "parse.key=true" --property "key.separator=:"
 1:{"id":"1","brand":"Ferrari","model":"F40"}
 2:{"id":"2","brand":"Bugatti","model":"Chiron"}
 ----
@@ -1719,12 +1726,12 @@ Read from output topics:
 
 [source,bash]
 ----
-kafka-console-consumer --topic ferrari-input-topic --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property key.separator=" : "
+docker exec -it broker kafka-console-consumer --topic ferrari-input-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
 
 [source,bash]
 ----
-kafka-console-consumer --topic cars-output-topic --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property key.separator=" : "
+docker exec -it broker kafka-console-consumer --topic cars-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
 
 === JSONArray Fields removal Processor +
@@ -1744,8 +1751,8 @@ Create topics:
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic processor-input-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
-kafka-topics --bootstrap-server localhost:9092 --create --topic processor-output-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic processor-input-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic processor-output-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
 ----
 
 Run the topology:
@@ -1760,7 +1767,7 @@ Send messages to input topics:
 
 [source,bash]
 ----
-kafka-console-producer --broker-list localhost:9092 --topic processor-input-topic --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic processor-input-topic --property "parse.key=true" --property "key.separator=:"
 1:{"id":"1","brand":"Ferrari","model":"F40"}
 ----
 
@@ -1768,7 +1775,7 @@ Read from output topic:
 
 [source,bash]
 ----
-kafka-console-consumer --topic processor-output-topic --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property key.separator=" : "
+docker exec -it broker kafka-console-consumer --topic processor-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
 
 === Expired Messages Processor +
@@ -1788,8 +1795,8 @@ Create topics:
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic expired-messages-input-topic--replication-factor <replication_factor> --partitions <number_of_partitions>
-kafka-topics --bootstrap-server localhost:9092 --create --topic expired-messages-output-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic expired-messages-input-topic--replication-factor <replication_factor> --partitions <number_of_partitions>
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic expired-messages-output-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
 ----
 
 Run the topology:
@@ -1804,7 +1811,7 @@ Send messages to input topics:
 
 [source,bash]
 ----
-kafka-console-producer --broker-list localhost:9092 --topic expired-messages-input-topic --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic expired-messages-input-topic --property "parse.key=true" --property "key.separator=:"
 1:{"id":"1","remote-device":"R01","time":"2021-11-02T02:50:12.208Z"}
 ----
 
@@ -1812,7 +1819,7 @@ Read from output topic:
 
 [source,bash]
 ----
-kafka-console-consumer --topic expired-messages-input-topic --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property key.separator=" : "
+docker exec -it broker kafka-console-consumer --topic expired-messages-input-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
 
 <<<
@@ -1837,7 +1844,7 @@ Connect to ksqlDB and set auto.offset.reset:
 
 [source,bash]
 ----
-ksql http://ksqldb-server:8088
+docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
 SET 'auto.offset.reset' = 'earliest';
 exit
 ----
@@ -1872,7 +1879,7 @@ Insert entries on ksqlDB:
 
 [source,bash]
 ----
-ksql http://ksqldb-server:8088
+docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
 ----
 
 [source,sql]
@@ -1901,7 +1908,7 @@ Connect to ksqlDB and set auto.offset.reset:
 
 [source,bash]
 ----
-ksql http://ksqldb-server:8088
+docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
 SET 'auto.offset.reset' = 'earliest';
 exit
 ----
@@ -1926,7 +1933,7 @@ Verify results:
 
 [source,bash]
 ----
-ksql http://ksqldb-server:8088
+docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
 
 SELECT person_id,
        beat_over_threshold_count,
@@ -1950,7 +1957,7 @@ Connect to ksqlDB and set auto.offset.reset:
 
 [source,bash]
 ----
-ksql http://ksqldb-server:8088
+docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
 SET 'auto.offset.reset' = 'earliest';
 exit
 ----
@@ -1975,7 +1982,7 @@ Verify results:
 
 [source,bash]
 ----
-ksql http://ksqldb-server:8088
+docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
 
 SELECT vehicle_id,
        positions_sent,
@@ -2015,9 +2022,8 @@ Create input topics:
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic device --replication-factor 1 --partitions 1
-
-kafka-topics --bootstrap-server localhost:9092 --create --topic temperature.data --replication-factor 1 --partitions 1
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic device --replication-factor 1 --partitions 1
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic temperature.data --replication-factor 1 --partitions 1
 ----
 
 Deploy the JDBC Source connector:
@@ -2114,9 +2120,8 @@ Create input topics:
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic device --replication-factor 1 --partitions 1
-
-kafka-topics --bootstrap-server localhost:9092 --create --topic maintenance --replication-factor 1 --partitions 1
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic device --replication-factor 1 --partitions 1
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic maintenance --replication-factor 1 --partitions 1
 ----
 
 Deploy the JDBC Source connector:
@@ -2631,17 +2636,18 @@ Run a producer perf test and see how throttling applies:
 docker exec broker kafka-producer-perf-test --topic test --num-records 1000000 --record-size 100 --throughput -1 --producer.config /tmp/alice.properties --producer-props bootstrap.servers=broker:9092
 ----
 
-Run a consumer perf test and see how throttling applies:
+Run a consumer and see how throttling applies:
 
 [source,bash]
 ----
-docker exec broker kafka-consumer-perf-test --topic test --messages 1000000 --consumer.config /tmp/alice.properties --broker-list broker:9092
+docker exec -it broker kafka-console-consumer --topic test --bootstrap-server broker:9092 --from-beginning --consumer.config /tmp/alice.properties
 ----
 
 You can visualize metrics using the Grafana dashboard for Kafka Quotas fetched from https://github.com/confluentinc/jmx-monitoring-stacks repository
 
 Open Grafana UI at http://localhost:3000/d/cwWEgYqMz/kafka-quotas
 
+.Kafka Quotas for "alice" as shown in Grafana
 image::images/quotas.png[Kafka Quotas Grafana]
 
 
@@ -2851,8 +2857,8 @@ Create topics:
 
 [source,bash]
 ----
-kafka-topics --bootstrap-server localhost:9092 --create --topic sum-input-topic --replication-factor 1 --partitions 1
-kafka-topics --bootstrap-server localhost:9092 --create --topic sum-output-topic --replication-factor 1 --partitions 1
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic sum-input-topic --replication-factor 1 --partitions 1
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic sum-output-topic --replication-factor 1 --partitions 1
 ----
 
 Run the stream application with the OpenTelemetry agent:
@@ -2874,7 +2880,7 @@ Send messages to input topics:
 
 [source,bash]
 ----
-kafka-console-producer --broker-list localhost:9092 --topic sum-input-topic --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic sum-input-topic --property "parse.key=true" --property "key.separator=:"
 "John":1
 "Mark":2
 "John":5
@@ -2884,11 +2890,12 @@ Read from output topic:
 
 [source,bash]
 ----
-kafka-console-consumer --topic sum-output-topic --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property key.separator=" : " --value-deserializer "org.apache.kafka.common.serialization.IntegerDeserializer"
+docker exec -it broker kafka-console-consumer --topic sum-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : " --value-deserializer "org.apache.kafka.common.serialization.IntegerDeserializer"
 ----
 
 Open the JaegerUI on http://localhost:16686 and you will have a list of traces from the streaming application.
 
+.List of traces in Jaeger UI
 image::images/traces.png[Traces]
 
 Teardown:
