@@ -9,21 +9,21 @@ import (
 
 func main() {
 
-    proxy:= flag.String("proxy", "localhost:1999", "proxy address")
-    bootstrap:= flag.String("bootstrap", "broker:9092", "kafka bootstrap address")
+	proxy := flag.String("proxy", "localhost:1999", "proxy address")
+	bootstrap := flag.String("bootstrap", "broker:9092", "kafka bootstrap address")
 
 	flag.Parse()
 
 	listener, err := net.Listen("tcp", *proxy)
 	if err != nil {
-        log.Fatalf("error creating proxy listener: %s", err)
-    }
-    defer listener.Close()
+		log.Fatalf("error creating proxy listener: %s", err)
+	}
+	defer listener.Close()
 
-    host, port, err := net.SplitHostPort(listener.Addr().String())
-    if err != nil {
-       log.Fatalf("error get proxy details: %s", err)
-    }
+	host, port, err := net.SplitHostPort(listener.Addr().String())
+	if err != nil {
+		log.Fatalf("error get proxy details: %s", err)
+	}
 
 	log.Printf("[KAFKA PROXY] Listening on host: %s, port: %s\n", host, port)
 
