@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"net"
+	"time"
 )
 
 func main() {
@@ -33,12 +34,14 @@ func main() {
 			log.Fatalf("error establishing connection: %s", err)
 		}
 		go func() {
-			dialConn, err := net.Dial("tcp", *bootstrap)
-			log.Printf("[KAFKA PROXY] Connection request from %q to %q", dialConn.LocalAddr(), dialConn.RemoteAddr())
+			dialConn, err := net.DialTimeout("tcp", *bootstrap, 10*time.Second)
+			if err == nil {
+			    log.Printf("[KAFKA PROXY] Connection request from %q to %q", dialConn.LocalAddr(), dialConn.RemoteAddr())
+			    log.Printf("  |---> Connection success to %q", dialConn.RemoteAddr())
+			}
 			if err != nil {
 				log.Fatalf("error establishing connection on bootstrap: %s", err)
 			}
-			log.Printf("[KAFKA PROXY] Connection success to %q", dialConn.RemoteAddr())
 
 			go io.Copy(dialConn, conn)
 			io.Copy(conn, dialConn)
