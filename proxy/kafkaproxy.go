@@ -7,16 +7,26 @@ import (
 	"net"
 )
 
-var proxy *string = flag.String("proxy", "localhost:1999", "proxy address")
-var bootstrap *string = flag.String("bootstrap", "broker:9092", "kafka bootstrap address")
-
 func main() {
+
+    proxy:= flag.String("proxy", "localhost:1999", "proxy address")
+    bootstrap:= flag.String("bootstrap", "broker:9092", "kafka bootstrap address")
+
 	flag.Parse()
 
 	listener, err := net.Listen("tcp", *proxy)
 	if err != nil {
-		log.Fatalf("error creating proxy listener: %s", err)
-	}
+        log.Fatalf("error creating proxy listener: %s", err)
+    }
+    defer listener.Close()
+
+    host, port, err := net.SplitHostPort(listener.Addr().String())
+    if err != nil {
+       log.Fatalf("error get proxy details: %s", err)
+    }
+
+	log.Printf("[KAFKA PROXY] Listening on host: %s, port: %s\n", host, port)
+
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
@@ -24,9 +34,12 @@ func main() {
 		}
 		go func() {
 			dialConn, err := net.Dial("tcp", *bootstrap)
+			log.Printf("[KAFKA PROXY] Connection request from %q to %q", dialConn.LocalAddr(), dialConn.RemoteAddr())
 			if err != nil {
 				log.Fatalf("error establishing connection on bootstrap: %s", err)
 			}
+			log.Printf("[KAFKA PROXY] Connection success to %q", dialConn.RemoteAddr())
+
 			go io.Copy(dialConn, conn)
 			io.Copy(conn, dialConn)
 			dialConn.Close()
