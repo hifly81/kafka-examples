@@ -2586,6 +2586,8 @@ scripts/tear-down-oauth.sh
 This scenario will show how to set network bandwidth quotas on principal (user).
 The scenario requires a listener with SASL_PLAIN authentication.
 
+Bootstrap will initialize a Prometheus server on port 9090 and a Grafana UI with Kafka Quota dashboard on port 3000.
+
 Start scenario:
 
 [source,bash]
@@ -2616,6 +2618,12 @@ Run a consumer perf test and see how throttling applies:
 ----
 docker exec broker kafka-consumer-perf-test --topic test --messages 1000000 --consumer.config /tmp/alice.properties --broker-list broker:9092
 ----
+
+You can visualize metrics using the Grafana dashboard for Kafka Quotas fetched from https://github.com/confluentinc/jmx-monitoring-stacks repository
+
+Open Grafana UI at http://localhost:3000/d/cwWEgYqMz/kafka-quotas
+
+image::images/quotas.png[Kafka Quotas Grafana]
 
 
 Teardown:

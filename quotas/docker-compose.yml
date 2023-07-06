@@ -9,8 +9,12 @@ services:
     container_name: broker
     ports:
       - "9092:9092"
+      - "9101:9101"
+      - "1234:1234"
     volumes:
       - ./config/alice.properties:/tmp/alice.properties
+      - ./config/agent/jmx_prometheus_javaagent-0.18.0.jar:/tmp/jmx_prometheus_javaagent-0.18.0.jar
+      - ./config/agent/kafka_broker.yml:/tmp/kafka_broker.yml
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,AUTH:SASL_PLAINTEXT
@@ -36,3 +40,26 @@ services:
         user_admin="admin-secret" \
         user_alice="alice-secret";
       CLUSTER_ID: 'QTnB2tAgTWa1ec5wYon2jg'
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: "localhost"
+      EXTRA_ARGS: -javaagent:/tmp/jmx_prometheus_javaagent-0.18.0.jar=1234:/tmp/kafka_broker.yml
+
+  prometheus:
+    image: prom/prometheus:v2.29.2
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/prometheus/:/etc/prometheus
+
+  grafana:
+    image: grafana/grafana:8.1.3
+    container_name: grafana
+    environment:
+      - "GF_SECURITY_ADMIN_USER=admin"
+      - "GF_SECURITY_ADMIN_PASSWORD=password"
+      - "GF_USERS_ALLOW_SIGN_UP=false"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./config/grafana/provisioning/:/etc/grafana/provisioning
