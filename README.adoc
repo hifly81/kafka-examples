@@ -1,10 +1,6 @@
 = Apache Kafka® examples
-==============================
-:toc:
-:toc-placement: preamble
+:toc: left
 :toclevels: 3
-:showtitle:
-:Some attr: Some value
 
 
 <<<
@@ -33,6 +29,29 @@ Generate a PDF for _README.adoc_ file:
 [source,bash]
 ----
 asciidoctor-pdf README.adoc
+----
+
+=== Export Documentation as HTML
+
+Clone the repo:
+
+[source,bash]
+----
+git clone git@github.com:hifly81/kafka-examples.git
+----
+
+Install _asciidoctor_:
+
+[source,bash]
+----
+gem install asciidoctor --pre
+----
+
+Generate HTML for _README.adoc_ file:
+
+[source,bash]
+----
+asciidoctor README.adoc
 ----
 
 === Contributions
