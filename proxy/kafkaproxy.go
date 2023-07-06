@@ -7,31 +7,29 @@ import (
 	"net"
 )
 
-var localAddr *string = flag.String("local", "localhost:9999", "local address")
+var proxy *string = flag.String("proxy", "localhost:1999", "proxy address")
 var bootstrap *string = flag.String("bootstrap", "broker:9092", "kafka bootstrap address")
 
 func main() {
 	flag.Parse()
 
-	listener, err := net.Listen("tcp", *localAddr)
+	listener, err := net.Listen("tcp", *proxy)
 	if err != nil {
-		panic(err)
+		log.Fatalf("error creating proxy listener: %s", err)
 	}
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
-			log.Fatalf("error accepting connection", err)
-			continue
+			log.Fatalf("error establishing connection: %s", err)
 		}
 		go func() {
-			conn2, err := net.Dial("tcp", *bootstrap)
+			dialConn, err := net.Dial("tcp", *bootstrap)
 			if err != nil {
-				log.Println("error dialing remote addr", err)
-				return
+				log.Fatalf("error establishing connection on bootstrap: %s", err)
 			}
-			go io.Copy(conn2, conn)
-			io.Copy(conn, conn2)
-			conn2.Close()
+			go io.Copy(dialConn, conn)
+			io.Copy(conn, dialConn)
+			dialConn.Close()
 			conn.Close()
 		}()
 	}
