@@ -33,6 +33,7 @@ func main() {
 		if err != nil {
 			log.Fatalf("error establishing connection: %s", err)
 		}
+
 		go func() {
 			dialConn, err := net.DialTimeout("tcp", *bootstrap, 10*time.Second)
 			if err == nil {
@@ -43,10 +44,27 @@ func main() {
 				log.Fatalf("error establishing connection on bootstrap: %s", err)
 			}
 
+			log.Printf("connection started: client=%v destination=%v",
+            		conn.RemoteAddr().String(),
+            		dialConn.RemoteAddr().String())
+            start := time.Now()
+
 			go io.Copy(dialConn, conn)
+			//  copy will block until it receives error or EOF (i.e. socket close)
 			io.Copy(conn, dialConn)
+
+			elapsed := time.Now().Sub(start)
+			log.Printf("connection ended: client=%v destination=%v duration=%v",
+                                    	conn.RemoteAddr().String(),
+                                    	dialConn.RemoteAddr().String(),
+                                    	elapsed.String())
+
 			dialConn.Close()
 			conn.Close()
+
 		}()
 	}
 }
+
+
+
