@@ -6,7 +6,6 @@ import (
 	"log"
 	"net"
 	"time"
-	"sync"
 )
 
 
@@ -37,34 +36,24 @@ func main() {
 		}
 
 		go func() {
-			dialConn, err := net.DialTimeout("tcp", *bootstrap, 10*time.Second)
-			if err != nil {
-				log.Fatalf("error establishing connection on bootstrap: %s", err)
-			}
-            handleProxiedRequest(conn, dialConn)
-		}()
+        	dialConn, err := net.DialTimeout("tcp", *bootstrap, 10*time.Second)
+        	if err == nil {
+        	    log.Printf("Connection request from %q to %q", dialConn.LocalAddr(), dialConn.RemoteAddr())
+        	}
+        	if err != nil {
+        		log.Fatalf("error establishing connection on bootstrap: %s", err)
+        	}
+
+        	go io.Copy(dialConn, conn)
+        	io.Copy(conn, dialConn)
+
+        	dialConn.Close()
+        	conn.Close()
+
+        }()
 	}
 }
 
-func handleProxiedRequest(conn net.Conn, dialConn net.Conn) {
-
-    log.Printf("connection started: client=%v destination=%v",conn.RemoteAddr().String(),dialConn.RemoteAddr().String())
-    start := time.Now()
-
-    var wg sync.WaitGroup
-    wg.Add(1)
-    go func() {
-        defer wg.Done()
-        io.Copy(conn, dialConn)
-    }()
-    io.Copy(dialConn, conn)
-    wg.Wait()
-    defer conn.Close()
-    defer dialConn.Close()
-
-    elapsed := time.Now().Sub(start)
-    log.Printf("connection ended: client=%v destination=%v duration=%v",conn.RemoteAddr().String(),dialConn.RemoteAddr().String(),elapsed.String())
-}
 
 
 
