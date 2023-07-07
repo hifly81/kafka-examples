@@ -37,8 +37,7 @@ func main() {
 		go func() {
 			dialConn, err := net.DialTimeout("tcp", *bootstrap, 10*time.Second)
 			if err == nil {
-			    log.Printf("[KAFKA PROXY] Connection request from %q to %q", dialConn.LocalAddr(), dialConn.RemoteAddr())
-			    log.Printf("  |---> Connection success to %q", dialConn.RemoteAddr())
+			    log.Printf("connection request from %q to %q", dialConn.LocalAddr(), dialConn.RemoteAddr())
 			}
 			if err != nil {
 				log.Fatalf("error establishing connection on bootstrap: %s", err)
