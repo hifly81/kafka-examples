@@ -73,27 +73,32 @@ asciidoctor README.adoc
 
 == Installation with Docker
 
-Official documentation on how to install Docker on your environment:
+Official documentation on how to install Docker on Linux/Mac/Windows:
 https://docs.docker.com/engine/install/
 
 === Prerequisites
 
-Examples have been tested with a Linux machine.
+Examples have been tested with a Linux machine and Java SE 11 and 17 .
 
 List of programs required to run the examples:
 
  - _curl_
  - _wget_
  - _openssl_
- - _keytool_
- - _apache maven_
+ - _Java SE 17 (recommended) or SE 11_
+ - _keytool_ from Java distribution
+ - _Apache Maven_
+ - _python pip_ (only for python examples)
 
+=== Change Images Version
+
+If you need to change the docker image version for the specific components, just update file _.env_ in root directory.
 
 === KRaft mode
 
-To run a cluster using Docker, run the _docker-compose-kraft.yml_ file available in the root directory.
+To run components using Docker, run the _docker-compose-kraft.yml_ file available in the root directory.
 
-Images are downloaded from _confluentinc_ and are based on _Confluent 7.4.0 Community_ licensed (Apache Kafka® version 3.4.0):
+Images are downloaded from Docker Hub _confluentinc_ and are based on _Confluent 7.4.0 Community_ licensed (Apache Kafka® version 3.4.0):
 
 * Broker: confluentinc/cp-kafka
 * Schema Registry: confluentinc/cp-schema-registry
@@ -144,9 +149,9 @@ scripts/tear-down-kraft.sh
 
 === Zookeeper mode
 
-To run a cluster using Docker in Zookeeper mode, run the _docker-compose.yml_ file available in the root directory.
+To run a components using Docker in Zookeeper mode, run the _docker-compose.yml_ file available in the root directory.
 
-Images are downloaded from _confluentinc_ and are based on _Confluent 7.4.0 Community_ licensed (Apache Kafka® version 3.4.0):
+Images are downloaded from Docker Hub _confluentinc_ and are based on _Confluent 7.4.0 Community_ licensed (Apache Kafka® version 3.4.0):
 
 * Zookeeper: confluentinc/cp-zookeeper
 * Broker: confluentinc/cp-kafka
@@ -181,10 +186,6 @@ scripts/tear-down.sh
 
 ----
 
-=== Change Images Version
-
-If you will need to change the docker image version for the specific components, just update file _.env_ in root directory.
-
 <<<
 
 == Installation on Kubernetes using Confluent For Kubernetes
@@ -198,10 +199,10 @@ List of programs required to run the examples:
 
 Examples will run using:
 
- . Minikube
- . Confluent for Kubernetes operator (CFK): https://docs.confluent.io/operator/current/overview.html
+ . _Minikube_
+ . _Confluent for Kubernetes operator (CFK)_: https://docs.confluent.io/operator/current/overview.html
 
-Images are downloaded from _confluentinc_ and are based on _Confluent 7.4.0 Community_ licensed (Apache Kafka® version 3.4.0):
+Images are downloaded from Docker Hub _confluentinc_ and are based on _Confluent 7.4.0 Community_ licensed (Apache Kafka® version 3.4.0):
 
 * Broker: confluentinc/cp-kafka
 * Schema Registry: confluentinc/cp-schema-registry
@@ -211,7 +212,7 @@ Images are downloaded from _confluentinc_ and are based on _Confluent 7.4.0 Comm
 
 === Minikube installation in Linux with KVM/QEMU
 
-Follow instructions for ArchLinux (also tested with Fedora)
+Follow instructions for _ArchLinux_ (also tested with _Fedora_)
 
 https://dev.to/xs/kubernetes-minikube-with-qemu-kvm-on-arch-312a
 
@@ -221,7 +222,7 @@ https://minikube.sigs.k8s.io/docs/start/
 
 === Deployment of a cluster with Confluent for Kubernetes Operator (CFK)
 
-Start Minikube with kvm2 driver:
+Start _Minikube_ with _kvm2_ driver:
 
 [source,bash]
 ----
@@ -231,7 +232,7 @@ touch /tmp/config && export KUBECONFIG=/tmp/config
 minikube start --memory 16384 --cpus 4
 ----
 
-Create a k8s namespace named "confluent":
+Create a _k8s_ namespace named _confluent_:
 
 [source,bash]
 ----
@@ -239,7 +240,7 @@ kubectl create namespace confluent
 kubectl config set-context --current --namespace confluent
 ----
 
-Add confluent repo to helm:
+Add confluent repository to _helm_:
 
 [source,bash]
 ----
@@ -341,7 +342,7 @@ kafka-console-consumer --bootstrap-server localhost:9092 --topic test-1 --from-b
 
 ==== Tear Down
 
-Shut down Confluent Platform and the data:
+Shut down Confluent components and the data:
 
 [source,bash]
 ----
@@ -351,7 +352,7 @@ kubectl delete -f k8s/confluent-platform.yaml
 helm delete confluent-operator
 ----
 
-Delete namespace "confluent":
+Delete namespace _confluent_:
 
 [source,bash]
 ----
@@ -364,7 +365,7 @@ kubectl delete namespace confluent
 
 Some implementations of Apache Kafka® producers.
 
-To launch the examples run cluster on port 9092:
+To launch the examples run components on port 9092:
 
 === String Serializer +
 
@@ -388,7 +389,7 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.produc
 
 === Transactional Producer [[tx_producer]] +
 
-It uses _org.apache.kafka.common.serialization.StringSerializer_ for key and value and set _enable.idempoteceny_ and _transactional.id_
+It uses _org.apache.kafka.common.serialization.StringSerializer_ for key and value and set _enable.idempoteceny_ to _true_ and _transactional.id_
 
 Create a topic with 3 partitions:
 
@@ -423,7 +424,7 @@ mvn clean test
 
 === Interceptor
 
-This example shows how to create a custom producer interceptor. class _CreditCardProducerInterceptor_ will mask a sensitive info on producer record (credit card).
+This example shows how to create a custom producer interceptor. Java class _CreditCardProducerInterceptor_ will mask a sensitive info on producer record (credit card).
 
 Compile and package:
 
@@ -433,7 +434,7 @@ cd interceptors
 mvn clean package
 ----
 
-Run a producer sending data to listener port 9092:
+Run a producer sending data to listener on port 9092:
 
 [source,bash]
 ----
@@ -485,7 +486,7 @@ python producer.py
 
 Implementation of a consumer that can be used with different deserializer classes (for key and value).
 
-Class _org.hifly.kafka.demo.consumer.deserializer.impl.ConsumerInstance_ can be customized with:
+Java class _org.hifly.kafka.demo.consumer.deserializer.impl.ConsumerInstance_ can be customized with:
 
  - clientId _(string)_
  - groupId _(string)_
@@ -501,12 +502,14 @@ Class _org.hifly.kafka.demo.consumer.deserializer.impl.ConsumerInstance_ can be 
  - subscribe mode _(true|false)_
 
 Topics can be passed as argument 1 of the main program:
+
 [source,bash]
 ----
 -Dexec.args="users,users_clicks"
 ----
 
 Partition assignment strategy can be passed as argument 2 of the main program:
+
 [source,bash]
 ----
 -Dexec.args="users,users_clicks org.apache.kafka.clients.consumer.RoundRobinAssignor"
@@ -542,7 +545,7 @@ docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic 
 
 It uses _org.apache.kafka.common.serialization.StringDeserializer_ for key and value and set _isolation.level_ to _read_committed_.
 
-It must be only used with a transactional producer.
+IMPORTANT: It must be only used with a transactional producer.
 
 [source,bash]
 ----
@@ -554,7 +557,7 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consum
 
 ==== Range (default)
 
-Create 2 topics with same number of partitions:
+Create 2 topics with the same number of partitions:
 
 [source,bash]
 ----
@@ -618,7 +621,7 @@ docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic 
 ----
 
 
-Verify that messages are read by different consumers.
+Verify that messages are read by different consumer instances.
 
 ==== Static membership
 
@@ -729,7 +732,7 @@ scripts/tear-down-racks.sh
 
 === Interceptor
 
-This example shows how to create a custom consumer interceptor. class _CreditCardConsumerInterceptor_ will intercept records before deserialization and print headers.
+This example shows how to create a custom consumer interceptor. Java class _CreditCardConsumerInterceptor_ will intercept records before deserialization and print headers.
 
 Compile and package:
 
