@@ -10,14 +10,14 @@
 
 === Export Documentation
 
-==== PDF
-
 Clone the repo:
 
 [source,bash]
 ----
 git clone git@github.com:hifly81/kafka-examples.git
 ----
+
+==== PDF
 
 Install _asciidoctor-pdf_:
 
@@ -34,13 +34,6 @@ asciidoctor-pdf README.adoc
 ----
 
 ==== HTML
-
-Clone the repo:
-
-[source,bash]
-----
-git clone git@github.com:hifly81/kafka-examples.git
-----
 
 Install _asciidoctor_:
 
@@ -78,7 +71,7 @@ https://docs.docker.com/engine/install/
 
 === Prerequisites
 
-Examples have been tested with a Linux machine and Java SE 11 and 17 .
+Examples have been tested with a Linux machine and _Java SE 11 and 17_ .
 
 List of programs required to run the examples:
 
@@ -94,18 +87,21 @@ List of programs required to run the examples:
 
 If you need to change the docker image version for the specific components, just update file _.env_ in root directory.
 
-=== KRaft mode
+=== Docker images
 
-To run components using Docker, run the _docker-compose-kraft.yml_ file available in the root directory.
+Default docker images are downloaded from Docker Hub _confluentinc_ and are based on _Confluent 7.4.0 Community_ licensed (Apache Kafka® version 3.4.0):
 
-Images are downloaded from Docker Hub _confluentinc_ and are based on _Confluent 7.4.0 Community_ licensed (Apache Kafka® version 3.4.0):
-
+* Zookeeper: confluentinc/cp-zookeeper
 * Broker: confluentinc/cp-kafka
 * Schema Registry: confluentinc/cp-schema-registry
 * Connect: custom image based on confluentinc/cp-kafka-connect-base
 * ksqlDB server: confluentinc/ksqldb-server:0.28.2
 * ksqlDB cli: confluentinc/ksqldb-cli:0.28.2
 * rest proxy: confluentinc/cp-kafka-rest
+
+=== KRaft mode
+
+To run components using Docker, run the _docker-compose-kraft.yml_ file available in the root directory.
 
 Components list:
 
@@ -151,16 +147,6 @@ scripts/tear-down-kraft.sh
 
 To run a components using Docker in Zookeeper mode, run the _docker-compose.yml_ file available in the root directory.
 
-Images are downloaded from Docker Hub _confluentinc_ and are based on _Confluent 7.4.0 Community_ licensed (Apache Kafka® version 3.4.0):
-
-* Zookeeper: confluentinc/cp-zookeeper
-* Broker: confluentinc/cp-kafka
-* Schema Registry: confluentinc/cp-schema-registry
-* Connect: custom image based on confluentinc/cp-kafka-connect-base
-* ksqlDB server: confluentinc/ksqldb-server:0.28.2
-* ksqlDB cli: confluentinc/ksqldb-cli:0.28.2
-* rest proxy: confluentinc/cp-kafka-rest
-
 Components list:
 
 * Broker will listen to _localhost:9092_
@@ -168,7 +154,6 @@ Components list:
 * Connect will listen to _localhost:8083_
 * ksqlDB cli will listen to _localhost:8088_
 * rest proxy will listen to _localhost:8082_
-
 
 ==== Start containers +
 
@@ -201,14 +186,6 @@ Examples will run using:
 
  . _Minikube_
  . _Confluent for Kubernetes operator (CFK)_: https://docs.confluent.io/operator/current/overview.html
-
-Images are downloaded from Docker Hub _confluentinc_ and are based on _Confluent 7.4.0 Community_ licensed (Apache Kafka® version 3.4.0):
-
-* Broker: confluentinc/cp-kafka
-* Schema Registry: confluentinc/cp-schema-registry
-* Connect: custom image based on confluentinc/cp-kafka-connect-base
-* ksqlDB server: confluentinc/ksqldb-server:0.28.2
-* ksqlDB cli: confluentinc/ksqldb-cli:0.28.2
 
 === Minikube installation in Linux with KVM/QEMU
 
@@ -765,7 +742,6 @@ Group id consumer-interceptor-g2 - Consumer id: consumer-consumer-interceptor-g2
 Consumer 23d06b51-5780-4efc-9c33-a93b3caa3b48 - partition 0 - lastOffset 1
 ----
 
-
 === Python Consumer
 
 Install python lib _confluent-kafka_:
@@ -848,7 +824,7 @@ docker exec -it broker watch ls -ltr /var/lib/kafka/data/cars-0/
 
 It uses _org.apache.kafka.clients.admin.AdminClient_ to execute Admin API.
 
-Operations added:
+Operations currently added:
 
  - list of cluster nodes
  - list topics
@@ -865,11 +841,11 @@ This example will show that messages sent to the same topic with different _comp
 
 Compressions supported on producer side are:
 
- - none (no compression)
- - gzip
- - snappy
- - lz4
- - zstd
+ - _none_ (no compression)
+ - _gzip_
+ - _snappy_
+ - _lz4_
+ - _zstd_
 
 Send messages with different compression type and with batching disabled:
 
@@ -921,7 +897,7 @@ zstd
 
 === Confluent Avro Generic Record
 
-It uses _io.confluent.kafka.serializers.KafkaAvroSerializer_ for value and a GenericRecord.
+It uses _io.confluent.kafka.serializers.KafkaAvroSerializer_ for value and a _GenericRecord_.
 
 Confluent Schema Registry is needed to run the example.
 
@@ -956,7 +932,7 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.produc
 
 === Apicurio Avro Generic Record
 
-It uses _io.apicurio.registry.utils.serde.AvroKafkaSerializer_ for value and a GenericRecord.
+It uses _io.apicurio.registry.utils.serde.AvroKafkaSerializer_ for value and a _GenericRecord_.
 
 Apicurio Schema Registry is needed to run the example.
 
@@ -1005,7 +981,7 @@ Teardown:
 
 === Hortonworks Avro Generic Record
 
-It uses _com.hortonworks.registries.schemaregistry.serdes.avro.kafka.KafkaAvroSerializer_ for value and a GenericRecord.
+It uses _com.hortonworks.registries.schemaregistry.serdes.avro.kafka.KafkaAvroSerializer_ for value and a _GenericRecord_.
 
 Hortonworks Schema Registry is needed to run the example. +
 
@@ -1055,7 +1031,7 @@ Teardown:
 
 === Confluent Avro Specific Record
 
-Implementation of a producer and a consumer using Avro Specific Record for serializing and deserializing.
+Implementation of a producer and a consumer using _Avro Specific Record_ for serializing and deserializing.
 
 Confluent Schema Registry is needed to run the example. +
 
@@ -1074,7 +1050,6 @@ curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
 --data @src/main/resources/car_v1.avsc \
 http://localhost:8081/subjects/cars-value/versions
 ----
-
 
 Run the producer:
 
@@ -1096,6 +1071,10 @@ mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.dem
 
 ==== Backward
 
+Changes allowed:
+ - Delete fields
+ - Add optional fields
+
 Create topics:
 
 [source,bash]
@@ -1112,7 +1091,7 @@ curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
 http://localhost:8081/subjects/cars-value/versions
 ----
 
-Set compatibility on BACKWARD:
+Set compatibility on _BACKWARD_:
 
 [source,bash]
 ----
@@ -1121,7 +1100,7 @@ curl -X PUT -H "Content-Type: application/vnd.schemaregistry.v1+json" \
 http://localhost:8081/config/cars-value
 ----
 
-Verify compatibility for subject cars-value:
+Verify compatibility for _cars-value_ subject:
 
 [source,bash]
 ----
@@ -1137,7 +1116,7 @@ mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.dem
 ----
 
 
-Run the consumer (keep it running):
+Run the consumer (don't stop it):
 
 [source,bash]
 ----
@@ -1145,7 +1124,7 @@ cd confluent-avro-specific-record
 mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.RunnerConsumer"
 ----
 
-View the latest schema for cars-value subject:
+View the latest schema for _cars-value_ subject:
 
 [source,bash]
 ----
