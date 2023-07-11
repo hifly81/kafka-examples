@@ -2981,7 +2981,7 @@ scripts/tear-down-performance.sh
 
 This sample program written in _golang_ shows how to create a TCP proxy for Apache Kafka®.
 
-Important: this proxy is not intended to be used in production
+IMPORTANT: this proxy is not intended to be used in production
 
 Run the componentes:
 
