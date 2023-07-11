@@ -2899,7 +2899,7 @@ Cluster is formed with 3 brokers (9092, 9093, 9094).
 
 1 client machine, named _kafka_perf_ is used to run _kafka-producer-perf-test_ against the kafka cluster.
 
-Run the cluster and kafka_perf machine:
+Run the componentes and _kafka_perf_ machine:
 
 [source,bash]
 ----
@@ -2975,4 +2975,40 @@ Teardown:
 [source,bash]
 ----
 scripts/tear-down-performance.sh
+----
+
+== Proxy
+
+This sample program written in _golang_ shows how to create a TCP proxy for Apache Kafka®.
+
+Important: this proxy is not intended to be used in production
+
+Run the componentes:
+
+[source,bash]
+----
+scripts/bootstrap.sh
+----
+
+Launch the proxy:
+
+[source,bash]
+----
+go run proxy/kafkaproxy.go
+----
+
+Proxy will listen to _localhost_, on port _1999_ and proxy requests to _broker_, on port _9092_
+
+Test the proxy with some commands:
+
+[source,bash]
+----
+kafka-producer-perf-test --topic topic-perf --num-records 1000000 --record-size 2000 --throughput -1 --producer-props bootstrap.servers=localhost:1999 --print-metrics
+----
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down.sh
 ----
