@@ -3021,7 +3021,7 @@ scripts/tear-down.sh
 
 === Claim Check
 
-In this example, kafka messages will be produced to a topic named _items_ with a reference for the object stored in _MinIO_.
+In this example, kafka messages will be produced to a topic named _items_. Messages contain a field named _url_ with a reference for the object stored in _MinIO_.
 
 This pattern is known as Claim Check; you can find more details on:
 https://developer.confluent.io/patterns/event-processing/claim-check/
