@@ -22,7 +22,7 @@ public class Runner {
 
     public static void main (String [] args) throws Exception {
 
-
+        //Instantiate client
         MinioClient client =
                 MinioClient.builder()
                         .endpoint("http://127.0.0.1:9000")
@@ -32,6 +32,7 @@ public class Runner {
         boolean found =
                 client.bucketExists(BucketExistsArgs.builder().bucket(BUCKET_NAME).build());
         if (!found) {
+            //create a new bucket
             client.makeBucket(
                     MakeBucketArgs
                             .builder()
@@ -39,6 +40,7 @@ public class Runner {
                             .build());
         }
 
+        //upload the file into the bucket
         try(FileInputStream fis = new FileInputStream(FILE_PATH)) {
             client.putObject(PutObjectArgs
                     .builder()
@@ -47,6 +49,7 @@ public class Runner {
                     .stream(fis, fis.getChannel().size(), -1).build());
         }
 
+        //generate a url for the object
         String objUrl = client.getPresignedObjectUrl(
                 GetPresignedObjectUrlArgs.builder()
                         .bucket(BUCKET_NAME)
@@ -64,11 +67,6 @@ public class Runner {
         RecordMetadata lastRecord = jsonProducer.produceSync(new ProducerRecord<>(TOPIC, item.getId(), item));
         RecordMetadataUtil.prettyPrinter(lastRecord);
         jsonProducer.stop();
-
-
-
-
-
 
     }
 
