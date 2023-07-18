@@ -3046,3 +3046,10 @@ Run the producer; object will be first stored on _MinIO_ and then sent to a kafk
 cd claim-check
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.claimcheck.Runner"
 ----
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-claim-check.sh
+----
