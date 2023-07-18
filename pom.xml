@@ -26,6 +26,7 @@
         <module>authorizers</module>
         <module>interceptors</module>
         <module>principal-builder</module>
+        <module>claim-check</module>
     </modules>
 
     <properties>

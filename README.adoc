@@ -3013,3 +3013,36 @@ Teardown:
 ----
 scripts/tear-down.sh
 ----
+
+== Large objects
+
+=== Claim Check
+
+In this example, kafka messages will be produced to a topic named _items_ with a reference for the object stored in _MinIO_.
+
+This pattern is known as Claim Check; you can find more details on:
+https://developer.confluent.io/patterns/event-processing/claim-check/
+
+Run the components:
+
+ - _MinIO_ will be created on port 9000 and 9001
+
+[source,bash]
+----
+scripts/bootstrap.sh
+----
+
+Create a _items_ topic:
+
+[source,bash]
+----
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic items --replication-factor 1 --partitions 1
+----
+
+Run the producer; object will be first stored on _MinIO_ and then sent to a kafka topic named _items_ with the object URI:
+
+[source,bash]
+----
+cd claim-check
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.claimcheck.Runner"
+----
