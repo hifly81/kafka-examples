@@ -8,6 +8,9 @@
 
 == General Information
 
+This repository contains a number of use cases designed to demonstrate the functionality of Apache Kafka®.
+The examples are mostly extracted from more complex projects and should not be considered complete or ready to be used in a production environment, unless after a refactoring and test work.
+
 === Export Documentation
 
 Clone the repo:
