@@ -346,8 +346,6 @@ kubectl delete namespace confluent
 
 Some implementations of Apache Kafka® producers.
 
-To launch the examples run components on port 9092:
-
 === String Serializer +
 
 It uses _org.apache.kafka.common.serialization.StringSerializer_ for key and value
@@ -1076,6 +1074,7 @@ mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.dem
 ==== Backward
 
 Changes allowed:
+
  - Delete fields
  - Add optional fields
 
