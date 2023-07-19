@@ -2270,13 +2270,75 @@ curl -v -X POST http://localhost:9080/kafka-microprofile2-producer-0.0.1-SNAPSHO
 
 == Security
 
+=== ACLs
+
+This example show how to set ACLs on topics for user _alice_.
+It uses as authorizer the default implementation class: _org.apache.kafka.metadata.authorizer.StandardAuthorizer_
+
+Run the components:
+
+[source,bash]
+----
+scripts/bootstrap-acls.sh
+----
+
+Create a topic:
+
+[source,bash]
+----
+docker exec -it broker kafka-topics --bootstrap-server broker:29092 --create --topic test
+----
+
+Produce messages without an explicit ACL:
+
+[source,bash]
+----
+docker exec -it broker kafka-console-producer --broker-list broker:9092 --producer.config /tmp/alice.properties --topic test --property "parse.key=true" --property "key.separator=:"
+>1:test
+
+[2023-07-12 12:18:27,972] ERROR [Producer clientId=console-producer] Topic authorization failed for topics [test] (org.apache.kafka.clients.Metadata)
+[2023-07-12 12:18:27,974] ERROR Error when sending message to topic test with key: 1 bytes, value: 4 bytes with error: (org.apache.kafka.clients.producer.internals.ErrorLoggingCallback)
+org.apache.kafka.common.errors.TopicAuthorizationException: Not authorized to access topics: [test]
+----
+
+Set topic read and topic write ACLs on topic _test_ for user _alice_:
+
+[source,bash]
+----
+docker exec -it broker kafka-acls --bootstrap-server broker:29092 --add --allow-principal "User:alice" --operation Read --operation Write --topic test
+
+Adding ACLs for resource `ResourcePattern(resourceType=TOPIC, name=test, patternType=LITERAL)`:
+ 	(principal=User:alice, host=*, operation=READ, permissionType=ALLOW)
+	(principal=User:alice, host=*, operation=WRITE, permissionType=ALLOW)
+
+Current ACLs for resource `ResourcePattern(resourceType=TOPIC, name=test, patternType=LITERAL)`:
+ 	(principal=User:alice, host=*, operation=READ, permissionType=ALLOW)
+	(principal=User:alice, host=*, operation=WRITE, permissionType=ALLOW)
+----
+
+Produce messages:
+
+[source,bash]
+----
+docker exec -it broker kafka-console-producer --broker-list broker:9092 --producer.config /tmp/alice.properties --topic test --property "parse.key=true" --property "key.separator=:"
+>1:test
+----
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-acls.sh
+----
+
+
 === mTLS listener
 
 This example shows how to define a mTLS listener on listener port 9092.
 
 mTLS ensures that both parties in the communication, client and broker, will trust each other exchanging SSL certificates.
 
-Run the example:
+Run the components:
 
 [source,bash]
 ----
