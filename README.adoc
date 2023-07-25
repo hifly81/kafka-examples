@@ -93,7 +93,7 @@ If you need to change the docker image version for the specific components, just
 
 === Docker images
 
-Default docker images are downloaded from Docker Hub _confluentinc_ and are based on _Confluent 7.4.0 Community_ licensed (Apache Kafka® version 3.4.0):
+Default docker images are downloaded from Docker Hub _confluentinc_ and are based on _Confluent 7.4.1 Community_ licensed (Apache Kafka® version 3.4.0):
 
 * Zookeeper: confluentinc/cp-zookeeper
 * Broker: confluentinc/cp-kafka
