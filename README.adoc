@@ -2707,9 +2707,9 @@ scripts/tear-down-quotas.sh
 
 <<<
 
-== Mirroring
+== High Availability and Disaster Recovery
 
-=== Mirror Maker 2 tests
+=== Active/Active clusters with Mirror Maker v2
 
 Example of a Mirror Maker v2 configuration Active/Active
 
