@@ -1,10 +1,19 @@
-= Apache Kafka® examples
+= Apache Kafka® examples: Practical examples with Apache Kafka®
+:author: Giovanni Marigi
+:email: gio.marigi@gmail.com
+:revdate: July 21, 2023
+:revnumber: 1.1.15.Final
+:version-label!:
 :toc: left
 :toclevels: 3
 
 
 <<<
 // page break
+
+== Versioning
+
+{revdate} - {revnumber}
 
 == General Information
 
