@@ -15,6 +15,11 @@ public class KafkaConfig {
     private static final String CONFLUENT_SCHEMA_REGISTRY_URL =
             System.getenv("confluent.schema.registry") != null? System.getenv("confluent.schema.registry"):"http://localhost:8081";
 
+    private static final String APICURIO_SCHEMA_REGISTRY_URL =
+            System.getenv("apicurio.registry.url") != null? System.getenv("apicurio.registry.url"):"http://localhost:8080/apis/registry/v2";
+    private static final String HORTONWORKS_SCHEMA_REGISTRY_URL =
+            System.getenv("hortonworks.registry.url") != null? System.getenv("hortonworks.registry.url"):"http://localhost:9090/api/v1";
+
     public static Properties loadConfig(final String configFile) throws IOException {
         final Properties cfg = new Properties();
 
@@ -44,13 +49,27 @@ public class KafkaConfig {
         return properties;
     }
 
-    public static Properties consumerAvroConfluentConfig(String groupId, String keyDeserializerClassName, String valueDeserializerClassName, boolean autoCommit) {
+    public static Properties consumerConfluentConfig(String groupId, String keyDeserializerClassName, String valueDeserializerClassName, boolean autoCommit) {
         Properties properties = new Properties();
         properties.put("bootstrap.servers", BROKER_LIST);
         properties.put("group.id", groupId);
         properties.put("key.deserializer", keyDeserializerClassName);
         properties.put("value.deserializer", valueDeserializerClassName);
         properties.put("schema.registry.url", CONFLUENT_SCHEMA_REGISTRY_URL);
+        properties.put("enable.auto.commit", String.valueOf(autoCommit));
+        properties.put("auto.offset.reset", "earliest");
+        properties.put("max.poll.interval.ms", 300000);
+
+        return properties;
+    }
+
+    public static Properties consumerApicurioConfig(String groupId, String keyDeserializerClassName, String valueDeserializerClassName, boolean autoCommit) {
+        Properties properties = new Properties();
+        properties.put("bootstrap.servers", BROKER_LIST);
+        properties.put("group.id", groupId);
+        properties.put("key.deserializer", keyDeserializerClassName);
+        properties.put("value.deserializer", valueDeserializerClassName);
+        properties.put("apicurio.registry.url", APICURIO_SCHEMA_REGISTRY_URL);
         properties.put("enable.auto.commit", String.valueOf(autoCommit));
         properties.put("auto.offset.reset", "earliest");
         properties.put("max.poll.interval.ms", 300000);

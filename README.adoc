@@ -935,20 +935,20 @@ Avro schema _car.avsc_:
 }
 ----
 
-Produce messages:
-
-[source,bash]
-----
-cd kafka-producer
-mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.avro.Runner" -Dexec.args="CONFLUENT"
-----
-
 Consume messages:
 
 [source,bash]
 ----
 cd kafka-consumer
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.deserializer.avro.Runner" -Dexec.args="CONFLUENT"
+----
+
+Produce messages:
+
+[source,bash]
+----
+cd kafka-producer
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.avro.Runner" -Dexec.args="CONFLUENT"
 ----
 
 === Apicurio Avro Generic Record
@@ -984,8 +984,18 @@ Start Apicurio:
 
 [source,bash]
 ----
-./scripts/bootstrap-apicurio.sh
+scripts/bootstrap-apicurio.sh
 ----
+
+Consume messages:
+
+[source,bash]
+----
+cd kafka-consumer
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.deserializer.avro.Runner" -Dexec.args="APICURIO"
+----
+
+Produce messages:
 
 [source,bash]
 ----
@@ -997,7 +1007,7 @@ Teardown:
 
 [source,bash]
 ----
-./scripts/teardown-apicurio.sh
+scripts/teardown-apicurio.sh
 ----
 
 === Hortonworks Avro Generic Record
@@ -1033,7 +1043,7 @@ Start Hortonworks Schema Registry:
 
 [source,bash]
 ----
-./scripts/bootstrap-hortonworks-sr.sh
+scripts/bootstrap-hortonworks-sr.sh
 ----
 
 [source,bash]
@@ -1046,7 +1056,7 @@ Teardown:
 
 [source,bash]
 ----
-./scripts/teardown-hortonworks-sr.sh
+scripts/teardown-hortonworks-sr.sh
 ----
 
 

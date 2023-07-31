@@ -33,16 +33,13 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TOOLS_LOG4J_LOGLEVEL: ERROR
 
-  db:
+  mariadb:
     image: mysql:5.7.17
+    container_name: mariadb
     ports:
-      - "3307:3306"
+      - "3306:3306"
     volumes:
       - 'mysqldb_data:/var/lib/mysql'
-    networks:
-      default:
-        aliases:
-          - db
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: hortonworks
@@ -56,7 +53,7 @@ services:
         soft: 65536
         hard: 65536
     depends_on:
-      - db
+      - mariadb
     ports:
       - "9090:9090"
     environment:
@@ -64,7 +61,7 @@ services:
       DB_USER: hortonworks
       DB_PASSWORD: password
       DB_PORT: 3306
-      DB_HOST: db
+      DB_HOST: mariadb
 
 volumes:
   mysqldb_data:

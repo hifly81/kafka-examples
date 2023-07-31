@@ -1,5 +1,6 @@
 package org.hifly.kafka.demo.consumer.deserializer.avro;
 
+import io.apicurio.registry.serde.avro.AvroKafkaDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -24,16 +25,30 @@ public class Runner {
     }
 
     private static void pollAutoCommit(String topics, String schemaRegistry) {
+        SchemaRegistry schemaRegistryEnum = SchemaRegistry.valueOf(schemaRegistry);
         String deserializerName;
+        KafkaConsumer<String, GenericRecord> consumer = null;
 
-        switch (schemaRegistry) {
+        switch (schemaRegistryEnum) {
+            case CONFLUENT:
+                deserializerName = KafkaAvroDeserializer.class.getName();
+                consumer = new KafkaConsumer<>(
+                        KafkaConfig.consumerConfluentConfig("group-avro", StringDeserializer.class.getName(), deserializerName, true));
+                break;
+            case APICURIO:
+                deserializerName = AvroKafkaDeserializer.class.getName();
+                consumer = new KafkaConsumer<>(
+                        KafkaConfig.consumerApicurioConfig("group-avro-apicurio", StringDeserializer.class.getName(), deserializerName, true));
+                break;
+            case HORTONWORKS:
+                break;
             default:
                 deserializerName = KafkaAvroDeserializer.class.getName();
+                consumer = new KafkaConsumer<>(
+                        KafkaConfig.consumerConfluentConfig("group-avro-2", StringDeserializer.class.getName(), deserializerName, true));
                 break;
         }
 
-        KafkaConsumer<String, GenericRecord> consumer = new KafkaConsumer<>(
-                KafkaConfig.consumerAvroConfluentConfig("group-avro", StringDeserializer.class.getName(), deserializerName, true));
 
         new ConsumerInstance<String , GenericRecord>(
                 UUID.randomUUID().toString(),
