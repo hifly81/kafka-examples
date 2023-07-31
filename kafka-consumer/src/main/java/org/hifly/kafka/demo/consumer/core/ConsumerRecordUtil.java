@@ -10,7 +10,7 @@ public class ConsumerRecordUtil {
 
     public static void prettyPrinter(String groupId, String consumerId, ConsumerRecord consumerRecord) {
         if(consumerRecord != null) {
-            LOGGER.info("Group id {} - Consumer id: {} - Topic: {} - Partition: {} - Offset: {} - Key: {} - Value: {}\n",
+            System.out.printf("Group id %s - Consumer id: %s - Topic: %s - Partition: %s - Offset: %s - Key: %s - Value: %s\n",
                     groupId,
                     consumerId,
                     consumerRecord.topic(),

@@ -29,23 +29,26 @@ public class Runner {
         String deserializerName;
         KafkaConsumer<String, GenericRecord> consumer = null;
 
+        UUID uuid = UUID. randomUUID();
+        String uuidAsString = uuid. toString();
+
         switch (schemaRegistryEnum) {
             case CONFLUENT:
                 deserializerName = KafkaAvroDeserializer.class.getName();
                 consumer = new KafkaConsumer<>(
-                        KafkaConfig.consumerConfluentConfig("group-avro", StringDeserializer.class.getName(), deserializerName, true));
+                        KafkaConfig.consumerConfluentConfig(uuidAsString, StringDeserializer.class.getName(), deserializerName, true));
                 break;
             case APICURIO:
                 deserializerName = AvroKafkaDeserializer.class.getName();
                 consumer = new KafkaConsumer<>(
-                        KafkaConfig.consumerApicurioConfig("group-avro-apicurio", StringDeserializer.class.getName(), deserializerName, true));
+                        KafkaConfig.consumerApicurioConfig(uuidAsString, StringDeserializer.class.getName(), deserializerName, true));
                 break;
             case HORTONWORKS:
                 break;
             default:
                 deserializerName = KafkaAvroDeserializer.class.getName();
                 consumer = new KafkaConsumer<>(
-                        KafkaConfig.consumerConfluentConfig("group-avro-2", StringDeserializer.class.getName(), deserializerName, true));
+                        KafkaConfig.consumerConfluentConfig(uuidAsString, StringDeserializer.class.getName(), deserializerName, true));
                 break;
         }
 

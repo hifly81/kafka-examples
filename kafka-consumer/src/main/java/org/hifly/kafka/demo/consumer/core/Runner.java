@@ -20,9 +20,12 @@ public class Runner {
     }
 
     private static void pollAutoCommit(String topics, String partitionStrategy) {
+        UUID uuid = UUID. randomUUID();
+        String uuidAsString = uuid. toString();
+
         new ConsumerInstance<String , String>(
                 UUID.randomUUID().toString(),
-                "group-XX",
+                uuidAsString,
                 topics == null? "topic1": topics,
                 StringDeserializer.class.getName(),
                 StringDeserializer.class.getName(),
