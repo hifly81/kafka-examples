@@ -3063,7 +3063,7 @@ Run the components and _kafka_perf_ machine:
 scripts/bootstrap-performance.sh
 ----
 
-==== Scenario 1: effects with compression
+==== Effects with compression
 
 Create a topic:
 
