@@ -3054,9 +3054,9 @@ Usage of utility _kafka-producer-perf-test_ to test producer performances for ja
 
 Cluster is formed with 3 brokers (9092, 9093, 9094).
 
-1 client machine, named _kafka_perf_ is used to run _kafka-producer-perf-test_ against the kafka cluster.
+1 performance machine, named _kafka_perf_ is used to run _kafka-producer-perf-test_ against the kafka cluster.
 
-Run the componentes and _kafka_perf_ machine:
+Run the components and _kafka_perf_ machine:
 
 [source,bash]
 ----
