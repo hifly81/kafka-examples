@@ -2987,7 +2987,7 @@ scripts/tear-down-tracing.sh
 
 === Specs
 
-IMPORTANT: Results may vary and are dependent on the programming capability of your host
+IMPORTANT: Results may vary and are dependent on the performances of your host
 
 Tested on a host with:
 
