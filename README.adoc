@@ -2998,6 +2998,7 @@ Tested on a host with:
  - Core(s) per socket:  6
  - 32GB RAM
  - Fedora 38 - Kernel 6.3.5-200.fc38.x86_64
+ - Docker version 24.0.2
 
 IMPORTANT: By default, a container has no resource constraints and can use as much of a given resource as the host’s kernel scheduler allows. Docker provides ways to control how much memory, or CPU a container can use, setting runtime configuration flags.
 
