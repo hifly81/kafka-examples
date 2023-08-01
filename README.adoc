@@ -2985,20 +2985,7 @@ scripts/tear-down-tracing.sh
 
 == Performance
 
-=== Producer
-
-Usage of utility _kafka-producer-perf-test_ to test producer performances for java applications.
-
-Cluster is formed with 3 brokers (9092, 9093, 9094).
-
-1 client machine, named _kafka_perf_ is used to run _kafka-producer-perf-test_ against the kafka cluster.
-
-Run the componentes and _kafka_perf_ machine:
-
-[source,bash]
-----
-scripts/bootstrap-performance.sh
-----
+=== Specs
 
 IMPORTANT: Results may vary and are dependent on the programming capability of your host
 
@@ -3010,6 +2997,7 @@ Tested on a host with:
  - Thread(s) per core:  2
  - Core(s) per socket:  6
  - 32GB RAM
+ - Fedora 38 - Kernel 6.3.5-200.fc38.x86_64
 
 IMPORTANT: By default, a container has no resource constraints and can use as much of a given resource as the host’s kernel scheduler allows. Docker provides ways to control how much memory, or CPU a container can use, setting runtime configuration flags.
 
@@ -3057,6 +3045,21 @@ Docker containers can be configured for RAM and CPU limits using:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
       KAFKA_TOOLS_LOG4J_LOGLEVEL: ERROR
+----
+
+=== Producer
+
+Usage of utility _kafka-producer-perf-test_ to test producer performances for java applications.
+
+Cluster is formed with 3 brokers (9092, 9093, 9094).
+
+1 client machine, named _kafka_perf_ is used to run _kafka-producer-perf-test_ against the kafka cluster.
+
+Run the componentes and _kafka_perf_ machine:
+
+[source,bash]
+----
+scripts/bootstrap-performance.sh
 ----
 
 ==== Scenario 1: effects with compression
