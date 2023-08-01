@@ -3000,6 +3000,65 @@ Run the componentes and _kafka_perf_ machine:
 scripts/bootstrap-performance.sh
 ----
 
+IMPORTANT: Results may vary and are dependent on the programming capability of your host
+
+Tested on a host with:
+
+ - CPU(s):                  12
+ - Model name:            Intel(R) Core(TM) i7-10750H CPU @ 2.60GHz
+ - CPU family:          6
+ - Thread(s) per core:  2
+ - Core(s) per socket:  6
+ - 32GB RAM
+
+IMPORTANT: By default, a container has no resource constraints and can use as much of a given resource as the host’s kernel scheduler allows. Docker provides ways to control how much memory, or CPU a container can use, setting runtime configuration flags.
+
+
+You can check docker usage during the test using _docker stats_ command:
+
+[source,bash]
+----
+CONTAINER ID   NAME         CPU %     MEM USAGE / LIMIT     MEM %     NET I/O           BLOCK I/O   PIDS
+041a74e554a3   kafka-perf   0.09%     167.2MiB / 30.99GiB   0.53%     694kB / 86.1MB    0B / 0B     61
+b693e9dbdfa0   broker2      0.45%     500.4MiB / 30.99GiB   1.58%     88.5MB / 59.8MB   0B / 0B     81
+0a97b237f198   broker3      0.41%     486.3MiB / 30.99GiB   1.53%     88.5MB / 60.5MB   0B / 0B     81
+4a678630aa03   broker       0.41%     521.2MiB / 30.99GiB   1.64%     88.5MB / 59.8MB   0B / 0B     85
+45e9d4500d66   zookeeper    0.13%     98.12MiB / 30.99GiB   0.31%     163kB / 87.8kB    0B / 0B     69
+----
+
+Docker containers can be configured for RAM and CPU limits using:
+
+- mem_limit – represents the hard memory limits.
+- mem_reservation: represents the soft memory limits.
+- cpus – represents the CPU limit.
+- cpuset – represents the limit on a specific CPU.
+
+[source,yaml]
+----
+  broker:
+    image: confluentinc/cp-kafka:${CONFLUENT_VERSION}
+    hostname: broker
+    container_name: broker
+    mem_limit: "1g"
+    mem_reservation: "512m"
+    cpus: "1"
+    cpuset: "2"
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TOOLS_LOG4J_LOGLEVEL: ERROR
+----
+
 ==== Scenario 1: effects with compression
 
 Create a topic:
@@ -3011,57 +3070,102 @@ docker exec kafka-perf sh kafka-topics.sh --bootstrap-server broker:9092,broker2
 
 Run a scenario with:
 
- - 1000000 records
+ - 10000 records
  - record size 2k
  - no compression
 
 [source,bash]
 ----
-docker exec kafka-perf sh kafka-producer-perf-test.sh --topic topic-perf --num-records 1000000 --record-size 2000 --throughput -1 --producer-props bootstrap.servers=broker:9092,broker2:9093,broker3:9094 --print-metrics
+docker exec kafka-perf sh kafka-producer-perf-test.sh --topic topic-perf --num-records 10000 --record-size 2000 --throughput -1 --producer-props bootstrap.servers=broker:9092,broker2:9093,broker3:9094 --print-metrics
+----
+
+[source,bash]
+----
+10000 records sent, 5425.935974 records/sec (10.35 MB/sec), 829.02 ms avg latency, 1346.00 ms max latency, 837 ms 50th, 1300 ms 95th, 1335 ms 99th, 1345 ms 99.9th.
+producer-metrics:batch-size-avg:{client-id=perf-producer-client}                             : 16133.000
+producer-metrics:compression-rate-avg:{client-id=perf-producer-client}                       : 1.000
+producer-metrics:outgoing-byte-rate:{client-id=perf-producer-client}                         : 637647.064
+producer-metrics:request-latency-avg:{client-id=perf-producer-client}                        : 36.831
 ----
 
 Run a scenario with:
 
-- 1000000 records
+- 10000 records
 - record size 2k
 - lz4 compression
 
 [source,bash]
 ----
-docker exec kafka-perf sh kafka-producer-perf-test.sh --topic topic-perf --num-records 1000000 --record-size 2000 --throughput -1 --producer-props bootstrap.servers=broker:9092,broker2:9093,broker3:9094 compression.type=lz4 --print-metrics
+docker exec kafka-perf sh kafka-producer-perf-test.sh --topic topic-perf --num-records 10000 --record-size 2000 --throughput -1 --producer-props bootstrap.servers=broker:9092,broker2:9093,broker3:9094 compression.type=lz4 --print-metrics
+----
+
+[source,bash]
+----
+10000 records sent, 8045.052293 records/sec (15.34 MB/sec), 329.08 ms avg latency, 572.00 ms max latency, 357 ms 50th, 538 ms 95th, 558 ms 99th, 572 ms 99.9th
+producer-metrics:batch-size-avg:{client-id=perf-producer-client}                             : 14134.782
+producer-metrics:compression-rate-avg:{client-id=perf-producer-client}                       : 1.001
+producer-metrics:outgoing-byte-rate:{client-id=perf-producer-client}                         : 651333.258
+producer-metrics:request-latency-avg:{client-id=perf-producer-client}                        : 19.609
 ----
 
 Run a scenario with:
 
-- 1000000 records
+- 10000 records
 - record size 2k
 - gzip compression
 
 [source,bash]
 ----
-docker exec kafka-perf sh kafka-producer-perf-test.sh --topic topic-perf --num-records 1000000 --record-size 2000 --throughput -1 --producer-props bootstrap.servers=broker:9092,broker2:9093,broker3:9094 compression.type=gzip --print-metrics
+docker exec kafka-perf sh kafka-producer-perf-test.sh --topic topic-perf --num-records 10000 --record-size 2000 --throughput -1 --producer-props bootstrap.servers=broker:9092,broker2:9093,broker3:9094 compression.type=gzip --print-metrics
+----
+
+[source,bash]
+----
+10000 records sent, 8904.719501 records/sec (16.98 MB/sec), 13.40 ms avg latency, 249.00 ms max latency, 12 ms 50th, 27 ms 95th, 35 ms 99th, 44 ms 99.9th.
+producer-metrics:batch-size-avg:{client-id=perf-producer-client}                             : 13152.898
+producer-metrics:compression-rate-avg:{client-id=perf-producer-client}                       : 0.631
+producer-metrics:outgoing-byte-rate:{client-id=perf-producer-client}                         : 412718.405
+producer-metrics:request-latency-avg:{client-id=perf-producer-client}                        : 9.295
 ----
 
 Run a scenario with:
 
-- 1000000 records
+- 10000 records
 - record size 2k
 - snappy compression
 
 [source,bash]
 ----
-docker exec kafka-perf sh kafka-producer-perf-test.sh --topic topic-perf --num-records 1000000 --record-size 2000 --throughput -1 --producer-props bootstrap.servers=broker:9092,broker2:9093,broker3:9094 compression.type=snappy --print-metrics
+docker exec kafka-perf sh kafka-producer-perf-test.sh --topic topic-perf --num-records 10000 --record-size 2000 --throughput -1 --producer-props bootstrap.servers=broker:9092,broker2:9093,broker3:9094 compression.type=snappy --print-metrics
+----
+
+[source,bash]
+----
+10000 records sent, 11123.470523 records/sec (21.22 MB/sec), 214.26 ms avg latency, 366.00 ms max latency, 225 ms 50th, 346 ms 95th, 357 ms 99th, 365 ms 99.9th.
+producer-metrics:batch-size-avg:{client-id=perf-producer-client}                             : 14144.871
+producer-metrics:compression-rate-avg:{client-id=perf-producer-client}                       : 1.002
+producer-metrics:outgoing-byte-rate:{client-id=perf-producer-client}                         : 658886.364
+producer-metrics:request-latency-avg:{client-id=perf-producer-client}                        : 12.776
 ----
 
 Run a scenario with:
 
-- 1000000 records
+- 10000 records
 - record size 2k
 - zstd compression
 
 [source,bash]
 ----
-docker exec kafka-perf sh kafka-producer-perf-test.sh --topic topic-perf --num-records 1000000 --record-size 2000 --throughput -1 --producer-props bootstrap.servers=broker:9092,broker2:9093,broker3:9094 compression.type=zstd --print-metrics
+docker exec kafka-perf sh kafka-producer-perf-test.sh --topic topic-perf --num-records 10000 --record-size 2000 --throughput -1 --producer-props bootstrap.servers=broker:9092,broker2:9093,broker3:9094 compression.type=zstd --print-metrics
+----
+
+[source,bash]
+----
+10000 records sent, 13698.630137 records/sec (26.13 MB/sec), 71.19 ms avg latency, 266.00 ms max latency, 75 ms 50th, 100 ms 95th, 104 ms 99th, 108 ms 99.9th.
+producer-metrics:batch-size-avg:{client-id=perf-producer-client}                             : 13273.085
+producer-metrics:compression-rate-avg:{client-id=perf-producer-client}                       : 0.604
+producer-metrics:outgoing-byte-rate:{client-id=perf-producer-client}                         : 399927.348
+producer-metrics:request-latency-avg:{client-id=perf-producer-client}                        : 14.208
 ----
 
 Teardown:

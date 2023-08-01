@@ -48,6 +48,7 @@ services:
 
   registry:
     image: thebookpeople/hortonworks-registry:latest
+    container_name: registry
     ulimits:
       nofile:
         soft: 65536
