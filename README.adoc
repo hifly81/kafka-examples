@@ -1197,6 +1197,134 @@ you will get an error:
 {"error_code":42201,"message":"Invalid schema
 ----
 
+=== Confluent Avro References
+
+This example show how to use Avro unions with schema references to create complex event types.
+
+In this example a topic named _car-telemetry_ will be configured with a schema _car-telemetry.avsc_ and will store Avro messages composed by:
+
+ - car-info fields from schema _car-info.avsc_
+ - car-telemetry fields from schema _car-telemetry-data.avsc_
+
+_car-telemetry.avsc_:
+
+[source,json]
+----
+[
+  "org.hifly.kafka.demo.avro.references.CarInfo",
+  "org.hifly.kafka.demo.avro.references.CarTelemetryData"
+]
+----
+
+_car-telemetry-data.avsc_:
+
+[source,json]
+----
+{
+  "type": "record",
+  "name": "CarTelemetryData",
+  "namespace": "org.hifly.kafka.demo.avro.references",
+  "fields": [
+    {
+      "name": "speed",
+      "type": "double"
+    },
+    {
+      "name": "latitude",
+      "type": "string"
+    },
+    {
+      "name": "longitude",
+      "type": "string"
+    }
+  ]
+}
+----
+
+_car-info.avsc_:
+
+[source,json]
+----
+{
+  "type": "record",
+  "name": "CarInfo",
+  "namespace": "org.hifly.kafka.demo.avro.references",
+  "fields": [
+    {
+      "name": "model",
+      "type": "string"
+    },
+    {
+      "name": "brand",
+      "type": "string"
+    }
+  ]
+}
+----
+
+Register the subjects using confluent schema registry maven plugin:
+
+[source,bash]
+----
+cd confluent-avro-references
+mvn schema-registry:register
+
+[INFO] --- kafka-schema-registry-maven-plugin:7.4.0:register (default-cli) @ confluent-avro-references ---
+[INFO] Registered subject(car-info) with id 1 version 1
+[INFO] Registered subject(car-telemetry-data) with id 2 version 1
+[INFO] Registered subject(car-telemetry-value) with id 3 version 1
+----
+
+Verify the subjects:
+
+[source,bash]
+----
+curl -X GET http://localhost:8081/subjects
+
+["car-info","car-telemetry-data","car-telemetry-value"]
+----
+
+Verify the resulting schema for _car-telemetry-value_ subject:
+
+[source,bash]
+----
+curl -X GET http://localhost:8081/subjects/car-telemetry-value/versions/1
+
+{"subject":"car-telemetry-value","version":1,"id":3,"references":[{"name":"io.confluent.examples.avro.references.CarInfo","subject":"car-info","version":1},{"name":"io.confluent.examples.avro.references.CarTelemetryData","subject":"car-telemetry-data","version":1}],"schema":"[\"org.hifly.kafka.demo.avro.references.CarInfo\",\"org.hifly.kafka.demo.avro.references.CarTelemetryData\"]"}
+----
+
+Generate Java Pojo from avro schemas:
+
+[source,bash]
+----
+cd confluent-avro-references
+mvn clean package
+----
+
+Run a Consumer:
+
+[source,bash]
+----
+cd confluent-avro-references
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.references.RunnerConsumer"
+----
+
+On a different shell, Run a Producer:
+
+[source,bash]
+----
+cd confluent-avro-references
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.references.RunnerProducer"
+----
+
+Verify records on Consumer:
+
+[source,bash]
+----
+Car Info event {"model": "Ferrari", "brand": "F40"} - offset-> 4
+Car Telemetry event {"speed": 156.8, "latitude": "42.8", "longitude": "22.6"} - offset-> 5
+----
+
 <<<
 
 == Apache Kafka® Connect

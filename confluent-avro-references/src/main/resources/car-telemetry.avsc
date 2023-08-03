@@ -1,0 +1,4 @@
+[
+  "org.hifly.kafka.demo.avro.references.CarInfo",
+  "org.hifly.kafka.demo.avro.references.CarTelemetryData"
+]

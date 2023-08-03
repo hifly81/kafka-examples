@@ -8,13 +8,18 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>confluent-avro-specific-record</artifactId>
+    <artifactId>confluent-avro-references</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka_2.12</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.confluent</groupId>
+            <artifactId>kafka-avro-serializer</artifactId>
         </dependency>
 
         <dependency>
@@ -44,18 +49,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.hifly.kafka</groupId>
-            <artifactId>kafka-producer</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.hifly.kafka</groupId>
-            <artifactId>kafka-consumer</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-test</artifactId>
         </dependency>
@@ -76,6 +69,20 @@
         </repository>
     </repositories>
 
+    <pluginRepositories>
+        <pluginRepository>
+            <id>confluent</id>
+            <url>https://packages.confluent.io/maven/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
     <build>
         <plugins>
             <plugin>
@@ -91,12 +98,48 @@
                         <configuration>
                             <sourceDirectory>${project.basedir}/src/main/resources/</sourceDirectory>
                             <includes>
-                                <include>car.avsc</include>
+                                <include>car-info.avsc</include>
+                                <include>car-telemetry-data.avsc</include>
                             </includes>
                             <outputDirectory>${project.basedir}/src/main/java</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>io.confluent</groupId>
+                <artifactId>kafka-schema-registry-maven-plugin</artifactId>
+                <version>${confluent.version}</version>
+                <configuration>
+                    <schemaRegistryUrls>
+                        <param>http://schema-registry:8081</param>
+                    </schemaRegistryUrls>
+                    <subjects>
+                        <car-telemetry-value>src/main/resources/car-telemetry.avsc</car-telemetry-value>
+                        <car-info>src/main/resources/car-info.avsc</car-info>
+                        <car-telemetry-data>src/main/resources/car-telemetry-data.avsc</car-telemetry-data>
+                    </subjects>
+                    <schemaTypes>
+                        <car-telemetry-value>AVRO</car-telemetry-value>
+                        <car-info>AVRO</car-info>
+                        <car-telemetry-data>AVRO</car-telemetry-data>
+                    </schemaTypes>
+                    <references>
+                        <car-telemetry-value>
+                            <reference>
+                                <name>io.confluent.examples.avro.references.CarInfo</name>
+                                <subject>car-info</subject>
+                            </reference>
+                            <reference>
+                                <name>io.confluent.examples.avro.references.CarTelemetryData</name>
+                                <subject>car-telemetry-data</subject>
+                            </reference>
+                        </car-telemetry-value>
+                    </references>
+                </configuration>
+                <goals>
+                    <goal>register</goal>
+                </goals>
             </plugin>
         </plugins>
     </build>
