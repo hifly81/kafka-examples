@@ -1199,12 +1199,12 @@ you will get an error:
 
 === Confluent Avro References
 
-This example show how to use Avro unions with schema references to create complex event types.
+This example shows how to use Avro unions with schema references to create complex event types.
 
-In this example a topic named _car-telemetry_ will be configured with a schema _car-telemetry.avsc_ and will store Avro messages composed by:
+In this example a topic named _car-telemetry_ will be configured with a schema _car-telemetry.avsc_ and will store different Avro messages:
 
- - car-info fields from schema _car-info.avsc_
- - car-telemetry fields from schema _car-telemetry-data.avsc_
+ - car-info messages from schema _car-info.avsc_
+ - car-telemetry messages from schema _car-telemetry-data.avsc_
 
 _car-telemetry.avsc_:
 
