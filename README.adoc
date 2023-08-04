@@ -1197,9 +1197,9 @@ you will get an error:
 {"error_code":42201,"message":"Invalid schema
 ----
 
-=== Confluent Avro References
+=== Confluent Avro: Multiple Event Types in same Topic
 
-This example shows how to use Avro unions with schema references to create complex event types.
+This example shows how to use Avro unions with schema references.
 
 In this example a topic named _car-telemetry_ will be configured with a schema _car-telemetry.avsc_ and will store different Avro messages:
 

@@ -8,7 +8,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>confluent-avro-references</artifactId>
+    <artifactId>confluent-avro-multi-event</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
