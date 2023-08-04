@@ -1,8 +1,8 @@
 = Apache Kafka® examples: Practical examples with Apache Kafka®
 :author: Giovanni Marigi
 :email: gio.marigi@gmail.com
-:revdate: July 21, 2023
-:revnumber: 1.1.15.Final
+:revdate: August 04, 2023
+:revnumber: 1.1.17.Final
 :version-label!:
 :toc: left
 :toclevels: 3
@@ -1327,7 +1327,7 @@ Car Telemetry event {"speed": 156.8, "latitude": "42.8", "longitude": "22.6"} - 
 
 === Confluent Avro: Nested objects
 
-This example shows how to use Avro nested objects
+This example shows how to use Avro nested objects.
 
 In this example a topic named _car-telemetry_ will be configured with a schema _car-telemetry-data.avsc_ with a nested schema reference from _car.avsc_
 
