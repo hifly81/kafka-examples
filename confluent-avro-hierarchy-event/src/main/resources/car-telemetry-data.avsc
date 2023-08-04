@@ -1,0 +1,24 @@
+{
+  "type": "record",
+  "name": "CarTelemetryData",
+  "namespace": "org.hifly.kafka.demo.avro.references",
+  "fields": [
+    {
+      "name": "speed",
+      "type": "double"
+    },
+    {
+      "name": "latitude",
+      "type": "string"
+    },
+    {
+      "name": "longitude",
+      "type": "string"
+    },
+    {
+      "name": "info",
+      "type": "org.hifly.kafka.demo.avro.references.CarInfo"
+    }
+
+  ]
+}

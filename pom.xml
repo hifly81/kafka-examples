@@ -11,6 +11,7 @@
         <module>kafka-consumer</module>
         <module>confluent-avro-specific-record</module>
         <module>confluent-avro-multi-event</module>
+        <module>confluent-avro-hierarchy-event</module>
         <module>kafka-streams</module>
         <module>kafka-streams-processor</module>
         <module>kafka-orders-tx</module>
