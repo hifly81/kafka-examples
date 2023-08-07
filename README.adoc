@@ -2071,7 +2071,7 @@ Class _org.hifly.kafka.demo.streams.queries.QueryController_ shows how to execut
 
  - StreamCounter
 
-When running the _StreamCounter_ example, you will in the terminal:
+When running the _StreamCounter_ example, you will find in the terminal entries like:
 
 [source,bash]
 ----
