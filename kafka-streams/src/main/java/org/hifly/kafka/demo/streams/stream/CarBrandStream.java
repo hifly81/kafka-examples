@@ -29,7 +29,7 @@ public class CarBrandStream {
     private static final Logger LOGGER = LoggerFactory.getLogger(CarBrandStream.class);
 
     private static final String BROKER_LIST =
-            System.getenv("kafka.broker.list") != null ? System.getenv("kafka.broker.list") : "localhost:9091,localhost:9092";
+            System.getenv("kafka.broker.list") != null ? System.getenv("kafka.broker.list") : "localhost:9092";
 
     public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException {
         Properties properties = new Properties();

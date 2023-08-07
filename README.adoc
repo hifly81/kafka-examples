@@ -2065,6 +2065,20 @@ Read from output topic:
 docker exec -it broker kafka-console-consumer --topic expired-messages-input-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
 
+=== Interactive queries
+
+Class _org.hifly.kafka.demo.streams.queries.QueryController_ shows how to execute queries against the local store. Controller is attached at the moment at the following streams example:
+
+ - StreamCounter
+
+When running the _StreamCounter_ example, you will in the terminal:
+
+[source,bash]
+----
+query result <key>: <value>
+----
+
+
 <<<
 
 == ksqlDB

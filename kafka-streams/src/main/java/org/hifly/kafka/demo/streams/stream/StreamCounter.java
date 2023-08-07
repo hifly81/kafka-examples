@@ -8,6 +8,7 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.*;
+import org.hifly.kafka.demo.streams.queries.QueryController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +25,9 @@ public class StreamCounter {
     private static final Logger logger = LoggerFactory.getLogger(StreamCounter.class);
 
     private static final String BROKER_LIST =
-            System.getenv("kafka.broker.list") != null ? System.getenv("kafka.broker.list") : "localhost:9091,localhost:9092";
+            System.getenv("kafka.broker.list") != null ? System.getenv("kafka.broker.list") : "localhost:9092";
+
+    private static final String STORE_NAME = "StreamCounter-table";
 
     public static void main (String [] args ) throws ExecutionException, InterruptedException, TimeoutException {
         Properties properties = new Properties();
@@ -51,6 +54,7 @@ public class StreamCounter {
         logger.info(topology.describe().toString());
 
         KafkaStreams kafkaStreams = new KafkaStreams(topology, properties);
+
         final CountDownLatch latch = new CountDownLatch(1);
 
         // SIGTERM
@@ -63,6 +67,11 @@ public class StreamCounter {
         }));
 
         try {
+            kafkaStreams.setStateListener((newState, oldState) -> {
+                if (newState == KafkaStreams.State.RUNNING && oldState != KafkaStreams.State.RUNNING) {
+                    QueryController.queryAllKeys(kafkaStreams, STORE_NAME);
+                }
+            });
             kafkaStreams.start();
             latch.await();
         } catch (Throwable e) {
@@ -81,7 +90,7 @@ public class StreamCounter {
                 .peek((key, value) -> logger.info("Incoming record - key " +key +" value " + value))
                 //groupByKey and count occurrences
                 .groupByKey(Grouped.as("StreamCounter_groupByKey").with(Serdes.String(), Serdes.String()))
-                .count(Named.as("StreamCounter_count"), Materialized.as("StreamCounter-table"))
+                .count(Named.as("StreamCounter_count"), Materialized.as(STORE_NAME))
                 //from ktable to kstream
                 .toStream(Named.as("StreamCounter_toStream"))
                 .peek((key, value) -> logger.info("Outgoing record - key " +key +" value " + value))
