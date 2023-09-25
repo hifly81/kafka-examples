@@ -2046,7 +2046,7 @@ Run the topology:
 
 [source,bash]
 ----
-cd kafka-streams
+cd kafka-streams-processor
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.streams.processor.ExpiredMessagesApplication"
 ----
 
