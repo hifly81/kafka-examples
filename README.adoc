@@ -1,8 +1,8 @@
 = Apache Kafka® examples: Practical examples with Apache Kafka®
 :author: Giovanni Marigi
 :email: gio.marigi@gmail.com
-:revdate: August 04, 2023
-:revnumber: 1.1.17.Final
+:revdate: September 26, 2023
+:revnumber: 1.1.18.Final
 :version-label!:
 :toc: left
 :toclevels: 3
@@ -2023,7 +2023,7 @@ docker exec -it broker kafka-console-consumer --topic processor-output-topic --b
 
 === Expired Messages Processor +
 
-Remove old entries based on time (expiration time 30 seconds) using a punctuator.
+Remove old entries based on time (expiration time set to 30 seconds) using a punctuator.
 This example uses Streams Processor API.
 
 Execute tests:
@@ -2062,7 +2062,14 @@ Read from output topic:
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-consumer --topic expired-messages-input-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
+docker exec -it broker kafka-console-consumer --topic expired-messages-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
+----
+
+Find out in kafka streams application log expiration entries:
+
+[source,bash]
+----
+[expired-messages-app-073d6f11-585b-4e69-b91f-bc998bdf49f3-StreamThread-1] INFO org.hifly.kafka.demo.streams.processor.ExpiredMessagesProcessor - 1 is expired --> Sessions between:99849
 ----
 
 === Interactive queries
