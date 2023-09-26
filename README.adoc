@@ -738,11 +738,11 @@ Send records:
 
 [source,bash]
 ----
-echo '{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P
-echo '{"col_foo":2}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx
-echo '{"col_foo":3}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx
-echo '{"col_foo":4}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx
-echo '{"col_foo":5}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx
+docker run confluentinc/cp-kafkacat echo '{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -b localhost:9092 -t input-topic -P
+docker run confluentinc/cp-kafkacat echo '{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P-b localhost:9092 -t input-topic -P -H ERROR=xxxxx
+docker run confluentinc/cp-kafkacat echo '{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P-b localhost:9092 -t input-topic -P -H ERROR=xxxxx
+docker run confluentinc/cp-kafkacat echo '{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -b localhost:9092 -t input-topic -P -H ERROR=xxxxx
+docker run confluentinc/cp-kafkacat echo '{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -b localhost:9092 -t input-topic -P -H ERROR=xxxxx
 ----
 
 Verify in consumer log if messages are sent to retry and dlq topics:
