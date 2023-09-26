@@ -9,6 +9,7 @@
     <modules>
         <module>kafka-producer</module>
         <module>kafka-consumer</module>
+        <module>kafka-consumer-retry-topics</module>
         <module>confluent-avro-specific-record</module>
         <module>confluent-avro-multi-event</module>
         <module>confluent-avro-hierarchy-event</module>
@@ -40,7 +41,7 @@
         <apicurio.registry.version>2.4.1.Final</apicurio.registry.version>
         <hortonworks.registry.version>0.3.0</hortonworks.registry.version>
         <zookeeper.version>3.6.4</zookeeper.version>
-        <slf4j.version>1.7.5</slf4j.version>
+        <slf4j.version>1.7.15</slf4j.version>
         <junit.version>4.12</junit.version>
         <curator.version>5.0.0</curator.version>
     </properties>
