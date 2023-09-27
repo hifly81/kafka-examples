@@ -102,14 +102,14 @@ If you need to change the docker image version for the specific components, just
 
 === Docker images
 
-Default docker images are downloaded from Docker Hub _confluentinc_ and are based on _Confluent 7.4.1 Community_ licensed (Apache Kafka® version 3.4.0):
+Default docker images are downloaded from Docker Hub _confluentinc_ and are based on _Confluent 7.5.0 Community_ licensed (Apache Kafka® version 3.4.0):
 
 * Zookeeper: confluentinc/cp-zookeeper
 * Broker: confluentinc/cp-kafka
 * Schema Registry: confluentinc/cp-schema-registry
 * Connect: custom image based on confluentinc/cp-kafka-connect-base
-* ksqlDB server: confluentinc/ksqldb-server:0.28.2
-* ksqlDB cli: confluentinc/ksqldb-cli:0.28.2
+* ksqlDB server: confluentinc/ksqldb-server:0.29.0
+* ksqlDB cli: confluentinc/ksqldb-cli:0.29.0
 * rest proxy: confluentinc/cp-kafka-rest
 
 === KRaft mode
@@ -720,11 +720,14 @@ scripts/tear-down-racks.sh
 
 === Consumers and retry topics
 
+==== Number of retries set on consumer instance
+
 This solution could be implemented on consumer side to handle errors in processing records without blocking the input topic.
 
  . Consumer processes records and commit the offset
- . if a record can't be processed (simple condition here is the existence of a specific HEADER), it is sent to a retry topic, if the number of retries is not yet exhausted
+ . if a record can't be processed _(simple condition here is the existence of a specific HEADER)_, it is sent to a retry topic, if the number of retries is not yet exhausted
  . when the number of retries is exhausted, record is sent to a DLQ topic
+ . number of retries is set at Consumer instance level
 
 Run consumer managing retry topics:
 
@@ -849,7 +852,7 @@ Docker images provided are already shipped with CLI.
 . _kafka-avro-console-producer_ - produce Avro data to topics with a schema _(only with confluent installation)_
 . _kafka-avro-console-consumer_ - read Avro data from topics with a schema and outputs it to standard output _(only with confluent installation)_
 
-=== Apache Kafka® Topics: segments and retention
+=== Topics: segments and retention
 
 Create a topic _cars_ with retention for old segments set to 5 minutes and size of segments set to 100 KB.
 
@@ -1102,7 +1105,6 @@ Teardown:
 scripts/teardown-hortonworks-sr.sh
 ----
 
-
 === Confluent Avro Specific Record
 
 Implementation of a producer and a consumer using _Avro Specific Record_ for serializing and deserializing.
@@ -1189,7 +1191,6 @@ Run the producer:
 cd confluent-avro-specific-record
 mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.RunnerProducer"
 ----
-
 
 Run the consumer (don't stop it):
 
@@ -1763,7 +1764,6 @@ Teardown:
 scripts/tear-down-connect-dlq.sh
 ----
 
-
 === CDC with Debezium PostgreSQL Source Connector
 
 Usage of Debezium Source connector for PostgreSQL to send RDMS table updates into a topic.
@@ -1842,7 +1842,6 @@ After stopping _connect2_, you will see tasks only distributed to _connect_ work
 {"datagen-sample":{"status":{"name":"datagen-sample","connector":{"state":"RUNNING","worker_id":"connect:8083"},"tasks":[{"id":0,"state":"RUNNING","worker_id":"connect:8083"},{"id":1,"state":"RUNNING","worker_id":"connect:8083"},{"id":2,"state":"RUNNING","worker_id":"connect:8083"},{"id":3,"state":"RUNNING","worker_id":"connect:8083"}],"type":"source"}}}
 ----
 
-
 Teardown:
 
 [source,bash]
@@ -1865,6 +1864,7 @@ mvn clean test
 ----
 
 === Events counter Stream +
+
 Count number of events grouped by key.
 
 Create topics:
@@ -1901,6 +1901,7 @@ docker exec -it broker kafka-console-consumer --topic counter-output-topic --boo
 ----
 
 === Sum values Stream +
+
 Sum values grouping by key.
 
 Create topics:
@@ -1937,6 +1938,7 @@ docker exec -it broker kafka-console-consumer --topic sum-output-topic --bootstr
 ----
 
 === Cars sensor Stream +
+
 The stream filters out speed data from car data sensor records. Speed limit is set to 150km/h and only events exceeding the limits are filtered out. +
 A KTable stores the car info data. +
 A left join between the kstream and the ktable produces a new aggregated object published to an output topic.
@@ -1980,6 +1982,7 @@ docker exec -it broker kafka-console-consumer --topic carsensor-output-topic --b
 ----
 
 === Cars brand Stream +
+
 The stream splits the original data into 2 different topics, one for Ferrari cars and one for all other car brands.
 
 Create topics:
@@ -2133,7 +2136,7 @@ query result <key>: <value>
 
 == ksqlDB
 
-=== Saga Pattern Example
+=== Saga Pattern Example with orchestrator
 
 Implementation of a sample App (producer and consumer) sending and receiving orders; ksqlDB acts as an orchestrator to coordinate a sample Saga.
 
@@ -2207,7 +2210,9 @@ Order Action:{"TX_ID": "TX_AAA_A123", "TX_ACTION": -1, "ACCOUNT": "AAA", "ITEMS"
  --> compensate:{"TX_ID": "TX_AAA_A123", "TX_ACTION": -1, "ACCOUNT": "AAA", "ITEMS": ["Item0", "Item1", "Item2", "ORDER": "A123"}
 ----
 
-=== Tumbling Window example: heart rate monitoring
+=== Windowing
+
+==== Tumbling Window example: heart rate monitoring
 
 Implementation of a tumbling window (1 minute) to monitor heart rate. Values over a threshold of 120 beats per minute are reported.
 
@@ -2256,7 +2261,7 @@ EMIT CHANGES;
 |MGG1                                                     |10                                                       |2023-02-18 15:15:00                                      |2023-02-18 15:16:00                                      |
 ----
 
-=== Session Window example: Vehicle Positions
+==== Session Window example: Vehicle Positions
 
 Implementation of a session window (5 minutes inactive). Vehicle positions (latitude and logitude) are collected and a new window opens when the vehicle does not send its position for 5 minutes. This is considered as a new "trip".
 
@@ -2310,7 +2315,9 @@ EMIT CHANGES;
 |VH1                        |2                          |42.31                      |17.17                      |42.33                      |17.18                      |2023-02-18 15:20:00        |2023-02-18 15:22:00        |
 ----
 
-=== Joins: Devices and temperature measurement
+=== Joins
+
+==== Outer: Devices and temperature measurement
 
 This example shows how to join a STREAM with air temperatures captured by devices and a TABLE containing the information of devices.
 
@@ -2408,7 +2415,7 @@ docker exec -it ksqldb-cli ksql http://ksqldb-server:8088 --execute "select * fr
 |4                                                                          |null                                                                       |8                                                                          |
 ----
 
-==== Joins: Devices and devices maintenance - Right Join
+==== Right Join: Devices and devices maintenance
 
 This example shows how to join a Table and a Table
 
@@ -2510,7 +2517,7 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="ItemsConsumer"
 
 == Frameworks
 
-=== Apache Kafka® Spring Boot
+=== Spring Boot
 
 Example for a producer and consumer implemented with Spring Boot 2.x.
 
@@ -2535,7 +2542,7 @@ curl --data '{"id":5, "name": "PS5"}' -H "Content-Type:application/json" http://
 curl --data '{"id":5, "name": "ERROR-PS5"}' -H "Content-Type:application/json" http://localhost:8010/api/order
 ----
 
-=== Apache Kafka® Quarkus
+=== Quarkus
 
 Example for a producer and consumer implemented with Quarkus.
 Every 1s a new message is sent to demo topic.
@@ -2556,7 +2563,7 @@ cd kafka-quarkus
 ./mvnw clean package -Dquarkus.container-image.build=true -Dquarkus.kubernetes.deploy=true
 ----
 
-=== Apache Kafka® microprofile2
+=== Open Liberty MicroProfile v2
 
 Example for a kafka producer and consumer running on an open liberty MicroProfile v2 runtime.
 
@@ -2651,7 +2658,6 @@ Teardown:
 ----
 scripts/tear-down-acls.sh
 ----
-
 
 === mTLS listener
 
@@ -2909,8 +2915,7 @@ Teardown:
 scripts/tear-down-principal.sh
 ----
 
-
-=== OAUTH Authentication KIP-768
+=== OAUTH Authentication: SASL/OAUTHBEARER
 
 This example shows how to configure broker to use SASL/OAUTHBEARER authentication with Support for OIDC.
 
@@ -2972,7 +2977,7 @@ scripts/tear-down-oauth.sh
 
 <<<
 
-== Quota
+== Service Quota
 
 === Network bandwidth
 
@@ -3018,7 +3023,6 @@ Open Grafana UI at http://localhost:3000/d/cwWEgYqMz/kafka-quotas
 
 .Kafka Quotas for "alice" as shown in Grafana
 image::images/quotas.png[Kafka Quotas Grafana]
-
 
 Teardown:
 
@@ -3295,7 +3299,6 @@ Tested on a host with:
 
 IMPORTANT: By default, a container has no resource constraints and can use as much of a given resource as the host’s kernel scheduler allows. Docker provides ways to control how much memory, or CPU a container can use, setting runtime configuration flags.
 
-
 You can check docker usage during the test using _docker stats_ command:
 
 [source,bash]
@@ -3510,7 +3513,7 @@ scripts/tear-down.sh
 
 == Large objects
 
-=== Claim Check
+=== Claim Check Pattern
 
 In this example, kafka messages will be produced to a topic named _items_. Messages contain a field named _url_ with a reference for the object stored in _MinIO_.
 
