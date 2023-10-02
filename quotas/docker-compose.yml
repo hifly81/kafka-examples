@@ -13,7 +13,7 @@ services:
       - "1234:1234"
     volumes:
       - ./config/alice.properties:/tmp/alice.properties
-      - ./config/agent/jmx_prometheus_javaagent-0.18.0.jar:/tmp/jmx_prometheus_javaagent-0.18.0.jar
+      - ./config/agent/jmx_prometheus_javaagent-0.20.0.jar:/tmp/jmx_prometheus_javaagent-0.20.0.jar
       - ./config/agent/kafka_broker.yml:/tmp/kafka_broker.yml
     environment:
       KAFKA_NODE_ID: 1
@@ -42,7 +42,7 @@ services:
       CLUSTER_ID: 'QTnB2tAgTWa1ec5wYon2jg'
       KAFKA_JMX_PORT: 9101
       KAFKA_JMX_HOSTNAME: "localhost"
-      EXTRA_ARGS: -javaagent:/tmp/jmx_prometheus_javaagent-0.18.0.jar=1234:/tmp/kafka_broker.yml
+      EXTRA_ARGS: -javaagent:/tmp/jmx_prometheus_javaagent-0.20.0.jar=1234:/tmp/kafka_broker.yml
 
   prometheus:
     image: prom/prometheus:v2.29.2
