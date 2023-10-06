@@ -724,7 +724,7 @@ scripts/tear-down-racks.sh
 
 This solution could be implemented on consumer side to handle errors in processing records without blocking the input topic.
 
- . Consumer processes records and commit the offset
+ . Consumer processes records and commit the offset (auto-commit)
  . if a record can't be processed _(simple condition here is the existence of a specific HEADER)_, it is sent to a retry topic, if the number of retries is not yet exhausted
  . when the number of retries is exhausted, record is sent to a DLQ topic
  . number of retries is set at Consumer instance level
@@ -739,30 +739,30 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consum
 
 Send records:
 
-[source,bash]
-----
-docker run confluentinc/cp-kafkacat echo '{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -b localhost:9092 -t input-topic -P
-docker run confluentinc/cp-kafkacat echo '{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P-b localhost:9092 -t input-topic -P -H ERROR=xxxxx
-docker run confluentinc/cp-kafkacat echo '{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P-b localhost:9092 -t input-topic -P -H ERROR=xxxxx
-docker run confluentinc/cp-kafkacat echo '{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -b localhost:9092 -t input-topic -P -H ERROR=xxxxx
-docker run confluentinc/cp-kafkacat echo '{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -b localhost:9092 -t input-topic -P -H ERROR=xxxxx
-----
-
-Verify in consumer log if messages are sent to retry and dlq topics:
+amd64:
 
 [source,bash]
 ----
-Group id 43d50afb-2631-4098-8d09-6cfa0964e3bd - Consumer id: consumer-43d50afb-2631-4098-8d09-6cfa0964e3bd-1-c53cb4d5-110c-4533-a9f5-01d7908b6e35 - Topic: input-topic - Partition: 0 - Offset: 3 - Key: null - Value: {"col_foo":1}
-Group id 43d50afb-2631-4098-8d09-6cfa0964e3bd - Consumer id: consumer-43d50afb-2631-4098-8d09-6cfa0964e3bd-1-c53cb4d5-110c-4533-a9f5-01d7908b6e35 - Topic: input-topic - Partition: 0 - Offset: 4 - Key: null - Value: {"col_foo":2}
-Error message detected: number of retries left 2
-send to RETRY topic: retry_topic
-Group id 43d50afb-2631-4098-8d09-6cfa0964e3bd - Consumer id: consumer-43d50afb-2631-4098-8d09-6cfa0964e3bd-1-c53cb4d5-110c-4533-a9f5-01d7908b6e35 - Topic: input-topic - Partition: 0 - Offset: 5 - Key: null - Value: {"col_foo":3}
-Error message detected: number of retries left 1
-send to RETRY topic: retry_topic
-Group id 43d50afb-2631-4098-8d09-6cfa0964e3bd - Consumer id: consumer-43d50afb-2631-4098-8d09-6cfa0964e3bd-1-c53cb4d5-110c-4533-a9f5-01d7908b6e35 - Topic: input-topic - Partition: 0 - Offset: 6 - Key: null - Value: {"col_foo":4}
-Error message detected: number of retries left 0
-number of retries exhausted, send to DLQ topic: dlq_topic
+docker run confluentinc/cp-kafkacat echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -K ,
+docker run confluentinc/cp-kafkacat echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx -K ,
+docker run confluentinc/cp-kafkacat echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx -K ,
+docker run confluentinc/cp-kafkacat echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx -K ,
+docker run confluentinc/cp-kafkacat echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx -K ,
 ----
+
+arm64:
+
+[source,bash]
+----
+docker run confluentinc/cp-kafkacat:7.1.9.arm64 echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -K ,
+docker run confluentinc/cp-kafkacat:7.1.9.arm64 echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx -K ,
+docker run confluentinc/cp-kafkacat:7.1.9.arm64 echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx -K ,
+docker run confluentinc/cp-kafkacat:7.1.9.arm64 echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx -K ,
+docker run confluentinc/cp-kafkacat:7.1.9.arm64 echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx -K ,
+----
+
+Verify in consumer log if messages are sent to retry and dlq topics.
+
 
 === Interceptor
 
