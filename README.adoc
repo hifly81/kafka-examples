@@ -376,10 +376,17 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.produc
 
 It uses a custom partitioner for keys.
 
+Create a topic with 3 partitions:
+
+[source,bash]
+----
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic demo-test --replication-factor 1 --partitions 3
+----
+
 [source,bash]
 ----
 cd kafka-producer
-mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.partitioner.custom.Runner"
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.partitioner.custom.Runner"
 ----
 
 Execute tests:
