@@ -180,12 +180,24 @@ https://minikube.sigs.k8s.io/docs/start/
 
 === Deployment of a cluster with Confluent for Kubernetes Operator (CFK)
 
-Start _Minikube_ with _kvm2_ driver:
+Start _Minikube_ with _kvm2_ driver (Linux):
 
 [source,bash]
 ----
 minikube delete
 minikube config set driver kvm2
+----
+
+Start _Minikube_ with _docker_ driver (Mac):
+
+[source,bash]
+----
+minikube delete
+minikube config set driver docker
+----
+
+[source,bash]
+----
 touch /tmp/config && export KUBECONFIG=/tmp/config
 minikube start --memory 16384 --cpus 4
 ----
