@@ -440,6 +440,13 @@ Install python lib _confluent-kafka_:
 pip install confluent-kafka
 ----
 
+or:
+
+[source,bash]
+----
+python3 -m pip install confluent-kafka
+----
+
 Create topic:
 
 [source,bash]
