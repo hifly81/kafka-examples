@@ -22,7 +22,7 @@ public class Runner {
         KafkaProducer<String, CreditCard> kafkaProducer = new KafkaProducer<>(properties);
         jsonProducer.start(kafkaProducer);
         bunchOfMessages("test_custom_data", jsonProducer);
-
+        jsonProducer.stop();
     }
 
     public static void bunchOfMessages(String topic, JsonProducer jsonProducer) {
@@ -30,9 +30,7 @@ public class Runner {
         CreditCard creditCard = new CreditCard();
         creditCard.setCreditCard("5434344FFFFF");
         lastRecord = jsonProducer.produceSync(new ProducerRecord<>(topic, creditCard));
-
         RecordMetadataUtil.prettyPrinter(lastRecord);
-
     }
 
 }

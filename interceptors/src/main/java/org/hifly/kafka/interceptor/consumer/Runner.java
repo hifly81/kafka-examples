@@ -25,7 +25,7 @@ public class Runner {
                 "test_custom_data",
                 consumer,
                 100,
-                500,
+                -1,
                 true,
                 false,
                 true,

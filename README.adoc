@@ -413,14 +413,14 @@ Run a producer sending data to listener on port 9092:
 
 [source,bash]
 ----
-mvn exec:java -Dexec.mainClass="org.hifly.kafka.interceptor.producer.Runner"
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.interceptor.producer.Runner"
 ----
 
 Run a consumer on listener port 9092:
 
 [source,bash]
 ----
-mvn exec:java -Dexec.mainClass="org.hifly.kafka.interceptor.consumer.Runner"
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.interceptor.consumer.Runner"
 ----
 
 Verify output:
