@@ -409,18 +409,18 @@ cd interceptors
 mvn clean package
 ----
 
-Run a producer sending data to listener on port 9092:
-
-[source,bash]
-----
-mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.interceptor.producer.Runner"
-----
-
 Run a consumer on listener port 9092:
 
 [source,bash]
 ----
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.interceptor.consumer.Runner"
+----
+
+Run a producer sending data to listener on port 9092:
+
+[source,bash]
+----
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.interceptor.producer.Runner"
 ----
 
 Verify output:
@@ -622,7 +622,7 @@ Run a producer perf test to send messages to topic1:
 
 [source,bash]
 ----
-docker exec -it broker kafka-producer-perf-test --topic topic1 --num-records 100000000 --throughput -1 --record-size 2000 --producer-props bootstrap.servers=broker:9092
+docker exec -it broker kafka-producer-perf-test --topic topic1 --num-records 10000 --throughput -1 --record-size 2000 --producer-props bootstrap.servers=broker:9092
 ----
 
 Run 3 different consumer instances (from 3 different terminals) belonging to the same consumer group:
@@ -671,6 +671,11 @@ Create a topic and assign partition leaderships only on broker 1 and 3 (dc1 and 
 
 [source,bash]
 ----
+docker exec broker kafka-topics --bootstrap-server broker:9092 --create --topic topic-regional --replication-factor 3 --partitions 6
+----
+
+[source,bash]
+----
 docker exec -it broker kafka-reassign-partitions --bootstrap-server broker:9092 --reassignment-json-file /tmp/assignment.json --execute
 
 docker exec -it broker kafka-leader-election --bootstrap-server broker:9092 --topic topic-regional --election-type PREFERRED --partition 0
@@ -690,19 +695,19 @@ Topic: topic-regional	TopicId: p-sy0qiQTtSTLTJSG7s7Ew	PartitionCount: 3	Replicat
 	Topic: topic-regional	Partition: 2	Leader: 1	Replicas: 1,3,2	Isr: 1,2,3	Offline:
 ----
 
-Produce 50 messages:
-
-[source,bash]
-----
-docker exec -it broker kafka-producer-perf-test --topic topic-regional --num-records 50 --throughput 10 --record-size 1 --producer-props bootstrap.servers=broker:9092
-----
-
 Run a consumer that will read messages from broker2 in rack dc2:
 
 [source,bash]
 ----
 cd kafka-consumer
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.rack.Runner"
+----
+
+Produce 50 messages:
+
+[source,bash]
+----
+docker exec -it broker kafka-producer-perf-test --topic topic-regional --num-records 50 --throughput 10 --record-size 1 --producer-props bootstrap.servers=broker:9092
 ----
 
 Teardown:
