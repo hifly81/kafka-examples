@@ -15,10 +15,12 @@ import org.apache.avro.message.SchemaStore;
 @org.apache.avro.specific.AvroGenerated
 public class CarTelemetryData extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
   private static final long serialVersionUID = -3572532399579049041L;
+
+
   public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"CarTelemetryData\",\"namespace\":\"org.hifly.kafka.demo.avro.references\",\"fields\":[{\"name\":\"speed\",\"type\":\"double\"},{\"name\":\"latitude\",\"type\":\"string\"},{\"name\":\"longitude\",\"type\":\"string\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
-  private static SpecificData MODEL$ = new SpecificData();
+  private static final SpecificData MODEL$ = new SpecificData();
 
   private static final BinaryMessageEncoder<CarTelemetryData> ENCODER =
       new BinaryMessageEncoder<CarTelemetryData>(MODEL$, SCHEMA$);
@@ -71,9 +73,9 @@ public class CarTelemetryData extends org.apache.avro.specific.SpecificRecordBas
     return DECODER.decode(b);
   }
 
-   private double speed;
-   private java.lang.CharSequence latitude;
-   private java.lang.CharSequence longitude;
+  private double speed;
+  private java.lang.CharSequence latitude;
+  private java.lang.CharSequence longitude;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -215,7 +217,7 @@ public class CarTelemetryData extends org.apache.avro.specific.SpecificRecordBas
 
     /** Creates a new Builder */
     private Builder() {
-      super(SCHEMA$);
+      super(SCHEMA$, MODEL$);
     }
 
     /**
@@ -243,7 +245,7 @@ public class CarTelemetryData extends org.apache.avro.specific.SpecificRecordBas
      * @param other The existing instance to copy.
      */
     private Builder(org.hifly.kafka.demo.avro.references.CarTelemetryData other) {
-      super(SCHEMA$);
+      super(SCHEMA$, MODEL$);
       if (isValidValue(fields()[0], other.speed)) {
         this.speed = data().deepCopy(fields()[0].schema(), other.speed);
         fieldSetFlags()[0] = true;

@@ -15,10 +15,12 @@ import org.apache.avro.message.SchemaStore;
 @org.apache.avro.specific.AvroGenerated
 public class CarInfo extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
   private static final long serialVersionUID = -6700885825016431999L;
+
+
   public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"CarInfo\",\"namespace\":\"org.hifly.kafka.demo.avro.references\",\"fields\":[{\"name\":\"model\",\"type\":\"string\"},{\"name\":\"brand\",\"type\":\"string\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
-  private static SpecificData MODEL$ = new SpecificData();
+  private static final SpecificData MODEL$ = new SpecificData();
 
   private static final BinaryMessageEncoder<CarInfo> ENCODER =
       new BinaryMessageEncoder<CarInfo>(MODEL$, SCHEMA$);
@@ -71,8 +73,8 @@ public class CarInfo extends org.apache.avro.specific.SpecificRecordBase impleme
     return DECODER.decode(b);
   }
 
-   private java.lang.CharSequence model;
-   private java.lang.CharSequence brand;
+  private java.lang.CharSequence model;
+  private java.lang.CharSequence brand;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -192,7 +194,7 @@ public class CarInfo extends org.apache.avro.specific.SpecificRecordBase impleme
 
     /** Creates a new Builder */
     private Builder() {
-      super(SCHEMA$);
+      super(SCHEMA$, MODEL$);
     }
 
     /**
@@ -216,7 +218,7 @@ public class CarInfo extends org.apache.avro.specific.SpecificRecordBase impleme
      * @param other The existing instance to copy.
      */
     private Builder(org.hifly.kafka.demo.avro.references.CarInfo other) {
-      super(SCHEMA$);
+      super(SCHEMA$, MODEL$);
       if (isValidValue(fields()[0], other.model)) {
         this.model = data().deepCopy(fields()[0].schema(), other.model);
         fieldSetFlags()[0] = true;

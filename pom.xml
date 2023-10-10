@@ -46,22 +46,6 @@
         <curator.version>5.0.0</curator.version>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>confluent</id>
-            <url>http://packages.confluent.io/maven/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
-    </repositories>
-
-
-    <pluginRepositories>
-    </pluginRepositories>
 
     <dependencyManagement>
         <dependencies>
@@ -114,7 +98,6 @@
                 <artifactId>connect-api</artifactId>
                 <version>${kafka.version}</version>
             </dependency>
-
 
             <dependency>
                 <groupId>org.apache.kafka</groupId>
