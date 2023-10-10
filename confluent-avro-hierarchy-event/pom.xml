@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.hifly.kafka</groupId>
         <artifactId>kafka-play</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.2.1</version>
     </parent>
 
     <artifactId>confluent-avro-hierarchy-event</artifactId>
@@ -30,7 +30,6 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.10.0</version>
         </dependency>
 
         <dependency>
@@ -54,34 +53,6 @@
         </dependency>
 
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>confluent</id>
-            <url>https://packages.confluent.io/maven/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>confluent</id>
-            <url>https://packages.confluent.io/maven/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
 
     <build>
         <plugins>

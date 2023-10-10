@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.hifly.kafka</groupId>
         <artifactId>kafka-play</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.2.1</version>
     </parent>
 
     <artifactId>interceptors</artifactId>
@@ -31,14 +31,14 @@
         <dependency>
             <groupId>org.hifly.kafka</groupId>
             <artifactId>kafka-producer</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>1.2.1</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.hifly.kafka</groupId>
             <artifactId>kafka-consumer</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>1.2.1</version>
             <scope>compile</scope>
         </dependency>
 

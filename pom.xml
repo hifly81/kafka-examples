@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.hifly.kafka</groupId>
     <artifactId>kafka-play</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.2.1</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -35,15 +35,17 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <kafka.version>3.5.0</kafka.version>
+        <kafka.version>3.5.1</kafka.version>
         <avro.version>1.11.3</avro.version>
-        <confluent.version>7.5.0</confluent.version>
+        <confluent.version>7.5.1</confluent.version>
         <apicurio.registry.version>2.4.1.Final</apicurio.registry.version>
         <hortonworks.registry.version>0.3.0</hortonworks.registry.version>
         <zookeeper.version>3.6.4</zookeeper.version>
         <slf4j.version>1.7.15</slf4j.version>
         <junit.version>4.12</junit.version>
         <curator.version>5.0.0</curator.version>
+        <minio.version>8.5.2</minio.version>
+        <jackson.version>2.12.5</jackson.version>
     </properties>
 
 
@@ -135,11 +137,22 @@
                 <version>${hortonworks.registry.version}</version>
             </dependency>
 
-
             <dependency>
                 <groupId>org.apache.zookeeper</groupId>
                 <artifactId>zookeeper</artifactId>
                 <version>${zookeeper.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.minio</groupId>
+                <artifactId>minio</artifactId>
+                <version>${minio.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
             </dependency>
 
             <dependency>
