@@ -767,26 +767,19 @@ Verify in consumer log if messages are sent to retry and dlq topics.
 
 This example shows how to create a custom consumer interceptor. Java class _CreditCardConsumerInterceptor_ will intercept records before deserialization and print headers.
 
-Compile and package:
+Run a consumer on listener port 9092:
 
 [source,bash]
 ----
-cd interceptors
-mvn clean package
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.interceptor.consumer.Runner"
 ----
 
 Run a producer sending messages on listener port 9092:
 
 [source,bash]
 ----
-mvn exec:java -Dexec.mainClass="org.hifly.kafka.interceptor.producer.Runner"
-----
-
-Run a consumer on listener port 9092:
-
-[source,bash]
-----
-mvn exec:java -Dexec.mainClass="org.hifly.kafka.interceptor.consumer.Runner"
+cd interceptors
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.interceptor.producer.Runner"
 ----
 
 Verify output:
