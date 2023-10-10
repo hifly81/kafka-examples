@@ -1,7 +1,7 @@
 = Apache Kafka® examples: Practical examples with Apache Kafka®
 :author: Giovanni Marigi
 :email: gio.marigi@gmail.com
-:revdate: September 26, 2023
+:revdate: October 10, 2023
 :revnumber: 1.2.1
 :version-label!:
 :toc: left
@@ -102,7 +102,7 @@ If you need to change the docker image version for the specific components, just
 
 === Docker images
 
-Default docker images are downloaded from Docker Hub _confluentinc_ and are based on _Confluent 7.5.1 Community_ licensed (Apache Kafka® version 3.5.0):
+Default docker images are downloaded from Docker Hub _confluentinc_ and are based on _Confluent 7.5.1 Community_ licensed (Apache Kafka® version 3.5.1):
 
 * Broker: confluentinc/cp-kafka
 * Schema Registry: confluentinc/cp-schema-registry
