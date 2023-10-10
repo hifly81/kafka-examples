@@ -22,6 +22,8 @@ public class Runner {
         } catch (KafkaException e) {
             //Abort TX
             baseProducer.getProducer().abortTransaction();
+        } finally {
+            baseProducer.stop();
         }
 
     }
@@ -29,11 +31,12 @@ public class Runner {
     public static void groupOfSynchMessages(String topic, StringTXProducer baseProducer) throws InterruptedException {
         RecordMetadata lastRecord = null;
         for (int i = 0; i < 10; i++ ) {
-            for(int k =0; k < 1000; k++ )
+            for(int k =0; k < 1000; k++ ) {
                 lastRecord = baseProducer.produceSync(new ProducerRecord<>(topic, "GROUP-" + i + "-" + k));
+                RecordMetadataUtil.prettyPrinter(lastRecord);
+            }
             Thread.sleep(1000);
         }
-        RecordMetadataUtil.prettyPrinter(lastRecord);
     }
 
 }
