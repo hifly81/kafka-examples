@@ -104,7 +104,6 @@ If you need to change the docker image version for the specific components, just
 
 Default docker images are downloaded from Docker Hub _confluentinc_ and are based on _Confluent 7.5.0 Community_ licensed (Apache Kafka® version 3.4.0):
 
-* Zookeeper: confluentinc/cp-zookeeper
 * Broker: confluentinc/cp-kafka
 * Schema Registry: confluentinc/cp-schema-registry
 * Connect: custom image based on confluentinc/cp-kafka-connect-base
@@ -112,11 +111,8 @@ Default docker images are downloaded from Docker Hub _confluentinc_ and are base
 * ksqlDB cli: confluentinc/ksqldb-cli:0.29.0
 * rest proxy: confluentinc/cp-kafka-rest
 
-=== KRaft mode
+To run components using Docker, run the _docker-compose.yml_ file available in the root directory.
 
-To run components using Docker, run the _docker-compose-kraft.yml_ file available in the root directory.
-
-Components list:
 
 * Broker will listen to _localhost:9092_
 * Schema Registry will listen to _localhost:8081_
@@ -129,7 +125,7 @@ Components list:
 
 [source,bash]
 ----
-scripts/bootstrap-kraft.sh
+scripts/bootstrap.sh
 
 ----
 
@@ -153,35 +149,7 @@ CurrentObservers:       []
 
 [source,bash]
 ----
-scripts/tear-down-kraft.sh
-----
-
-=== Zookeeper mode
-
-To run a components using Docker in Zookeeper mode, run the _docker-compose.yml_ file available in the root directory.
-
-Components list:
-
-* Broker will listen to _localhost:9092_
-* Schema Registry will listen to _localhost:8081_
-* Connect will listen to _localhost:8083_
-* ksqlDB cli will listen to _localhost:8088_
-* rest proxy will listen to _localhost:8082_
-
-==== Start containers +
-
-[source,bash]
-----
-scripts/bootstrap.sh
-
-----
-
-==== Stop containers +
-
-[source,bash]
-----
 scripts/tear-down.sh
-
 ----
 
 <<<
