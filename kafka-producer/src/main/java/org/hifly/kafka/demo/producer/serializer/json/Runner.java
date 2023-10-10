@@ -12,25 +12,31 @@ public class Runner {
         JsonProducer<CustomData> jsonProducer = new JsonProducer<CustomData>("org.hifly.kafka.demo.producer.serializer.json.CustomDataJsonSerializer");
         jsonProducer.start();
         bunchOfMessages("test_custom_data", jsonProducer);
+        jsonProducer.start();
         bunchOfFFMessages("test_custom_data", jsonProducer);
+        jsonProducer.start();
         bunchOfAsynchMessages("test_custom_data", jsonProducer);
     }
 
-    public static void bunchOfMessages(String topic, JsonProducer jsonProducer) {
+    public static void bunchOfMessages(String topic, JsonProducer baseProducer) {
         RecordMetadata lastRecord = null;
-        for (int i= 10; i < 30000; i++ )
-            lastRecord = jsonProducer.produceSync(new ProducerRecord<>(topic, new CustomData(i)));
-        RecordMetadataUtil.prettyPrinter(lastRecord);
+        for (int i= 10; i < 100; i++ ) {
+            lastRecord = baseProducer.produceSync(new ProducerRecord<>(topic, new CustomData(i)));
+            RecordMetadataUtil.prettyPrinter(lastRecord);
+        }
+        baseProducer.stop();
 
     }
 
     public static void bunchOfFFMessages(String topic, JsonProducer baseProducer) {
-        for (int i= 10; i < 30000; i++ )
+        for (int i= 10; i < 100; i++ )
             baseProducer.produceFireAndForget(new ProducerRecord<>(topic, new CustomData(i)));
+        baseProducer.stop();
     }
 
     public static void bunchOfAsynchMessages(String topic, JsonProducer baseProducer) {
-        for (int i= 10; i < 30000; i++ )
+        for (int i= 10; i < 100; i++ )
             baseProducer.produceAsync(new ProducerRecord<>(topic, new CustomData(i)), new ProducerCallback());
+        baseProducer.stop();
     }
 }
