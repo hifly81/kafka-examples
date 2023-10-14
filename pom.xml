@@ -18,8 +18,6 @@
         <module>kafka-orders-tx</module>
         <module>kafka-microprofile2-producer</module>
         <module>kafka-microprofile2-consumer</module>
-        <module>kafka-springboot-producer</module>
-        <module>kafka-springboot-consumer</module>
         <module>kafka-quarkus</module>
         <module>kafka-smt-custom</module>
         <module>kafka-smt-aspectj</module>
@@ -40,7 +38,6 @@
         <confluent.version>7.5.1</confluent.version>
         <apicurio.registry.version>2.4.1.Final</apicurio.registry.version>
         <hortonworks.registry.version>0.3.0</hortonworks.registry.version>
-        <zookeeper.version>3.7.2</zookeeper.version>
         <slf4j.version>1.7.15</slf4j.version>
         <junit.version>4.12</junit.version>
         <curator.version>5.0.0</curator.version>
@@ -135,12 +132,6 @@
                 <groupId>com.hortonworks.registries</groupId>
                 <artifactId>schema-registry-client</artifactId>
                 <version>${hortonworks.registry.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.zookeeper</groupId>
-                <artifactId>zookeeper</artifactId>
-                <version>${zookeeper.version}</version>
             </dependency>
 
             <dependency>

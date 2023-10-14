@@ -40,4 +40,4 @@ hs_err_pid*
 README.pdf
 README.html
 
-upgrade_version.sh
+release/
