@@ -1,7 +1,3 @@
-POM_VERSION=1.2.1
-KAFKA_VERSION=3.5.1
-CFLT_VERSION=7.5.1
-
 PRJ_HOME=..
 SPRING_PRODUCER_HOME=../kafka-springboot-producer
 SPRING_CONSUMER_HOME=../kafka-springboot-consumer
