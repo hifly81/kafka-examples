@@ -4,18 +4,18 @@ SPRING_CONSUMER_HOME=../kafka-springboot-consumer
 
 
 function compile {
-  printf "\n\nCompiling..\n\n"
+  printf "\nCompiling..\n"
   mvn -f $1/pom.xml clean compile
 }
 
 function release {
-  printf "\n\nCompiling..\n\n"
+  printf "\nCompiling..\n"
   mvn -f $1/pom.xml clean compile
 
-  printf "\n\nRun tests..\n\n"
+  printf "\nRun tests..\n"
   mvn -f $1/pom.xml clean test
 
-  printf "\n\nPackaging..\n\n"
+  printf "\nPackaging..\n"
   mvn -f $1/pom.xml clean install
 }
 
@@ -27,4 +27,7 @@ elif [ "$1" == "release" ]; then
   release $PRJ_HOME
   release $SPRING_PRODUCER_HOME
   release $SPRING_CONSUMER_HOME
+else
+  printf "\nNo option selected <compile|release>..\n"
+  exit -1
 fi
