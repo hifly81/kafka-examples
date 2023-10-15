@@ -397,6 +397,74 @@ cd kafka-producer
 mvn clean test
 ----
 
+=== Create Timestamp vs LogAppend Timestamp
+
+Test the default behaviour: Time when the message was produced
+
+Create a topic:
+
+[source,bash]
+----
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic topic1 --replication-factor 1 --partitions 1
+----
+
+Consume from the topic and print out the message timestamp:
+
+[source,bash]
+----
+docker exec -it broker kafka-console-consumer --topic topic1 --bootstrap-server broker:9092 --from-beginning --property print.timestamp=true
+----
+
+Produce records on topic:
+
+[source,bash]
+----
+docker exec broker kafka-producer-perf-test --topic topic1 --num-records 1000 --record-size 100 --throughput -1 --producer-props bootstrap.servers=broker:9092
+----
+
+Check consumer log for message timestamp:
+
+[source,bash]
+----
+CreateTime:1697359570614	YQHHNEBSEPDNSEIFGAMSUJXKOLTXSPLGHDIOYZJFNIDSPWHZMKVJAXDBZFCOXYKYRJOGYKDESSJMOIIOWVKYUAVWJLXSEPPFEILV
+CreateTime:1697359570621	BASHCGRHSYGIFSYLVGRXCDVABWWTRQZTMMPBAXGHEPHTASSORYKGVPFGQYJKINSZUJLXQUUDVALUSBFRSXNQHSDFDBAKQZZNTYXF
+CreateTime:1697359570621	HYGDPYGNRETYAXIXXYQKMKURDSJYIZNEDAHVIVHCJAPGOBQLHUZTKIWTVFEHVYPNGHIDSERMARFXCPYFEPQMFDOTDPWNKMYRMFIA
+CreateTime:1697359570621	BIQAWWOIFIAKNYFEPTPMIXPQAXFEIKUFFXIDHILBPCBTHWDRMALHFNDCRHAYVLLMRCKJIPNPKGWCIWQCHNHSFSCTYSAKSLVZCCAI
+----
+
+Test behaviour with Time when the message was received at the Kafka Broker
+
+Create a topic with _message.timestamp.type=LogAppendTime_:
+
+[source,bash]
+----
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic topic2 --replication-factor 1 --partitions 1 --config message.timestamp.type=LogAppendTime
+----
+
+Consume from the topic and print out the message timestamp:
+
+[source,bash]
+----
+docker exec -it broker kafka-console-consumer --topic topic2 --bootstrap-server broker:9092 --from-beginning --property print.timestamp=true
+----
+
+Produce records on topic:
+
+[source,bash]
+----
+docker exec broker kafka-producer-perf-test --topic topic2 --num-records 1000 --record-size 100 --throughput -1 --producer-props bootstrap.servers=broker:9092
+----
+
+Check consumer log for message timestamp:
+
+[source,bash]
+----
+LogAppendTime:1697359857981	YQHHNEBSEPDNSEIFGAMSUJXKOLTXSPLGHDIOYZJFNIDSPWHZMKVJAXDBZFCOXYKYRJOGYKDESSJMOIIOWVKYUAVWJLXSEPPFEILV
+LogAppendTime:1697359857981	BASHCGRHSYGIFSYLVGRXCDVABWWTRQZTMMPBAXGHEPHTASSORYKGVPFGQYJKINSZUJLXQUUDVALUSBFRSXNQHSDFDBAKQZZNTYXF
+LogAppendTime:1697359857981	HYGDPYGNRETYAXIXXYQKMKURDSJYIZNEDAHVIVHCJAPGOBQLHUZTKIWTVFEHVYPNGHIDSERMARFXCPYFEPQMFDOTDPWNKMYRMFIA
+LogAppendTime:1697359857981	BIQAWWOIFIAKNYFEPTPMIXPQAXFEIKUFFXIDHILBPCBTHWDRMALHFNDCRHAYVLLMRCKJIPNPKGWCIWQCHNHSFSCTYSAKSLVZCCAI
+----
+
 === Interceptor
 
 This example shows how to create a custom producer interceptor. Java class _CreditCardProducerInterceptor_ will mask a sensitive info on producer record (credit card).
