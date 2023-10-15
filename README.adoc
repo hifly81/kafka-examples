@@ -110,6 +110,7 @@ Default docker images are downloaded from Docker Hub _confluentinc_ and are base
 * ksqlDB server: confluentinc/cp-ksqldb-server
 * ksqlDB cli: confluentinc/cp-ksqldb-cli
 * rest proxy: confluentinc/cp-kafka-rest
+* kcat: confluentinc/cp-kcat
 
 To run components using Docker, run the _docker-compose.yml_ file available in the root directory.
 
@@ -810,22 +811,11 @@ Execute on Linux (amd64):
 
 [source,bash]
 ----
-docker run confluentinc/cp-kafkacat echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -K ,
-docker run confluentinc/cp-kafkacat echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx -K ,
-docker run confluentinc/cp-kafkacat echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx -K ,
-docker run confluentinc/cp-kafkacat echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx -K ,
-docker run confluentinc/cp-kafkacat echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx -K ,
-----
-
-Execute on Mac (arm64):
-
-[source,bash]
-----
-docker run confluentinc/cp-kafkacat:7.1.9.arm64 echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -K ,
-docker run confluentinc/cp-kafkacat:7.1.9.arm64 echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx -K ,
-docker run confluentinc/cp-kafkacat:7.1.9.arm64 echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx -K ,
-docker run confluentinc/cp-kafkacat:7.1.9.arm64 echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx -K ,
-docker run confluentinc/cp-kafkacat:7.1.9.arm64 echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx -K ,
+docker exec -it kcat echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -K ,
+docker exec -it kcat echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx -K ,
+docker exec -it kcat echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx -K ,
+docker exec -it kcat echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx -K ,
+docker exec -it kcat echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx -K ,
 ----
 
 Verify in consumer log if messages are sent to retry and dlq topics.
