@@ -124,22 +124,6 @@ scripts/bootstrap.sh
 
 ----
 
-Check metadata quorum:
-
-[source,bash]
-----
-docker exec -it broker kafka-metadata-quorum --bootstrap-server broker:9092 describe --status
-
-ClusterId:              QTnB2tAgTWa1ec5wYon2jg
-LeaderId:               1
-LeaderEpoch:            1
-HighWatermark:          387
-MaxFollowerLag:         0
-MaxFollowerLagTimeMs:   253
-CurrentVoters:          [1]
-CurrentObservers:       []
-----
-
 ==== Stop containers +
 
 [source,bash]
@@ -800,8 +784,6 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consum
 ----
 
 Send records:
-
-Execute on Linux (amd64):
 
 [source,bash]
 ----
@@ -1831,6 +1813,14 @@ Verify the existence of _account_ table and data in PostgreSQL:
 docker exec -it postgres psql -h localhost -p 5432 -U postgres -c 'select * from accounts;'
 ----
 
+[source,bash]
+----
+ user_id | username | password |    email     |         created_on         |         last_login
+---------+----------+----------+--------------+----------------------------+----------------------------
+       1 | foo      | bar      | foo@bar.com  | 2023-10-16 10:48:08.595034 | 2023-10-16 10:48:08.595034
+       2 | foo2     | bar2     | foo2@bar.com | 2023-10-16 10:48:08.596646 | 2023-10-16 10:48:08.596646
+----
+
 Deploy the connector:
 
 [source,bash]
@@ -1842,7 +1832,7 @@ Run a consumer on _postgres.public.accounts_ topic and see the records:
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-consumer --topic postgres.public.accounts --bootstrap-server broker:9092 --from-beginning
+docker exec -it broker kafka-console-consumer --topic postgres.public.accounts --bootstrap-server broker:9092 --from-beginning --property print.key=true --property print.value=false
 ----
 
 Insert a new record into _account_ table:
@@ -1850,6 +1840,15 @@ Insert a new record into _account_ table:
 [source,bash]
 ----
 docker exec -it postgres psql -h localhost -p 5432 -U postgres -c "insert into accounts (user_id, username, password, email, created_on, last_login) values (3, 'foo3', 'bar3', 'foo3@bar.com', current_timestamp, current_timestamp);"
+----
+
+Verify in consumer log the existence of 3 records:
+
+[source,bash]
+----
+Struct{user_id=1}
+Struct{user_id=2}
+Struct{user_id=3}
 ----
 
 Teardown:
