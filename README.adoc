@@ -11,9 +11,6 @@
 <<<
 // page break
 
-== Versioning
-
-{revdate} - {revnumber}
 
 == General Information
 
@@ -66,9 +63,6 @@ asciidoctor README.adoc
  - link:https://github.com/hifly81/kafka-examples/blob/master/CONTRIBUTING.adoc[How to Contribute]
  - link:https://star-history.com/#hifly81/kafka-examples&Date[Star History Chart]
 
-=== Releases
-
- - link:https://github.com/hifly81/kafka-examples/releases[List of available Releases]
 
 === License
 
