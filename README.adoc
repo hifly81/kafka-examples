@@ -1,4 +1,4 @@
-= Apache Kafka® examples: Practical examples with Apache Kafka®
+= Practical examples with Apache Kafka®
 :author: Giovanni Marigi
 :email: gio.marigi@gmail.com
 :revdate: October 10, 2023
@@ -17,52 +17,48 @@
 This repository contains a number of use cases designed to demonstrate the functionality of Apache Kafka®.
 The examples are mostly extracted from more complex projects and should not be considered complete or ready to be used in a production environment, unless after a refactoring and test work.
 
+<<<
+
 === Export Documentation
 
-Clone the repo:
+Clone this repository:
 
 [source,bash]
 ----
 git clone git@github.com:hifly81/kafka-examples.git
 ----
 
-==== PDF
-
-Install _asciidoctor-pdf_:
-
-[source,bash]
-----
-gem install asciidoctor-pdf --pre
-----
-
-Generate a PDF for _README.adoc_ file:
-
-[source,bash]
-----
-asciidoctor-pdf README.adoc
-----
-
-==== HTML
 
 Install _asciidoctor_:
+
+Linux:
 
 [source,bash]
 ----
 gem install asciidoctor --pre
 ----
 
-Generate HTML for _README.adoc_ file:
+Mac:
 
 [source,bash]
 ----
-asciidoctor README.adoc
+brew install asciidoctor
 ----
+
+Export documentation:
+
+[source,bash]
+----
+asciidoctor-pdf README.adoc
+asciidoctor README.html
+----
+
+<<<
 
 === Contributions
 
  - link:https://github.com/hifly81/kafka-examples/blob/master/CONTRIBUTING.adoc[How to Contribute]
  - link:https://star-history.com/#hifly81/kafka-examples&Date[Star History Chart]
-
 
 === License
 
