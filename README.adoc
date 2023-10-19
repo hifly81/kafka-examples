@@ -19,7 +19,7 @@ The examples are mostly extracted from more complex projects and should not be c
 
 <<<
 
-=== Export Documentation
+== Export Documentation
 
 Clone this repository:
 
@@ -55,12 +55,12 @@ asciidoctor README.html
 
 <<<
 
-=== Contributions
+== Contributions
 
  - link:https://github.com/hifly81/kafka-examples/blob/master/CONTRIBUTING.adoc[How to Contribute]
  - link:https://star-history.com/#hifly81/kafka-examples&Date[Star History Chart]
 
-=== License
+== License
 
  - link:https://github.com/hifly81/kafka-examples/blob/master/LICENSE[MIT License]
 
