@@ -1,0 +1,19 @@
+{
+  "name": "SimpleHttpSink",
+  "config":
+  {
+    "topics": "topicA",
+    "tasks.max": "2",
+    "connector.class": "io.confluent.connect.http.HttpSinkConnector",
+    "http.api.url": "http://host.docker.internal:8010/api/message",
+    "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "confluent.topic.bootstrap.servers": "broker:9092",
+    "confluent.topic.replication.factor": "1",
+    "reporter.bootstrap.servers": "broker:9092",
+    "reporter.result.topic.name": "success-responses",
+    "reporter.result.topic.replication.factor": "1",
+    "reporter.error.topic.name": "error-responses",
+    "reporter.error.topic.replication.factor": "1",
+    "consumer.override.max.poll.interval.ms": "5000"
+  }
+}

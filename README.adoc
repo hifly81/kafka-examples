@@ -1,7 +1,7 @@
 = Practical examples with Apache Kafka®
 :author: Giovanni Marigi
 :email: gio.marigi@gmail.com
-:revdate: October 10, 2023
+:revdate: November 17, 2023
 :revnumber: 1.2.1
 :version-label!:
 :toc: left
@@ -1784,6 +1784,61 @@ Teardown:
 [source,bash]
 ----
 scripts/tear-down-connect-dlq.sh
+----
+
+=== HTTP Sink Connector example
+
+Example of usage of HTTP Sink Connector.
+
+Run the example:
+
+[source,bash]
+----
+scripts/bootstrap-connect-sink-http.sh
+----
+
+A web application listening on port 8010 will start up.
+
+A HTTP sink connector will be created with this config:
+
+[source,bash]
+----
+{
+  "name": "SimpleHttpSink",
+  "config":
+  {
+    "topics": "topicA",
+    "tasks.max": "2",
+    "connector.class": "io.confluent.connect.http.HttpSinkConnector",
+    "http.api.url": "http://host.docker.internal:8010/api/message",
+    "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "confluent.topic.bootstrap.servers": "broker:9092",
+    "confluent.topic.replication.factor": "1",
+    "reporter.bootstrap.servers": "broker:9092",
+    "reporter.result.topic.name": "success-responses",
+    "reporter.result.topic.replication.factor": "1",
+    "reporter.error.topic.name": "error-responses",
+    "reporter.error.topic.replication.factor": "1",
+    "consumer.override.max.poll.interval.ms": "5000"
+  }
+}
+----
+
+Send json messages to _topicA_ topic:
+
+[source,bash]
+----
+docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic topicA --property "parse.key=true" --property "key.separator=:"
+> 1:{"FIELD1": "01","FIELD2": "20400","FIELD3": "001","FIELD4": "0006084655017","FIELD5": "20221117","FIELD6": 9000018}
+----
+
+Sink connector will execute a HTTP POST Request to the endpoint _http://localhost:8010//api/message_
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-connect-sink-http.sh
 ----
 
 === CDC with Debezium PostgreSQL Source Connector

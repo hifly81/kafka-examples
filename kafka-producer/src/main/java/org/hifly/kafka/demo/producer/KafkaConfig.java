@@ -14,7 +14,7 @@ import java.util.Properties;
 public class KafkaConfig {
 
     private static final String BROKER_LIST =
-            System.getenv("kafka.broker.list") != null? System.getenv("kafka.broker.list") :"localhost:9092,localhost:9093,localhost:9094";
+            System.getenv("kafka.broker.list") != null? System.getenv("kafka.broker.list") :"localhost:12091,localhost:9093,localhost:9094";
     private static final String CONFLUENT_SCHEMA_REGISTRY_URL =
             System.getenv("confluent.schema.registry") != null? System.getenv("confluent.schema.registry"):"http://localhost:8081";
     private static final String APICURIO_SCHEMA_REGISTRY_URL =

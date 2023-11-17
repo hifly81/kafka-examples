@@ -29,13 +29,12 @@ public class Runner {
     }
 
     public static void groupOfSynchMessages(String topic, StringTXProducer baseProducer) throws InterruptedException {
-        RecordMetadata lastRecord = null;
+        RecordMetadata lastRecord;
         for (int i = 0; i < 10; i++ ) {
             for(int k =0; k < 1000; k++ ) {
                 lastRecord = baseProducer.produceSync(new ProducerRecord<>(topic, "GROUP-" + i + "-" + k));
                 RecordMetadataUtil.prettyPrinter(lastRecord);
             }
-            Thread.sleep(1000);
         }
     }
 
