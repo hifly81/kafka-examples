@@ -3605,6 +3605,12 @@ Teardown:
 scripts/tear-down.sh
 ----
 
+== UDP Proxy
+
+This example will show how to send UDP packets to a kafka topic.
+
+To run the example, visit: https://github.com/hifly81/udp-kafka
+
 == Large objects
 
 === Claim Check Pattern
