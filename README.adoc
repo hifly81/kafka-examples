@@ -1832,7 +1832,7 @@ docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic 
 > 1:{"FIELD1": "01","FIELD2": "20400","FIELD3": "001","FIELD4": "0006084655017","FIELD5": "20221117","FIELD6": 9000018}
 ----
 
-Sink connector will execute a HTTP POST Request to the endpoint _http://localhost:8010//api/message_
+Sink connector will execute a HTTP POST Request to the endpoint _http://localhost:8010/api/message_
 
 Teardown:
 
