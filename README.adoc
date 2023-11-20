@@ -2615,7 +2615,9 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="ItemsConsumer"
 
 Example for a producer and consumer implemented with Spring Boot 2.x.
 
-Consumer implements a DLQ for records not processable (after 3 attempts).
+Consumer implements a DLQ; implementation configures 3 retriable topics, -retry-0 (backoff 1 seconds), -retry-1 (backoff 2 seconds), -retry-2 (backoff 4 seconds) and a DLT topic, -dlt, for the main topic.
+
+Offending messages will be retried without blocking consuming of messages. After exhausting the retries, messages will be sent to DLT.
 
 Run on your local machine: 
 

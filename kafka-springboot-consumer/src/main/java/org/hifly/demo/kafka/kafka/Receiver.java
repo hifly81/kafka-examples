@@ -8,6 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.annotation.DltHandler;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
+import org.springframework.kafka.retrytopic.TopicSuffixingStrategy;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -20,7 +30,13 @@ public class Receiver {
     private OrderRepository orderRepository;
 
 
-    @KafkaListener(topics = "${topic-name}")
+    @RetryableTopic(
+            attempts = "4",
+            backoff = @Backoff(delay = 1000, multiplier = 2.0),
+            autoCreateTopics = "false",
+            topicSuffixingStrategy = TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE,
+            exclude = NullPointerException.class)
+    @KafkaListener(topics = "${topic-name}", groupId = "${spring.kafka.consumer.group-id}")
     public void listen(@Payload String message) {
 
         logger.info("received message:" + message);
@@ -44,6 +60,11 @@ public class Receiver {
         } catch (Exception ex) {
             logger.error("can't save to mongo:" + order);
         }
+    }
+
+    @DltHandler
+    public void dlt(ConsumerRecord<String, String> record, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
+        logger.info(String.format("#### -> DLT Consumed message -> %s", record));
     }
 
 

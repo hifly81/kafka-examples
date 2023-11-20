@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,16 +16,17 @@ public class KafkaRestController {
 
 	Logger logger = LoggerFactory.getLogger(KafkaRestController.class);
 
-	@Autowired
-	private KafkaTemplate<String, String> kafkaTemplate;
+	private final Producer producer;
 
-	@Value("${topic-name}")
-	private String TOPIC_NAME;
+	@Autowired
+	KafkaController(Producer producer) {
+		this.producer = producer;
+	}
 
 	@PostMapping(value="/api/order")
 	public ResponseEntity send(@RequestBody Order order) {
 		logger.info("sending order to kafka: {0}", order);
-		kafkaTemplate.send(TOPIC_NAME, order.toString());
+		this.producer.send(order.toString());
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 

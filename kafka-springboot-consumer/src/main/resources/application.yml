@@ -1,0 +1,28 @@
+server:
+  port: 8090
+spring:
+  kafka:
+    topic:
+      name: demoTopic
+    bootstrap-servers: localhost:9092
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      allow-auto-create-topics: false
+      group-id: group-1
+      auto-offset-reset: earliest
+      backoff-interval: 15000
+      backoff-max_failure: 2
+    # Needed for DLT Producer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringDeserializer
+    properties:
+      schema.registry.url: http://localhost:8081
+  data:
+    mongodb:
+      user: mongo
+      password: mongo
+      host: localhost
+      port: 27017
+      database: orderdb
