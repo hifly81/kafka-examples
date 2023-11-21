@@ -1849,6 +1849,7 @@ The outbox table contains different operations for the same aggregate (_Consumer
 
  - operation: CREATE --> topic: _loan_
  - operation: INSTALLMENT_PAYMENT --> topic: _loan_payment_
+ - operation: EARLY_LOAN_CLOSURE --> topic: _loan_
 
 Records from the outbox table are fetched using a jdbc source connector.
 
@@ -1861,11 +1862,15 @@ scripts/bootstrap-connect-event-router.sh
 
 Outbox table:
 
+image::images/outbox_table.png[Outbox table]
+
 [source,bash]
 ----
 insert into outbox_table (id, aggregate, operation, payload, event_time) values (1, 'Consumer Loan', 'CREATE', '{\"event\": {\"type\":\"Mortgage Opening\",\"timestamp\":\"2023-11-20T10:00:00\",\"data\":{\"mortgageId\":\"ABC123\",\"customer\":\"John Doe\",\"amount\":200000,\"duration\": 20}}}','2023-11-20 10:00:00');
 
 insert into outbox_table (id, aggregate, operation, payload, event_time) values (2, 'Consumer Loan', 'INSTALLMENT_PAYMENT', '{\"event\": {\"type\":\"Mortgage Opening\",\"timestamp\":\"2023-11-20T10:00:00\",\"data\":{\"mortgageId\":\"ABC123\",\"customer\":\"John Doe\",\"amount\":200000,\"duration\": 20}}}','2023-12-01 09:30:00');
+
+insert into outbox_table (id, aggregate, operation, payload, event_time) values (3, 'Consumer Loan', 'EARLY_LOAN_CLOSURE', '{\"event\":{\"type\":\"Early Loan Closure\",\"timestamp\":\"2023-11-25T14:15:00\",\"data\":{\"mortgageId\":\"ABC12\",\"closureAmount\":150000,\"closureDate\":\"2023-11-25\",\"paymentMethod\":\"Bank Transfer\",\"transactionNumber\":\"PQR456\"}}}','2023-11-25 09:30:00');
 ----
 
 A jdbc source connector will be created with this config:
@@ -1916,6 +1921,31 @@ docker-connect-offsets
 docker-connect-status
 loan
 loan_PAYMENT
+----
+
+[source,bash]
+----
+docker exec -it broker /bin/bash
+[appuser@broker ~]$ cd /tmp/kraft-combined-logs/loan-0/
+[appuser@broker loan-0]$ cat 00000000000000000000.log
+�����Wz���Wz�����������������Consumer Loan
+CREATE�{\"event\": {\"type\":\"Mortgage Opening\",\"timestamp\":\"2023-11-20T10:00:00\",\"data\":{\"mortgageId\":\"ABC123\",\"customer\":\"John Doe\",\"amount\":200000,\"duration\": 20}}}&2023-11-20 10:00:00k'�z<��Wz���Wz�����������������Consumer Loan$EARLY_LOAN_CLOSURE�{\"event\":{\"type\":\"Early Loan Closure\",\"timestamp\":\"2023-11-25T14:15:00\",\"data\":{\"mortgageId\":\"ABC12\",\"closureAmount\":150000,\"closureDate\":\"2023-11-25\",\"paymentMethod\":\"Bank Transfer\",\"transactionNumber\":\"PQR456\"}}}&2023-11-25 09:30:00
+----
+
+[source,bash]
+----
+docker exec -it broker /bin/bash
+[appuser@broker ~]$ cd /tmp/kraft-combined-logs/loan-0/
+[appuser@broker loan-0]$ cat 00000000000000000000.log
+�����Wz���Wz�����������������Consumer Loan
+CREATE�{\"event\": {\"type\":\"Mortgage Opening\",\"timestamp\":\"2023-11-20T10:00:00\",\"data\":{\"mortgageId\":\"ABC123\",\"customer\":\"John Doe\",\"amount\":200000,\"duration\": 20}}}&2023-11-20 10:00:00k'�z<��Wz���Wz�����������������Consumer Loan$EARLY_LOAN_CLOSURE�{\"event\":{\"type\":\"Early Loan Closure\",\"timestamp\":\"2023-11-25T14:15:00\",\"data\":{\"mortgageId\":\"ABC12\",\"closureAmount\":150000,\"closureDate\":\"2023-11-25\",\"paymentMethod\":\"Bank Transfer\",\"transactionNumber\":\"PQR456\"}}}&2023-11-25 09:30:00
+----
+
+----
+docker exec -it broker /bin/bash
+[appuser@broker ~]$ cd /tmp/kraft-combined-logs/loan_PAYMENT-0/
+[appuser@broker loan-0]$ cat 00000000000000000000.log
+,�A��Wz���Wz�����������������Consumer Loan&INSTALLMENT_PAYMENT�{\"event\": {\"type\":\"Mortgage Opening\",\"timestamp\":\"2023-11-20T10:00:00\",\"data\":{\"mortgageId\":\"ABC123\",\"customer\":\"John Doe\",\"amount\":200000,\"duration\": 20}}}&2023-12-01 09:30:00
 ----
 
 Teardown:

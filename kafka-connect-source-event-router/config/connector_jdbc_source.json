@@ -10,7 +10,7 @@
     "table.whitelist" : "public.outbox_table",
     "mode":"bulk",
     "key.converter": "org.apache.kafka.connect.storage.StringConverter",
-    "transforms":"valueToTopic,addPrefix,removeString1,removeString2",
+    "transforms":"valueToTopic,addPrefix,removeString1,removeString2,removeString3",
     "transforms.valueToTopic.type":"io.confluent.connect.transforms.ExtractTopic$Value",
     "transforms.valueToTopic.field":"operation",
     "transforms.addPrefix.type": "org.apache.kafka.connect.transforms.RegexRouter",
@@ -22,6 +22,9 @@
     "transforms.removeString2.type": "org.apache.kafka.connect.transforms.RegexRouter",
     "transforms.removeString2.regex": "(.*)INSTALLMENT(.*)",
     "transforms.removeString2.replacement": "$1$2",
+    "transforms.removeString3.type": "org.apache.kafka.connect.transforms.RegexRouter",
+    "transforms.removeString3.regex": "(.*)EARLY_LOAN_CLOSURE(.*)",
+    "transforms.removeString3.replacement": "$1$2",
     "topic.creation.default.replication.factor": 1,
     "topic.creation.default.partitions": 1
   }
