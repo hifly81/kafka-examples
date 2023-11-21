@@ -1841,6 +1841,81 @@ Teardown:
 scripts/tear-down-connect-sink-http.sh
 ----
 
+=== Event Router with SMT
+
+In this example, some SMT transformations (in chain) are used to create an Event Router starting from an input _outbox table_.
+
+The outbox table contains different operations for the same aggregate (_Consumer Loan_); the different operations are sent on specific topics following this routing:
+
+ - operation: CREATE --> topic: _loan_
+ - operation: INSTALLMENT_PAYMENT --> topic: _loan_payment_
+
+Records from the outbox table are fetched using a jdbc source connector.
+
+Run the example:
+
+[source,bash]
+----
+scripts/bootstrap-connect-event-router.sh
+----
+
+A jdbc source connector will be created with this config:
+
+[source,bash]
+----
+{
+  "name" : "pgsql-sample-source",
+  "config": {
+    "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+    "connection.url": "jdbc:postgresql://postgres:5432/postgres",
+    "connection.user": "postgres",
+    "connection.password": "postgres",
+    "topic.prefix": "",
+    "poll.interval.ms" : 3600000,
+    "table.whitelist" : "public.outbox_table",
+    "mode":"bulk",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "transforms":"valueToTopic,addPrefix,removeString1,removeString2",
+    "transforms.valueToTopic.type":"io.confluent.connect.transforms.ExtractTopic$Value",
+    "transforms.valueToTopic.field":"operation",
+    "transforms.addPrefix.type": "org.apache.kafka.connect.transforms.RegexRouter",
+    "transforms.addPrefix.regex": ".*",
+    "transforms.addPrefix.replacement": "loan$0",
+    "transforms.removeString1.type": "org.apache.kafka.connect.transforms.RegexRouter",
+    "transforms.removeString1.regex": "(.*)CREATE(.*)",
+    "transforms.removeString1.replacement": "$1$2",
+    "transforms.removeString2.type": "org.apache.kafka.connect.transforms.RegexRouter",
+    "transforms.removeString2.regex": "(.*)INSTALLMENT(.*)",
+    "transforms.removeString2.replacement": "$1$2",
+    "topic.creation.default.replication.factor": 1,
+    "topic.creation.default.partitions": 1
+  }
+}
+
+----
+
+Verify topic list:
+
+[source,bash]
+----
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --list
+
+__consumer_offsets
+_schemas
+docker-connect-configs
+docker-connect-offsets
+docker-connect-status
+loan
+loan_PAYMENT
+----
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-connect-event-router.sh
+----
+
 === CDC with Debezium PostgreSQL Source Connector
 
 Usage of Debezium Source connector for PostgreSQL to send RDMS table updates into a topic.
