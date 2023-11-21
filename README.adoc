@@ -1841,7 +1841,7 @@ Teardown:
 scripts/tear-down-connect-sink-http.sh
 ----
 
-=== Event Router with SMT
+=== Outbox Table: Event Router with SMT
 
 In this example, some SMT transformations (in chain) are used to create an Event Router starting from an input _outbox table_.
 
