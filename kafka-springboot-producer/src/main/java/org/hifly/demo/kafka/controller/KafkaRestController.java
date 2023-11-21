@@ -1,6 +1,7 @@
 package org.hifly.demo.kafka.controller;
 
 import org.hifly.demo.kafka.model.Order;
+import org.hifly.demo.kafka.controller.kafka.Producer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class KafkaRestController {
 	private final Producer producer;
 
 	@Autowired
-	KafkaController(Producer producer) {
+	public KafkaRestController(Producer producer) {
 		this.producer = producer;
 	}
 

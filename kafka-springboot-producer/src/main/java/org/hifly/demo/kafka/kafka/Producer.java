@@ -1,4 +1,4 @@
-package org.hifly.demo.kafka.controller.kafka:
+package org.hifly.demo.kafka.controller.kafka;
 
 import org.springframework.kafka.support.SendResult;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -42,7 +42,7 @@ public class Producer {
 
                 @Override
                 public void onFailure(final Throwable throwable) {
-                    logger.error("onFailure --> unable to send: " + order, throwable);
+                    logger.error("onFailure --> unable to send: " + message, throwable);
                 }
             });
         } catch(Exception ex) {
