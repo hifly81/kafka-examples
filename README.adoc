@@ -3424,7 +3424,7 @@ scripts/tear-down-monitoring.sh
 
 This example shows how to configure OpenTelemetry java auto-instrumentation for a stream application enabling distributed tracing.
 
-In this example it is used _opentelemetry-java-instrumentation_  to inject OpenTelemetry auto instrumentation as a JVM agent requiring no modifications at source code to add the traces.
+In this example it is used _opentelemetry-java-instrumentation_ to inject OpenTelemetry auto instrumentation as a JVM agent requiring no modifications at source code to add the traces.
 
 Producers, consumers and streams are part of the supported libraries as documented at
 link:https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/docs/supported-libraries.md#libraries--frameworks[OTEL Java documentation]
@@ -3454,9 +3454,8 @@ cd ..
 
 export OTEL_SERVICE_NAME=stream-sum-service
 export OTEL_TRACES_EXPORTER=otlp
-export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
 
-java -javaagent:kafka-distributed-tracing/app/opentelemetry-javaagent.jar -Dotel.instrumentation.kafka.enabled=true -Dotel.javaagent.debug=true -jar kafka-streams/target/kafka-streams-0.0.1-SNAPSHOT.jar
+java -javaagent:kafka-distributed-tracing/app/opentelemetry-javaagent.jar -Dotel.instrumentation.messaging.experimental.receive-telemetry.enabled=true -jar kafka-streams/target/kafka-streams-1.2.1.jar
 ----
 
 Send messages to input topics:

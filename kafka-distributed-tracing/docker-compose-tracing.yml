@@ -31,6 +31,7 @@ services:
     image: jaegertracing/all-in-one:${JAEGER_VERSION}
     ports:
       - "16686:16686"
+      - "4317:4317"
       - "14268"
       - "14250"
 
@@ -42,8 +43,6 @@ services:
       - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
     ports:
       - "13133:13133" # Health_check extension
-      - "4317:4317"   # OTLP gRPC receiver
-      - "55680:55680" # OTLP gRPC receiver alternative port
     depends_on:
       - jaeger
 
