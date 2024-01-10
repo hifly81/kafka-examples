@@ -35,7 +35,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <kafka.version>3.5.1</kafka.version>
         <avro.version>1.11.3</avro.version>
-        <confluent.version>7.5.2</confluent.version>
+        <confluent.version>7.5.3</confluent.version>
         <apicurio.registry.version>2.4.1.Final</apicurio.registry.version>
         <hortonworks.registry.version>0.3.0</hortonworks.registry.version>
         <slf4j.version>1.7.15</slf4j.version>
