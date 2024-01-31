@@ -771,6 +771,14 @@ This solution could be implemented on consumer side to handle errors in processi
  . when the number of retries is exhausted, record is sent to a DLQ topic
  . number of retries is set at Consumer instance level
 
+Create topics:
+
+[source,bash]
+----
+docker exec broker kafka-topics --bootstrap-server broker:9092 --create --topic input-topic --replication-factor 1 --partitions 1
+docker exec broker kafka-topics --bootstrap-server broker:9092 --create --topic retry-topic --replication-factor 1 --partitions 1
+----
+
 Run consumer managing retry topics:
 
 [source,bash]
@@ -783,15 +791,25 @@ Send records:
 
 [source,bash]
 ----
-docker exec -it kcat echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -K ,
-docker exec -it kcat echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx -K ,
-docker exec -it kcat echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx -K ,
-docker exec -it kcat echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx -K ,
-docker exec -it kcat echo 'alice,{"col_foo":1}'|kcat -b localhost:9092 -t input-topic -P -H ERROR=xxxxx -K ,
+docker exec kcat bash -c "echo 'alice,{"col_foo":1}'|kcat -b broker:9092 -t input-topic -P -K ,"
+
+docker exec kcat bash -c "echo 'alice,{"col_foo":1}'|kcat -b broker:9092 -t input-topic -P -H ERROR=xxxxx -K ,"
+docker exec kcat bash -c "echo 'alice,{"col_foo":1}'|kcat -b broker:9092 -t input-topic -P -H ERROR=xxxxx -K ,"
+docker exec kcat bash -c "echo 'alice,{"col_foo":1}'|kcat -b broker:9092 -t input-topic -P -H ERROR=xxxxx -K ,"
+docker exec kcat bash -c "echo 'alice,{"col_foo":1}'|kcat -b broker:9092 -t input-topic -P -H ERROR=xxxxx -K ,"
 ----
 
-Verify in consumer log if messages are sent to retry and dlq topics.
+Verify in consumer log if messages are sent to retry and dlq topics:
 
+[source,bash]
+----
+Group id eb35b080-6cc7-4934-9363-fcf1bcfcaef7 - Consumer id: consumer-eb35b080-6cc7-4934-9363-fcf1bcfcaef7-1-56d0ad79-8496-4410-a8c1-3519a7605baf - Topic: input-topic - Partition: 0 - Offset: 0 - Key: alice - Value: {col_foo:1}
+Group id eb35b080-6cc7-4934-9363-fcf1bcfcaef7 - Consumer id: consumer-eb35b080-6cc7-4934-9363-fcf1bcfcaef7-1-56d0ad79-8496-4410-a8c1-3519a7605baf - Topic: input-topic - Partition: 0 - Offset: 1 - Key: alice - Value: {col_foo:1}
+Error message detected: number of retries left 3
+Group id eb35b080-6cc7-4934-9363-fcf1bcfcaef7 - Consumer id: consumer-eb35b080-6cc7-4934-9363-fcf1bcfcaef7-1-56d0ad79-8496-4410-a8c1-3519a7605baf - Topic: input-topic - Partition: 0 - Offset: 2 - Key: alice - Value: {col_foo:1}
+Error message detected: number of retries left 3
+send to RETRY topic: retry_topic
+----
 
 === Interceptor
 
