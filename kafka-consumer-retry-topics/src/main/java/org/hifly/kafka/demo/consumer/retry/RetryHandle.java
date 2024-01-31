@@ -11,13 +11,14 @@ import org.hifly.kafka.demo.producer.serializer.string.StringProducer;
 
 import java.math.BigInteger;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class RetryHandle<K,V> extends ConsumerHandle<K,V> {
 
-    private final String RETRY_TOPIC = "retry_topic";
-    private final String DLQ_TOPIC = "dlq_topic";
+    private final String RETRY_TOPIC = "retry-topic";
+    private final String DLQ_TOPIC = "dlq-topic";
 
-    private Map<String, Integer> retriesPerKey = new HashMap<>();
+    private Map<String, Integer> retriesPerKey = new ConcurrentHashMap<>();
 
     private int retries;
 
@@ -36,9 +37,9 @@ public class RetryHandle<K,V> extends ConsumerHandle<K,V> {
             for (Header recordHeader : record.headers()) {
                 //This is only a sample way to detect if a record should be a candidate for retries. Real use-case will fail on same business logic
                 if (recordHeader.key().equals("ERROR")) {
-                    System.out.printf("Error message detected: number of retries left %s\n", retries);
                     if (retriesPerKey.containsKey(record.key())) {
                         Integer retryValue = retriesPerKey.get(record.key());
+                        System.out.printf("Error message detected: number of retries %s left for key %s\n", retryValue, record.key());
                         if (retryValue > 0) {
                             System.out.printf("send to RETRY topic: %s\n", RETRY_TOPIC);
                             //move to retry topic

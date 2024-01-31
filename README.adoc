@@ -775,8 +775,8 @@ Create topics:
 
 [source,bash]
 ----
-docker exec broker kafka-topics --bootstrap-server broker:9092 --create --topic input-topic --replication-factor 1 --partitions 1
 docker exec broker kafka-topics --bootstrap-server broker:9092 --create --topic retry-topic --replication-factor 1 --partitions 1
+docker exec broker kafka-topics --bootstrap-server broker:9092 --create --topic dlq-topic --replication-factor 1 --partitions 1
 ----
 
 Run consumer managing retry topics:
@@ -803,12 +803,19 @@ Verify in consumer log if messages are sent to retry and dlq topics:
 
 [source,bash]
 ----
-Group id eb35b080-6cc7-4934-9363-fcf1bcfcaef7 - Consumer id: consumer-eb35b080-6cc7-4934-9363-fcf1bcfcaef7-1-56d0ad79-8496-4410-a8c1-3519a7605baf - Topic: input-topic - Partition: 0 - Offset: 0 - Key: alice - Value: {col_foo:1}
-Group id eb35b080-6cc7-4934-9363-fcf1bcfcaef7 - Consumer id: consumer-eb35b080-6cc7-4934-9363-fcf1bcfcaef7-1-56d0ad79-8496-4410-a8c1-3519a7605baf - Topic: input-topic - Partition: 0 - Offset: 1 - Key: alice - Value: {col_foo:1}
-Error message detected: number of retries left 3
-Group id eb35b080-6cc7-4934-9363-fcf1bcfcaef7 - Consumer id: consumer-eb35b080-6cc7-4934-9363-fcf1bcfcaef7-1-56d0ad79-8496-4410-a8c1-3519a7605baf - Topic: input-topic - Partition: 0 - Offset: 2 - Key: alice - Value: {col_foo:1}
-Error message detected: number of retries left 3
-send to RETRY topic: retry_topic
+Group id c9a19a62-0284-4251-be22-5d691243646a - Consumer id: consumer-c9a19a62-0284-4251-be22-5d691243646a-1-86fb972e-b5c8-4621-8464-9c1a747a920b - Topic: input-topic - Partition: 0 - Offset: 0 - Key: alice - Value: {col_foo:1}
+Group id c9a19a62-0284-4251-be22-5d691243646a - Consumer id: consumer-c9a19a62-0284-4251-be22-5d691243646a-1-86fb972e-b5c8-4621-8464-9c1a747a920b - Topic: input-topic - Partition: 0 - Offset: 1 - Key: alice - Value: {col_foo:1}
+Error message detected: number of retries 3 left for key alice
+send to RETRY topic: retry-topic
+Group id c9a19a62-0284-4251-be22-5d691243646a - Consumer id: consumer-c9a19a62-0284-4251-be22-5d691243646a-1-86fb972e-b5c8-4621-8464-9c1a747a920b - Topic: input-topic - Partition: 0 - Offset: 2 - Key: alice - Value: {col_foo:1}
+Error message detected: number of retries 2 left for key alice
+send to RETRY topic: retry-topic
+Group id c9a19a62-0284-4251-be22-5d691243646a - Consumer id: consumer-c9a19a62-0284-4251-be22-5d691243646a-1-86fb972e-b5c8-4621-8464-9c1a747a920b - Topic: input-topic - Partition: 0 - Offset: 3 - Key: alice - Value: {col_foo:1}
+Error message detected: number of retries 1 left for key alice
+send to RETRY topic: retry-topic
+Group id c9a19a62-0284-4251-be22-5d691243646a - Consumer id: consumer-c9a19a62-0284-4251-be22-5d691243646a-1-86fb972e-b5c8-4621-8464-9c1a747a920b - Topic: input-topic - Partition: 0 - Offset: 4 - Key: alice - Value: {col_foo:1}
+Error message detected: number of retries 0 left for key alice
+number of retries exhausted, send to DLQ topic: dlq-topic
 ----
 
 === Interceptor
