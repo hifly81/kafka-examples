@@ -1,7 +1,7 @@
 = Practical examples with Apache Kafka®
 :author: Giovanni Marigi
 :email: gio.marigi@gmail.com
-:revdate: November 17, 2023
+:revdate: Febraury 14, 2024
 :revnumber: 1.2.1
 :version-label!:
 :toc: left
@@ -83,8 +83,8 @@ List of programs required to run the examples:
  - _Java SE 17 (recommended) or SE 11_
  - _keytool_ from Java distribution
  - _Apache Maven_
- - _Go Programming language_ (for proxy example)
- - _Python_ (for python clients)
+ - _Go Programming language_ _(for proxy example)_
+ - _Python_ _(for python clients)_
 
 === Change Images Version
 
@@ -92,7 +92,7 @@ If you need to change the docker image version for the specific components, just
 
 === Docker images
 
-Default docker images are downloaded from Docker Hub _confluentinc_ and are based on _Confluent 7.5.3 Community_ licensed (Apache Kafka® version 3.5.x):
+Default docker images are downloaded from Docker Hub _confluentinc_ and are based on _Confluent 7.6.0 Community_ licensed (Apache Kafka® version 3.6.x):
 
 * Broker: confluentinc/cp-kafka
 * Schema Registry: confluentinc/cp-schema-registry
