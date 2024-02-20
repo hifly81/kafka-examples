@@ -3749,7 +3749,37 @@ scripts/tear-down.sh
 
 This example will show how to send UDP packets to a kafka topic.
 
-To run the example, visit: https://github.com/hifly81/udp-kafka
+Run UDP Proxy:
+
+[source,bash]
+----
+start.sh <number of receivers> <bind address> <bind port> <topic name>
+----
+
+example:
+
+[source,bash]
+----
+start.sh 5 230.0.0.0 4446 telemetry
+----
+
+This will start 5 UDP Multicast receivers listening on 230.0.0.0 and port 4446 publishing to kafka topic _telemetry_.
+
+Simulate a stress test:
+
+[source,bash]
+----
+# send 1000 bytes 10 times
+python udp_stress_client.py 1000 10
+----
+
+Teardown:
+
+[source,bash]
+----
+stop.sh
+----
+
 
 == Large objects
 

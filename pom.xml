@@ -28,6 +28,7 @@
         <module>interceptors</module>
         <module>principal-builder</module>
         <module>claim-check</module>
+        <module>udp-proxy</module>
     </modules>
 
     <properties>
