@@ -193,22 +193,12 @@ helm repo add confluentinc https://packages.confluent.io/helm
 helm repo update
 ----
 
-==== Option 1: Install confluent-for-kubernetes operator from Confluent’s Helm repo:
+==== Install confluent-for-kubernetes operator (latest version) from Confluent’s Helm repo:
 
 [source,bash]
 ----
 helm upgrade --install confluent-operator confluentinc/confluent-for-kubernetes
 ----
-
-==== Option 2: Install confluent-for-kubernetes operator using the download bundle:
-
-[source,bash]
-----
-wget https://confluent-for-kubernetes.s3-us-west-1.amazonaws.com/confluent-for-kubernetes-2.6.0.tar.gz
-tar xvf confluent-for-kubernetes-2.6.0.tar.gz
-helm upgrade --install confluent-operator ./confluent-for-kubernetes-2.6.0/helm/confluent-for-kubernetes
-----
-
 
 ==== Deploy Confluent components
 
@@ -217,15 +207,20 @@ helm upgrade --install confluent-operator ./confluent-for-kubernetes-2.6.0/helm/
 [source,bash]
 ----
 kubectl apply -f confluent-for-kubernetes/k8s/confluent-platform-reducted.yaml
+----
 
-(master)$ kubectl get pods
+List pods:
+
+[source,bash]
+----
+kubectl get pods
+
 NAME                                  READY   STATUS    RESTARTS   AGE
 confluent-operator-665db446b7-j52rj   1/1     Running   0          6m35s
 kafka-0                               1/1     Running   0          65s
 kafka-1                               1/1     Running   0          65s
 kafka-2                               1/1     Running   0          65s
 zookeeper-0                           1/1     Running   0          5m5s
-
 ----
 
 Verify events and pods:
@@ -291,9 +286,9 @@ Shut down Confluent components and the data:
 
 [source,bash]
 ----
-kubectl delete -f k8s/topic.yml
-kubectl delete -f k8s/producer.yml
-kubectl delete -f k8s/confluent-platform.yaml
+kubectl delete -f confluent-for-kubernetes/k8s/topic.yml
+kubectl delete -f confluent-for-kubernetes/k8s/producer.yml
+kubectl delete -f confluent-for-kubernetes/k8s/confluent-platform.yaml
 helm delete confluent-operator
 ----
 
@@ -302,6 +297,13 @@ Delete namespace _confluent_:
 [source,bash]
 ----
 kubectl delete namespace confluent
+----
+
+Delete minikube:
+
+[source,bash]
+----
+minikube delete
 ----
 
 <<<

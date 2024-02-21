@@ -7,8 +7,8 @@ metadata:
 spec:
   replicas: 1
   image:
-    application: confluentinc/cp-zookeeper:7.4.0
-    init: confluentinc/confluent-init-container:2.6.0
+    application: confluentinc/cp-zookeeper:7.6.0
+    init: confluentinc/confluent-init-container:2.8.0
   dataVolumeCapacity: 1Gi
   logVolumeCapacity: 1Gi
 ---
@@ -20,8 +20,8 @@ metadata:
 spec:
   replicas: 3
   image:
-    application: confluentinc/cp-kafka:7.4.0
-    init: confluentinc/confluent-init-container:2.6.0
+    application: confluentinc/cp-kafka:7.6.0
+    init: confluentinc/confluent-init-container:2.8.0
   dataVolumeCapacity: 1Gi
   metricReporter:
     enabled: false
