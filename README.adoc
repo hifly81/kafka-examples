@@ -312,6 +312,8 @@ minikube delete
 
 Some implementations of Apache Kafka® producers.
 
+Folder link:kafka-producer/[kafka-producer/]
+
 === String Serializer +
 
 It uses _org.apache.kafka.common.serialization.StringSerializer_ for key and value
@@ -444,6 +446,8 @@ LogAppendTime:1697359857981	BIQAWWOIFIAKNYFEPTPMIXPQAXFEIKUFFXIDHILBPCBTHWDRMALH
 
 === Interceptor
 
+Folder link:interceptors/[interceptors/]
+
 This example shows how to create a custom producer interceptor. Java class _CreditCardProducerInterceptor_ will mask a sensitive info on producer record (credit card).
 
 Compile and package:
@@ -477,6 +481,8 @@ Topic: test_custom_data - Partition: 0 - Offset: 1
 ----
 
 === Python Producer
+
+Folder link:kafka-python-producer/[kafka-python-producer/]
 
 Install python lib _confluent-kafka_:
 
@@ -512,6 +518,8 @@ python producer.py
 == Apache Kafka® consumers
 
 Implementation of a consumer that can be used with different deserializer classes (for key and value).
+
+Folder link:kafka-consumer/[kafka-consumer/]
 
 Java class _org.hifly.kafka.demo.consumer.deserializer.impl.ConsumerInstance_ can be customized with:
 
@@ -764,7 +772,7 @@ scripts/tear-down-racks.sh
 
 === Consumers and retry topics
 
-==== Number of retries set on consumer instance
+Folder link:kafka-consumer-retry-topics/[kafka-consumer-retry-topics/]
 
 This solution could be implemented on consumer side to handle errors in processing records without blocking the input topic.
 
@@ -822,6 +830,8 @@ number of retries exhausted, send to DLQ topic: dlq-topic
 
 === Interceptor
 
+Folder link:interceptors/[interceptors/]
+
 This example shows how to create a custom consumer interceptor. Java class _CreditCardConsumerInterceptor_ will intercept records before deserialization and print headers.
 
 Run a consumer on listener port 9092:
@@ -849,6 +859,8 @@ Consumer 23d06b51-5780-4efc-9c33-a93b3caa3b48 - partition 0 - lastOffset 1
 ----
 
 === Python Consumer
+
+Folder link:kafka-python-consumer/[kafka-python-consumer/]
 
 Install python lib _confluent-kafka_:
 
@@ -942,6 +954,8 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.admin.Admin
 ----
 
 === Compression
+
+Folder link:compression/[compression/]
 
 This example will show that messages sent to the same topic with different _compression.type_ can be read by the same consumer instance.
 
@@ -2715,7 +2729,7 @@ docker exec -it ksqldb-cli ksql http://ksqldb-server:8088 --execute "select * fr
 
 Implementation of a tumbling window (1 minute) to monitor heart rate. Values over a threshold of 120 beats per minute are reported.
 
-SQL statements are contained in file: _flink-window-tumbling-heartbeat/sql/app/heartbeats.sql_
+SQL statements are contained in file: link:flink-window-tumbling-heartbeat/sql/app/heartbeats.sql[heartbeats.sql]
 
 Bootstrap:
 
