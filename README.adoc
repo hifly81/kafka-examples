@@ -2707,6 +2707,70 @@ docker exec -it ksqldb-cli ksql http://ksqldb-server:8088 --execute "select * fr
 
 <<<
 
+== Flink SQL
+
+=== Windowing
+
+==== Tumbling Window example: heart rate monitoring
+
+Implementation of a tumbling window (1 minute) to monitor heart rate. Values over a threshold of 120 beats per minute are reported.
+
+SQL statements are contained in file: _flink-window-tumbling-heartbeat/sql/app/heartbeats.sql_
+
+Bootstrap:
+
+[source,bash]
+----
+scripts/bootstrap-flink.sh
+----
+
+
+Create topic _heartbeat_:
+
+[source,bash]
+----
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic heartbeat --replication-factor 1 --partitions 1
+----
+
+Execute Flink Job:
+
+[source,bash]
+----
+#Connect to sql-client container
+docker exec -it sql-client bash
+#launch sql statements
+root@44c67639b002~$ sql-client.sh -f app/heartbeats.sql
+----
+
+Check if the job _insert-into_default_catalog.default_database.heartbeat_60sec_ is running in Flink Web Console at: http://localhost:18081/#/job/running
+
+Validate results, consuming from output topic _heartbeat_60sec_:
+
+[source,bash]
+----
+docker exec -e SCHEMA_REGISTRY_LOG4J_OPTS=" " -it schema-registry /usr/bin/kafka-avro-console-consumer \
+  --topic heartbeat_60sec \
+  --from-beginning \
+  --bootstrap-server broker:9092
+----
+
+[source,bash]
+----
+{"window_start":{"string":"2023-02-18 15:10:00"},"window_end":{"string":"2023-02-18 15:11:00"},"heartbeats_over_120":{"long":3}}
+
+{"window_start":{"string":"2023-02-18 15:15:00"},"window_end":{"string":"2023-02-18 15:16:00"},"heartbeats_over_120":{"long":10}}
+----
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-flink.sh
+----
+
+
+<<<
+
 == Transactions
 
 === Transactional producer
