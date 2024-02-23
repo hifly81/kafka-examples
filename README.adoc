@@ -49,7 +49,10 @@ Export documentation:
 
 [source,bash]
 ----
+# PDF
 asciidoctor-pdf README.adoc
+
+# HTML
 asciidoctor README.html
 ----
 
@@ -73,9 +76,7 @@ https://docs.docker.com/engine/install/
 
 === Prerequisites
 
-Examples have been tested with a Linux machine.
-
-List of programs required to run the examples:
+List of software required to run the examples:
 
  - _curl_
  - _wget_
@@ -86,24 +87,25 @@ List of programs required to run the examples:
  - _Go Programming language_ _(for proxy example)_
  - _Python_ _(for python clients)_
 
-=== Change Images Version
+=== Docker Images Version
 
-If you need to change the docker image version for the specific components, just update file _.env_ in root directory.
+Default image version are listed in file link:.env[.env]
 
-=== Docker images
+If you would need to change the docker image version for the specific components, just update file link:.env[.env].
 
-Default docker images are downloaded from Docker Hub _confluentinc_ and are based on _Confluent 7.6.0 Community_ licensed (Apache Kafka® version 3.6.x):
+=== Docker Images details
 
-* Broker: confluentinc/cp-kafka
-* Schema Registry: confluentinc/cp-schema-registry
-* Connect: custom image based on confluentinc/cp-kafka-connect-base
-* ksqlDB server: confluentinc/cp-ksqldb-server
-* ksqlDB cli: confluentinc/cp-ksqldb-cli
-* rest proxy: confluentinc/cp-kafka-rest
-* kcat: confluentinc/cp-kcat
+Docker images are downloaded from Docker Hub _confluentinc_ and are based on _Confluent 7.6.0 Community_ licensed (Apache Kafka® version 3.6.x):
 
-To run components using Docker, run the _docker-compose.yml_ file available in the root directory.
+* Broker: _confluentinc/cp-kafka_
+* Schema Registry: _confluentinc/cp-schema-registry_
+* Connect: custom image based on _confluentinc/cp-kafka-connect-base_
+* ksqlDB server: _confluentinc/cp-ksqldb-server_
+* ksqlDB cli: _confluentinc/cp-ksqldb-cli_
+* rest proxy: _confluentinc/cp-kafka-rest_
+* kcat: _confluentinc/cp-kcat_
 
+To run components using Docker, run the link:docker-compose.yml[docker-compose.yml] file available in the root directory.
 
 * Broker will listen to _localhost:9092_
 * Schema Registry will listen to _localhost:8081_
@@ -111,13 +113,11 @@ To run components using Docker, run the _docker-compose.yml_ file available in t
 * ksqlDB cli will listen to _localhost:8088_
 * rest proxy will listen to _localhost:8082_
 
-
 ==== Start containers +
 
 [source,bash]
 ----
 scripts/bootstrap.sh
-
 ----
 
 ==== Stop containers +
@@ -133,15 +133,12 @@ scripts/tear-down.sh
 
 === Prerequisites
 
-List of programs required to run the examples:
+List of software required to run the examples:
 
 - _helm_
 - _kubectl_
-
-Examples will run using:
-
- . _Minikube_
- . _Confluent for Kubernetes operator (CFK)_: https://docs.confluent.io/operator/current/overview.html
+- _Minikube_
+- _Confluent for Kubernetes operator (CFK)_: https://docs.confluent.io/operator/current/overview.html
 
 === Minikube installation in Linux with KVM/QEMU
 
@@ -316,7 +313,7 @@ Folder link:kafka-producer/[kafka-producer/]
 
 === String Serializer +
 
-It uses _org.apache.kafka.common.serialization.StringSerializer_ for key and value
+It uses link:https://kafka.apache.org/36/javadoc/org/apache/kafka/common/serialization/StringSerializer.html[org.apache.kafka.common.serialization.StringSerializer] class for key and value serialization.
 
 [source,bash]
 ----
@@ -326,7 +323,7 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.produc
 
 === Json Serializer +
 
-It uses _org.apache.kafka.common.serialization.StringSerializer_ for key and a _org.hifly.kafka.demo.producer.serializer.json.JsonSerializer_ for value
+It uses link:https://kafka.apache.org/36/javadoc/org/apache/kafka/common/serialization/StringSerializer.html[org.apache.kafka.common.serialization.StringSerializer] for key serialization and a _org.hifly.kafka.demo.producer.serializer.json.JsonSerializer_ for value serialization.
 
 [source,bash]
 ----
