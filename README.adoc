@@ -2973,7 +2973,7 @@ scripts/tear-down-acls.sh
 
 === SASL Plain with SSL listener
 
-This example shows how to define a SASL Plain with SSL listener on listener port 9092.
+This example shows how to define a SASL Plain with SSL listener on port 9092.
 
 Run the components:
 
