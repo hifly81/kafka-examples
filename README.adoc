@@ -2971,6 +2971,55 @@ Teardown:
 scripts/tear-down-acls.sh
 ----
 
+=== SASL Plain with SSL listener
+
+This example shows how to define a SASL Plain with SSL listener on listener port 9092.
+
+Run the components:
+
+[source,bash]
+----
+scripts/bootstrap-sasl-ssl.sh
+----
+
+The script will create all the required security files for broker and a client application in _sasl-ssl/secrets_ folder.
+
+CA is a fake authority: _C=IT/ST=Lazio/L=Rome/O=Hifly/OU=Hifly_
+
+List of files generated:
+
+- CA certificate
+- CA key
+- broker csr
+- broker certificate
+- broker keystore
+- broker truststore
+- client csr
+- client certificate
+- client keystore
+- client truststore
+
+Then a broker on port 9092 will be started.
+
+To test the connection, you can try producing some data to a topic _client.properties_
+
+client CN is: _CN=client,OU=Hifly,O=Hifly,L=Rome,ST=Lazio,C=IT_
+
+[source,bash]
+----
+cd sasl-ssl/config
+kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config client.properties --property "parse.key=true" --property "key.separator=:"
+1:test
+2:test2
+----
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-sasl-ssl.sh
+----
+
 === mTLS listener
 
 This example shows how to define a mTLS listener on listener port 9092.
