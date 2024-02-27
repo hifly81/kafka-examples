@@ -325,7 +325,7 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.produc
 
 === Json Serializer +
 
-It uses link:https://kafka.apache.org/36/javadoc/org/apache/kafka/common/serialization/StringSerializer.html[org.apache.kafka.common.serialization.StringSerializer] for key serialization and a link:kafka-producer/src/main/java/org/hifly/kafka/demo/producer/serializer/json/CustomDataJsonSerializer.java[_org.hifly.kafka.demo.producer.serializer.json.CustomDataJsonSerializer] for value serialization.
+It uses link:https://kafka.apache.org/36/javadoc/org/apache/kafka/common/serialization/StringSerializer.html[org.apache.kafka.common.serialization.StringSerializer] for key serialization and a link:kafka-producer/src/main/java/org/hifly/kafka/demo/producer/serializer/json/CustomDataJsonSerializer.java[org.hifly.kafka.demo.producer.serializer.json.CustomDataJsonSerializer] for value serialization.
 
 Produce on topic _test_custom_data_:
 
@@ -3535,6 +3535,13 @@ Start scenario:
 [source,bash]
 ----
 scripts/bootstrap-monitoring.sh
+----
+
+List all MBeans:
+
+[source,bash]
+----
+kafka-run-class kafka.tools.JmxTool --jmx-url service:jmx:rmi:///jndi/rmi://localhost:9101/jmxrmi list
 ----
 
 Offline Partitions:
