@@ -28,7 +28,7 @@ public class Runner {
 
     }
 
-    public static void groupOfSynchMessages(String topic, StringTXProducer baseProducer) throws InterruptedException {
+    public static void groupOfSynchMessages(String topic, StringTXProducer baseProducer) {
         RecordMetadata lastRecord;
         for (int i = 0; i < 10; i++ ) {
             for(int k =0; k < 1000; k++ ) {

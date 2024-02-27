@@ -315,6 +315,8 @@ Folder link:kafka-producer/[kafka-producer/]
 
 It uses link:https://kafka.apache.org/36/javadoc/org/apache/kafka/common/serialization/StringSerializer.html[org.apache.kafka.common.serialization.StringSerializer] class for key and value serialization.
 
+Produce on topic _topic1_:
+
 [source,bash]
 ----
 cd kafka-producer
@@ -323,7 +325,9 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.produc
 
 === Json Serializer +
 
-It uses link:https://kafka.apache.org/36/javadoc/org/apache/kafka/common/serialization/StringSerializer.html[org.apache.kafka.common.serialization.StringSerializer] for key serialization and a _org.hifly.kafka.demo.producer.serializer.json.JsonSerializer_ for value serialization.
+It uses link:https://kafka.apache.org/36/javadoc/org/apache/kafka/common/serialization/StringSerializer.html[org.apache.kafka.common.serialization.StringSerializer] for key serialization and a link:kafka-producer/src/main/java/org/hifly/kafka/demo/producer/serializer/json/CustomDataJsonSerializer.java[_org.hifly.kafka.demo.producer.serializer.json.CustomDataJsonSerializer] for value serialization.
+
+Produce on topic _test_custom_data_:
 
 [source,bash]
 ----
@@ -333,14 +337,16 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.produc
 
 === Transactional Producer [[tx_producer]] +
 
-It uses _org.apache.kafka.common.serialization.StringSerializer_ for key and value and set _enable.idempoteceny_ to _true_ and _transactional.id_
+It uses link:https://kafka.apache.org/36/javadoc/org/apache/kafka/common/serialization/StringSerializer.html[org.apache.kafka.common.serialization.StringSerializer] class for key and value serialization and set properties link:https://docs.confluent.io/platform/current/installation/configuration/producer-configs.html#enable-idempotence[_enable.idempoteceny_] to _true_ and link:https://docs.confluent.io/platform/current/installation/configuration/producer-configs.html#transactional-id[_transactional.id_] to _testTx_
 
-Create a topic with 3 partitions:
+Create topic _test-idempotent_ with 3 partitions:
 
 [source,bash]
 ----
 docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic test-idempotent --replication-factor 1 --partitions 3
 ----
+
+Produce on topic _test-idempotent_:
 
 [source,bash]
 ----
@@ -352,12 +358,16 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.produc
 
 It uses a custom partitioner for keys.
 
-Create a topic with 3 partitions:
+Messages with key _Mark_ go to partition 1, with key _Antony_ to partition 2 and with key _Paul_ to partition 3.
+
+Create topic _demo-test_ with 3 partitions:
 
 [source,bash]
 ----
 docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic demo-test --replication-factor 1 --partitions 3
 ----
+
+Produce on topic _demo-test_:
 
 [source,bash]
 ----
@@ -375,23 +385,25 @@ mvn clean test
 
 === Create Timestamp vs LogAppend Timestamp
 
-Test the default behaviour: Time when the message was produced
+==== Create Timestamp
 
-Create a topic:
+Message timestamp is set on headers when the message has been produced. This is the default behaviour, _Create Timestamp_.
+
+Create topic _topic1_:
 
 [source,bash]
 ----
 docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic topic1 --replication-factor 1 --partitions 1
 ----
 
-Consume from the topic and print out the message timestamp:
+Consume from _topic1_ and print out the message timestamp:
 
 [source,bash]
 ----
 docker exec -it broker kafka-console-consumer --topic topic1 --bootstrap-server broker:9092 --from-beginning --property print.timestamp=true
 ----
 
-Produce records on topic:
+Produce records on _topic1_:
 
 [source,bash]
 ----
@@ -408,23 +420,25 @@ CreateTime:1697359570621	HYGDPYGNRETYAXIXXYQKMKURDSJYIZNEDAHVIVHCJAPGOBQLHUZTKIW
 CreateTime:1697359570621	BIQAWWOIFIAKNYFEPTPMIXPQAXFEIKUFFXIDHILBPCBTHWDRMALHFNDCRHAYVLLMRCKJIPNPKGWCIWQCHNHSFSCTYSAKSLVZCCAI
 ----
 
-Test behaviour with Time when the message was received at the Kafka Broker
+==== LogAppend Timestamp
 
-Create a topic with _message.timestamp.type=LogAppendTime_:
+Message timestamp is set on headers when the record arrives at the broker, the broker will override the timestamp of the producer record with its own timestamp (the current time of the broker environment) as it appends the record to the log.
+
+Create topic _topic2_ with _message.timestamp.type=LogAppendTime_:
 
 [source,bash]
 ----
 docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic topic2 --replication-factor 1 --partitions 1 --config message.timestamp.type=LogAppendTime
 ----
 
-Consume from the topic and print out the message timestamp:
+Consume from _topic2_ and print out the message timestamp:
 
 [source,bash]
 ----
 docker exec -it broker kafka-console-consumer --topic topic2 --bootstrap-server broker:9092 --from-beginning --property print.timestamp=true
 ----
 
-Produce records on topic:
+Produce records on _topic2_:
 
 [source,bash]
 ----
