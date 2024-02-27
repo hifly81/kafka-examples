@@ -3537,11 +3537,16 @@ Start scenario:
 scripts/bootstrap-monitoring.sh
 ----
 
-List all MBeans:
+List all MBeans with jmxterm:
 
 [source,bash]
 ----
-kafka-run-class kafka.tools.JmxTool --jmx-url service:jmx:rmi:///jndi/rmi://localhost:9101/jmxrmi list
+# Download jmxterm
+$ wget https://github.com/jiaqi/jmxterm/releases/download/v1.0.2/jmxterm-1.0.2-uber.jar
+# Execute
+$ java -jar jmxterm-1.0.2-uber.jar --url localhost:9101
+
+$> beans
 ----
 
 Offline Partitions:

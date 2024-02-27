@@ -79,7 +79,7 @@ services:
         sleep infinity
 
   ksqldb-server:
-    image: confluentinc/ksqldb-server:${KSQL_VERSION}
+    image: confluentinc/cp-ksqldb-server:${CONFLUENT_VERSION}
     hostname: ksqldb-server
     container_name: ksqldb-server
     depends_on:
@@ -102,7 +102,7 @@ services:
       KSQL_KSQL_LOGGING_PROCESSING_TOPIC_REPLICATION_FACTOR: 1
 
   ksqldb-cli:
-    image: confluentinc/ksqldb-cli:${KSQL_VERSION}
+    image: confluentinc/cp-ksqldb-cli:${CONFLUENT_VERSION}
     container_name: ksqldb-cli
     depends_on:
       - broker
