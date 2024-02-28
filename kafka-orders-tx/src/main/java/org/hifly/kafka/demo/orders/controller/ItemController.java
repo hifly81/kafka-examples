@@ -1,6 +1,10 @@
 package org.hifly.kafka.demo.orders.controller;
 
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.hifly.kafka.demo.orders.kafka.KafkaConfig;
+import org.hifly.kafka.demo.orders.kafka.producer.ItemJsonSerializer;
+import org.hifly.kafka.demo.orders.kafka.producer.OrderJsonSerializer;
 import org.hifly.kafka.demo.orders.model.Item;
 import org.hifly.kafka.demo.orders.model.Order;
 import org.hifly.kafka.demo.producer.serializer.json.JsonProducer;
@@ -30,12 +34,11 @@ public class ItemController {
 
         final String TOPIC = "items";
 
-        Properties properties = new Properties();
-        properties.put("valueSerializer", "org.hifly.kafka.demo.orders.kafka.producer.ItemJsonSerializer");
-        properties.put("txId", "cart-app");
+        Properties props = KafkaConfig.jsonProducer(ItemJsonSerializer.class.getName(), "cart-app");
+        KafkaProducer<String, Item> producer = new KafkaProducer<>(props);
 
         JsonProducer<Item> jsonProducer = new JsonProducer<>();
-        jsonProducer.start();
+        jsonProducer.start(producer);
 
         jsonProducer.getProducer().initTransactions();
 
@@ -66,8 +69,11 @@ public class ItemController {
 
         String consGroup = CONS_GROUP;
 
+        Properties props = KafkaConfig.jsonProducer(OrderJsonSerializer.class.getName(), "cart-app");
+        KafkaProducer<String, Order> producer = new KafkaProducer<>(props);
+
         JsonProducer<Order> jsonProducer = new JsonProducer<>();
-        jsonProducer.start();
+        jsonProducer.start(producer);
 
         if(generateConsGroup)
             consGroup = UUID.randomUUID().toString();

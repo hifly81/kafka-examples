@@ -1,6 +1,5 @@
 package org.hifly.kafka.demo.streams.stream;
 
-import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
@@ -11,9 +10,6 @@ import org.apache.kafka.streams.kstream.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -41,11 +37,6 @@ public class StreamSum {
         final String outputTopic = "sum-output-topic";
 
         StreamSum streamCounter = new StreamSum();
-        List<NewTopic> topics = Arrays.asList(
-                new NewTopic(inputTopic, Optional.of(2), Optional.empty()),
-                new NewTopic(outputTopic, Optional.of(2), Optional.empty()));
-
-        StreamUtils.createTopics(properties, topics);
 
         Topology topology = streamCounter.createTopology(inputTopic, outputTopic);
         logger.info(topology.describe().toString());

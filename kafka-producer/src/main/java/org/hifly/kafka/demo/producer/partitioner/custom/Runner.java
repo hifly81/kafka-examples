@@ -31,7 +31,7 @@ public class Runner {
     public static void bunchOfSynchMessages(String topic, StringProducer baseProducer) {
         Random random = new Random();
         RecordMetadata lastRecord;
-        for (int i= 10; i < 100; i++ ) {
+        for (int i= 0; i < 10; i++ ) {
             String key = strings[random.nextInt(strings.length)];
             lastRecord = baseProducer.produceSync(new ProducerRecord<>(topic, key, Integer.toString(i)));
             LOGGER.info("Key to send: {}\n", key);

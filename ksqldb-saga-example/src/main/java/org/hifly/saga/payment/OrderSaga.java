@@ -31,7 +31,7 @@ public class OrderSaga {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderSaga.class);
 
-    private static final String BOOTSTRAP_SERVERS = "localhost:29092";
+    private static final String BOOTSTRAP_SERVERS = "localhost:9092";
     private static final String SCHEMA_REGISTRY_URL = "http://localhost:8081";
     private static final String TOPIC_ORDER_ACTIONS = "order_actions";
     private static final String TOPIC_ORDER_ACTIONS_ACK = "order_actions_ack";

@@ -1,3 +1,3 @@
-FROM confluentinc/cp-kafka-connect-base:7.3.0
+FROM confluentinc/cp-kafka-connect-base:7.6.0
 
-COPY target/kafka-smt-custom-0.0.1-SNAPSHOT.jar /usr/share/java/kafkaconnect_smt-1.0-SNAPSHOT.jar
+COPY target/kafka-smt-custom-1.2.1.jar /usr/share/java/kafkaconnect_smt-1.2.1.jar

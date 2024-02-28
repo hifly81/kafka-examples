@@ -23,7 +23,9 @@ services:
       - "9092:9092"
     volumes:
       - ./ssl:/etc/kafka/secrets
-      - ./target/principal-builder-0.0.1-SNAPSHOT.jar:/usr/share/java/kafka/principal-builder-0.0.1-SNAPSHOT.jar
+      - ./config/client.properties:/tmp/client.properties
+      - ./config/client2.properties:/tmp/client2.properties
+      - ./target/principal-builder-1.2.1.jar:/usr/share/java/kafka/principal-builder-1.2.1.jar
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'

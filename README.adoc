@@ -1,7 +1,7 @@
 = Practical examples with Apache Kafka®
 :author: Giovanni Marigi
 :email: gio.marigi@gmail.com
-:revdate: Febraury 14, 2024
+:revdate: Febraury 28, 2024
 :revnumber: 1.2.1
 :version-label!:
 :toc: left
@@ -95,25 +95,15 @@ If you would need to change the docker image version for the specific components
 
 === Docker Images details
 
-Docker images are downloaded from Docker Hub _confluentinc_ and are based on _Confluent 7.6.0 Community_ licensed (Apache Kafka® version 3.6.x):
+Docker images are downloaded from Docker Hub link:https://hub.docker.com/r/apache/kafka[_apache/kafka_] and are based on Apache Kafka® version 3.7.x).
 
-* Broker: _confluentinc/cp-kafka_
-* Schema Registry: _confluentinc/cp-schema-registry_
-* Connect: custom image based on _confluentinc/cp-kafka-connect-base_
-* ksqlDB server: _confluentinc/cp-ksqldb-server_
-* ksqlDB cli: _confluentinc/cp-ksqldb-cli_
-* rest proxy: _confluentinc/cp-kafka-rest_
+
+==== Start single-node cluster +
+
+To run a single-node cluster using Docker, run the link:docker-compose.yml[docker-compose.yml] file available in the root directory. In addition, it also presents a container with link:https://github.com/edenhill/kcat[kcat] on board:
+
+* Broker: _apache/kafka_, listening on port _9092_
 * kcat: _confluentinc/cp-kcat_
-
-To run components using Docker, run the link:docker-compose.yml[docker-compose.yml] file available in the root directory.
-
-* Broker will listen to _localhost:9092_
-* Schema Registry will listen to _localhost:8081_
-* Connect will listen to _localhost:8083_
-* ksqlDB cli will listen to _localhost:8088_
-* rest proxy will listen to _localhost:8082_
-
-==== Start containers +
 
 [source,bash]
 ----
@@ -311,9 +301,24 @@ Some implementations of Apache Kafka® producers.
 
 Folder link:kafka-producer/[kafka-producer/]
 
+Execute tests:
+
+[source,bash]
+----
+cd kafka-producer
+mvn clean test
+----
+
 === String Serializer +
 
 It uses link:https://kafka.apache.org/36/javadoc/org/apache/kafka/common/serialization/StringSerializer.html[org.apache.kafka.common.serialization.StringSerializer] class for key and value serialization.
+
+Create topic _topic1_:
+
+[source,bash]
+----
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic topic1 --replication-factor 1 --partitions 1
+----
 
 Produce on topic _topic1_:
 
@@ -327,31 +332,19 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.produc
 
 It uses link:https://kafka.apache.org/36/javadoc/org/apache/kafka/common/serialization/StringSerializer.html[org.apache.kafka.common.serialization.StringSerializer] for key serialization and a link:kafka-producer/src/main/java/org/hifly/kafka/demo/producer/serializer/json/CustomDataJsonSerializer.java[org.hifly.kafka.demo.producer.serializer.json.CustomDataJsonSerializer] for value serialization.
 
+Create topic _test_custom_data_:
+
+[source,bash]
+----
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic test_custom_data --replication-factor 1 --partitions 1
+----
+
 Produce on topic _test_custom_data_:
 
 [source,bash]
 ----
 cd kafka-producer
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.json.Runner"
-----
-
-=== Transactional Producer [[tx_producer]] +
-
-It uses link:https://kafka.apache.org/36/javadoc/org/apache/kafka/common/serialization/StringSerializer.html[org.apache.kafka.common.serialization.StringSerializer] class for key and value serialization and set properties link:https://docs.confluent.io/platform/current/installation/configuration/producer-configs.html#enable-idempotence[_enable.idempoteceny_] to _true_ and link:https://docs.confluent.io/platform/current/installation/configuration/producer-configs.html#transactional-id[_transactional.id_] to _testTx_
-
-Create topic _test-idempotent_ with 3 partitions:
-
-[source,bash]
-----
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic test-idempotent --replication-factor 1 --partitions 3
-----
-
-Produce on topic _test-idempotent_:
-
-[source,bash]
-----
-cd kafka-producer
-mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.tx.Runner"
 ----
 
 === Partitioner +
@@ -364,7 +357,7 @@ Create topic _demo-test_ with 3 partitions:
 
 [source,bash]
 ----
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic demo-test --replication-factor 1 --partitions 3
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic demo-test --replication-factor 1 --partitions 3
 ----
 
 Produce on topic _demo-test_:
@@ -373,14 +366,6 @@ Produce on topic _demo-test_:
 ----
 cd kafka-producer
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.partitioner.custom.Runner"
-----
-
-Execute tests:
-
-[source,bash]
-----
-cd kafka-producer
-mvn clean test
 ----
 
 === Create Timestamp vs LogAppend Timestamp
@@ -393,21 +378,21 @@ Create topic _topic1_:
 
 [source,bash]
 ----
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic topic1 --replication-factor 1 --partitions 1
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic topic1 --replication-factor 1 --partitions 1
 ----
 
 Consume from _topic1_ and print out the message timestamp:
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-consumer --topic topic1 --bootstrap-server broker:9092 --from-beginning --property print.timestamp=true
+docker exec -it broker /opt/kafka/bin/kafka-console-consumer.sh --topic topic1 --bootstrap-server broker:9092 --from-beginning --property print.timestamp=true
 ----
 
 Produce records on _topic1_:
 
 [source,bash]
 ----
-docker exec broker kafka-producer-perf-test --topic topic1 --num-records 1000 --record-size 100 --throughput -1 --producer-props bootstrap.servers=broker:9092
+docker exec broker /opt/kafka/bin/kafka-producer-perf-test.sh --topic topic1 --num-records 1000 --record-size 100 --throughput -1 --producer-props bootstrap.servers=broker:9092
 ----
 
 Check consumer log for message timestamp:
@@ -428,21 +413,21 @@ Create topic _topic2_ with _message.timestamp.type=LogAppendTime_:
 
 [source,bash]
 ----
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic topic2 --replication-factor 1 --partitions 1 --config message.timestamp.type=LogAppendTime
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic topic2 --replication-factor 1 --partitions 1 --config message.timestamp.type=LogAppendTime
 ----
 
 Consume from _topic2_ and print out the message timestamp:
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-consumer --topic topic2 --bootstrap-server broker:9092 --from-beginning --property print.timestamp=true
+docker exec -it broker /opt/kafka/bin/kafka-console-consumer.sh --topic topic2 --bootstrap-server broker:9092 --from-beginning --property print.timestamp=true
 ----
 
 Produce records on _topic2_:
 
 [source,bash]
 ----
-docker exec broker kafka-producer-perf-test --topic topic2 --num-records 1000 --record-size 100 --throughput -1 --producer-props bootstrap.servers=broker:9092
+docker exec broker /opt/kafka/bin/kafka-producer-perf-test.sh --topic topic2 --num-records 1000 --record-size 100 --throughput -1 --producer-props bootstrap.servers=broker:9092
 ----
 
 Check consumer log for message timestamp:
@@ -513,7 +498,7 @@ Create topic:
 
 [source,bash]
 ----
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic kafka-topic --replication-factor 1 --partitions 1
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic kafka-topic --replication-factor 1 --partitions 1
 ----
 
 Run producer:
@@ -561,6 +546,13 @@ Partition assignment strategy can be passed as argument 2 of the main program:
 -Dexec.args="users,users_clicks org.apache.kafka.clients.consumer.RoundRobinAssignor"
 ----
 
+Group id can be passed as argument 3 of the main program:
+
+[source,bash]
+----
+-Dexec.args="users,users_clicks org.apache.kafka.clients.consumer.RoundRobinAssignor group-1"
+----
+
 Execute tests:
 
 [source,bash]
@@ -583,20 +575,8 @@ Send messages to the topic:
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic topic1 --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list broker:9092 --topic topic1 --property "parse.key=true" --property "key.separator=:"
 > Frank:1
-----
-
-=== read committed [[readcommitted_consumer]] +
-
-It uses _org.apache.kafka.common.serialization.StringDeserializer_ for key and value and set _isolation.level_ to _read_committed_.
-
-IMPORTANT: It must be only used with a transactional producer.
-
-[source,bash]
-----
-cd kafka-consumer
-mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.tx.Runner"
 ----
 
 === Consumer Partition Assignor
@@ -607,28 +587,29 @@ Create 2 topics with the same number of partitions:
 
 [source,bash]
 ----
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic users --replication-factor 1 --partitions 3
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic users_clicks --replication-factor 1 --partitions 3
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic users --replication-factor 1 --partitions 3
+
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic users_clicks --replication-factor 1 --partitions 3
 ----
 
-Run 2 consumer instances (2 different shell/terminal) belonging to the same group and subscribed to _user_ and _user_clicks_ topics; consumers uses
+Run 2 consumer instances (2 different shell/terminal) belonging to the same group and subscribed to _user_ and _user_clicks_ topics. Consumers uses
 _org.apache.kafka.clients.consumer.RangeAssignor_ to distribute partition ownership.
 
 [source,bash]
 ----
-mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.core.Runner" -Dexec.args="users,users_clicks"
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.core.Runner" -Dexec.args="users,users_clicks org.apache.kafka.clients.consumer.RangeAssignor range-group-app"
 ----
 
 Send messages to the topics using the same key (Frank):
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic users --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list broker:9092 --topic users --property "parse.key=true" --property "key.separator=:"
 > Frank:1
-docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic users_clicks --property "parse.key=true" --property "key.separator=:"
+
+docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list broker:9092 --topic users_clicks --property "parse.key=true" --property "key.separator=:"
 > Frank:1
 ----
-
 
 Verify that the same consumer instance will read both messages.
 
@@ -644,8 +625,9 @@ Create 2 topics with same number of partitions:
 
 [source,bash]
 ----
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic users --replication-factor 1 --partitions 3
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic users_clicks --replication-factor 1 --partitions 3
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic users --replication-factor 1 --partitions 3
+
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic users_clicks --replication-factor 1 --partitions 3
 ----
 
 Run 2 consumer instances (2 different shell/terminal) belonging to the same group and subscribed to _user_ and _user_clicks_ topics; consumers uses
@@ -653,19 +635,19 @@ _org.apache.kafka.clients.consumer.RoundRobinAssignor_ to distribute partition o
 
 [source,bash]
 ----
-mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.core.Runner" -Dexec.args="users,users_clicks org.apache.kafka.clients.consumer.RoundRobinAssignor"
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.core.Runner" -Dexec.args="users,users_clicks org.apache.kafka.clients.consumer.RoundRobinAssignor rr-group-app"
 ----
 
 Send messages to the topics using the same key (Frank):
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic users --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list broker:9092 --topic users --property "parse.key=true" --property "key.separator=:"
 > Frank:1
-docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic users_clicks --property "parse.key=true" --property "key.separator=:"
+
+docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list broker:9092 --topic users_clicks --property "parse.key=true" --property "key.separator=:"
 > Frank:1
 ----
-
 
 Verify that messages are read by different consumer instances.
 
@@ -679,14 +661,7 @@ Create 1 topic with 12 partitions:
 
 [source,bash]
 ----
-docker exec broker kafka-topics --bootstrap-server broker:9092 --create --topic topic1 --replication-factor 1 --partitions 12
-----
-
-Run a producer perf test to send messages to topic1:
-
-[source,bash]
-----
-docker exec -it broker kafka-producer-perf-test --topic topic1 --num-records 10000 --throughput -1 --record-size 2000 --producer-props bootstrap.servers=broker:9092
+docker exec broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic topic1 --replication-factor 1 --partitions 12
 ----
 
 Run 3 different consumer instances (from 3 different terminals) belonging to the same consumer group:
@@ -712,6 +687,13 @@ cd kafka-consumer
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.staticmembership.Runner" -Dexec.args="consumer-member3.properties"
 ----
 
+Run a producer perf test to send messages to _topic1_:
+
+[source,bash]
+----
+docker exec -it broker /opt/kafka/bin/kafka-producer-perf-test.sh --topic topic1 --num-records 10000 --throughput -1 --record-size 2000 --producer-props bootstrap.servers=broker:9092
+----
+
 Consumers will start reading messages from partitions (e.g.):
 
  - member1 (1,2,3,4)
@@ -731,27 +713,29 @@ Start a cluster with 3 brokers on 3 different racks, dc1, dc2 and dc3:
 scripts/bootstrap-racks.sh
 ----
 
-Create a topic and assign partition leaderships only on broker 1 and 3 (dc1 and dc3):
+Create topic _topic-regional_ and assign partition leaderships only on broker 1 and 3 (dc1 and dc3):
 
 [source,bash]
 ----
-docker exec broker kafka-topics --bootstrap-server broker:9092 --create --topic topic-regional --replication-factor 3 --partitions 6
+docker exec broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic topic-regional --replication-factor 3 --partitions 3
 ----
 
 [source,bash]
 ----
-docker exec -it broker kafka-reassign-partitions --bootstrap-server broker:9092 --reassignment-json-file /tmp/assignment.json --execute
+docker exec -it broker /opt/kafka/bin/kafka-reassign-partitions.sh --bootstrap-server broker:9092 --reassignment-json-file /tmp/assignment.json --execute
 
-docker exec -it broker kafka-leader-election --bootstrap-server broker:9092 --topic topic-regional --election-type PREFERRED --partition 0
-docker exec -it broker kafka-leader-election --bootstrap-server broker:9092 --topic topic-regional --election-type PREFERRED --partition 1
-docker exec -it broker kafka-leader-election --bootstrap-server broker:9092 --topic topic-regional --election-type PREFERRED --partition 2
+docker exec -it broker /opt/kafka/bin/kafka-leader-election.sh --bootstrap-server broker:9092 --topic topic-regional --election-type PREFERRED --partition 0
+
+docker exec -it broker /opt/kafka/bin/kafka-leader-election.sh --bootstrap-server broker:9092 --topic topic-regional --election-type PREFERRED --partition 1
+
+docker exec -it broker /opt/kafka/bin/kafka-leader-election.sh --bootstrap-server broker:9092 --topic topic-regional --election-type PREFERRED --partition 2
 ----
 
 Verify partitions with topic describe:
 
 [source,bash]
 ----
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --topic topic-regional --describe
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --topic topic-regional --describe
 
 Topic: topic-regional	TopicId: p-sy0qiQTtSTLTJSG7s7Ew	PartitionCount: 3	ReplicationFactor: 3	Configs:
 	Topic: topic-regional	Partition: 0	Leader: 1	Replicas: 1,2,3	Isr: 2,3,1	Offline:
@@ -771,7 +755,7 @@ Produce 50 messages:
 
 [source,bash]
 ----
-docker exec -it broker kafka-producer-perf-test --topic topic-regional --num-records 50 --throughput 10 --record-size 1 --producer-props bootstrap.servers=broker:9092
+docker exec -it broker /opt/kafka/bin/kafka-producer-perf-test.sh --topic topic-regional --num-records 50 --throughput 10 --record-size 1 --producer-props bootstrap.servers=broker:9092
 ----
 
 Teardown:
@@ -792,12 +776,13 @@ This solution could be implemented on consumer side to handle errors in processi
  . when the number of retries is exhausted, record is sent to a DLQ topic
  . number of retries is set at Consumer instance level
 
-Create topics:
+Create topics _retry-topic_ and _dlq-topic_:
 
 [source,bash]
 ----
-docker exec broker kafka-topics --bootstrap-server broker:9092 --create --topic retry-topic --replication-factor 1 --partitions 1
-docker exec broker kafka-topics --bootstrap-server broker:9092 --create --topic dlq-topic --replication-factor 1 --partitions 1
+docker exec broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic retry-topic --replication-factor 1 --partitions 1
+
+docker exec broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic dlq-topic --replication-factor 1 --partitions 1
 ----
 
 Run consumer managing retry topics:
@@ -884,7 +869,7 @@ Create topic:
 
 [source,bash]
 ----
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic kafka-topic --replication-factor 1 --partitions 1
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic kafka-topic --replication-factor 1 --partitions 1
 ----
 
 Run producer:
@@ -932,21 +917,21 @@ Be aware that _log.retention.check.interval.ms_ is set by default to 5 minutes a
 
 [source,bash]
 ----
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic cars --replication-factor 1 --partitions 1 --config segment.bytes=100000 --config segment.ms=604800000 --config retention.ms=300000 --config retention.bytes=-1
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic cars --replication-factor 1 --partitions 1 --config segment.bytes=100000 --config segment.ms=604800000 --config retention.ms=300000 --config retention.bytes=-1
 ----
 
 Launch a producer perf test:
 
 [source,bash]
 ----
-docker exec -it broker kafka-producer-perf-test --topic cars --num-records 99999999999999 --throughput -1 --record-size 1 --producer-props bootstrap.servers=broker:9092
+docker exec -it broker /opt/kafka/bin/kafka-producer-perf-test.sh --topic cars --num-records 99999999999999 --throughput -1 --record-size 1 --producer-props bootstrap.servers=broker:9092
 ----
 
 Check the log dir for cars topic and wait for deletion of old segments (5 minutes + log cleaner trigger delta)
 
 [source,bash]
 ----
-docker exec -it broker watch ls -ltr /var/lib/kafka/data/cars-0/
+docker exec -it broker watch ls -ltr /tmp/kraft-combined-logs/cars-0/
 ----
 
 === Apache Kafka® Admin Client
@@ -961,14 +946,15 @@ Operations currently added:
 [source,bash]
 ----
 cd admin-client
-mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.admin.AdminClientWrapper" -Dexec.args="<location_of_admin_property_file>"
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.admin.AdminClientWrapper" -Dexec.args="admin.properties"
 ----
 
 === Compression
 
 Folder link:compression/[compression/]
 
-This example will show that messages sent to the same topic with different _compression.type_ can be read by the same consumer instance.
+This example will show that messages sent to the same topic with different _compression.type_.
+Messages with different compression can be read by the same consumer instance.
 
 Compressions supported on producer side are:
 
@@ -982,39 +968,39 @@ Send messages with different compression type and with batching disabled:
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config compression/client-none.properties --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list broker:9092 --topic topic1 --producer.config compression/client-none.properties --property "parse.key=true" --property "key.separator=:"
 0:none
 ----
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config compression/client-gzip.properties --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list broker:9092 --topic topic1 --producer.config compression/client-gzip.properties --property "parse.key=true" --property "key.separator=:"
 1:gzip
 ----
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config compression/client-snappy.properties --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list broker:9092 --topic topic1 --producer.config compression/client-snappy.properties --property "parse.key=true" --property "key.separator=:"
 2:snappy
 ----
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config compression/client-lz4.properties --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list broker:9092 --topic topic1 --producer.config compression/client-lz4.properties --property "parse.key=true" --property "key.separator=:"
 3:lz4
 ----
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config compression/client-zstd.properties --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list broker:9092 --topic topic1 --producer.config compression/client-zstd.properties --property "parse.key=true" --property "key.separator=:"
 4:zstd
 ----
 
-Run a consumer on _topic1_ topic and see the records:
+Run a consumer on _topic1_ topic and consumer records:
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-consumer --topic topic1 --bootstrap-server broker:9092 --from-beginning
+docker exec -it broker /opt/kafka/bin/kafka-console-consumer.sh --topic topic1 --bootstrap-server broker:9092 --from-beginning
 none
 gzip
 snappy
@@ -1055,6 +1041,13 @@ Avro schema _car.avsc_:
 }
 ----
 
+Start Confluent Schema Registry:
+
+[source,bash]
+----
+scripts/bootstrap-cflt-schema-registry.sh
+----
+
 Consume messages:
 
 [source,bash]
@@ -1069,6 +1062,13 @@ Produce messages:
 ----
 cd kafka-producer
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.serializer.avro.Runner" -Dexec.args="CONFLUENT"
+----
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-cflt-schema-registry.sh
 ----
 
 === Apicurio Avro Generic Record
@@ -1127,7 +1127,7 @@ Teardown:
 
 [source,bash]
 ----
-scripts/teardown-apicurio.sh
+scripts/tear-down-apicurio.sh
 ----
 
 === Hortonworks Avro Generic Record
@@ -1176,7 +1176,7 @@ Teardown:
 
 [source,bash]
 ----
-scripts/teardown-hortonworks-sr.sh
+scripts/tear-down-hortonworks-sr.sh
 ----
 
 === Confluent Avro Specific Record
@@ -1185,11 +1185,16 @@ Implementation of a producer and a consumer using _Avro Specific Record_ for ser
 
 Confluent Schema Registry is needed to run the example. +
 
+[source,bash]
+----
+scripts/bootstrap-cflt-schema-registry.sh
+----
+
 Create topics:
 
 [source,bash]
 ----
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic cars --replication-factor <replication_factor> --partitions <number_of_partitions>
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic cars --replication-factor 1 --partitions 1
 ----
 
 Register first version of schema:
@@ -1197,8 +1202,16 @@ Register first version of schema:
 [source,bash]
 ----
 curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
---data @src/main/resources/car_v1.avsc \
+--data @confluent-avro-specific-record/src/main/resources/car_v1.avsc \
 http://localhost:8081/subjects/cars-value/versions
+----
+
+Run the consumer:
+
+[source,bash]
+----
+cd confluent-avro-specific-record
+mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.RunnerConsumer"
 ----
 
 Run the producer:
@@ -1209,12 +1222,11 @@ cd confluent-avro-specific-record
 mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.RunnerProducer"
 ----
 
-Run the consumer:
+Teardown:
 
 [source,bash]
 ----
-cd confluent-avro-specific-record
-mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.RunnerConsumer"
+scripts/tear-down-cflt-schema-registry.sh
 ----
 
 === Confluent Avro Compatibility Checks
@@ -1226,11 +1238,18 @@ Changes allowed:
  - Delete fields
  - Add optional fields
 
+Confluent Schema Registry is needed to run the example. +
+
+[source,bash]
+----
+scripts/bootstrap-cflt-schema-registry.sh
+----
+
 Create topics:
 
 [source,bash]
 ----
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic cars --replication-factor <replication_factor> --partitions <number_of_partitions>
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic cars --replication-factor 1 --partitions 1
 ----
 
 Register first version of schema:
@@ -1315,6 +1334,13 @@ you will get an error:
 {"error_code":42201,"message":"Invalid schema
 ----
 
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-cflt-schema-registry.sh
+----
+
 === Confluent Avro: Multiple Event Types in same Topic
 
 This example shows how to use Avro unions with schema references.
@@ -1380,6 +1406,13 @@ _car-info.avsc_:
 }
 ----
 
+Confluent Schema Registry is needed to run the example. +
+
+[source,bash]
+----
+scripts/bootstrap-cflt-schema-registry.sh
+----
+
 Register the subjects using confluent schema registry maven plugin:
 
 [source,bash]
@@ -1443,6 +1476,13 @@ Car Info event {"model": "Ferrari", "brand": "F40"} - offset-> 4
 Car Telemetry event {"speed": 156.8, "latitude": "42.8", "longitude": "22.6"} - offset-> 5
 ----
 
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-cflt-schema-registry.sh
+----
+
 === Confluent Avro: Nested objects
 
 This example shows how to use Avro nested objects.
@@ -1500,6 +1540,13 @@ _car-info.avsc_:
 }
 ----
 
+Confluent Schema Registry is needed to run the example. +
+
+[source,bash]
+----
+scripts/bootstrap-cflt-schema-registry.sh
+----
+
 Register the subjects using confluent schema registry maven plugin:
 
 [source,bash]
@@ -1544,6 +1591,13 @@ Verify records on Consumer:
 Record:{"speed": 156.8, "latitude": "42.8", "longitude": "22.6", "info": {"model": "Ferrari", "brand": "F40"}}
 ----
 
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-cflt-schema-registry.sh
+----
+
 <<<
 
 == Apache Kafka® Connect
@@ -1576,11 +1630,6 @@ Create a connect custom Docker image with the connector installed:
 
 This will create an image based on _confluentinc/cp-kafka-connect-base:XXX_ using a custom _Dockerfile_.
 It will use the Confluent utility _confluent-hub install_ to install the plugin in connect.
-
-[source,bash]
-----
-kafka-unixcommand-connector/build-image.sh
-----
 
 Run the Docker container:
 
@@ -1661,6 +1710,7 @@ A mongodb sink connector will be created with this config:
 ----
 
 Original json messages will be sent to _test_ topic.
+
 Sink connector will apply the SMT and store the records in mongodb _pets_ collection from _Tutorial2_ database.
 
 Teardown:
@@ -1717,7 +1767,7 @@ Connect will start with aspectjweaver java agent:
 -Dorg.aspectj.weaver.showWeaveInfo=true -Daj.weaving.verbose=true -javaagent:/usr/share/java/aspectjweaver-1.9.19.jar
 ----
 
-Aspects are deployed as standard jars and copied to Kafka Connect classpath _/etc/kafka-connect/jars/kafka-smt-aspectj-0.0.1-SNAPSHOT.jar_
+Aspects are deployed as standard jars and copied to Kafka Connect classpath _/etc/kafka-connect/jars/kafka-smt-aspectj-1.2.1.jar_
 
 A mongodb sink connector will be created with this config:
 
@@ -1747,6 +1797,7 @@ A mongodb sink connector will be created with this config:
 ----
 
 Original json messages will be sent to _test_ topic.
+
 Sink connector will apply the SMT and store the records in mongodb _pets_ collection from _Tutorial2_ database.
 
 Teardown:
@@ -1772,6 +1823,7 @@ Create the topics:
 [source,bash]
 ----
 docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic test --replication-factor 1 --partitions 1
+
 docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic dlq.mongo --replication-factor 1 --partitions 1
 ----
 
@@ -1849,7 +1901,7 @@ Run the example:
 scripts/bootstrap-connect-sink-http.sh
 ----
 
-A web application listening on port 8010 will start up.
+A web application listening on port _8010_ will start up.
 
 A HTTP sink connector will be created with this config:
 
@@ -1884,7 +1936,7 @@ docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic 
 > 1:{"FIELD1": "01","FIELD2": "20400","FIELD3": "001","FIELD4": "0006084655017","FIELD5": "20221117","FIELD6": 9000018}
 ----
 
-Sink connector will execute a HTTP POST Request to the endpoint _http://localhost:8010/api/message_
+Sink connector will execute an HTTP POST Request to the endpoint _http://localhost:8010/api/message_
 
 Teardown:
 
@@ -1978,25 +2030,14 @@ loan_PAYMENT
 [source,bash]
 ----
 docker exec -it broker /bin/bash
-[appuser@broker ~]$ cd /tmp/kraft-combined-logs/loan-0/
-[appuser@broker loan-0]$ cat 00000000000000000000.log
-�����Wz���Wz�����������������Consumer Loan
-CREATE�{\"event\": {\"type\":\"Mortgage Opening\",\"timestamp\":\"2023-11-20T10:00:00\",\"data\":{\"mortgageId\":\"ABC123\",\"customer\":\"John Doe\",\"amount\":200000,\"duration\": 20}}}&2023-11-20 10:00:00k'�z<��Wz���Wz�����������������Consumer Loan$EARLY_LOAN_CLOSURE�{\"event\":{\"type\":\"Early Loan Closure\",\"timestamp\":\"2023-11-25T14:15:00\",\"data\":{\"mortgageId\":\"ABC12\",\"closureAmount\":150000,\"closureDate\":\"2023-11-25\",\"paymentMethod\":\"Bank Transfer\",\"transactionNumber\":\"PQR456\"}}}&2023-11-25 09:30:00
-----
-
-[source,bash]
-----
-docker exec -it broker /bin/bash
-[appuser@broker ~]$ cd /tmp/kraft-combined-logs/loan-0/
-[appuser@broker loan-0]$ cat 00000000000000000000.log
+[appuser@broker ~]$ cat /tmp/kraft-combined-logs/loan-0/00000000000000000000.log
 �����Wz���Wz�����������������Consumer Loan
 CREATE�{\"event\": {\"type\":\"Mortgage Opening\",\"timestamp\":\"2023-11-20T10:00:00\",\"data\":{\"mortgageId\":\"ABC123\",\"customer\":\"John Doe\",\"amount\":200000,\"duration\": 20}}}&2023-11-20 10:00:00k'�z<��Wz���Wz�����������������Consumer Loan$EARLY_LOAN_CLOSURE�{\"event\":{\"type\":\"Early Loan Closure\",\"timestamp\":\"2023-11-25T14:15:00\",\"data\":{\"mortgageId\":\"ABC12\",\"closureAmount\":150000,\"closureDate\":\"2023-11-25\",\"paymentMethod\":\"Bank Transfer\",\"transactionNumber\":\"PQR456\"}}}&2023-11-25 09:30:00
 ----
 
 ----
 docker exec -it broker /bin/bash
-[appuser@broker ~]$ cd /tmp/kraft-combined-logs/loan_PAYMENT-0/
-[appuser@broker loan-0]$ cat 00000000000000000000.log
+[appuser@broker ~]$ cat /tmp/kraft-combined-logs/loan_PAYMENT-0/00000000000000000000.log
 ,�A��Wz���Wz�����������������Consumer Loan&INSTALLMENT_PAYMENT�{\"event\": {\"type\":\"Mortgage Opening\",\"timestamp\":\"2023-11-20T10:00:00\",\"data\":{\"mortgageId\":\"ABC123\",\"customer\":\"John Doe\",\"amount\":200000,\"duration\": 20}}}&2023-12-01 09:30:00
 ----
 
@@ -2091,12 +2132,14 @@ scripts/bootstrap-connect-tasks.sh
 ----
 
 You will first see tasks distributed between the 2 Running workers:
+
 [source,bash]
 ----
 {"datagen-sample":{"status":{"name":"datagen-sample","connector":{"state":"RUNNING","worker_id":"connect:8083"},"tasks":[{"id":0,"state":"RUNNING","worker_id":"connect:8083"},{"id":1,"state":"RUNNING","worker_id":"connect2:8083"},{"id":2,"state":"RUNNING","worker_id":"connect:8083"},{"id":3,"state":"RUNNING","worker_id":"connect2:8083"}],"type":"source"}}}
 ----
 
 After stopping _connect2_, you will see tasks only distributed to _connect_ worker:
+
 [source,bash]
 ----
 {"datagen-sample":{"status":{"name":"datagen-sample","connector":{"state":"RUNNING","worker_id":"connect:8083"},"tasks":[{"id":0,"state":"RUNNING","worker_id":"connect:8083"},{"id":1,"state":"RUNNING","worker_id":"connect:8083"},{"id":2,"state":"RUNNING","worker_id":"connect:8083"},{"id":3,"state":"RUNNING","worker_id":"connect:8083"}],"type":"source"}}}
@@ -2131,8 +2174,9 @@ Create topics:
 
 [source,bash]
 ----
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic counter-input-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic counter-output-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic counter-input-topic --replication-factor 1 --partitions 2
+
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic counter-output-topic --replication-factor 1 --partitions 2
 ----
 
 Run the topology:
@@ -2147,7 +2191,7 @@ Send messages to input topics:
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic counter-input-topic --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list broker:9092 --topic counter-input-topic --property "parse.key=true" --property "key.separator=:"
 "John":"transaction_1"
 "Mark":"transaction_1"
 "John":"transaction_2"
@@ -2157,7 +2201,7 @@ Read from output topic:
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-consumer --topic counter-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : " --value-deserializer "org.apache.kafka.common.serialization.LongDeserializer"
+docker exec -it broker /opt/kafka/bin/kafka-console-consumer.sh --topic counter-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : " --value-deserializer "org.apache.kafka.common.serialization.LongDeserializer"
 ----
 
 === Sum values Stream +
@@ -2168,8 +2212,9 @@ Create topics:
 
 [source,bash]
 ----
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic sum-input-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic sum-output-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic sum-input-topic --replication-factor 1 --partitions 2
+
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic sum-output-topic --replication-factor 1 --partitions 2
 ----
 
 Run the topology:
@@ -2184,7 +2229,7 @@ Send messages to input topics:
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic sum-input-topic --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list broker:9092 --topic sum-input-topic --property "parse.key=true" --property "key.separator=:"
 "John":1
 "Mark":2
 "John":5
@@ -2194,7 +2239,7 @@ Read from output topic:
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-consumer --topic sum-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : " --value-deserializer "org.apache.kafka.common.serialization.IntegerDeserializer"
+docker exec -it broker /opt/kafka/bin/kafka-console-consumer.sh --topic sum-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : " --value-deserializer "org.apache.kafka.common.serialization.IntegerDeserializer"
 ----
 
 === Cars sensor Stream +
@@ -2207,9 +2252,11 @@ Create topics:
 
 [source,bash]
 ----
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic carinfo-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic carsensor-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic carsensor-output-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic carinfo-topic --replication-factor 1 --partitions 2
+
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic carsensor-topic --replication-factor 1 --partitions 2
+
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic carsensor-output-topic --replication-factor 1 --partitions 2
 ----
 
 Run the topology:
@@ -2224,13 +2271,13 @@ Send messages to input topics:
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic carinfo-topic --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list broker:9092 --topic carinfo-topic --property "parse.key=true" --property "key.separator=:"
 1:{"id":"1","brand":"Ferrari","model":"F40"}
 ----
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic carsensor-topic --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list broker:9092 --topic carsensor-topic --property "parse.key=true" --property "key.separator=:"
 1:{"id":"1","speed":350}
 ----
 
@@ -2238,7 +2285,7 @@ Read from output topic:
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-consumer --topic carsensor-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
+docker exec -it broker /opt/kafka/bin/kafka-console-consumer.sh --topic carsensor-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
 
 === Cars brand Stream +
@@ -2249,9 +2296,11 @@ Create topics:
 
 [source,bash]
 ----
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic cars-input-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic ferrari-input-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic cars-output-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic cars-input-topic --replication-factor 1 --partitions 2
+
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic ferrari-input-topic --replication-factor 1 --partitions 2
+
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic cars-output-topic --replication-factor 1 --partitions 2
 ----
 
 Run the topology:
@@ -2266,7 +2315,7 @@ Send messages to input topic:
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic cars-input-topic --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list broker:9092 --topic cars-input-topic --property "parse.key=true" --property "key.separator=:"
 1:{"id":"1","brand":"Ferrari","model":"F40"}
 2:{"id":"2","brand":"Bugatti","model":"Chiron"}
 ----
@@ -2275,12 +2324,12 @@ Read from output topics:
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-consumer --topic ferrari-input-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
+docker exec -it broker /opt/kafka/bin/kafka-console-consumer.sh --topic ferrari-input-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-consumer --topic cars-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
+docker exec -it broker /opt/kafka/bin/kafka-console-consumer.sh --topic cars-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
 
 === JSONArray Fields removal Processor +
@@ -2300,8 +2349,9 @@ Create topics:
 
 [source,bash]
 ----
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic processor-input-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic processor-output-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic processor-input-topic --replication-factor 1 --partitions 2
+
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic processor-output-topic --replication-factor 1 --partitions 2
 ----
 
 Run the topology:
@@ -2316,7 +2366,7 @@ Send messages to input topics:
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic processor-input-topic --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list broker:9092 --topic processor-input-topic --property "parse.key=true" --property "key.separator=:"
 1:{"id":"1","brand":"Ferrari","model":"F40"}
 ----
 
@@ -2324,7 +2374,7 @@ Read from output topic:
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-consumer --topic processor-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
+docker exec -it broker /opt/kafka/bin/kafka-console-consumer.sh --topic processor-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
 
 === Expired Messages Processor +
@@ -2344,8 +2394,9 @@ Create topics:
 
 [source,bash]
 ----
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic expired-messages-input-topic--replication-factor <replication_factor> --partitions <number_of_partitions>
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic expired-messages-output-topic --replication-factor <replication_factor> --partitions <number_of_partitions>
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic expired-messages-input-topic--replication-factor 1 --partitions 2
+
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic expired-messages-output-topic --replication-factor 1 --partitions 2
 ----
 
 Run the topology:
@@ -2360,7 +2411,7 @@ Send messages to input topics:
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic expired-messages-input-topic --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list broker:9092 --topic expired-messages-input-topic --property "parse.key=true" --property "key.separator=:"
 1:{"id":"1","remote-device":"R01","time":"2021-11-02T02:50:12.208Z"}
 ----
 
@@ -2368,7 +2419,7 @@ Read from output topic:
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-consumer --topic expired-messages-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
+docker exec -it broker /opt/kafka/bin/kafka-console-consumer.sh --topic expired-messages-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
 
 Find out in kafka streams application log expiration entries:
@@ -2400,6 +2451,17 @@ query result <key>: <value>
 
 Implementation of a sample App (producer and consumer) sending and receiving orders; ksqlDB acts as an orchestrator to coordinate a sample Saga.
 
+ksqlDB is needed to run the example.
+
+More Info at: https://ksqldb.io/
+
+Start ksqlDB:
+
+[source,bash]
+----
+scripts/bootstrap-ksqldb.sh
+----
+
 Compile:
 
 [source,bash]
@@ -2424,7 +2486,7 @@ Create DDL on ksqlDB:
 [source,bash]
 ----
 cd ksqldb-saga-example/ksql
-ksql-statements.sh
+./ksql-statements.sh
 ----
 
 Create fat jar of Sample application (1 Saga):
@@ -2440,7 +2502,7 @@ Execute fat jar of Sample application (1 Saga):
 [source,bash]
 ----
 cd ksqldb-saga-example
-java -jar target/ksqldb-sample-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+java -jar target/ksqldb-saga-example-1.2.1-jar-with-dependencies.jar
 ----
 
 Saga Verification:
@@ -2470,11 +2532,29 @@ Order Action:{"TX_ID": "TX_AAA_A123", "TX_ACTION": -1, "ACCOUNT": "AAA", "ITEMS"
  --> compensate:{"TX_ID": "TX_AAA_A123", "TX_ACTION": -1, "ACCOUNT": "AAA", "ITEMS": ["Item0", "Item1", "Item2", "ORDER": "A123"}
 ----
 
+Teardown:
+
+[source,java]
+----
+scripts/tear-down-ksqldb.sh
+----
+
 === Windowing
 
 ==== Tumbling Window example: heart rate monitoring
 
 Implementation of a tumbling window (1 minute) to monitor heart rate. Values over a threshold of 120 beats per minute are reported.
+
+ksqlDB is needed to run the example.
+
+More Info at: https://ksqldb.io/
+
+Start ksqlDB:
+
+[source,bash]
+----
+scripts/bootstrap-ksqldb.sh
+----
 
 Connect to ksqlDB and set auto.offset.reset:
 
@@ -2490,7 +2570,7 @@ Create DDL on ksqlDB:
 [source,bash]
 ----
 cd ksqldb-window-tumbling-heartbeat/ksql
-ksql-statements.sh
+./ksql-statements.sh
 ----
 
 Insert entries on ksqlDB:
@@ -2498,7 +2578,7 @@ Insert entries on ksqlDB:
 [source,bash]
 ----
 cd ksqldb-window-tumbling-heartbeat/ksql
-ksql-inserts.sh
+./ksql-inserts.sh
 ----
 
 Verify results:
@@ -2521,9 +2601,27 @@ EMIT CHANGES;
 |MGG1                                                     |10                                                       |2023-02-18 15:15:00                                      |2023-02-18 15:16:00                                      |
 ----
 
+Teardown:
+
+[source,java]
+----
+scripts/tear-down-ksqldb.sh
+----
+
 ==== Session Window example: Vehicle Positions
 
 Implementation of a session window (5 minutes inactive). Vehicle positions (latitude and logitude) are collected and a new window opens when the vehicle does not send its position for 5 minutes. This is considered as a new "trip".
+
+ksqlDB is needed to run the example.
+
+More Info at: https://ksqldb.io/
+
+Start ksqlDB:
+
+[source,bash]
+----
+scripts/bootstrap-ksqldb.sh
+----
 
 Connect to ksqlDB and set auto.offset.reset:
 
@@ -2539,7 +2637,7 @@ Create DDL on ksqlDB:
 [source,bash]
 ----
 cd ksqldb-window-session-tripsegments/ksql
-ksql-statements.sh
+./ksql-statements.sh
 ----
 
 Insert entries on ksqlDB:
@@ -2547,7 +2645,7 @@ Insert entries on ksqlDB:
 [source,bash]
 ----
 cd ksqldb-window-session-tripsegments/ksql
-ksql-inserts.sh
+./ksql-inserts.sh
 ----
 
 Verify results:
@@ -2575,6 +2673,13 @@ EMIT CHANGES;
 |VH1                        |2                          |42.31                      |17.17                      |42.33                      |17.18                      |2023-02-18 15:20:00        |2023-02-18 15:22:00        |
 ----
 
+Teardown:
+
+[source,java]
+----
+scripts/tear-down-ksqldb.sh
+----
+
 === Joins
 
 ==== Outer: Devices and temperature measurement
@@ -2597,6 +2702,7 @@ Create input topics:
 [source,bash]
 ----
 docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic device --replication-factor 1 --partitions 1
+
 docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic temperature.data --replication-factor 1 --partitions 1
 ----
 
@@ -2639,6 +2745,7 @@ Execute the ksqlDB statements; Stream _DEVICE_TEMPERATURE_ is a INNER JOIN betwe
 cd ksqldb-join/ksql
 ./ksql-statements.sh
 ----
+
 
 ==== Inner Join
 
@@ -2730,6 +2837,13 @@ docker exec -it ksqldb-cli ksql http://ksqldb-server:8088 --execute "select * fr
 
 ----
 
+Teardown:
+
+[source,java]
+----
+scripts/tear-down-ksqldb.sh
+----
+
 <<<
 
 == Flink SQL
@@ -2800,18 +2914,42 @@ scripts/tear-down-flink.sh
 
 === Transactional producer
 
-see section <<tx_producer>>
+It uses link:https://kafka.apache.org/36/javadoc/org/apache/kafka/common/serialization/StringSerializer.html[org.apache.kafka.common.serialization.StringSerializer] class for key and value serialization and set properties link:https://docs.confluent.io/platform/current/installation/configuration/producer-configs.html#enable-idempotence[_enable.idempoteceny_] to _true_ and link:https://docs.confluent.io/platform/current/installation/configuration/producer-configs.html#transactional-id[_transactional.id_] to _testTx_
+
+Create topic _test-idempotent_ with 3 partitions:
+
+[source,bash]
+----
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic test-idempotent --replication-factor 1 --partitions 3
+----
+
+Produce on topic _test-idempotent_:
+
+[source,bash]
+----
+cd kafka-producer
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.producer.tx.Runner"
+----
 
 === Read Committed consumer
 
-see section <<readcommitted_consumer>>
+It uses _org.apache.kafka.common.serialization.StringDeserializer_ for key and value and set _isolation.level_ to _read_committed_.
+
+IMPORTANT: It must be only used with a transactional producer.
+
+[source,bash]
+----
+cd kafka-consumer
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.tx.Runner"
+----
 
 === Orders App: Example with end-to-end exactly-once semantic between consumer and producer
 
 Example of a cart application implementing end-to-end exactly-once semantic between consumer and producer. +
-The ItemsProducer class sends 2 items in a single transaction. +
-The ItemsConsumer class receives the items and creates an order containing the items. +
-The consumer offset is committed only if the order can be created and sent.
+
+ - ItemsProducer class sends 2 items in a single transaction. +
+ - ItemsConsumer class receives the items and creates an order containing the items. +
+ - The consumer offset is committed only if the order can be created and sent.
 
 Execute tests:
 
@@ -2821,12 +2959,12 @@ cd kafka-orders-tx
 mvn clean test
 ----
 
-Execute the ItemsProducer class: 
+Execute ItemsProducer class:
 
 [source,bash]
 ----
 cd kafka-orders-tx
-mvn clean compile && mvn exec:java -Dexec.mainClass="ItemsProducer"
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.orders.ItemsProducer"
 ----
 
 Execute the ItemsConsumer class: 
@@ -2834,7 +2972,7 @@ Execute the ItemsConsumer class:
 [source,bash]
 ----
 cd kafka-orders-tx
-mvn clean compile && mvn exec:java -Dexec.mainClass="ItemsConsumer"
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.orders.ItemsConsumer"
 ----
 
 <<<
@@ -2878,7 +3016,8 @@ Run on your local machine:
 [source,bash]
 ----
 cd kafka-quarkus
-./mvnw clean compile quarkus:dev (debug port 5005)
+#(debug port 5005)
+./mvnw clean compile quarkus:dev
 ----
 
 Run on Openshift machine: 
@@ -2936,18 +3075,18 @@ Run the components:
 scripts/bootstrap-acls.sh
 ----
 
-Create a topic:
+Create _test_ topic:
 
 [source,bash]
 ----
-docker exec -it broker kafka-topics --bootstrap-server broker:29092 --create --topic test
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --command-config /tmp/admin.properties --create --topic test
 ----
 
-Produce messages without an explicit ACL:
+Produce messages without an explicit ACL for user _alice_:
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-producer --broker-list broker:9092 --producer.config /tmp/alice.properties --topic test --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list broker:9092 --producer.config /tmp/alice.properties --topic test --property "parse.key=true" --property "key.separator=:"
 >1:test
 
 [2023-07-12 12:18:27,972] ERROR [Producer clientId=console-producer] Topic authorization failed for topics [test] (org.apache.kafka.clients.Metadata)
@@ -2959,7 +3098,7 @@ Set topic read and topic write ACLs on topic _test_ for user _alice_:
 
 [source,bash]
 ----
-docker exec -it broker kafka-acls --bootstrap-server broker:29092 --add --allow-principal "User:alice" --operation Read --operation Write --topic test
+docker exec -it broker /opt/kafka/bin/kafka-acls.sh --bootstrap-server broker:9092 --command-config /tmp/admin.properties --add --allow-principal "User:alice" --operation Read --operation Write --topic test
 
 Adding ACLs for resource `ResourcePattern(resourceType=TOPIC, name=test, patternType=LITERAL)`:
  	(principal=User:alice, host=*, operation=READ, permissionType=ALLOW)
@@ -2970,11 +3109,11 @@ Current ACLs for resource `ResourcePattern(resourceType=TOPIC, name=test, patter
 	(principal=User:alice, host=*, operation=WRITE, permissionType=ALLOW)
 ----
 
-Produce messages:
+Produce messages with user _alice_:
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-producer --broker-list broker:9092 --producer.config /tmp/alice.properties --topic test --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list broker:9092 --producer.config /tmp/alice.properties --topic test --property "parse.key=true" --property "key.separator=:"
 >1:test
 ----
 
@@ -3021,8 +3160,7 @@ client CN is: _CN=client,OU=Hifly,O=Hifly,L=Rome,ST=Lazio,C=IT_
 
 [source,bash]
 ----
-cd sasl-ssl/config
-kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config client.properties --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list broker:9092 --producer.config /tmp/client.properties --topic topic1 --property "parse.key=true" --property "key.separator=:"
 1:test
 2:test2
 ----
@@ -3074,8 +3212,7 @@ client CN is: _CN=client,OU=Hifly,O=Hifly,L=Rome,ST=Lazio,C=IT_
 
 [source,bash]
 ----
-cd mtls-listener
-kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config client.properties --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list broker:9092 --producer.config /tmp/client.properties --topic topic1 --property "parse.key=true" --property "key.separator=:"
 1:test
 2:test2
 ----
@@ -3116,8 +3253,7 @@ To test the SASL PLAIN SSL connection, you can try producing some data to a topi
 
 [source,bash]
 ----
-cd multi-listener
-kafka-console-producer --broker-list broker:9093 --topic topic1 --producer.config client.properties --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker kafka-console-producer --broker-list broker:9093 --producer.config /tmp/client.properties --topic topic1 --property "parse.key=true" --property "key.separator=:"
 1:test
 2:test2
 ----
@@ -3144,55 +3280,32 @@ Compile and package:
 ----
 cd authorizers
 mvn clean package
-cp -rf ./target/authorizers-0.0.1-SNAPSHOT.jar ./jars
+cp -rf ./target/authorizers-1.2.1.jar ./jars
 ----
 
 Run broker with custom authorizer on port 9092:
 
 [source,bash]
 ----
-scripts/boostrap-auth.sh
+scripts/bootstrap-auth.sh
 ----
 
 Run a producer test using the _producer.properties_ on listener port 9092:
-
-_producer.properties_:
-
-[source,bash]
-----
-sasl.mechanism=PLAIN
-security.protocol=SASL_PLAINTEXT
-sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required \
-  username="kafkabroker1" \
-  password="kafkabroker1-secret";
-----
 
 Producer command:
 
 [source,bash]
 ----
-kafka-console-producer --bootstrap-server localhost:9092 --topic test --producer.config ./src/main/resources/producer.properties
+docker exec -it broker kafka-console-producer --broker-list broker:9093 --topic test --producer.config /tmp/producer.properties
 ----
 
 Run a consumer test using the _consumer.properties_ on listener port 9092:
-
-_consumer.properties_:
-
-[source,bash]
-----
-sasl.mechanism=PLAIN
-security.protocol=SASL_PLAINTEXT
-sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required \
-  username="kafkabroker1" \
-  password="kafkabroker1-secret";
-group.id=test
-----
 
 Consumer command:
 
 [source,bash]
 ----
-kafka-console-consumer --bootstrap-server localhost:9092 --topic test --from-beginning --consumer.config ./src/main/resources/consumer.properties
+docker exec -it broker kafka-console-consumer --broker-list broker:9093 --topic test --consumer.config /tmp/consumer.properties
 ----
 
 Teardown:
@@ -3251,7 +3364,7 @@ client CN is: _CN=client,OU=Hifly,O=Hifly,L=Rome,ST=Lazio,C=IT_
 
 [source,bash]
 ----
-kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config principal-builder/client.properties --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker kafka-console-producer --broker-list broker:9093 --topic topic1 --producer.config /tmp/client.properties --property "parse.key=true" --property "key.separator=:"
 1:test
 2:test2
 ----
@@ -3269,7 +3382,7 @@ client CN is: _CN=client2,OU=Hifly,O=Hifly,L=Rome,ST=Lazio,C=IT_
 
 [source,bash]
 ----
-kafka-console-producer --broker-list broker:9092 --topic topic1 --producer.config principal-builder/client2.properties --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker kafka-console-producer --broker-list broker:9093 --topic topic1 --producer.config /tmp/client2.properties--property "parse.key=true" --property "key.separator=:"
 1:test
 2:test2
 ----

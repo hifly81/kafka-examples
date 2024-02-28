@@ -1,6 +1,5 @@
 package org.hifly.kafka.demo.streams.stream;
 
-import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serde;
@@ -46,12 +45,6 @@ public class CarSensorStream {
         final String outputTopic = "carsensor-output-topic";
 
         CarSensorStream carSensorStream = new CarSensorStream();
-        List<NewTopic> topics = Arrays.asList(
-                new NewTopic(carSensorTopic, Optional.of(2), Optional.empty()),
-                new NewTopic(carInfoTopic, Optional.of(2), Optional.empty()),
-                new NewTopic(outputTopic, Optional.empty(), Optional.empty()));
-
-        StreamUtils.createTopics(properties, topics);
 
         Topology topology = carSensorStream.createTopology(carSensorTopic, carInfoTopic, outputTopic);
         logger.info(topology.describe().toString());

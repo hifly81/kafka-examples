@@ -1,6 +1,5 @@
 package org.hifly.kafka.demo.streams.processor;
 
-import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyValue;
@@ -34,12 +33,6 @@ public class ExpiredMessagesApplication {
         streamsConfiguration.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
         streamsConfiguration.put("metrics.recording.level", "DEBUG");
         streamsConfiguration.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, BROKER_LIST);
-
-        List<NewTopic> topics = Arrays.asList(
-                new NewTopic(INPUT_TOPIC, Optional.of(2), Optional.empty()),
-                new NewTopic(OUTPUT_TOPIC, Optional.empty(), Optional.empty()));
-
-        StreamUtils.createTopics(streamsConfiguration, topics);
 
         final StreamsBuilder builder = new StreamsBuilder();
 

@@ -1,5 +1,6 @@
 package org.hifly.kafka.demo.producer.serializer.json;
 
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.hifly.kafka.demo.producer.AbstractKafkaProducer;
 import org.hifly.kafka.demo.producer.ProducerCallback;
 import org.hifly.kafka.demo.producer.KafkaConfig;
@@ -14,7 +15,7 @@ import java.util.concurrent.Future;
 
 public class JsonProducer<T> extends AbstractKafkaProducer<String, T> implements IKafkaProducer<String, T> {
 
-    private String valueSerializer;
+    private String valueSerializer = StringSerializer.class.getName();
     
     public JsonProducer() {}
 

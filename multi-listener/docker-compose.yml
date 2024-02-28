@@ -14,7 +14,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
 
   broker:
-    image: confluentinc/cp-kafka:${CONFLUENT_VERSION}
+    image: apache/kafka:${KAFKA_VERSION}
     hostname: broker
     container_name: broker
     depends_on:
@@ -23,6 +23,7 @@ services:
       - "9093:9093"
     volumes:
       - ./ssl:/etc/kafka/secrets
+      - ./config/client.properties:/tmp/client.properties
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
@@ -35,7 +36,7 @@ services:
         org.apache.kafka.common.security.plain.PlainLoginModule required \
         username="admin" \
         password="admin-secret" \
-        user_admin="admin-secret"
+        user_admin="admin-secret";
       KAFKA_SSL_KEYSTORE_FILENAME: kafka.broker.keystore.jks
       KAFKA_SSL_KEYSTORE_CREDENTIALS: kafka.broker.keystore.jks_creds
       KAFKA_SSL_KEY_CREDENTIALS: kafka.broker.pkey_creds

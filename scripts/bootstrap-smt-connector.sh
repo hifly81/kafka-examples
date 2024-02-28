@@ -33,5 +33,5 @@ curl -X POST -H Accept:application/json -H Content-Type:application/json http://
 
 sleep 5
 
-echo "Produce records..."
+echo -e "Produce records..."
 kafka-console-producer --broker-list localhost:9092 --topic test < kafka-smt-custom/config/test.json

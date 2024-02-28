@@ -3,7 +3,8 @@
 sh scripts/tear-down.sh
 
 echo "Build unixcommand Connector image..."
-kafka-unixcommand-connector/build-image.sh
+cd kafka-unixcommand-connector
+sh build-image.sh
 
 sleep 3
 

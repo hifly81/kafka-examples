@@ -1,5 +1,5 @@
-FROM confluentinc/cp-kafka-connect-base:7.3.0
+FROM confluentinc/cp-kafka-connect-base:7.6.0
 
-COPY target/kafka-unixcommand-connector-0.0.1-SNAPSHOT-package.zip /tmp/kafka-unixcommand-connector-0.0.1-SNAPSHOT-package.zip
+COPY target/kafka-unixcommand-connector-1.2.1-package.zip /tmp/kafka-unixcommand-connector-1.2.1-package.zip
 
-RUN confluent-hub install --no-prompt /tmp/kafka-unixcommand-connector-0.0.1-SNAPSHOT-package.zip
+RUN confluent-hub install --no-prompt /tmp/kafka-unixcommand-connector-1.2.1-package.zip

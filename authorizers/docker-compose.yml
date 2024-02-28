@@ -23,7 +23,9 @@ services:
       - "9092:9092"
       - "9093:9093"
     volumes:
-      - ./jars/authorizers-0.0.1-SNAPSHOT.jar:/usr/share/java/kafka/authorizers-0.0.1-SNAPSHOT.jar
+      - ./jars/authorizers-1.2.1.jar:/usr/share/java/kafka/authorizers-1.2.1.jar
+      - ./config/producer.properties:/tmp/producer.properties
+      - ./config/consumer.properties:/tmp/consumer.properties
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'

@@ -37,7 +37,7 @@ public class Receiver {
             autoCreateTopics = "false",
             topicSuffixingStrategy = TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE,
             exclude = NullPointerException.class)
-    @KafkaListener(topics = "${topic-name}", groupId = "${spring.kafka.consumer.group-id}")
+    @KafkaListener(topics = "${spring.kafka.topic.name}", groupId = "${spring.kafka.consumer.group-id}")
     public void listen(@Payload String message) {
 
         logger.info("received message:" + message);

@@ -1,6 +1,5 @@
 package org.hifly.kafka.demo.streams.processor;
 
-import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -9,9 +8,6 @@ import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorSupplier;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 import java.util.Properties;
 
 public class JSONArrayRemoveProcessorApplication {
@@ -31,11 +27,6 @@ public class JSONArrayRemoveProcessorApplication {
 
         final StreamsBuilder builder = new StreamsBuilder();
 
-        List<NewTopic> topics = Arrays.asList(
-                new NewTopic(INPUT_TOPIC, Optional.of(2), Optional.empty()),
-                new NewTopic(OUTPUT_TOPIC, Optional.empty(), Optional.empty()));
-
-        StreamUtils.createTopics(streamsConfiguration, topics);
         final Topology topology = builder.build();
 
         topology.addSource("Source", INPUT_TOPIC)

@@ -10,22 +10,24 @@ public class Runner {
     public static void main (String [] args) {
         String topics = null;
         String partitionStrategy = "org.apache.kafka.clients.consumer.RangeAssignor";
+        String groupId = "group-1";
         if(args != null && args.length >= 1) {
             topics = args[0];
         }
         if(args.length == 2) {
             partitionStrategy = args[1];
         }
-        pollAutoCommit(topics, partitionStrategy);
+        if(args.length == 3) {
+            groupId = args[2];
+        }
+        pollAutoCommit(topics, partitionStrategy, groupId);
     }
 
-    private static void pollAutoCommit(String topics, String partitionStrategy) {
-        UUID uuid = UUID. randomUUID();
-        String uuidAsString = uuid. toString();
+    private static void pollAutoCommit(String topics, String partitionStrategy, String groupId) {
 
         new ConsumerInstance<String , String>(
                 UUID.randomUUID().toString(),
-                uuidAsString,
+                groupId,
                 topics == null? "topic1": topics,
                 StringDeserializer.class.getName(),
                 StringDeserializer.class.getName(),

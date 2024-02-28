@@ -51,6 +51,8 @@ services:
     container_name: apicurio
     ports:
       - 8080:8080
+    depends_on:
+      - postgres
     environment:
       REGISTRY_DATASOURCE_URL: 'jdbc:postgresql://postgres:5432/postgres'
       REGISTRY_DATASOURCE_USERNAME: postgres
