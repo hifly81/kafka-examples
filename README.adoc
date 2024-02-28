@@ -98,7 +98,7 @@ If you needed to change the docker image version for the specific components, ju
 Docker images are downloaded from Docker Hub link:https://hub.docker.com/r/apache/kafka[_apache/kafka_] and are based on Apache Kafka® version 3.7.x).
 
 
-==== Start single-node cluster +
+=== Single-node cluster +
 
 To run a single-node cluster (KRaft controller and Broker node combined) using Docker, run the link:docker-compose.yml[docker-compose.yml] file available in the root directory. It also contains a container with link:https://github.com/edenhill/kcat[kcat]:
 
@@ -106,19 +106,21 @@ To run a single-node cluster (KRaft controller and Broker node combined) using D
 * broker: _apache/kafka_, listening on port _9092_
 * kcat: _confluentinc/cp-kcat_
 
+==== Start
+
 [source,bash]
 ----
 scripts/bootstrap.sh
 ----
 
-==== Stop containers +
+==== Stop +
 
 [source,bash]
 ----
 scripts/tear-down.sh
 ----
 
-==== Start a multi node cluster +
+=== Multi nodes cluster +
 
 To run a cluster with 3 KRaft controller and 3 Broker nodes using Docker on different containers, use the file in apache-kafka github repository:
 https://raw.githubusercontent.com/apache/kafka/trunk/docker/examples/jvm/cluster/isolated/plaintext/docker-compose.yml
@@ -127,12 +129,14 @@ https://raw.githubusercontent.com/apache/kafka/trunk/docker/examples/jvm/cluster
 * kafka-2: _apache/kafka_, listening on port _39092_
 * kafka-3: _apache/kafka_, listening on port _49092_
 
+==== Start
+
 [source,bash]
 ----
 scripts/bootstrap-isolated.sh
 ----
 
-==== Stop containers +
+==== Stop +
 
 [source,bash]
 ----
