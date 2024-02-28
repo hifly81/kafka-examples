@@ -81,7 +81,7 @@ List of software required to run the examples:
  - _curl_
  - _wget_
  - _openssl_
- - _Java SE 17 (recommended) or SE 11_
+ - _Java SE 17_
  - _keytool_ from Java distribution
  - _Apache Maven_
  - _Go Programming language_ _(for proxy example)_
@@ -91,7 +91,7 @@ List of software required to run the examples:
 
 Default image version are listed in file link:.env[.env]
 
-If you would need to change the docker image version for the specific components, just update file link:.env[.env].
+If you needed to change the docker image version for the specific components, just update file link:.env[.env].
 
 === Docker Images details
 
@@ -100,9 +100,10 @@ Docker images are downloaded from Docker Hub link:https://hub.docker.com/r/apach
 
 ==== Start single-node cluster +
 
-To run a single-node cluster using Docker, run the link:docker-compose.yml[docker-compose.yml] file available in the root directory. In addition, it also presents a container with link:https://github.com/edenhill/kcat[kcat] on board:
+To run a single-node cluster (KRaft controller and Broker node combined) using Docker, run the link:docker-compose.yml[docker-compose.yml] file available in the root directory. It also contains a container with link:https://github.com/edenhill/kcat[kcat]:
 
-* Broker: _apache/kafka_, listening on port _9092_
+
+* broker: _apache/kafka_, listening on port _9092_
 * kcat: _confluentinc/cp-kcat_
 
 [source,bash]
@@ -115,6 +116,27 @@ scripts/bootstrap.sh
 [source,bash]
 ----
 scripts/tear-down.sh
+----
+
+==== Start a multi node cluster +
+
+To run a cluster with 3 KRaft controller and 3 Broker nodes using Docker on different containers, use the file in apache-kafka github repository:
+https://raw.githubusercontent.com/apache/kafka/trunk/docker/examples/jvm/cluster/isolated/plaintext/docker-compose.yml
+
+* kafka-1: _apache/kafka_, listening on port _29092_
+* kafka-2: _apache/kafka_, listening on port _39092_
+* kafka-3: _apache/kafka_, listening on port _49092_
+
+[source,bash]
+----
+scripts/bootstrap-isolated.sh
+----
+
+==== Stop containers +
+
+[source,bash]
+----
+scripts/tear-down-isolated.sh
 ----
 
 <<<
