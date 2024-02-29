@@ -1,3 +1,5 @@
+#!/bin/bash
+
 PRJ_HOME=..
 SPRING_PRODUCER_HOME=../kafka-springboot-producer
 SPRING_CONSUMER_HOME=../kafka-springboot-consumer
@@ -9,12 +11,6 @@ function compile {
 }
 
 function release {
-  printf "\nCompiling..\n"
-  mvn -f $1/pom.xml clean compile
-
-  printf "\nRun tests..\n"
-  mvn -f $1/pom.xml clean test
-
   printf "\nPackaging..\n"
   mvn -f $1/pom.xml clean install
 }

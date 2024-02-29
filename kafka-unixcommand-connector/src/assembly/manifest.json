@@ -1,6 +1,6 @@
 {
   "name" : "kafka-unixcommand",
-  "version" : "0.0.1",
+  "version" : "1.2.1",
   "title" : "Kafka Connect unixcommand",
   "description" : "For demos only: A Kafka Connect connector for generating mock data, not suitable for production",
   "owner" : {

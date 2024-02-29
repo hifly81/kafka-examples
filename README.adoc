@@ -3062,11 +3062,8 @@ Run on docker:
 
 [source,bash]
 ----
-#Start a zookeeper container
-docker run -d --name zookeeper -p 2181:2181 -p 2888:2888 -p 3888:3888 debezium/zookeeper
-
 #Start a kafka container
-docker run -d --name my-cluster-kafka-bootstrap -p 9092:9092 --link zookeeper:zookeeper debezium/kafka
+docker run -d --name my-cluster-kafka-bootstrap -p 9092:9092 apache/kafka
 
 #Start a kafka producer container
 cd kafka-microprofile2-producer
@@ -3079,10 +3076,10 @@ docker build -t kafka-consumer:latest .
 docker run -d --name kafka-consumer -p 9090:9080 -e KAFKABROKERLIST=my-cluster-kafka-bootstrap:9092 --link my-cluster-kafka-bootstrap:my-cluster-kafka-bootstrap kafka-consumer:latest
 
 #Receive orders
-curl -v -X POST http://localhost:9090/kafka-microprofile2-consumer-0.0.1-SNAPSHOT/order
+curl -v -X POST http://localhost:9090/kafka-microprofile2-consumer-1.2.1/order
 
 #Send orders (500)
-curl -v -X POST http://localhost:9080/kafka-microprofile2-producer-0.0.1-SNAPSHOT/order
+curl -v -X POST http://localhost:9080/kafka-microprofile2-producer-1.2.1/order
 ----
 
 <<<
@@ -3811,17 +3808,6 @@ scripts/tear-down-tracing.sh
 
 IMPORTANT: Results may vary and are dependent on the performances of your host
 
-Tested on a host with:
-
- - CPU(s):                  12
- - Model name:            Intel(R) Core(TM) i7-10750H CPU @ 2.60GHz
- - CPU family:          6
- - Thread(s) per core:  2
- - Core(s) per socket:  6
- - 32GB RAM
- - Fedora 38 - Kernel 6.3.5-200.fc38.x86_64
- - Docker version 24.0.2
-
 IMPORTANT: By default, a container has no resource constraints and can use as much of a given resource as the host’s kernel scheduler allows. Docker provides ways to control how much memory, or CPU a container can use, setting runtime configuration flags.
 
 You can check docker usage during the test using _docker stats_ command:
@@ -3853,20 +3839,7 @@ Docker containers can be configured for RAM and CPU limits using:
     mem_reservation: "512m"
     cpus: "1"
     cpuset: "2"
-    depends_on:
-      - zookeeper
-    ports:
-      - "9092:9092"
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
-      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
-      KAFKA_TOOLS_LOG4J_LOGLEVEL: ERROR
+    ...
 ----
 
 === Producer

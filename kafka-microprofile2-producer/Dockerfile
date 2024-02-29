@@ -1,3 +1,3 @@
 FROM websphere-liberty:microProfile2
 
-COPY target/kafka-microprofile2-producer-0.0.1-SNAPSHOT.war /config/dropins/
+COPY target/kafka-microprofile2-producer-1.2.1.war /config/dropins/

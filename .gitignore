@@ -40,6 +40,6 @@ hs_err_pid*
 README.pdf
 README.html
 
-release/
+release/search.sh
 
 .DS_Store
