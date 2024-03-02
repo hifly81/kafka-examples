@@ -14,7 +14,7 @@
 
 == General Information
 
-This repository contains a number of use cases designed to demonstrate the functionality of Apache Kafka®.
+This repository contains a number of use cases designed to demonstrate the functionality of link:https://kafka.apache.org[Apache Kafka®].
 The examples are mostly extracted from more complex projects and should not be considered complete or ready to be used in a production environment, unless after a refactoring and test work.
 
 <<<
@@ -29,7 +29,7 @@ git clone git@github.com:hifly81/kafka-examples.git
 ----
 
 
-Install _asciidoctor_:
+Install link:https://asciidoctor.org[_asciidoctor_]:
 
 Linux:
 
@@ -470,7 +470,7 @@ LogAppendTime:1697359857981	BIQAWWOIFIAKNYFEPTPMIXPQAXFEIKUFFXIDHILBPCBTHWDRMALH
 
 Folder link:interceptors/[interceptors/]
 
-This example shows how to create a custom producer interceptor. Java class _CreditCardProducerInterceptor_ will mask a sensitive info on producer record (credit card).
+This example shows how to create a custom producer interceptor. Java class link:interceptors/src/main/java/org/hifly/kafka/interceptor/producer/CreditCardProducerInterceptor.java[_CreditCardProducerInterceptor_] will mask a sensitive info on producer record (credit card).
 
 Compile and package:
 
@@ -480,14 +480,14 @@ cd interceptors
 mvn clean package
 ----
 
-Run a consumer on listener port 9092:
+Run a consumer:
 
 [source,bash]
 ----
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.interceptor.consumer.Runner"
 ----
 
-Run a producer sending data to listener on port 9092:
+Run a producer:
 
 [source,bash]
 ----
@@ -506,7 +506,7 @@ Topic: test_custom_data - Partition: 0 - Offset: 1
 
 Folder link:kafka-python-producer/[kafka-python-producer/]
 
-Install python lib _confluent-kafka_:
+Install python lib link:https://docs.confluent.io/kafka-clients/python/current/overview.html[_confluent-kafka_]:
 
 [source,bash]
 ----
@@ -520,7 +520,7 @@ or:
 python3 -m pip install confluent-kafka
 ----
 
-Create topic:
+Create "kafka-topic" topic:
 
 [source,bash]
 ----
