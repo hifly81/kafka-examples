@@ -543,7 +543,7 @@ Implementation of a consumer that can be used with different deserializer classe
 
 Folder link:kafka-consumer/[kafka-consumer/]
 
-Java class _org.hifly.kafka.demo.consumer.deserializer.impl.ConsumerInstance_ can be customized with:
+Java class link:kafka-consumer/src/main/java/org/hifly/kafka/demo/consumer/core/ConsumerInstance.java[_ConsumerInstance_] can be customized with:
 
  - clientId _(string)_
  - groupId _(string)_
@@ -589,7 +589,7 @@ mvn clean test
 
 === String Deserializer
 
-It uses _org.apache.kafka.common.serialization.StringDeserializer_ for key and value. Default topic is topic1.
+It uses link:https://kafka.apache.org/37/javadoc/org/apache/kafka/common/serialization/StringDeserializer.html[_org.apache.kafka.common.serialization.StringDeserializer_] for key and value deserialization. Default topic is _topic1_.
 
 [source,bash]
 ----
@@ -597,7 +597,7 @@ cd kafka-consumer
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.core.Runner"
 ----
 
-Send messages to the topic:
+Send messages to _topic1_:
 
 [source,bash]
 ----
@@ -609,7 +609,7 @@ docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list br
 
 ==== Range (default)
 
-Create 2 topics with the same number of partitions:
+Create 2 topics, _users_ and _users_clicks_ with the same number of partitions:
 
 [source,bash]
 ----
@@ -618,15 +618,15 @@ docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:
 docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic users_clicks --replication-factor 1 --partitions 3
 ----
 
-Run 2 consumer instances (2 different shell/terminal) belonging to the same group and subscribed to _user_ and _user_clicks_ topics. Consumers uses
-_org.apache.kafka.clients.consumer.RangeAssignor_ to distribute partition ownership.
+Run 2 consumer instances (2 different shells/terminals) belonging to the same group and subscribed to _user_ and _user_clicks_ topics. Consumers uses
+link:https://kafka.apache.org/37/javadoc/org/apache/kafka/clients/consumer/RangeAssignor.html[_org.apache.kafka.clients.consumer.RangeAssignor_] to distribute partition ownership.
 
 [source,bash]
 ----
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.core.Runner" -Dexec.args="users,users_clicks org.apache.kafka.clients.consumer.RangeAssignor range-group-app"
 ----
 
-Send messages to the topics using the same key (Frank):
+Send messages to both topics using the same key (_Frank_):
 
 [source,bash]
 ----
@@ -647,7 +647,7 @@ Group id group-XX - Consumer id: consumer-group-XX-1-421db3e2-6501-45b1-acfd-275
 
 ==== Round Robin
 
-Create 2 topics with same number of partitions:
+Create 2 topics, _users_ and _users_clicks_ with same number of partitions:
 
 [source,bash]
 ----
@@ -656,15 +656,15 @@ docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:
 docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic users_clicks --replication-factor 1 --partitions 3
 ----
 
-Run 2 consumer instances (2 different shell/terminal) belonging to the same group and subscribed to _user_ and _user_clicks_ topics; consumers uses
-_org.apache.kafka.clients.consumer.RoundRobinAssignor_ to distribute partition ownership.
+Run 2 consumer instances (2 different shells/terminals) belonging to the same group and subscribed to _user_ and _user_clicks_ topics; consumers uses
+link:https://kafka.apache.org/37/javadoc/org/apache/kafka/clients/consumer/RoundRobinAssignor.html[_org.apache.kafka.clients.consumer.RoundRobinAssignor_] to distribute partition ownership.
 
 [source,bash]
 ----
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.core.Runner" -Dexec.args="users,users_clicks org.apache.kafka.clients.consumer.RoundRobinAssignor rr-group-app"
 ----
 
-Send messages to the topics using the same key (Frank):
+Send messages to both topics using the same key (_Frank_):
 
 [source,bash]
 ----
@@ -683,7 +683,7 @@ This example will show how to configure different consumer instances to use a un
 
 After shutting down and then restarting the consumer instance, this will consume from the same partitions avoiding re-balancing.
 
-Create 1 topic with 12 partitions:
+Create topic _topic1_ with 12 partitions:
 
 [source,bash]
 ----
@@ -732,14 +732,14 @@ Try to shut down consumer instances (CTRL+C) and then re-start them again; verif
 
 This example shows how to use the feature (since Apache Kafka® 2.4+) for consumers to read messages from the closest replica.
 
-Start a cluster with 3 brokers on 3 different racks, dc1, dc2 and dc3:
+Start a cluster with 3 brokers on 3 different racks, _dc1_, _dc2_ and _dc3_:
 
 [source,bash]
 ----
 scripts/bootstrap-racks.sh
 ----
 
-Create topic _topic-regional_ and assign partition leaderships only on broker 1 and 3 (dc1 and dc3):
+Create topic _topic-regional_ and assign partition leaderships only on broker 1 and 3 (_dc1_ and _dc3_):
 
 [source,bash]
 ----
@@ -757,7 +757,7 @@ docker exec -it broker /opt/kafka/bin/kafka-leader-election.sh --bootstrap-serve
 docker exec -it broker /opt/kafka/bin/kafka-leader-election.sh --bootstrap-server broker:9092 --topic topic-regional --election-type PREFERRED --partition 2
 ----
 
-Verify partitions with topic describe:
+Verify partitions with topic describe command:
 
 [source,bash]
 ----
@@ -769,7 +769,7 @@ Topic: topic-regional	TopicId: p-sy0qiQTtSTLTJSG7s7Ew	PartitionCount: 3	Replicat
 	Topic: topic-regional	Partition: 2	Leader: 1	Replicas: 1,3,2	Isr: 1,2,3	Offline:
 ----
 
-Run a consumer that will read messages from broker2 in rack dc2:
+Run a consumer that will read messages from broker2 from rack _dc2_:
 
 [source,bash]
 ----
@@ -797,10 +797,10 @@ Folder link:kafka-consumer-retry-topics/[kafka-consumer-retry-topics/]
 
 This solution could be implemented on consumer side to handle errors in processing records without blocking the input topic.
 
- . Consumer processes records and commit the offset (auto-commit)
- . if a record can't be processed _(simple condition here is the existence of a specific HEADER)_, it is sent to a retry topic, if the number of retries is not yet exhausted
- . when the number of retries is exhausted, record is sent to a DLQ topic
- . number of retries is set at Consumer instance level
+ . Consumer processes records and commit the offset (_auto-commit_).
+ . If a record can't be processed _(simple condition here is the existence of a specific HEADER)_, it is sent to a retry topic, if the number of retries is not yet exhausted.
+ . When the number of retries is exhausted, record is sent to a DLQ topic.
+ . Number of retries is set at Consumer instance level.
 
 Create topics _retry-topic_ and _dlq-topic_:
 
@@ -856,14 +856,14 @@ Folder link:interceptors/[interceptors/]
 
 This example shows how to create a custom consumer interceptor. Java class _CreditCardConsumerInterceptor_ will intercept records before deserialization and print headers.
 
-Run a consumer on listener port 9092:
+Run a consumer:
 
 [source,bash]
 ----
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.interceptor.consumer.Runner"
 ----
 
-Run a producer sending messages on listener port 9092:
+Run a producer:
 
 [source,bash]
 ----
@@ -884,14 +884,14 @@ Consumer 23d06b51-5780-4efc-9c33-a93b3caa3b48 - partition 0 - lastOffset 1
 
 Folder link:kafka-python-consumer/[kafka-python-consumer/]
 
-Install python lib _confluent-kafka_:
+Install python lib link:https://docs.confluent.io/kafka-clients/python/current/overview.html[_confluent-kafka_]:
 
 [source,bash]
 ----
 pip install confluent-kafka
 ----
 
-Create topic:
+Create topic _kafka-topic_:
 
 [source,bash]
 ----
@@ -939,21 +939,21 @@ Docker images provided are already shipped with CLI.
 
 Create a topic _cars_ with retention for old segments set to 5 minutes and size of segments set to 100 KB.
 
-Be aware that _log.retention.check.interval.ms_ is set by default to 5 minutes and this is the frequency in milliseconds that the log cleaner checks whether any log is eligible for deletion.
+Be aware that link:https://docs.confluent.io/platform/current/installation/configuration/broker-configs.html#log-retention-check-interval-ms[_log.retention.check.interval.ms_] is set by default to 5 minutes and this is the frequency in milliseconds that the log cleaner checks whether any log is eligible for deletion.
 
 [source,bash]
 ----
 docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic cars --replication-factor 1 --partitions 1 --config segment.bytes=100000 --config segment.ms=604800000 --config retention.ms=300000 --config retention.bytes=-1
 ----
 
-Launch a producer perf test:
+Launch a producer performance session:
 
 [source,bash]
 ----
 docker exec -it broker /opt/kafka/bin/kafka-producer-perf-test.sh --topic cars --num-records 99999999999999 --throughput -1 --record-size 1 --producer-props bootstrap.servers=broker:9092
 ----
 
-Check the log dir for cars topic and wait for deletion of old segments (5 minutes + log cleaner trigger delta)
+Check the log dir for _cars_ topic and wait for deletion of old segments (5 minutes + log cleaner trigger delta)
 
 [source,bash]
 ----
@@ -962,7 +962,9 @@ docker exec -it broker watch ls -ltr /tmp/kraft-combined-logs/cars-0/
 
 === Apache Kafka® Admin Client
 
-It uses _org.apache.kafka.clients.admin.AdminClient_ to execute Admin API.
+Folder link:admin-client/[admin-client]
+
+It uses link:https://kafka.apache.org/37/javadoc/org/apache/kafka/clients/admin/AdminClient.html[_org.apache.kafka.clients.admin.AdminClient_] to execute Admin API.
 
 Operations currently added:
 
@@ -1022,7 +1024,7 @@ docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list br
 4:zstd
 ----
 
-Run a consumer on _topic1_ topic and consumer records:
+Run a consumer on _topic1_ topic:
 
 [source,bash]
 ----
