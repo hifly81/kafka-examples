@@ -1984,6 +1984,8 @@ scripts/tear-down-connect-sink-http.sh
 
 === S3 Sink Connector example
 
+Folder: link:kafka-connect-sink-s3/[kafka-connect-sink-s3]
+
 Example of usage of link:https://docs.confluent.io/kafka-connectors/s3-sink/current/overview.html[S3 Sink Connector].
 
 Run the example:
