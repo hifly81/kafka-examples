@@ -1042,13 +1042,13 @@ zstd
 
 === Confluent Avro Generic Record
 
-It uses _io.confluent.kafka.serializers.KafkaAvroSerializer_ for value and a _GenericRecord_.
+It uses link:https://github.com/confluentinc/schema-registry/blob/master/avro-serializer/src/main/java/io/confluent/kafka/serializers/KafkaAvroSerializer.java[_io.confluent.kafka.serializers.KafkaAvroSerializer_] for value serializer, sending an Avro link:https://avro.apache.org/docs/1.11.1/api/java/org/apache/avro/generic/GenericRecord.html[_GenericRecord_].
 
 Confluent Schema Registry is needed to run the example.
 
 More Info at: https://github.com/confluentinc/schema-registry
 
-Avro schema _car.avsc_:
+Avro schema link:kafka-producer/src/main/resources/car.avsc[_car.avsc_]:
 
 [source,json]
 ----
@@ -1101,13 +1101,13 @@ scripts/tear-down-cflt-schema-registry.sh
 
 === Apicurio Avro Generic Record
 
-It uses _io.apicurio.registry.utils.serde.AvroKafkaSerializer_ for value and a _GenericRecord_.
+It uses link:https://github.com/Apicurio/apicurio-registry/blob/main/serdes/avro-serde/src/main/java/io/apicurio/registry/serde/avro/AvroKafkaSerializer.java[_io.apicurio.registry.utils.serde.AvroKafkaSerializer_] for value serializer, sending an Avro link:https://avro.apache.org/docs/1.11.1/api/java/org/apache/avro/generic/GenericRecord.html[_GenericRecord_].
 
 Apicurio Schema Registry is needed to run the example.
 
 Info at: https://github.com/Apicurio/apicurio-registry
 
-Avro schema _car.avsc_:
+Avro schema link:kafka-producer/src/main/resources/car.avsc[_car.avsc_]:
 
 [source,json]
 ----
@@ -1160,13 +1160,13 @@ scripts/tear-down-apicurio.sh
 
 === Hortonworks Avro Generic Record
 
-It uses _com.hortonworks.registries.schemaregistry.serdes.avro.kafka.KafkaAvroSerializer_ for value and a _GenericRecord_.
+It uses _com.hortonworks.registries.schemaregistry.serdes.avro.kafka.KafkaAvroSerializer_ for value serializer, sending an Avro link:https://avro.apache.org/docs/1.11.1/api/java/org/apache/avro/generic/GenericRecord.html[_GenericRecord_].
 
 Hortonworks Schema Registry is needed to run the example. +
 
 Info at: https://registry-project.readthedocs.io/en/latest/schema-registry.html#running-kafka-example
 
-Avro schema _car.avsc_:
+Avro schema link:kafka-producer/src/main/resources/car.avsc[_car.avsc_]:
 
 [source,json]
 ----
@@ -1209,7 +1209,9 @@ scripts/tear-down-hortonworks-sr.sh
 
 === Confluent Avro Specific Record
 
-Implementation of a producer and a consumer using _Avro Specific Record_ for serializing and deserializing.
+Folder: link:confluent-avro-specific-record/[confluent-avro-specific-record]
+
+Implementation of a producer and a consumer using Avro link:https://avro.apache.org/docs/1.11.1/api/java/org/apache/avro/specific/SpecificRecord.html[_SpecificRecord_] for serializing and deserializing.
 
 Confluent Schema Registry is needed to run the example. +
 
@@ -1218,11 +1220,18 @@ Confluent Schema Registry is needed to run the example. +
 scripts/bootstrap-cflt-schema-registry.sh
 ----
 
-Create topics:
+Create _cars_ topic:
 
 [source,bash]
 ----
 docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic cars --replication-factor 1 --partitions 1
+----
+
+Avro schema link:confluent-avro-specific-record/src/main/resources/car_v1.avsc[_car_v1.avsc_]:
+
+[source,json]
+----
+{"schema": "{\"type\": \"record\",\"name\": \"Car\",\"namespace\": \"org.hifly.kafka.demo.avro\",\"fields\": [{\"name\": \"model\",\"type\": \"string\"},{\"name\": \"brand\",\"type\": \"string\"}]}"}
 ----
 
 Register first version of schema:
