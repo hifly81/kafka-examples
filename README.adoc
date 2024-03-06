@@ -1982,6 +1982,67 @@ Teardown:
 scripts/tear-down-connect-sink-http.sh
 ----
 
+=== S3 Sink Connector example
+
+Example of usage of link:https://docs.confluent.io/kafka-connectors/s3-sink/current/overview.html[S3 Sink Connector].
+
+Run the example:
+
+[source,bash]
+----
+scripts/bootstrap-connect-sink-s3.sh
+----
+
+link:https://min.io/[MinIO] will start listening on port 9000 (admin/minioadmin)
+
+A S3 sink connector will be created with this link:kafka-connect-sink-s3/config/s3_sink.json[config]:
+
+[source,bash]
+----
+{
+  "name": "sink-s3",
+  "config":
+  {
+    "topics": "gaming-player-activity",
+    "tasks.max": "1",
+    "connector.class": "io.confluent.connect.s3.S3SinkConnector",
+    "store.url": "http://minio:9000",
+    "s3.region": "us-west-2",
+    "s3.bucket.name": "gaming-player-activity-bucket",
+    "s3.part.size": "5242880",
+    "flush.size": "100",
+    "storage.class": "io.confluent.connect.s3.storage.S3Storage",
+    "format.class": "io.confluent.connect.s3.format.avro.AvroFormat",
+    "schema.generator.class": "io.confluent.connect.storage.hive.schema.DefaultSchemaGenerator",
+    "partitioner.class": "io.confluent.connect.storage.partitioner.DefaultPartitioner",
+    "schema.compatibility": "NONE"
+  }
+}
+----
+
+Sink will read messages from topic _gaming-player-activity_ and store in S3 bucket _gaming-player-activity-bucket_.
+Sink will generate a new entry every 100 messages (_flush_size_).
+
+To generate random record for topic _gaming-player-activity_ we will use link:https://github.com/ugol/jr[jr] tool
+
+Send 1000 messages to _gaming-player-activity_ topic:
+
+[source,bash]
+----
+docker exec -it -w /home/jr/.jr jr jr template run gaming_player_activity -n 1000 -o kafka -t gaming-player-activity -s --serializer avro-generic
+----
+
+Verify that 10 entries are stored in Minio into _gaming-player-activity-bucket_ bucket, connecting to MiniIO web console, http://localhost:9000 (admin/minioadmin):
+
+image::images/minio.png[Outbox table]
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-connect-sink-s3.sh
+----
+
 === Outbox Table: Event Router with SMT
 
 In this example, some SMT transformations (in chain) are used to create an Event Router starting from an input _outbox table_.
