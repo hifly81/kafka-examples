@@ -111,6 +111,7 @@ services:
     container_name: jr
     depends_on:
       - broker
+      - schema-registry
     tty: true
     volumes:
       - ./config/jr.kafka.properties:/home/jr/.jr/kafka/config.properties
