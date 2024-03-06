@@ -2021,11 +2021,11 @@ A S3 sink connector will be created with this link:kafka-connect-sink-s3/config/
 ----
 
 Sink will read messages from topic _gaming-player-activity_ and store in S3 bucket _gaming-player-activity-bucket_.
-Sink will generate a new entry every 100 messages (_flush_size_).
+Sink will generate a new object storage entry every 100 messages (_flush_size_).
 
-To generate random record for topic _gaming-player-activity_ we will use link:https://github.com/ugol/jr[jr] tool
+To generate random records for topic _gaming-player-activity_ we will use link:https://github.com/ugol/jr[jr] tool.
 
-Send 1000 messages to _gaming-player-activity_ topic:
+Send 1000 messages to _gaming-player-activity_ topic using jr:
 
 [source,bash]
 ----
@@ -2034,7 +2034,7 @@ docker exec -it -w /home/jr/.jr jr jr template run gaming_player_activity -n 100
 
 Verify that 10 entries are stored in Minio into _gaming-player-activity-bucket_ bucket, connecting to MiniIO web console, http://localhost:9000 (admin/minioadmin):
 
-image::images/minio.png[Outbox table]
+image::images/minio.png[gaming-player-activity-bucket]
 
 Teardown:
 
