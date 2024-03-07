@@ -2315,6 +2315,8 @@ scripts/tear-down-connect-tasks.sh
 
 == Apache Kafka® Streams
 
+Folder: link:kafka-streams/[kafka-streams]
+
 Implementation of a series of Apache Kafka® Streams topologies.
 
 Execute tests:
@@ -2346,7 +2348,7 @@ cd kafka-streams
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.streams.stream.StreamCounter"
 ----
 
-Send messages to input topics:
+Send messages to _counter-input-topic_ topics:
 
 [source,bash]
 ----
@@ -2356,7 +2358,7 @@ docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list br
 "John":"transaction_2"
 ----
 
-Read from output topic:
+Read from _counter-output-topic_ topic:
 
 [source,bash]
 ----
@@ -2384,7 +2386,7 @@ cd kafka-streams
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.streams.stream.StreamSum"
 ----
 
-Send messages to input topics:
+Send messages to _sum-input-topic_ topics:
 
 [source,bash]
 ----
@@ -2394,7 +2396,7 @@ docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list br
 "John":5
 ----
 
-Read from output topic:
+Read from _sum-output-topic_ topic:
 
 [source,bash]
 ----
@@ -2404,10 +2406,11 @@ docker exec -it broker /opt/kafka/bin/kafka-console-consumer.sh --topic sum-outp
 === Cars sensor Stream +
 
 The stream filters out speed data from car data sensor records. Speed limit is set to 150km/h and only events exceeding the limits are filtered out. +
-A KTable stores the car info data. +
-A left join between the kstream and the ktable produces a new aggregated object published to an output topic.
 
-Create topics:
+A KTable stores the car info data. +
+A left join between the KStream and the KTable produces a new aggregated object published to an output topic.
+
+Create _carinfo-topic_, _carsensor-topic_ and _carsensor-output-topic_ topics:
 
 [source,bash]
 ----
@@ -2426,7 +2429,7 @@ cd kafka-streams
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.streams.stream.CarSensorStream"
 ----
 
-Send messages to input topics:
+Send messages to _carinfo-topic_ and _carsensor-topic_ topics:
 
 [source,bash]
 ----
@@ -2440,7 +2443,7 @@ docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list br
 1:{"id":"1","speed":350}
 ----
 
-Read from output topic:
+Read from _carsensor-output-topic_ topic:
 
 [source,bash]
 ----
@@ -2451,7 +2454,7 @@ docker exec -it broker /opt/kafka/bin/kafka-console-consumer.sh --topic carsenso
 
 The stream splits the original data into 2 different topics, one for Ferrari cars and one for all other car brands.
 
-Create topics:
+Create _cars-input-topic_, _ferrari-input-topic_ and _cars-output-topic_ topics:
 
 [source,bash]
 ----
@@ -2470,7 +2473,7 @@ cd kafka-streams
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.streams.stream.CarBrandStream"
 ----
 
-Send messages to input topic:
+Send messages to _cars-input-topic_ topic:
 
 [source,bash]
 ----
@@ -2479,7 +2482,7 @@ docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list br
 2:{"id":"2","brand":"Bugatti","model":"Chiron"}
 ----
 
-Read from output topics:
+Read from _ferrari-input-topic_ and _cars-output-topic_ topics:
 
 [source,bash]
 ----
@@ -2493,8 +2496,10 @@ docker exec -it broker /opt/kafka/bin/kafka-console-consumer.sh --topic cars-out
 
 === JSONArray Fields removal Processor +
 
+Folder: link:kafka-streams-processor/[kafka-streams-processor]
+
 Remove a specific json field from the record and forward it to the next topology node.
-This example uses Streams Processor API.
+This example uses Kafka Streams Processor API.
 
 Execute tests:
 
@@ -2504,7 +2509,7 @@ cd kafka-streams-processor
 mvn clean test
 ----
 
-Create topics:
+Create _processor-input-topic_ and _processor-output-topic_ topics:
 
 [source,bash]
 ----
@@ -2521,7 +2526,7 @@ cd kafka-streams
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.streams.processor.JSONArrayRemoveProcessorApplication"
 ----
 
-Send messages to input topics:
+Send messages to _processor-input-topic_ topics:
 
 [source,bash]
 ----
@@ -2529,7 +2534,7 @@ docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list br
 1:{"id":"1","brand":"Ferrari","model":"F40"}
 ----
 
-Read from output topic:
+Read from _processor-output-topic_ topic:
 
 [source,bash]
 ----
@@ -2538,8 +2543,10 @@ docker exec -it broker /opt/kafka/bin/kafka-console-consumer.sh --topic processo
 
 === Expired Messages Processor +
 
+Folder: link:kafka-streams-processor/[kafka-streams-processor]
+
 Remove old entries based on time (expiration time set to 30 seconds) using a punctuator.
-This example uses Streams Processor API.
+This example uses Kafka Streams Processor API.
 
 Execute tests:
 
@@ -2549,11 +2556,11 @@ cd kafka-streams-processor
 mvn clean test
 ----
 
-Create topics:
+Create _expired-messages-input-topic_ and _expired-messages-output-topic_ topics:
 
 [source,bash]
 ----
-docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic expired-messages-input-topic--replication-factor 1 --partitions 2
+docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic expired-messages-input-topic --replication-factor 1 --partitions 2
 
 docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic expired-messages-output-topic --replication-factor 1 --partitions 2
 ----
@@ -2566,7 +2573,7 @@ cd kafka-streams-processor
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.streams.processor.ExpiredMessagesApplication"
 ----
 
-Send messages to input topics:
+Send messages to _expired-messages-input-topic_ topics:
 
 [source,bash]
 ----
@@ -2574,14 +2581,14 @@ docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list br
 1:{"id":"1","remote-device":"R01","time":"2021-11-02T02:50:12.208Z"}
 ----
 
-Read from output topic:
+Read from _expired-messages-output-topic_ topic:
 
 [source,bash]
 ----
 docker exec -it broker /opt/kafka/bin/kafka-console-consumer.sh --topic expired-messages-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : "
 ----
 
-Find out in kafka streams application log expiration entries:
+Find out in kafka streams application log, expiration entries:
 
 [source,bash]
 ----
@@ -2590,9 +2597,11 @@ Find out in kafka streams application log expiration entries:
 
 === Interactive queries
 
-Class _org.hifly.kafka.demo.streams.queries.QueryController_ shows how to execute queries against the local state store. Controller is attached at the following streams example:
+Folder: link:kafka-streams/[kafka-streams]
 
- - StreamCounter
+Class link:kafka-streams/src/main/java/org/hifly/kafka/demo/streams/queries/QueryController.java[_org.hifly.kafka.demo.streams.queries.QueryController_] shows how to execute queries against the local state store. Controller is attached at the following streams example:
+
+ - link:kafka-streams/src/main/java/org/hifly/kafka/demo/streams/stream/StreamCounter.java[StreamCounter]
 
 When running the _StreamCounter_ example, check in the terminal for entries like:
 
@@ -2606,7 +2615,9 @@ query result <key>: <value>
 
 == ksqlDB
 
-=== Saga Pattern Example with orchestrator
+=== Saga Pattern Example using ksqlDB as an orchestrator
+
+Folder: link:ksqldb-saga-example/[ksqldb-saga-example]
 
 Implementation of a sample App (producer and consumer) sending and receiving orders; ksqlDB acts as an orchestrator to coordinate a sample Saga.
 
@@ -2631,7 +2642,7 @@ mvn generate-sources
 mvn clean compile
 ----
 
-Connect to ksqlDB and set auto.offset.reset:
+Connect to ksqlDB and set link:https://docs.ksqldb.io/en/latest/reference/server-configuration/#ksqlstreamsautooffsetreset[_auto.offset.reset_] property:
 
 [source,bash]
 ----
@@ -2640,7 +2651,7 @@ SET 'auto.offset.reset' = 'earliest';
 exit
 ----
 
-Create DDL on ksqlDB:
+Execute DDLs on ksqlDB:
 
 [source,bash]
 ----
@@ -2648,7 +2659,7 @@ cd ksqldb-saga-example/ksql
 ./ksql-statements.sh
 ----
 
-Create fat jar of Sample application (1 Saga):
+Create a fat jar with the Sample application (1 Saga):
 
 [source,bash]
 ----
@@ -2656,7 +2667,7 @@ cd ksqldb-saga-example
 mvn clean compile assembly:single
 ----
 
-Execute fat jar of Sample application (1 Saga):
+Execute Sample application (1 Saga):
 
 [source,bash]
 ----
@@ -2702,6 +2713,8 @@ scripts/tear-down-ksqldb.sh
 
 ==== Tumbling Window example: heart rate monitoring
 
+Folder: link:ksqldb-window-tumbling-heartbeat/[ksqldb-window-tumbling-heartbeat]
+
 Implementation of a tumbling window (1 minute) to monitor heart rate. Values over a threshold of 120 beats per minute are reported.
 
 ksqlDB is needed to run the example.
@@ -2715,7 +2728,7 @@ Start ksqlDB:
 scripts/bootstrap-ksqldb.sh
 ----
 
-Connect to ksqlDB and set auto.offset.reset:
+Connect to ksqlDB and set link:https://docs.ksqldb.io/en/latest/reference/server-configuration/#ksqlstreamsautooffsetreset[_auto.offset.reset_] property:
 
 [source,bash]
 ----
@@ -2724,7 +2737,7 @@ SET 'auto.offset.reset' = 'earliest';
 exit
 ----
 
-Create DDL on ksqlDB:
+Execute DDLs on ksqlDB:
 
 [source,bash]
 ----
@@ -2769,6 +2782,8 @@ scripts/tear-down-ksqldb.sh
 
 ==== Session Window example: Vehicle Positions
 
+Folder: link:ksqldb-window-session-tripsegments/[ksqldb-window-session-tripsegments]
+
 Implementation of a session window (5 minutes inactive). Vehicle positions (latitude and logitude) are collected and a new window opens when the vehicle does not send its position for 5 minutes. This is considered as a new "trip".
 
 ksqlDB is needed to run the example.
@@ -2782,7 +2797,7 @@ Start ksqlDB:
 scripts/bootstrap-ksqldb.sh
 ----
 
-Connect to ksqlDB and set auto.offset.reset:
+Connect to ksqlDB and set link:https://docs.ksqldb.io/en/latest/reference/server-configuration/#ksqlstreamsautooffsetreset[_auto.offset.reset_] property:
 
 [source,bash]
 ----
@@ -2791,7 +2806,7 @@ SET 'auto.offset.reset' = 'earliest';
 exit
 ----
 
-Create DDL on ksqlDB:
+Execute DDLs on ksqlDB:
 
 [source,bash]
 ----
@@ -2843,11 +2858,13 @@ scripts/tear-down-ksqldb.sh
 
 ==== Outer: Devices and temperature measurement
 
+Folder: link:ksqldb-join/[ksqldb-join]
+
 This example shows how to join a STREAM with air temperatures captured by devices and a TABLE containing the information of devices.
 
-Air Temperatures are ingested into a topic _temperature.data_ with a RabbitMQ source connector.
+Air Temperatures are ingested into a topic _temperature.data_ with a link:https://docs.confluent.io/kafka-connectors/rabbitmq-source/current/overview.html[RabbitMQ Source Connector].
 
-Device Info are ingested into a topic _device_ with a JDBC Source Connector.
+Device Info are ingested into a topic _device_ with a link:https://docs.confluent.io/kafka-connectors/jdbc/current/source-connector/overview.html[JDBC Source Connector].
 
 Launch Docker Compose:
 
@@ -2856,7 +2873,7 @@ Launch Docker Compose:
 scripts/bootstrap-ksqldb-join.sh
 ----
 
-Create input topics:
+Create _device_ and _temperature.data_ topics:
 
 [source,bash]
 ----
@@ -2865,14 +2882,37 @@ docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --to
 docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic temperature.data --replication-factor 1 --partitions 1
 ----
 
-Deploy the JDBC Source connector:
+Deploy the link:ksqldb-join/config/connector_jdbc_source.json[JDBC Source connector]:
+
+[source,json]
+----
+{
+"name" : "pgsql-sample-source",
+"config": {
+"connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+"connection.url": "jdbc:postgresql://postgres:5432/postgres",
+"connection.user": "postgres",
+"connection.password": "postgres",
+"topic.prefix": "",
+"poll.interval.ms" : 3600000,
+"table.whitelist" : "public.device",
+"mode":"bulk",
+"key.converter": "org.apache.kafka.connect.storage.StringConverter",
+"transforms":"createKey,extractInt",
+"transforms.createKey.type":"org.apache.kafka.connect.transforms.ValueToKey",
+"transforms.createKey.fields":"id",
+"transforms.extractInt.type":"org.apache.kafka.connect.transforms.ExtractField$Key",
+"transforms.extractInt.field":"id"
+}
+}
+----
 
 [source,bash]
 ----
 curl -X POST -H Accept:application/json -H Content-Type:application/json http://localhost:8083/connectors/ -d @ksqldb-join/config/connector_jdbc_source.json
 ----
 
-Send data to a RabbitMQ queue _temperature.queue_ with a python producer (5 different devices):
+Send data to a RabbitMQ queue _temperature.queue_ with a confluent-python producer (5 different devices):
 
 [source,bash]
 ----
@@ -2890,7 +2930,27 @@ Send	{'id': 4, 'body': 32}
 Exiting
 ----
 
-Deploy the RabbitMQ Source connector:
+Deploy the link:ksqldb-join/config/connector_rabbitmq_source.json[RabbitMQ Source connector]:
+
+[source,json]
+----
+{
+  "name" : "rabbitmq-sample-source",
+  "config": {
+    "connector.class": "io.confluent.connect.rabbitmq.RabbitMQSourceConnector",
+    "confluent.topic.bootstrap.servers": "broker:9092",
+    "confluent.topic.replication.factor": "1",
+    "kafka.topic": "temperature.data",
+    "rabbitmq.queue" : "temperature.queue",
+    "rabbitmq.host" : "rabbitmq",
+    "rabbitmq.username" : "guest",
+    "rabbitmq.password" : "guest",
+    "value.converter": "org.apache.kafka.connect.converters.ByteArrayConverter",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter"
+  }
+}
+
+----
 
 [source,bash]
 ----
@@ -2905,8 +2965,9 @@ cd ksqldb-join/ksql
 ./ksql-statements.sh
 ----
 
-
 ==== Inner Join
+
+Folder: link:ksqldb-join/[ksqldb-join]
 
 Verify the enrichment with a query:
 
@@ -2923,6 +2984,8 @@ docker exec -it ksqldb-cli ksql http://ksqldb-server:8088 --execute "select * fr
 ----
 
 ==== Left Join
+
+Folder: link:ksqldb-join/[ksqldb-join]
 
 Verify the enrichment with a query:
 
@@ -2943,9 +3006,11 @@ docker exec -it ksqldb-cli ksql http://ksqldb-server:8088 --execute "select * fr
 
 ==== Right Join: Devices and devices maintenance
 
+Folder: link:ksqldb-join/[ksqldb-join]
+
 This example shows how to join a Table and a Table
 
-Device Info are ingested into a topic _device_ with a JDBC Source Connector.
+Device Info are ingested into a topic _device_ with a link:https://docs.confluent.io/kafka-connectors/jdbc/current/source-connector/overview.html[JDBC Source Connector].
 
 Maintenances are ingested into a topic _maintenance_ with a JDBC Source Connector.
 
@@ -2956,7 +3021,7 @@ Launch Docker Compose:
 scripts/bootstrap-ksqldb-join.sh
 ----
 
-Create input topics:
+Create _device_ and _maintenance_ topics:
 
 [source,bash]
 ----
@@ -2964,7 +3029,30 @@ docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --to
 docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic maintenance --replication-factor 1 --partitions 1
 ----
 
-Deploy the JDBC Source connector:
+Deploy the link:ksqldb-join/config/connector_device_maintenance_jdbc_source.json[JDBC Source connector]:
+
+[source,json]
+----
+{
+  "name" : "pgsql-sample2-source",
+  "config": {
+    "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+    "connection.url": "jdbc:postgresql://postgres:5432/postgres",
+    "connection.user": "postgres",
+    "connection.password": "postgres",
+    "topic.prefix": "",
+    "poll.interval.ms" : 3600000,
+    "table.whitelist" : "public.maintenance",
+    "mode":"bulk",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "transforms":"createKey,extractInt",
+    "transforms.createKey.type":"org.apache.kafka.connect.transforms.ValueToKey",
+    "transforms.createKey.fields":"id",
+    "transforms.extractInt.type":"org.apache.kafka.connect.transforms.ExtractField$Key",
+    "transforms.extractInt.field":"id"
+  }
+}
+----
 
 [source,bash]
 ----
