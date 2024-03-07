@@ -1666,15 +1666,32 @@ scripts/tear-down-cflt-schema-registry.sh
 
 == Apache Kafka® Connect
 
-=== Unixcommand Source Connector
+=== Unix commands Source Connector
 
-Implementation of a sample Source Connector; it executes _unix commands_ (e.g. _fortune_, _ls -ltr, netstat_) and sends its output to a topic.
+Folder: link:kafka-unixcommand-connector/[kafka-unixcommand-connector]
+
+Implementation of a sample Kafka Connect Source Connector; it executes _unix commands_ (e.g. _fortune_, _ls -ltr, netstat_) and sends its output to a topic.
 
 IMPORTANT: commands are executed on connect worker node.
 
-This connector relies on Confluent Schema Registry to convert the values using Avro: _CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter_.
+This connector relies on Confluent Schema Registry to convert Avro messages using converter:
+link:https://github.com/confluentinc/schema-registry/blob/master/avro-converter/src/main/java/io/confluent/connect/avro/AvroConverter.java[_io.confluent.connect.avro.AvroConverter_].
 
-Connector config is in _kafka-unixcommand-connector/config/source.quickstart.json_ file.
+Connector link:kafka-unixcommand-connector/config/source.quickstart.json[source.quickstart.json]:
+
+[source,json]
+----
+{
+    "name" : "unixcommandsource",
+    "config": {
+        "connector.class" : "org.hifly.kafka.demo.connector.UnixCommandSourceConnector",
+        "command" : "fortune",
+        "topic": "unixcommands",
+        "poll.ms" : 5000,
+        "tasks.max": 1
+    }
+}
+----
 
 Parameters for source connector:
 
@@ -1690,17 +1707,17 @@ cd kafka-unixcommand-connector
 mvn clean package
 ----
 
-Create a connect custom Docker image with the connector installed:
-
-This will create an image based on _confluentinc/cp-kafka-connect-base:XXX_ using a custom _Dockerfile_.
-It will use the Confluent utility _confluent-hub install_ to install the plugin in connect.
-
 Run the Docker container:
 
 [source,bash]
 ----
 scripts/bootstrap-unixcommand-connector.sh
 ----
+
+This will create an image based on link:https://hub.docker.com/r/confluentinc/cp-kafka-connect-base/tags[_confluentinc/cp-kafka-connect-base_] using a custom link:kafka-unixcommand-connector/Dockerfile[_Dockerfile_].
+
+It will use the Confluent utility link:https://docs.confluent.io/kafka-connectors/confluent-hub/client.html[_confluent-hub install_] to install the plugin in connect.
+
 
 Deploy the connector:
 
@@ -1718,8 +1735,10 @@ scripts/tear-down-unixcommand-connector.sh
 
 === Custom SMT: composite key from json records.
 
-Implementation of a custom Single Message Transformation (SMT);
-it creates a key from a list of json fields taken from message record value. Fields are configurable using SMT property _fields_.
+Folder: link:kafka-smt-custom[kafka-smt-custom]
+
+Implementation of a custom link:https://docs.confluent.io/platform/current/connect/transforms/overview.html[Single Message Transformation (SMT)];
+it creates a key from a list of json fields from message record value. Fields are configurable using SMT property _fields_.
 
 Example:
 
@@ -1741,7 +1760,7 @@ key: 0120400001
 value: {"FIELD1": "01","FIELD2": "20400","FIELD3": "001","FIELD4": "0006084655017","FIELD5": "20221117","FIELD6": 9000018}
 ----
 
-The example applies the SMT to a mongodb sink connector.
+The example applies the SMT to a link:https://www.mongodb.com/docs/kafka-connector/current/sink-connector/[MongoDB sink connector].
 
 Run the example:
 
@@ -1750,7 +1769,7 @@ Run the example:
 scripts/bootstrap-smt-connector.sh
 ----
 
-A mongodb sink connector will be created with this config:
+A MongoDB sink connector will be created with this link:kafka-smt-custom/config/connector_mongo.json[config]:
 
 [source,bash]
 ----
@@ -1775,7 +1794,7 @@ A mongodb sink connector will be created with this config:
 
 Original json messages will be sent to _test_ topic.
 
-Sink connector will apply the SMT and store the records in mongodb _pets_ collection from _Tutorial2_ database.
+Sink connector will apply the SMT and store the records in MongoDB _pets_ collection from _Tutorial2_ database.
 
 Teardown:
 
@@ -1786,12 +1805,14 @@ scripts/tear-down-smt-connector.sh
 
 === SMT: log records with AOP
 
-Usage of a standard SMT in a mongo sink connector.
+Folder: link:kafka-smt-aspectj/[kafka-smt-aspectj]
 
-_apply_ method for SMT classes in package _org.apache.kafka.connect.transforms_  is intercepted by a Java AOP Aspect
+Usage of a predefined SMT to a link:https://www.mongodb.com/docs/kafka-connector/current/sink-connector/[MongoDB sink connector].
+
+_apply_ method for SMT classes in package _org.apache.kafka.connect.transforms_ is intercepted by a Java AOP Aspect
 implemented using link:https://www.eclipse.org/aspectj/[AspectJ] framework.
 
-The _@Aspect_, implemented in class _org.hifly.kafka.smt.aspectj.SMTAspect_, logs the input arg (_SinkRecord_ object) to the standard output.
+The _@Aspect_, implemented in class link:kafka-smt-aspectj/src/main/java/org/hifly/kafka/smt/aspectj/SMTAspect.java[_org.hifly.kafka.smt.aspectj.SMTAspect_], logs the input arg (_SinkRecord_ object) to the standard output.
 
 
 [source,bash]
@@ -1833,7 +1854,7 @@ Connect will start with aspectjweaver java agent:
 
 Aspects are deployed as standard jars and copied to Kafka Connect classpath _/etc/kafka-connect/jars/kafka-smt-aspectj-1.2.1.jar_
 
-A mongodb sink connector will be created with this config:
+A MongoDB sink connector will be created with this link:kafka-smt-aspectj/config/connector_mongo.json[config]:
 
 [source,bash]
 ----
@@ -1862,7 +1883,7 @@ A mongodb sink connector will be created with this config:
 
 Original json messages will be sent to _test_ topic.
 
-Sink connector will apply the SMT and store the records in mongodb _pets_ collection from _Tutorial2_ database.
+Sink connector will apply the SMT and store the records in MongoDB _pets_ collection from _Tutorial2_ database.
 
 Teardown:
 
@@ -1873,7 +1894,9 @@ scripts/tear-down-smt-aspectj.sh
 
 === Sink Connector Error Handling with a DLQ
 
-MongoDB sink connector example configured to send bad messages to a DLQ topic named _dlq.mongo_
+Folder: link:kafka-connect-sink-dlq[kafka-connect-sink-dlq]
+
+link:https://www.mongodb.com/docs/kafka-connector/current/sink-connector/[MongoDB sink connector] example configured to send bad messages to a DLQ topic named _dlq.mongo_
 
 Run the example:
 
@@ -1882,7 +1905,7 @@ Run the example:
 scripts/bootstrap-connect-dlq.sh
 ----
 
-Create the topics:
+Create _test_ and _dlq.mongo_ topics:
 
 [source,bash]
 ----
@@ -1898,7 +1921,7 @@ Deploy the connector:
 curl -X POST -H Accept:application/json -H Content-Type:application/json http://localhost:8083/connectors/ -d @kafka-connect-sink-dlq/config/connector_mongo_sink.json
 ----
 
-A mongodb sink connector will be created with this config:
+A MongoDB sink connector will be created with this link:kafka-connect-sink-dlq/config/connector_mongo_sink.json[config]:
 
 [source,bash]
 ----
@@ -1931,7 +1954,7 @@ docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic 
 
 ----
 
-Sink connector will send only the first record in mongodb _pets_ collection from _Tutorial2_ database.
+Sink connector will send only the first record in MongoDB _pets_ collection from _Tutorial2_ database.
 
 Second message will be stored in _dlq.mongo_ topic.
 
@@ -1940,7 +1963,7 @@ Second message will be stored in _dlq.mongo_ topic.
 docker exec -it broker kafka-console-consumer --topic dlq.mongo --bootstrap-server broker:9092 --from-beginning
 ----
 
-Verify that the connector is still in RUNNING status:
+Verify that the connector is still in _RUNNING_ status:
 
 [source,bash]
 ----
@@ -1956,7 +1979,9 @@ scripts/tear-down-connect-dlq.sh
 
 === HTTP Sink Connector example
 
-Example of usage of HTTP Sink Connector.
+Folder: link:kafka-connect-sink-http/[kafka-connect-sink-http]
+
+Example of usage of link:https://docs.confluent.io/kafka-connectors/http/current/overview.html[HTTP Sink Connector].
 
 Run the example:
 
@@ -1967,7 +1992,7 @@ scripts/bootstrap-connect-sink-http.sh
 
 A web application listening on port _8010_ will start up.
 
-A HTTP sink connector will be created with this config:
+A HTTP sink connector will be created with this link:kafka-connect-sink-http/config/http_sink.json[config]:
 
 [source,bash]
 ----
@@ -2072,7 +2097,9 @@ Teardown:
 scripts/tear-down-connect-sink-s3.sh
 ----
 
-=== Outbox Table: Event Router with SMT
+=== Outbox Table: Event Router with SMT and JDBC Source Connector
+
+Folder: link:kafka-connect-source-event-router/[kafka-connect-source-event-router]
 
 In this example, some SMT transformations (in chain) are used to create an Event Router starting from an input _outbox table_.
 
@@ -2104,7 +2131,7 @@ insert into outbox_table (id, aggregate, operation, payload, event_time) values 
 insert into outbox_table (id, aggregate, operation, payload, event_time) values (3, 'Consumer Loan', 'EARLY_LOAN_CLOSURE', '{\"event\":{\"type\":\"Early Loan Closure\",\"timestamp\":\"2023-11-25T14:15:00\",\"data\":{\"mortgageId\":\"ABC12\",\"closureAmount\":150000,\"closureDate\":\"2023-11-25\",\"paymentMethod\":\"Bank Transfer\",\"transactionNumber\":\"PQR456\"}}}','2023-11-25 09:30:00');
 ----
 
-A jdbc source connector will be created with this config:
+A link:https://docs.confluent.io/kafka-connectors/jdbc/current/source-connector/overview.html[JDBC Source Connector] will be created with this link:kafka-connect-source-event-router/config/connector_jdbc_source.json[config]:
 
 [source,bash]
 ----
