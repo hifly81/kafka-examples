@@ -2204,12 +2204,15 @@ scripts/tear-down-connect-event-router.sh
 
 === CDC with Debezium PostgreSQL Source Connector
 
-Usage of Debezium Source connector for PostgreSQL to send RDMS table updates into a topic.
+Folder: link:cdc-debezium-postgres/[cdc-debezium-postgres]
 
-The _debezium/debezium-connector-postgresql:1.7.1_ connector has been installed into connect docker image using confluent hub (see _docker-compose.yml_ file).
+Usage of link:https://debezium.io/documentation/reference/stable/connectors/postgresql.html[Debezium Source Connector for PostgreSQL] to send RDMS table updates into a topic.
+
+The _debezium/debezium-connector-postgresql:1.7.1_ connector has been installed into connect docker image using confluent hub (see link:cdc-debezium-postgres/docker-compose.yml[_docker-compose.yml_] file).
+
 More details on the connector are available at: https://docs.confluent.io/debezium-connect-postgres-source/current/overview.html.
 
-Run cluster on port 9092:
+Run cluster:
 
 [source,bash]
 ----
@@ -2270,11 +2273,13 @@ Teardown:
 scripts/tear-down-cdc.sh
 ----
 
-=== Tasks distributions
+=== Tasks distributions using a Datagen Source Connector
+
+Folder: link:kafka-connect-task-distribution/[kafka-connect-task-distribution]
 
 This example will show how tasks are automatically balanced between Running worker nodes.
 
-A connect cluster will be created with 2 workers, _connect_ and _connect2_ and with a _datagen_ source connector with 4 tasks continuously inserting data.
+A connect cluster will be created with 2 workers, _connect_ and _connect2_ and using a link:https://docs.confluent.io/kafka-connectors/datagen/current/overview.html[_Datagen_ Source Connector] with 4 tasks continuously inserting data.
 
 After some seconds _connect2_ will be stopped and all tasks will be redistributed to _connect_ worker node.
 
