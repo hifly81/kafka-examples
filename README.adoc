@@ -1266,7 +1266,9 @@ Teardown:
 scripts/tear-down-cflt-schema-registry.sh
 ----
 
-=== Confluent Avro Compatibility Checks
+=== Confluent Schema Registry: Schema Evolution
+
+For documentation see the official docs at: https://docs.confluent.io/platform/current/schema-registry/fundamentals/schema-evolution.html
 
 ==== Backward
 
@@ -1282,14 +1284,21 @@ Confluent Schema Registry is needed to run the example. +
 scripts/bootstrap-cflt-schema-registry.sh
 ----
 
-Create topics:
+Create _car_ topic:
 
 [source,bash]
 ----
 docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic cars --replication-factor 1 --partitions 1
 ----
 
-Register first version of schema:
+Avro schema link:avro/car_v1.avsc[_car_v1.avsc_]:
+
+[source,json]
+----
+{"schema": "{ \"type\": \"record\", \"name\": \"Car\", \"namespace\": \"org.hifly.kafka.demo.producer.serializer.avro\",\"fields\": [   {\"name\": \"model\",\"type\": \"string\"},{\"name\": \"brand\",\"type\": \"string\"}] }" }
+----
+
+Register a first version of schema:
 
 [source,bash]
 ----
@@ -1337,7 +1346,14 @@ View the latest schema for _cars-value_ subject:
 curl -X GET http://localhost:8081/subjects/cars-value/versions/latest | jq .
 ----
 
-Register new version of schema, with the addition of a field with default value:
+Avro schema link:avro/car_v2.avsc[_car_v2.avsc_]:
+
+[source,json]
+----
+{"schema": "{ \"type\": \"record\", \"name\": \"Car\", \"namespace\": \"org.hifly.kafka.demo.producer.serializer.avro\",\"fields\": [   {\"name\": \"engine\",\"type\": \"string\", \"default\":\"diesel\"}, {\"name\": \"model\",\"type\": \"string\"},{\"name\": \"brand\",\"type\": \"string\"}] }" }
+----
+
+Register a new version of schema, with the addition of a field with default value:
 
 [source,bash]
 ----
@@ -1346,7 +1362,7 @@ curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
 http://localhost:8081/subjects/cars-value/versions
 ----
 
-Produce data with new schema id=2 and containing new field:
+Produce data with using the new schema:
 
 [source,bash]
 ----
@@ -1355,7 +1371,14 @@ sh produce-avro-records.sh
 
 Verify that consumer will not break and continue to process messages.
 
-Register new version of schema, with the addition of a field with a required value:
+Avro schema link:avro/car_v3.avsc[_car_v3.avsc_]:
+
+[source,json]
+----
+{"schema": "{ \"type\": \"record\", \"name\": \"Car\", \"namespace\": \"org.hifly.kafka.demo.producer.serializer.avro\",\"fields\": [   {\"name\": \"engine\",\"type\": \"string\"}, {\"name\": \"model\",\"type\": \"string\"},{\"name\": \"brand\",\"type\": \"string\"}] }" }
+----
+
+Register a new version of schema, with the addition of a field with a required value:
 
 [source,bash]
 ----
@@ -1378,7 +1401,9 @@ Teardown:
 scripts/tear-down-cflt-schema-registry.sh
 ----
 
-=== Confluent Avro: Multiple Event Types in same Topic
+=== Confluent Schema Registry: Multiple Event Types in same Topic
+
+Folder: link:confluent-avro-multi-event/[confluent-avro-multi-event]
 
 This example shows how to use Avro unions with schema references.
 
@@ -1387,7 +1412,7 @@ In this example a topic named _car-telemetry_ will be configured with a schema _
  - car-info messages from schema _car-info.avsc_
  - car-telemetry messages from schema _car-telemetry-data.avsc_
 
-_car-telemetry.avsc_:
+link:confluent-avro-multi-event/src/main/resources/car-telemetry-data.avsc[_car-telemetry.avsc_]:
 
 [source,json]
 ----
@@ -1397,7 +1422,7 @@ _car-telemetry.avsc_:
 ]
 ----
 
-_car-telemetry-data.avsc_:
+link:confluent-avro-multi-event/src/main/resources/car-telemetry-data.avsc[_car-telemetry-data.avsc_]:
 
 [source,json]
 ----
@@ -1422,7 +1447,7 @@ _car-telemetry-data.avsc_:
 }
 ----
 
-_car-info.avsc_:
+link:confluent-avro-multi-event/src/main/resources/car-info.avsc[_car-info.avsc_]:
 
 [source,json]
 ----
@@ -1450,7 +1475,7 @@ Confluent Schema Registry is needed to run the example. +
 scripts/bootstrap-cflt-schema-registry.sh
 ----
 
-Register the subjects using confluent schema registry maven plugin:
+Register the subjects using link:https://docs.confluent.io/platform/current/schema-registry/develop/maven-plugin.html[Confluent Schema Registry maven plugin]:
 
 [source,bash]
 ----
@@ -1497,7 +1522,7 @@ cd confluent-avro-multi-event
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.references.RunnerConsumer"
 ----
 
-On a different shell, Run a Producer:
+On a different shell, run a Producer:
 
 [source,bash]
 ----
@@ -1520,13 +1545,15 @@ Teardown:
 scripts/tear-down-cflt-schema-registry.sh
 ----
 
-=== Confluent Avro: Nested objects
+=== Confluent Schema Registry: Nested objects
+
+Folder: link:confluent-avro-hierarchy-event/[confluent-avro-hierarchy-event]
 
 This example shows how to use Avro nested objects.
 
 In this example a topic named _car-telemetry_ will be configured with a schema _car-telemetry-data.avsc_ with a nested schema reference from _car.avsc_
 
-_car-telemetry-data.avsc_:
+link:confluent-avro-hierarchy-event/src/main/resources/car-telemetry-data.avsc[_car-telemetry-data.avsc_]:
 
 [source,json]
 ----
@@ -1556,7 +1583,7 @@ _car-telemetry-data.avsc_:
 }
 ----
 
-_car-info.avsc_:
+link:confluent-avro-hierarchy-event/src/main/resources/car-info.avsc[_car-info.avsc_]:
 
 [source,json]
 ----
@@ -1584,7 +1611,7 @@ Confluent Schema Registry is needed to run the example. +
 scripts/bootstrap-cflt-schema-registry.sh
 ----
 
-Register the subjects using confluent schema registry maven plugin:
+Register the subjects using link:https://docs.confluent.io/platform/current/schema-registry/develop/maven-plugin.html[Confluent Schema Registry maven plugin]:
 
 [source,bash]
 ----
@@ -1613,7 +1640,7 @@ cd confluent-avro-hierarchy-event
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.references.app.RunnerConsumer"
 ----
 
-On a different shell, Run a Producer:
+On a different shell, run a Producer:
 
 [source,bash]
 ----
