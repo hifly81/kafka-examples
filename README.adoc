@@ -2097,11 +2097,11 @@ Teardown:
 scripts/tear-down-connect-sink-s3.sh
 ----
 
-=== SAP Hana Source Connector example
+=== SAP HANA Source Connector example
 
 Folder: link:kafka-connect-source-sap-hana/[kafka-connect-source-sap-hana]
 
-Example of usage of link:https://github.com/SAP/kafka-connect-sap[SAP Hana Source Connector].
+Example of usage of link:https://github.com/SAP/kafka-connect-sap[SAP HANA Source Connector].
 
 Run the example:
 
@@ -2110,7 +2110,17 @@ Run the example:
 scripts/bootstrap-connect-source-sap-hana.sh
 ----
 
-A SAP Hana source connector will be created with this link:kafka-connect-source-sap-hana/config/sap_hana_source.json[config]:
+Insert rows in _LOCALDEV.TEST_ table:
+
+[source,bash]
+----
+docker exec -i hana /usr/sap/HXE/HDB90/exe/hdbsql -i 90 -d HXE -u LOCALDEV -p Localdev1  > /tmp/result.log  2>&1 <<-EOF
+INSERT INTO TEST (111, 'foo', 100,50);
+INSERT INTO TEST (222, 'bar', 100,50);
+EOF
+----
+
+A SAP HANA source connector will be created with this link:kafka-connect-source-sap-hana/config/sap_hana_source.json[config]:
 
 [source,bash]
 ----
