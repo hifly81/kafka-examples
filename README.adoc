@@ -2097,6 +2097,53 @@ Teardown:
 scripts/tear-down-connect-sink-s3.sh
 ----
 
+=== SAP Hana Source Connector example
+
+Folder: link:kafka-connect-source-sap-hana/[kafka-connect-source-sap-hana]
+
+Example of usage of link:https://github.com/SAP/kafka-connect-sap[SAP Hana Source Connector].
+
+Run the example:
+
+[source,bash]
+----
+scripts/bootstrap-connect-source-sap-hana.sh
+----
+
+A SAP Hana source connector will be created with this link:kafka-connect-source-sap-hana/config/sap_hana_source.json[config]:
+
+[source,bash]
+----
+{
+  "name": "sap-hana-source",
+  "config":
+  {
+    "topics": "testtopic",
+    "tasks.max": "1",
+    "connector.class": "com.sap.kafka.connect.source.hana.HANASourceConnector",
+    "connection.url": "jdbc:sap://sap:39041/?databaseName=HXE&reconnect=true&statementCacheSize=512",
+    "connection.user": "LOCALDEV",
+    "connection.password" : "Localdev1",
+    "value.converter.schema.registry.url": "http://schema-registry:8081",
+    "auto.create": "true",
+    "testtopic.table.name": "\"LOCALDEV\".\"TEST\"",
+    "key.converter": "io.confluent.connect.avro.AvroConverter",
+    "key.converter.schema.registry.url": "http://schema-registry:8081",
+    "value.converter": "io.confluent.connect.avro.AvroConverter",
+    "value.converter.schema.registry.url": "http://schema-registry:8081"
+  }
+}
+----
+
+Source will read rows from _LOCALDEV.TEST_ table and store in _testtopic_ topic.
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-connect-source-sap-hana.sh
+----
+
 === Outbox Table: Event Router with SMT and JDBC Source Connector
 
 Folder: link:kafka-connect-source-event-router/[kafka-connect-source-event-router]
@@ -3110,7 +3157,6 @@ Bootstrap:
 scripts/bootstrap-flink.sh
 ----
 
-
 Create topic _heartbeat_:
 
 [source,bash]
@@ -3161,6 +3207,8 @@ scripts/tear-down-flink.sh
 
 === Transactional producer
 
+Folder: link:kafka-producer/[kafka-producer]
+
 It uses link:https://kafka.apache.org/36/javadoc/org/apache/kafka/common/serialization/StringSerializer.html[org.apache.kafka.common.serialization.StringSerializer] class for key and value serialization and set properties link:https://docs.confluent.io/platform/current/installation/configuration/producer-configs.html#enable-idempotence[_enable.idempoteceny_] to _true_ and link:https://docs.confluent.io/platform/current/installation/configuration/producer-configs.html#transactional-id[_transactional.id_] to _testTx_
 
 Create topic _test-idempotent_ with 3 partitions:
@@ -3180,7 +3228,9 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.produc
 
 === Read Committed consumer
 
-It uses _org.apache.kafka.common.serialization.StringDeserializer_ for key and value and set _isolation.level_ to _read_committed_.
+Folder: link:kafka-consumer/[kafka-consumer]
+
+It uses link:https://kafka.apache.org/37/javadoc/org/apache/kafka/common/serialization/StringDeserializer.html[_org.apache.kafka.common.serialization.StringDeserializer_] for key and value deserialization and set link:https://docs.confluent.io/platform/current/installation/configuration/consumer-configs.html#isolation-level[_isolation.level_] to _read_committed_.
 
 IMPORTANT: It must be only used with a transactional producer.
 
@@ -3192,10 +3242,12 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consum
 
 === Orders App: Example with end-to-end exactly-once semantic between consumer and producer
 
+Folder: link:kafka-orders-tx/[kafka-orders-tx]
+
 Example of a cart application implementing end-to-end exactly-once semantic between consumer and producer. +
 
- - ItemsProducer class sends 2 items in a single transaction. +
- - ItemsConsumer class receives the items and creates an order containing the items. +
+ - link:kafka-orders-tx/src/main/java/org/hifly/kafka/demo/orders/ItemsProducer.java[ItemsProducer] class sends 2 items in a single transaction. +
+ - link:kafka-orders-tx/src/main/java/org/hifly/kafka/demo/orders/ItemsConsumer.java[ItemsConsumer] class receives the items and creates an order containing the items. +
  - The consumer offset is committed only if the order can be created and sent.
 
 Execute tests:
@@ -3214,7 +3266,7 @@ cd kafka-orders-tx
 mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.orders.ItemsProducer"
 ----
 
-Execute the ItemsConsumer class: 
+Execute ItemsConsumer class:
 
 [source,bash]
 ----
@@ -3228,13 +3280,16 @@ mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.orders
 
 === Spring Boot
 
-Example for a producer and consumer implemented with Spring Boot 2.x.
+Example for a producer and consumer implemented with link:https://spring.io/projects/spring-kafka[Spring Kafka 2.x].
 
-Consumer implements a DLQ; implementation configures 3 retriable topics, -retry-0 (backoff 1 seconds), -retry-1 (backoff 2 seconds), -retry-2 (backoff 4 seconds) and a DLT topic, -dlt, for the main topic.
+Consumer implements a DLQ; implementation configures:
+
+ - 3 retriable topics, -retry-0 (backoff 1 seconds), -retry-1 (backoff 2 seconds), -retry-2 (backoff 4 seconds)
+ - 1 DLT topic, -dlt, for the main topic.
 
 Offending messages will be retried without blocking consuming of messages. After exhausting the retries, messages will be sent to DLT.
 
-Run on your local machine: 
+Run on local machine:
 
 [source,bash]
 ----
@@ -3255,10 +3310,10 @@ curl --data '{"id":5, "name": "ERROR-PS5"}' -H "Content-Type:application/json" h
 
 === Quarkus
 
-Example for a producer and consumer implemented with Quarkus.
+Example for a producer and consumer implemented with link:https://quarkus.io/guides/kafka[Quarkus extension for Apache Kafka].
 Every 1s a new message is sent to demo topic.
 
-Run on your local machine: 
+Run on local machine:
 
 [source,bash]
 ----

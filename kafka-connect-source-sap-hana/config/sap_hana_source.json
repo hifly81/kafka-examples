@@ -1,0 +1,19 @@
+{
+  "name": "sap-hana-source",
+  "config":
+  {
+    "topics": "testtopic",
+    "tasks.max": "1",
+    "connector.class": "com.sap.kafka.connect.source.hana.HANASourceConnector",
+    "connection.url": "jdbc:sap://sap:39041/?databaseName=HXE&reconnect=true&statementCacheSize=512",
+    "connection.user": "LOCALDEV",
+    "connection.password" : "Localdev1",
+    "value.converter.schema.registry.url": "http://schema-registry:8081",
+    "auto.create": "true",
+    "testtopic.table.name": "\"LOCALDEV\".\"TEST\"",
+    "key.converter": "io.confluent.connect.avro.AvroConverter",
+    "key.converter.schema.registry.url": "http://schema-registry:8081",
+    "value.converter": "io.confluent.connect.avro.AvroConverter",
+    "value.converter.schema.registry.url": "http://schema-registry:8081"
+  }
+}
