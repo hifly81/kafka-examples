@@ -3792,7 +3792,9 @@ scripts/tear-down-oauth.sh
 
 === Network bandwidth
 
-This scenario will show how to set network bandwidth quotas on principal (user).
+Folder: link:quotas/[quotas]
+
+This scenario will show how to set network bandwidth link:https://kafka.apache.org/documentation/#design_quotas[quotas] on principal (user).
 The scenario requires a listener with SASL_PLAIN authentication.
 
 Bootstrap will initialize a Prometheus server on port 9090 and a Grafana UI with Kafka Quota dashboard on port 3000.
@@ -3848,7 +3850,9 @@ scripts/tear-down-quotas.sh
 
 === Active/Active clusters with Mirror Maker v2
 
-Example of a Mirror Maker v2 configuration Active/Active
+Folder: link:mirror-maker2/[mirror-maker2]
+
+Example of a link:https://kafka.apache.org/documentation/#georeplication[Mirror Maker v2] configuration Active/Active.
 
 Run the example:
 
@@ -3859,7 +3863,7 @@ scripts/bootstrap-mm2.sh
 
 A source cluster on port 9092 and a destination cluster on port 9082 will be created.
 
-Create TopicA on source cluster and TopicB on destination cluster:
+Create _TopicA_ on source cluster and _TopicB_ on destination cluster:
 
 [source,bash]
 ----
@@ -3869,10 +3873,39 @@ docker exec broker-destination kafka-topics --bootstrap-server broker-destinatio
 
 Launch Mirror Maker, both directions:
 
- - source cluster is identified with name DC-X
- - destination cluster is identified with name DC-Y
- - TopicA will be copied on destination cluster with naming DC-X.TopicA
- - TopicB will be copied on source cluster with naming DC-Y.TopicB
+ - source cluster is identified with name _DC-X_
+ - destination cluster is identified with name _DC-Y_
+ - _TopicA_ will be copied on destination cluster with naming _DC-X.TopicA_
+ - _TopicB_ will be copied on source cluster with naming _DC-Y.TopicB_
+
+Mirror Maker link:mirror-maker2/config/mm2.properties[config]:
+
+[source,bash]
+----
+# specify any number of cluster aliases
+clusters=DC-X,DC-Y
+
+# connection information for each cluster
+DC-X.bootstrap.servers=broker:9092
+DC-Y.bootstrap.servers=broker-destination:9082
+
+# enable and configure individual replication flows
+DC-X->DC-Y.enabled = true
+DC-X->DC-Y.topics = TopicA
+DC-Y->DC-X.enabled = true
+DC-Y->DC-X.topics = TopicB
+
+# customize as needed
+sync.topic.acls.enabled=true
+sync.topic.configs.enabled=true
+
+offset.storage.replication.factor=1
+status.storage.replication.factor=1
+config.storage.replication.factor=1
+replication.factor = 1
+checkpoints.topic.replication.factor=1
+heartbeats.topic replication.factor=1
+----
 
 [source,bash]
 ----
@@ -3911,21 +3944,21 @@ mm2-offsets.DC-X.internal
 mm2-status.DC-X.internal
 ----
 
-Run Producer Perf Test on source cluster for TopicA:
+Run Producer Perf Test on source cluster for _TopicA_:
 
 [source,bash]
 ----
 docker exec broker kafka-producer-perf-test --topic TopicA --num-records 10000 --record-size 100 --throughput -1 --producer-props acks=1 bootstrap.servers=broker:9092 buffer.memory=67108864 batch.size=8196
 ----
 
-Run Producer Perf Test on destination cluster for TopicB:
+Run Producer Perf Test on destination cluster for _TopicB_:
 
 [source,bash]
 ----
 docker exec broker-destination kafka-producer-perf-test --topic TopicB --num-records 10000 --record-size 100 --throughput -1 --producer-props acks=1 bootstrap.servers=broker-destination:9082 buffer.memory=67108864 batch.size=8196
 ----
 
-Verify Topic message size for TopicA (source cluster) and for DCX.TopicA (destination cluster):
+Verify Topic message size for _TopicA_ (source cluster) and for _DCX.TopicA_ (destination cluster):
 
 [source,bash]
 ----
@@ -3937,7 +3970,7 @@ docker exec broker ls -ltr /tmp/kraft-combined-logs/TopicA-2
 docker exec broker-destination ls -ltr /tmp/kraft-combined-logs/DC-X.TopicA-2
 ----
 
-Verify Topic message size for TopicB (destination cluster) and for DCY.TopicB (source cluster):
+Verify Topic message size for _TopicB_ (destination cluster) and for _DCY.TopicB_ (source cluster):
 
 [source,bash]
 ----
