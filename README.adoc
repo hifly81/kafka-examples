@@ -3995,9 +3995,11 @@ scripts/tear-down-mm2.sh
 
 === JMX
 
+Folder: link:monitoring/[monitoring]
+
 Expose JMX port on components and test MBeans.
 
- - jmx port broker: 9101 bind localhost
+ - jmx port broker: 9101
 
 Start scenario:
 
@@ -4006,7 +4008,7 @@ Start scenario:
 scripts/bootstrap-monitoring.sh
 ----
 
-List all MBeans with jmxterm:
+List all MBeans with link:https://docs.cyclopsgroup.org/jmxterm[jmxterm]:
 
 [source,bash]
 ----
@@ -4068,21 +4070,23 @@ scripts/tear-down-monitoring.sh
 
 === Distributed Tracing with OpenTelemetry for Apache Kafka® applications
 
-This example shows how to configure OpenTelemetry java auto-instrumentation for a stream application enabling distributed tracing.
+Folder: link:kafka-distributed-tracing/[kafka-distributed-tracing]
+
+This example shows how to configure link:https://opentelemetry.io/docs/languages/java/[OpenTelemetry Java] auto-instrumentation for a stream application enabling distributed tracing.
 
 In this example it is used _opentelemetry-java-instrumentation_ to inject OpenTelemetry auto instrumentation as a JVM agent requiring no modifications at source code to add the traces.
 
 Producers, consumers and streams are part of the supported libraries as documented at
 link:https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/docs/supported-libraries.md#libraries--frameworks[OTEL Java documentation]
 
-Run OpenTelemetry collector (otlp protocol on port 4317) and Jaeger (on port 16686):
+Run OpenTelemetry collector (otlp protocol on port 4317) and link:https://www.jaegertracing.io/[Jaeger] (on port 16686):
 
 [source,bash]
 ----
 scripts/bootstrap-tracing.sh
 ----
 
-Create topics:
+Create _sum-input-topic_ and _sum-output-topic_ topics:
 
 [source,bash]
 ----
@@ -4104,7 +4108,7 @@ export OTEL_TRACES_EXPORTER=otlp
 java -javaagent:kafka-distributed-tracing/app/opentelemetry-javaagent.jar -Dotel.instrumentation.messaging.experimental.receive-telemetry.enabled=true -jar kafka-streams/target/kafka-streams-1.2.1.jar
 ----
 
-Send messages to input topics:
+Send messages to _sum-input-topic_ input topics:
 
 [source,bash]
 ----
@@ -4114,14 +4118,14 @@ docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic 
 "John":5
 ----
 
-Read from output topic:
+Read from _sum-output-topic_ topic:
 
 [source,bash]
 ----
 docker exec -it broker kafka-console-consumer --topic sum-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : " --value-deserializer "org.apache.kafka.common.serialization.IntegerDeserializer"
 ----
 
-Open the JaegerUI on http://localhost:16686 and you will have a list of traces from the streaming application.
+Open the JaegerUI on http://localhost:16686, you will have a list of traces from the streaming application.
 
 .List of traces in Jaeger UI
 image::images/traces.png[Traces]
@@ -4136,6 +4140,8 @@ scripts/tear-down-tracing.sh
 <<<
 
 == Performance
+
+Folder: link:performance/[performance]
 
 === Specs
 
@@ -4192,7 +4198,7 @@ scripts/bootstrap-performance.sh
 
 ==== Effects with compression
 
-Create a topic:
+Create a _topic-perf_ topic:
 
 [source,bash]
 ----
@@ -4308,6 +4314,8 @@ scripts/tear-down-performance.sh
 
 == Proxy
 
+Folder: link:proxy/[proxy]
+
 This sample program written in _golang_ shows how to create a TCP proxy for Apache Kafka®.
 
 IMPORTANT: this proxy is not intended to be used in production
@@ -4344,6 +4352,8 @@ scripts/tear-down.sh
 
 == UDP Proxy
 
+Folder: link:udp-proxy/[udp-proxy]
+
 This example will show how to send UDP packets to a kafka topic.
 
 Run UDP Proxy:
@@ -4377,14 +4387,15 @@ Teardown:
 stop.sh
 ----
 
-
 == Large objects
 
 === Claim Check Pattern
 
-In this example, kafka messages will be produced to a topic named _items_. Messages contain a field named _url_ with a reference for the object stored in _MinIO_.
+Folder: link:claim-check/[claim-check]
 
-This pattern is known as Claim Check; you can find more details on:
+In this example, kafka messages will be produced to a topic named _items_. Messages contain a field named _url_ with a reference for the object stored in link:https://min.io/[_MinIO_].
+
+This pattern is known as link:https://www.enterpriseintegrationpatterns.com/patterns/messaging/StoreInLibrary.html[Claim Check]; you can find more details on:
 https://developer.confluent.io/patterns/event-processing/claim-check/
 
 Run the components:
