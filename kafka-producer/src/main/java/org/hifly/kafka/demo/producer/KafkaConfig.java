@@ -1,14 +1,10 @@
 package org.hifly.kafka.demo.producer;
 
-import com.hortonworks.registries.schemaregistry.serdes.avro.kafka.KafkaAvroSerializer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Properties;
 
 public class KafkaConfig {
@@ -24,15 +20,16 @@ public class KafkaConfig {
 
 
     public static Properties loadConfig(final String configFile) throws IOException {
-        if (!Files.exists(Paths.get(configFile))) {
-            throw new IOException(configFile + " not found.");
-        }
         final Properties cfg = new Properties();
-        try (InputStream inputStream = new FileInputStream(configFile)) {
+
+        ClassLoader classLoader = KafkaConfig.class.getClassLoader();
+        InputStream inputStream = classLoader.getResourceAsStream(configFile);
+
+        if (inputStream == null) {
+            throw new IllegalArgumentException("file not found! " + configFile);
+        } else {
             cfg.load(inputStream);
         }
-
-        cfg.put("acks", "all");
 
         return cfg;
     }
