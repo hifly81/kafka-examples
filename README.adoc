@@ -2351,6 +2351,8 @@ docker exec -it postgres psql -h localhost -p 5432 -U postgres -c 'select * from
 ---------+----------+----------+--------------+----------------------------+----------------------------
        1 | foo      | bar      | foo@bar.com  | 2023-10-16 10:48:08.595034 | 2023-10-16 10:48:08.595034
        2 | foo2     | bar2     | foo2@bar.com | 2023-10-16 10:48:08.596646 | 2023-10-16 10:48:08.596646
+       3 | foo3     | bar3     | foo3@bar.com | 2023-10-16 10:51:22.671384 | 2023-10-16 10:51:22.671384
+       4 | foo4     | bar4     | foo4@bar.com | 2024-02-28 12:12:08.665137 | 2024-02-28 12:12:08.665137
 ----
 
 Deploy the connector:
@@ -2426,6 +2428,21 @@ Run a consumer on _test.informix.cust_db_ topic and see the records (expect to s
 [source,bash]
 ----
 kafka-avro-console-consumer --bootstrap-server localhost:9092 --from-beginning --topic test.informix.cust_db --property schema.registry.url=http://localhost:8081
+----
+
+[source,bash]
+----
+{"before":null,"after":{"test.informix.cust_db.Value":{"c_key":"\u0004W","c_status":{"string":"Z"},"c_date":{"int":19100}}},"source":{"version":"2.6.1.Final","connector":"informix","name":"test","ts_ms":1713272938000,"snapshot":{"string":"first"},"db":"iot","sequence":null,"ts_us":1713272938000000,"ts_ns":1713272938000000000,"schema":"informix","table":"cust_db","commit_lsn":{"string":"21484679168"},"change_lsn":null,"txId":null,"begin_lsn":null},"op":"r","ts_ms":{"long":1713272939104},"ts_us":{"long":1713272939104761},"ts_ns":{"long":1713272939104761000},"transaction":null}
+
+{"before":null,"after":{"test.informix.cust_db.Value":{"c_key":"\b®","c_status":{"string":"Z"},"c_date":{"int":18735}}},"source":{"version":"2.6.1.Final","connector":"informix","name":"test","ts_ms":1713272938000,"snapshot":{"string":"true"},"db":"iot","sequence":null,"ts_us":1713272938000000,"ts_ns":1713272938000000000,"schema":"informix","table":"cust_db","commit_lsn":{"string":"21484679168"},"change_lsn":null,"txId":null,"begin_lsn":null},"op":"r","ts_ms":{"long":1713272939105},"ts_us":{"long":1713272939105769},"ts_ns":{"long":1713272939105769000},"transaction":null}
+
+{"before":null,"after":{"test.informix.cust_db.Value":{"c_key":"\r\u0005","c_status":{"string":"Z"},"c_date":{"int":18370}}},"source":{"version":"2.6.1.Final","connector":"informix","name":"test","ts_ms":1713272938000,"snapshot":{"string":"true"},"db":"iot","sequence":null,"ts_us":1713272938000000,"ts_ns":1713272938000000000,"schema":"informix","table":"cust_db","commit_lsn":{"string":"21484679168"},"change_lsn":null,"txId":null,"begin_lsn":null},"op":"r","ts_ms":{"long":1713272939105},"ts_us":{"long":1713272939105848},"ts_ns":{"long":1713272939105848000},"transaction":null}
+
+{"before":null,"after":{"test.informix.cust_db.Value":{"c_key":"\u0011\\","c_status":{"string":"Z"},"c_date":{"int":18004}}},"source":{"version":"2.6.1.Final","connector":"informix","name":"test","ts_ms":1713272938000,"snapshot":{"string":"true"},"db":"iot","sequence":null,"ts_us":1713272938000000,"ts_ns":1713272938000000000,"schema":"informix","table":"cust_db","commit_lsn":{"string":"21484679168"},"change_lsn":null,"txId":null,"begin_lsn":null},"op":"r","ts_ms":{"long":1713272939105},"ts_us":{"long":1713272939105931},"ts_ns":{"long":1713272939105931000},"transaction":null}
+
+{"before":null,"after":{"test.informix.cust_db.Value":{"c_key":"\u0015³","c_status":{"string":"Z"},"c_date":{"int":17639}}},"source":{"version":"2.6.1.Final","connector":"informix","name":"test","ts_ms":1713272938000,"snapshot":{"string":"true"},"db":"iot","sequence":null,"ts_us":1713272938000000,"ts_ns":1713272938000000000,"schema":"informix","table":"cust_db","commit_lsn":{"string":"21484679168"},"change_lsn":null,"txId":null,"begin_lsn":null},"op":"r","ts_ms":{"long":1713272939105},"ts_us":{"long":1713272939105984},"ts_ns":{"long":1713272939105984000},"transaction":null}
+
+{"before":null,"after":{"test.informix.cust_db.Value":{"c_key":"\u001A\n","c_status":{"string":"Z"},"c_date":{"int":17274}}},"source":{"version":"2.6.1.Final","connector":"informix","name":"test","ts_ms":1713272938000,"snapshot":{"string":"last"},"db":"iot","sequence":null,"ts_us":1713272938000000,"ts_ns":1713272938000000000,"schema":"informix","table":"cust_db","commit_lsn":{"string":"21484679168"},"change_lsn":null,"txId":null,"begin_lsn":null},"op":"r","ts_ms":{"long":1713272939106},"ts_us":{"long":1713272939106252},"ts_ns":{"long":1713272939106252000},"transaction":null}
 ----
 
 Teardown:
