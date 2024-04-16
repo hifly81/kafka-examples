@@ -2390,6 +2390,51 @@ Teardown:
 scripts/tear-down-cdc.sh
 ----
 
+=== CDC with Debezium Informix Source Connector
+
+Folder: link:cdc-debezium-informix/[cdc-debezium-informix]
+
+Usage of link:https://debezium.io/documentation/reference/stable/connectors/informix.html[Debezium Source Connector for Informix] to send RDMS table updates into a topic.
+
+Run environment:
+
+[source,bash]
+----
+scripts/bootstrap-cdc-informix.sh
+----
+
+Perform the following tasks to prepare for using the Change Data Capture API and create tables on _iot_ database:
+
+[source,bash]
+----
+docker exec -it ifx /bin/bash
+export DBDATE=Y4MD
+dbaccess iot /opt/ibm/informix/etc/syscdcv1.sql
+dbaccess iot /tmp/informix_ddl_sample.sql
+exit
+----
+
+Deploy the connector:
+
+[source,bash]
+----
+curl -v -X POST -H 'Content-Type: application/json' -d @cdc-debezium-informix/config/debezium-source-informix.json http://localhost:8083/connectors
+----
+
+Run a consumer on _test.informix.cust_db_ topic and see the records (expect to see 6 records):
+
+[source,bash]
+----
+kafka-avro-console-consumer --bootstrap-server localhost:9092 --from-beginning --topic test.informix.cust_db --property schema.registry.url=http://localhost:8081
+----
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-cdc-informix.sh
+----
+
 === Tasks distributions using a Datagen Source Connector
 
 Folder: link:kafka-connect-task-distribution/[kafka-connect-task-distribution]

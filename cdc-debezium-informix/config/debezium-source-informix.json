@@ -1,0 +1,15 @@
+{
+  "name": "informix-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.informix.InformixConnector",
+    "database.hostname": "ifx",
+    "database.port": "9088",
+    "database.user": "informix",
+    "database.password": "in4mix",
+    "database.dbname": "iot",
+    "topic.prefix": "test",
+    "table.include.list": "iot.informix.cust_db",
+    "schema.history.internal.kafka.bootstrap.servers": "broker:9092",
+    "schema.history.internal.kafka.topic": "schemahistory.test"
+  }
+}
