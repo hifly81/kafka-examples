@@ -7,3 +7,4 @@ echo "Stopping ifx.."
 docker rm -f ifx
 
 rm -rf cdc-debezium-informix/jars/debezium-connector-informix
+rm -rf cdc-debezium-informix/jars/debezium-connector-informix-2.6.1.Final-plugin.tar.gz

@@ -3,6 +3,7 @@
 sh scripts/tear-down-cdc-informix.sh
 
 echo "Building Informix Kafka Connector..."
+wget https://repo1.maven.org/maven2/io/debezium/debezium-connector-informix/2.6.1.Final/debezium-connector-informix-2.6.1.Final-plugin.tar.gz -O cdc-debezium-informix/jars/debezium-connector-informix-2.6.1.Final-plugin.tar.gz
 tar xvf cdc-debezium-informix/jars/debezium-connector-informix-2.6.1.Final-plugin.tar.gz -C cdc-debezium-informix/jars/
 mkdir -p cdc-debezium-informix/jars/debezium-connector-informix/lib
 mv cdc-debezium-informix/jars/debezium-connector-informix/*.jar cdc-debezium-informix/jars/debezium-connector-informix/lib
