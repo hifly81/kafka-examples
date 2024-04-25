@@ -10,6 +10,8 @@
     "topic.prefix": "test",
     "table.include.list": "iot.informix.cust_db",
     "schema.history.internal.kafka.bootstrap.servers": "broker:9092",
-    "schema.history.internal.kafka.topic": "schemahistory.test"
+    "schema.history.internal.kafka.topic": "schemahistory.test",
+    "schema.history.internal.store.only.captured.tables.ddl": "true",
+    "snapshot.mode": "always"
   }
 }

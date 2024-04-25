@@ -1,7 +1,7 @@
 = Practical examples with Apache Kafka®
 :author: Giovanni Marigi
 :email: gio.marigi@gmail.com
-:revdate: Febraury 28, 2024
+:revdate: April 16, 2024
 :revnumber: 1.2.1
 :version-label!:
 :toc: left
@@ -259,6 +259,7 @@ Topic create:
 ----
 kubectl exec --stdin --tty kafka-0 -- /bin/bash
 kafka-topics --bootstrap-server localhost:9092 --create --topic test-1
+exit
 ----
 
 Topic list:
@@ -267,6 +268,7 @@ Topic list:
 ----
 kubectl exec --stdin --tty kafka-0 -- /bin/bash
 kafka-topics --bootstrap-server localhost:9092 --list
+exit
 ----
 
 Topic describe:
@@ -275,6 +277,7 @@ Topic describe:
 ----
 kubectl exec --stdin --tty kafka-0 -- /bin/bash
 kafka-topics --bootstrap-server localhost:9092 --topic test-1 --describe
+exit
 ----
 
 Produce messages to Topic:
@@ -283,6 +286,7 @@ Produce messages to Topic:
 ----
 kubectl exec --stdin --tty kafka-0 -- /bin/bash
 kafka-producer-perf-test --num-records 1000000 --record-size 1000 --throughput -1 --topic test-1 --producer-props bootstrap.servers=localhost:9092
+exit
 ----
 
 Consume messages from Topic:
@@ -291,6 +295,7 @@ Consume messages from Topic:
 ----
 kubectl exec --stdin --tty kafka-0 -- /bin/bash
 kafka-console-consumer --bootstrap-server localhost:9092 --topic test-1 --from-beginning
+exit
 ----
 
 ==== Tear Down
@@ -470,7 +475,7 @@ LogAppendTime:1697359857981	BIQAWWOIFIAKNYFEPTPMIXPQAXFEIKUFFXIDHILBPCBTHWDRMALH
 
 Folder link:interceptors/[interceptors/]
 
-This example shows how to create a custom producer interceptor. Java class link:interceptors/src/main/java/org/hifly/kafka/interceptor/producer/CreditCardProducerInterceptor.java[_CreditCardProducerInterceptor_] will mask a sensitive info on producer record (credit card).
+This example shows how to create a custom producer interceptor. Java class link:interceptors/src/main/java/org/hifly/kafka/interceptor/producer/CreditCardProducerInterceptor.java[_CreditCardProducerInterceptor_] will mask a sensitive info on producer record (credit card number).
 
 Compile and package:
 
@@ -506,7 +511,7 @@ Topic: test_custom_data - Partition: 0 - Offset: 1
 
 Folder link:kafka-python-producer/[kafka-python-producer/]
 
-Install python lib link:https://docs.confluent.io/kafka-clients/python/current/overview.html[_confluent-kafka_]:
+Install confluent-kafka-python lib link:https://docs.confluent.io/kafka-clients/python/current/overview.html[_confluent-kafka_]:
 
 [source,bash]
 ----
@@ -520,7 +525,7 @@ or:
 python3 -m pip install confluent-kafka
 ----
 
-Create "kafka-topic" topic:
+Create _kafka-topic_ topic:
 
 [source,bash]
 ----
@@ -618,7 +623,7 @@ docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:
 docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic users_clicks --replication-factor 1 --partitions 3
 ----
 
-Run 2 consumer instances (2 different shells/terminals) belonging to the same group and subscribed to _user_ and _user_clicks_ topics. Consumers uses
+Run 2 consumer instances (2 different shells/terminals) belonging to the same consumer group and subscribed to _user_ and _user_clicks_ topics. Consumers uses
 link:https://kafka.apache.org/37/javadoc/org/apache/kafka/clients/consumer/RangeAssignor.html[_org.apache.kafka.clients.consumer.RangeAssignor_] to distribute partition ownership.
 
 [source,bash]
@@ -656,7 +661,7 @@ docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:
 docker exec -it broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic users_clicks --replication-factor 1 --partitions 3
 ----
 
-Run 2 consumer instances (2 different shells/terminals) belonging to the same group and subscribed to _user_ and _user_clicks_ topics; consumers uses
+Run 2 consumer instances (2 different shells/terminals) belonging to the same consumer group and subscribed to _user_ and _user_clicks_ topics; consumers uses
 link:https://kafka.apache.org/37/javadoc/org/apache/kafka/clients/consumer/RoundRobinAssignor.html[_org.apache.kafka.clients.consumer.RoundRobinAssignor_] to distribute partition ownership.
 
 [source,bash]
@@ -730,7 +735,7 @@ Try to shut down consumer instances (CTRL+C) and then re-start them again; verif
 
 === Read from the closest replica
 
-This example shows how to use the feature (since Apache Kafka® 2.4+) for consumers to read messages from the closest replica.
+This example shows how to use the feature (since Apache Kafka® 2.4+) for consumers to read messages from the closest replica, even if it is not a leader of the partition.
 
 Start a cluster with 3 brokers on 3 different racks, _dc1_, _dc2_ and _dc3_:
 
@@ -798,7 +803,7 @@ Folder link:kafka-consumer-retry-topics/[kafka-consumer-retry-topics/]
 This solution could be implemented on consumer side to handle errors in processing records without blocking the input topic.
 
  . Consumer processes records and commit the offset (_auto-commit_).
- . If a record can't be processed _(simple condition here is the existence of a specific HEADER)_, it is sent to a retry topic, if the number of retries is not yet exhausted.
+ . If a record can't be processed _(simple condition here to raise an error, is the existence of a specific message HEADER named ERROR)_, it is sent to a retry topic, if the number of retries is not yet exhausted.
  . When the number of retries is exhausted, record is sent to a DLQ topic.
  . Number of retries is set at Consumer instance level.
 
@@ -884,7 +889,7 @@ Consumer 23d06b51-5780-4efc-9c33-a93b3caa3b48 - partition 0 - lastOffset 1
 
 Folder link:kafka-python-consumer/[kafka-python-consumer/]
 
-Install python lib link:https://docs.confluent.io/kafka-clients/python/current/overview.html[_confluent-kafka_]:
+Install confluent kafka python lib link:https://docs.confluent.io/kafka-clients/python/current/overview.html[_confluent-kafka_]:
 
 [source,bash]
 ----
@@ -984,7 +989,7 @@ Folder link:compression/[compression/]
 This example will show that messages sent to the same topic with different _compression.type_.
 Messages with different compression can be read by the same consumer instance.
 
-Compressions supported on producer side are:
+Compressions supported on producer are:
 
  - _none_ (no compression)
  - _gzip_
@@ -1672,9 +1677,9 @@ Folder: link:kafka-unixcommand-connector/[kafka-unixcommand-connector]
 
 Implementation of a sample Kafka Connect Source Connector; it executes _unix commands_ (e.g. _fortune_, _ls -ltr, netstat_) and sends its output to a topic.
 
-IMPORTANT: commands are executed on connect worker node.
+IMPORTANT: unix commands are executed on connect worker node.
 
-This connector relies on Confluent Schema Registry to convert Avro messages using converter:
+This connector relies on Confluent Schema Registry to convert messages using an Avro converter:
 link:https://github.com/confluentinc/schema-registry/blob/master/avro-converter/src/main/java/io/confluent/connect/avro/AvroConverter.java[_io.confluent.connect.avro.AvroConverter_].
 
 Connector link:kafka-unixcommand-connector/config/source.quickstart.json[source.quickstart.json]:
@@ -1695,7 +1700,7 @@ Connector link:kafka-unixcommand-connector/config/source.quickstart.json[source.
 
 Parameters for source connector:
 
-- _command_ – unix command to execute (e.g. ls -ltr)
+- _command_ – unix command to execute (e.g. ls -ltr, fortune)
 - _topic_ – output topic
 - _poll.ms_ – poll interval in milliseconds between every execution
 
@@ -1716,7 +1721,7 @@ scripts/bootstrap-unixcommand-connector.sh
 
 This will create an image based on link:https://hub.docker.com/r/confluentinc/cp-kafka-connect-base/tags[_confluentinc/cp-kafka-connect-base_] using a custom link:kafka-unixcommand-connector/Dockerfile[_Dockerfile_].
 
-It will use the Confluent utility link:https://docs.confluent.io/kafka-connectors/confluent-hub/client.html[_confluent-hub install_] to install the plugin in connect.
+It will use the confluent-hub utility link:https://docs.confluent.io/kafka-connectors/confluent-hub/client.html[_confluent-hub install_] to install the plugin in connect.
 
 
 Deploy the connector:
@@ -1794,7 +1799,7 @@ A MongoDB sink connector will be created with this link:kafka-smt-custom/config/
 
 Original json messages will be sent to _test_ topic.
 
-Sink connector will apply the SMT and store the records in MongoDB _pets_ collection from _Tutorial2_ database.
+Sink connector will apply the SMT and store the records in MongoDB _pets_ collection from _Tutorial2_ database, using a key generated by the SMT.
 
 Teardown:
 
@@ -1944,7 +1949,7 @@ A MongoDB sink connector will be created with this link:kafka-connect-sink-dlq/c
 }
 ----
 
-Send json messages to _test_ topic (second message is a bad json message):
+Send json messages to _test_ topic (second message is a malformed json message):
 
 [source,bash]
 ----
@@ -1990,7 +1995,7 @@ Run the example:
 scripts/bootstrap-connect-sink-http.sh
 ----
 
-A web application listening on port _8010_ will start up.
+A web application, exposing REST APIs, listening on port _8010_ will start up.
 
 A HTTP sink connector will be created with this link:kafka-connect-sink-http/config/http_sink.json[config]:
 
@@ -2074,7 +2079,7 @@ A S3 sink connector will be created with this link:kafka-connect-sink-s3/config/
 }
 ----
 
-Sink connector will read messages from topic _gaming-player-activity_ and store in S3 bucket _gaming-player-activity-bucket_ using _io.confluent.connect.s3.format.avro.AvroFormat_ as format class.
+Sink connector will read messages from topic _gaming-player-activity_ and store them in a S3 bucket _gaming-player-activity-bucket_ using _io.confluent.connect.s3.format.avro.AvroFormat_ as format class.
 
 Sink connector will generate a new object storage entry every 100 messages (_flush_size_).
 
@@ -2100,7 +2105,7 @@ scripts/tear-down-connect-sink-s3.sh
 
 ==== Parquet format
 
-Same example but Sink connector will read Avro messages from topic _gaming-player-activity_ and store them in S3 bucket _gaming-player-activity-bucket_ using _io.confluent.connect.s3.format.parquet.ParquetFormat_ as format class.
+Same example but Sink connector will read Avro messages from topic _gaming-player-activity_ and store them in a S3 bucket _gaming-player-activity-bucket_ using _io.confluent.connect.s3.format.parquet.ParquetFormat_ as format class.
 
 The format of data stored in MinIO will be Parquet.
 
@@ -2218,15 +2223,15 @@ scripts/tear-down-connect-source-sap-hana.sh
 
 Folder: link:kafka-connect-source-event-router/[kafka-connect-source-event-router]
 
-In this example, some SMT transformations (in chain) are used to create an Event Router starting from an input _outbox table_.
+In this example, some SMT transformations (chained) are used to create an Event Router starting from an input _outbox table_.
 
-The outbox table contains different operations for the same aggregate (_Consumer Loan_); the different operations are sent on specific topics following this routing:
+The outbox table contains different operations for the same aggregate (_Consumer Loan_); the different operations are sent on specific topics following these routing rules:
 
  - operation: CREATE --> topic: _loan_
  - operation: INSTALLMENT_PAYMENT --> topic: _loan_payment_
  - operation: EARLY_LOAN_CLOSURE --> topic: _loan_
 
-Records from the outbox table are fetched using a jdbc source connector.
+Records from the outbox table are fetched using a JDBC Source Connector.
 
 Run the example:
 
