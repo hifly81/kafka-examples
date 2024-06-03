@@ -4,14 +4,20 @@
     "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
     "topics": "test",
     "connection.uri": "mongodb://admin:password@mongo:27017",
-    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "key.converter": "org.hifly.kafka.OracleRawToBsonKeyConverter ",
     "value.converter": "org.apache.kafka.connect.json.JsonConverter",
-    "key.converter.schemas.enable": false,
-    "value.converter.schemas.enable": false,
+    "key.converter.schemas.enable": "false",
+    "value.converter.schemas.enable": "false",
     "database": "Tutorial2",
     "collection": "pets",
     "errors.tolerance": "all",
     "errors.deadletterqueue.topic.name":"dlq.mongo",
-    "errors.deadletterqueue.topic.replication.factor": 1
+    "errors.deadletterqueue.topic.replication.factor": 1,
+    "mongo.errors.log.enable": "true",
+    "delete.on.null.values": "true",
+    "document.id.strategy.overwrite.existing": "true",
+    "document.id.strategy": "com.mongodb.kafka.connect.sink.processor.id.strategy.FullKeyStrategy",
+    "delete.writemodel.strategy": "com.mongodb.kafka.connect.sink.writemodel.strategy.DeleteOneDefaultStrategy",
+    "publish.full.document.only": "true"
   }
 }

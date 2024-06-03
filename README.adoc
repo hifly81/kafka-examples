@@ -1901,7 +1901,11 @@ scripts/tear-down-smt-aspectj.sh
 
 Folder: link:kafka-connect-sink-dlq[kafka-connect-sink-dlq]
 
-link:https://www.mongodb.com/docs/kafka-connector/current/sink-connector/[MongoDB sink connector] example configured to send bad messages to a DLQ topic named _dlq.mongo_
+link:https://www.mongodb.com/docs/kafka-connector/current/sink-connector/[MongoDB sink connector] example configured to send bad messages to a DLQ topic named _dlq.mongo_.
+
+MongoDB Sink Connector has been configured to use a link:https://www.mongodb.com/docs/kafka-connector/current/sink-connector/configuration-properties/id-strategy/[id strategy] to determine the __id_ value for each document.
+
+MongoDB Sink Connector has been configured to use a link:https://www.mongodb.com/docs/kafka-connector/current/sink-connector/configuration-properties/write-strategies/#delete-write-model[delete strategy] when it receives a tombstone event.
 
 Run the example:
 
