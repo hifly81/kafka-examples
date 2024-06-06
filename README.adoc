@@ -210,7 +210,7 @@ helm repo update
 
 [source,bash]
 ----
-helm upgrade --install confluent-operator confluentinc/confluent-for-kubernetes
+helm upgrade --install confluent-operator confluentinc/confluent-for-kubernetes --set kRaftEnabled=true
 ----
 
 ==== Deploy Confluent components
