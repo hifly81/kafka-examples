@@ -1,16 +1,15 @@
 ---
 apiVersion: platform.confluent.io/v1beta1
-kind: Zookeeper
+kind: KRaftController
 metadata:
-  name: zookeeper
+  name: kraftcontroller
   namespace: confluent
 spec:
-  replicas: 1
+  dataVolumeCapacity: 1G
   image:
-    application: confluentinc/cp-zookeeper:7.6.1
+    application: docker.io/confluentinc/cp-server:7.6.1
     init: confluentinc/confluent-init-container:2.8.2
-  dataVolumeCapacity: 1Gi
-  logVolumeCapacity: 1Gi
+  replicas: 1
 ---
 apiVersion: platform.confluent.io/v1beta1
 kind: Kafka
@@ -23,6 +22,10 @@ spec:
     application: confluentinc/cp-kafka:7.6.1
     init: confluentinc/confluent-init-container:2.8.2
   dataVolumeCapacity: 1Gi
+  dependencies:
+    kRaftController:
+      clusterRef:
+        name: kraftcontroller
   metricReporter:
     enabled: false
 ---
