@@ -4312,13 +4312,11 @@ Docker containers can be configured for RAM and CPU limits using:
     ...
 ----
 
-=== Producer
-
-Usage of utility _kafka-producer-perf-test_ to test producer performances for java applications.
+=== Test machine
 
 Cluster is formed with 3 brokers (9092, 9093, 9094).
 
-1 performance machine, named _kafka_perf_ is used to run _kafka-producer-perf-test_ against the kafka cluster.
+1 test machine, named _kafka_perf_ against the kafka cluster.
 
 Run the components and _kafka_perf_ machine:
 
@@ -4327,20 +4325,107 @@ Run the components and _kafka_perf_ machine:
 scripts/bootstrap-performance.sh
 ----
 
-==== Effects with compression
+=== Trogdor
 
-Create a _topic-perf_ topic:
+Tests will run using link:https://github.com/a0x8o/kafka/blob/master/TROGDOR.md[Trogdor], a test framework for Apache Kafka.
+
+Trogdor requires:
+
+ - a coordinator running on a test machine, it manages multiple agent processes
+ - an agent running on each broker machine. Each agent process is responsible for a single cluster node
+
+Start Agents:
 
 [source,bash]
 ----
-docker exec kafka-perf sh kafka-topics.sh --bootstrap-server broker:9092,broker2:9093,broker3:9094 --create --topic topic-perf --replication-factor 3 --partitions 6 --config min.insync.replicas=2
+docker exec broker sh /tmp/trogdor/agent/trogdor-agent.sh
 ----
 
-Run a scenario with:
+[source,bash]
+----
+docker exec broker2 sh /tmp/trogdor/agent/trogdor-agent.sh
+----
 
- - 10000 records
+[source,bash]
+----
+docker exec broker3 sh /tmp/trogdor/agent/trogdor-agent.sh
+----
+
+Agent logs will be stored in file _/home/appuser/trogdor-agent.log_ on each broker machine.
+
+Start Coordinator:
+
+[source,bash]
+----
+docker exec kafka-perf sh /tmp/trogdor/coordinator/trogdor-coordinator.sh
+----
+
+Coordinator logs will be stored in file _/tmp/trogdor/coordinator/trogdor-coordinator/trogdor-coordinator.log_ on kafka-perf machine.
+
+==== Effects with compression
+
+===== No Compression
+
+Run a link:https://github.com/a0x8o/kafka/blob/master/TROGDOR.md#roundtripworkload[RoundTripWorkload] scenario with:
+
+ - 10000 messages on each broker for a total of 30000 messages
+ - 200 messages per second on each broker for a total of 600 messages per second
  - record size 2k
+ - test duration 1 minute
  - no compression
+ - producer batch size set to 16k
+ - producer linger.ms set to 10
+
+Connect to the Coordinator:
+
+[source,bash]
+----
+docker exec -it kafka-perf /bin/bash
+cd /tmp/trogdor/coordinator/compression/nocompression/
+----
+
+Run the test:
+----
+[source,bash]
+./trogdor-task.sh
+----
+
+Check the status and results:
+
+[source,bash]
+----
+./trogdor-task-status.sh
+----
+
+[source,bash]
+----
+Task node-0 of type org.apache.kafka.trogdor.workload.RoundTripWorkloadSpec is DONE. FINISHED at 2024-07-09T11:17:27.906Z after 52s
+Status: {
+"totalUniqueSent" : 10000,
+"totalReceived" : 10000
+}
+
+Task node-1 of type org.apache.kafka.trogdor.workload.RoundTripWorkloadSpec is DONE. FINISHED at 2024-07-09T11:17:27.763Z after 51s
+Status: {
+"totalUniqueSent" : 10000,
+"totalReceived" : 10000
+}
+
+Task node-2 of type org.apache.kafka.trogdor.workload.RoundTripWorkloadSpec is DONE. FINISHED at 2024-07-09T11:17:28.461Z after 51s
+Status: {
+"totalUniqueSent" : 10000,
+"totalReceived" : 10000
+}
+----
+
+Cancel the tasks:
+
+[source,bash]
+----
+./trogdor-task-cancel.sh
+----
+
+Alternative: you can run _kafka-producer-perf-test_ tool instead of trogdor and test the scenario:
 
 [source,bash]
 ----
@@ -4356,11 +4441,68 @@ producer-metrics:outgoing-byte-rate:{client-id=perf-producer-client}            
 producer-metrics:request-latency-avg:{client-id=perf-producer-client}                        : 36.831
 ----
 
-Run a scenario with:
+===== lz4
 
-- 10000 records
+Run a link:https://github.com/a0x8o/kafka/blob/master/TROGDOR.md#roundtripworkload[RoundTripWorkload] scenario with:
+
+- 10000 messages on each broker for a total of 30000 messages
+- 200 messages per second on each broker for a total of 600 messages per second
 - record size 2k
+- test duration 1 minute
 - lz4 compression
+- producer batch size set to 16k
+- producer linger.ms set to 10
+
+Connect to the Coordinator:
+
+[source,bash]
+----
+docker exec -it kafka-perf /bin/bash
+cd /tmp/trogdor/coordinator/compression/lz4/
+----
+
+Run the test:
+----
+[source,bash]
+./trogdor-task.sh
+----
+
+Check the status and results:
+
+[source,bash]
+----
+./trogdor-task-status.sh
+----
+
+[source,bash]
+----
+Task node-0 of type org.apache.kafka.trogdor.workload.RoundTripWorkloadSpec is DONE. FINISHED at 2024-07-09T11:17:27.906Z after 52s
+Status: {
+"totalUniqueSent" : 10000,
+"totalReceived" : 10000
+}
+
+Task node-1 of type org.apache.kafka.trogdor.workload.RoundTripWorkloadSpec is DONE. FINISHED at 2024-07-09T11:17:27.763Z after 51s
+Status: {
+"totalUniqueSent" : 10000,
+"totalReceived" : 10000
+}
+
+Task node-2 of type org.apache.kafka.trogdor.workload.RoundTripWorkloadSpec is DONE. FINISHED at 2024-07-09T11:17:28.461Z after 51s
+Status: {
+"totalUniqueSent" : 10000,
+"totalReceived" : 10000
+}
+----
+
+Cancel the tasks:
+
+[source,bash]
+----
+./trogdor-task-cancel.sh
+----
+
+Alternative: you can run _kafka-producer-perf-test_ tool instead of trogdor and test the scenario:
 
 [source,bash]
 ----
@@ -4376,65 +4518,6 @@ producer-metrics:outgoing-byte-rate:{client-id=perf-producer-client}            
 producer-metrics:request-latency-avg:{client-id=perf-producer-client}                        : 19.609
 ----
 
-Run a scenario with:
-
-- 10000 records
-- record size 2k
-- gzip compression
-
-[source,bash]
-----
-docker exec kafka-perf sh kafka-producer-perf-test.sh --topic topic-perf --num-records 10000 --record-size 2000 --throughput -1 --producer-props bootstrap.servers=broker:9092,broker2:9093,broker3:9094 compression.type=gzip --print-metrics
-----
-
-[source,bash]
-----
-10000 records sent, 8904.719501 records/sec (16.98 MB/sec), 13.40 ms avg latency, 249.00 ms max latency, 12 ms 50th, 27 ms 95th, 35 ms 99th, 44 ms 99.9th.
-producer-metrics:batch-size-avg:{client-id=perf-producer-client}                             : 13152.898
-producer-metrics:compression-rate-avg:{client-id=perf-producer-client}                       : 0.631
-producer-metrics:outgoing-byte-rate:{client-id=perf-producer-client}                         : 412718.405
-producer-metrics:request-latency-avg:{client-id=perf-producer-client}                        : 9.295
-----
-
-Run a scenario with:
-
-- 10000 records
-- record size 2k
-- snappy compression
-
-[source,bash]
-----
-docker exec kafka-perf sh kafka-producer-perf-test.sh --topic topic-perf --num-records 10000 --record-size 2000 --throughput -1 --producer-props bootstrap.servers=broker:9092,broker2:9093,broker3:9094 compression.type=snappy --print-metrics
-----
-
-[source,bash]
-----
-10000 records sent, 11123.470523 records/sec (21.22 MB/sec), 214.26 ms avg latency, 366.00 ms max latency, 225 ms 50th, 346 ms 95th, 357 ms 99th, 365 ms 99.9th.
-producer-metrics:batch-size-avg:{client-id=perf-producer-client}                             : 14144.871
-producer-metrics:compression-rate-avg:{client-id=perf-producer-client}                       : 1.002
-producer-metrics:outgoing-byte-rate:{client-id=perf-producer-client}                         : 658886.364
-producer-metrics:request-latency-avg:{client-id=perf-producer-client}                        : 12.776
-----
-
-Run a scenario with:
-
-- 10000 records
-- record size 2k
-- zstd compression
-
-[source,bash]
-----
-docker exec kafka-perf sh kafka-producer-perf-test.sh --topic topic-perf --num-records 10000 --record-size 2000 --throughput -1 --producer-props bootstrap.servers=broker:9092,broker2:9093,broker3:9094 compression.type=zstd --print-metrics
-----
-
-[source,bash]
-----
-10000 records sent, 13698.630137 records/sec (26.13 MB/sec), 71.19 ms avg latency, 266.00 ms max latency, 75 ms 50th, 100 ms 95th, 104 ms 99th, 108 ms 99.9th.
-producer-metrics:batch-size-avg:{client-id=perf-producer-client}                             : 13273.085
-producer-metrics:compression-rate-avg:{client-id=perf-producer-client}                       : 0.604
-producer-metrics:outgoing-byte-rate:{client-id=perf-producer-client}                         : 399927.348
-producer-metrics:request-latency-avg:{client-id=perf-producer-client}                        : 14.208
-----
 
 Teardown:
 
