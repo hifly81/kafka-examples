@@ -4385,8 +4385,8 @@ cd /tmp/trogdor/coordinator/compression/nocompression/
 ----
 
 Run the test:
-----
 [source,bash]
+----
 ./trogdor-task.sh
 ----
 
@@ -4399,22 +4399,34 @@ Check the status and results:
 
 [source,bash]
 ----
-Task node-0 of type org.apache.kafka.trogdor.workload.RoundTripWorkloadSpec is DONE. FINISHED at 2024-07-09T11:17:27.906Z after 52s
+Task node-0 of type org.apache.kafka.trogdor.workload.ProduceBenchSpec is DONE. FINISHED at 2024-07-09T13:20:43.789Z after 52s
 Status: {
-"totalUniqueSent" : 10000,
-"totalReceived" : 10000
+  "totalSent" : 10000,
+  "averageLatencyMs" : 13.2553,
+  "p50LatencyMs" : 13,
+  "p95LatencyMs" : 25,
+  "p99LatencyMs" : 29,
+  "transactionsCommitted" : 0
 }
 
-Task node-1 of type org.apache.kafka.trogdor.workload.RoundTripWorkloadSpec is DONE. FINISHED at 2024-07-09T11:17:27.763Z after 51s
+Task node-1 of type org.apache.kafka.trogdor.workload.ProduceBenchSpec is DONE. FINISHED at 2024-07-09T13:20:43.521Z after 51s
 Status: {
-"totalUniqueSent" : 10000,
-"totalReceived" : 10000
+  "totalSent" : 10000,
+  "averageLatencyMs" : 12.5799,
+  "p50LatencyMs" : 13,
+  "p95LatencyMs" : 25,
+  "p99LatencyMs" : 29,
+  "transactionsCommitted" : 0
 }
 
-Task node-2 of type org.apache.kafka.trogdor.workload.RoundTripWorkloadSpec is DONE. FINISHED at 2024-07-09T11:17:28.461Z after 51s
+Task node-2 of type org.apache.kafka.trogdor.workload.ProduceBenchSpec is DONE. FINISHED at 2024-07-09T13:20:43.258Z after 50s
 Status: {
-"totalUniqueSent" : 10000,
-"totalReceived" : 10000
+  "totalSent" : 10000,
+  "averageLatencyMs" : 11.5961,
+  "p50LatencyMs" : 13,
+  "p95LatencyMs" : 24,
+  "p99LatencyMs" : 30,
+  "transactionsCommitted" : 0
 }
 ----
 
@@ -4462,8 +4474,8 @@ cd /tmp/trogdor/coordinator/compression/lz4/
 ----
 
 Run the test:
-----
 [source,bash]
+----
 ./trogdor-task.sh
 ----
 
@@ -4476,22 +4488,34 @@ Check the status and results:
 
 [source,bash]
 ----
-Task node-0 of type org.apache.kafka.trogdor.workload.RoundTripWorkloadSpec is DONE. FINISHED at 2024-07-09T11:17:27.906Z after 52s
+Task node-0 of type org.apache.kafka.trogdor.workload.ProduceBenchSpec is DONE. FINISHED at 2024-07-09T13:22:49.994Z after 50s
 Status: {
-"totalUniqueSent" : 10000,
-"totalReceived" : 10000
+  "totalSent" : 10000,
+  "averageLatencyMs" : 7.9342,
+  "p50LatencyMs" : 8,
+  "p95LatencyMs" : 17,
+  "p99LatencyMs" : 23,
+  "transactionsCommitted" : 0
 }
 
-Task node-1 of type org.apache.kafka.trogdor.workload.RoundTripWorkloadSpec is DONE. FINISHED at 2024-07-09T11:17:27.763Z after 51s
+Task node-1 of type org.apache.kafka.trogdor.workload.ProduceBenchSpec is DONE. FINISHED at 2024-07-09T13:22:50.786Z after 50s
 Status: {
-"totalUniqueSent" : 10000,
-"totalReceived" : 10000
+  "totalSent" : 10000,
+  "averageLatencyMs" : 8.1347,
+  "p50LatencyMs" : 8,
+  "p95LatencyMs" : 18,
+  "p99LatencyMs" : 24,
+  "transactionsCommitted" : 0
 }
 
-Task node-2 of type org.apache.kafka.trogdor.workload.RoundTripWorkloadSpec is DONE. FINISHED at 2024-07-09T11:17:28.461Z after 51s
+Task node-2 of type org.apache.kafka.trogdor.workload.ProduceBenchSpec is DONE. FINISHED at 2024-07-09T13:22:51.543Z after 50s
 Status: {
-"totalUniqueSent" : 10000,
-"totalReceived" : 10000
+  "totalSent" : 10000,
+  "averageLatencyMs" : 8.3103,
+  "p50LatencyMs" : 9,
+  "p95LatencyMs" : 18,
+  "p99LatencyMs" : 23,
+  "transactionsCommitted" : 0
 }
 ----
 
