@@ -4316,9 +4316,9 @@ Docker containers can be configured for RAM and CPU limits using:
 
 Cluster is formed with 3 brokers (9092, 9093, 9094).
 
-1 test machine, named _kafka_perf_ against the kafka cluster.
+1 test machine, named _kafka_perf_ is available to run test scenarios against the kafka cluster.
 
-Run the components and _kafka_perf_ machine:
+Start the cluster and _kafka_perf_ machine:
 
 [source,bash]
 ----
@@ -4331,8 +4331,8 @@ Tests will run using link:https://github.com/a0x8o/kafka/blob/master/TROGDOR.md[
 
 Trogdor requires:
 
- - a coordinator running on a test machine, it manages multiple agent processes
- - an agent running on each broker machine. Each agent process is responsible for a single cluster node
+ - a coordinator running on a test machine, it manages multiple agent processes.
+ - an agent running on each broker machine. Each agent process is responsible for a single cluster node.
 
 Start Agents:
 
@@ -4366,7 +4366,7 @@ Coordinator logs will be stored in file _/tmp/trogdor/coordinator/trogdor-coordi
 
 ===== No Compression
 
-Run a link:https://github.com/a0x8o/kafka/blob/master/TROGDOR.md#roundtripworkload[RoundTripWorkload] scenario with:
+Run a link:https://github.com/a0x8o/kafka/blob/master/TROGDOR.md#producebench[ProduceBench] scenario with:
 
  - 10000 messages on each broker for a total of 30000 messages
  - 200 messages per second on each broker for a total of 600 messages per second
