@@ -5,7 +5,8 @@
     <artifactId>kafka-play</artifactId>
     <version>1.2.1</version>
     <packaging>pom</packaging>
-
+ 
+    <!-- modules -->
     <modules>
         <module>kafka-producer</module>
         <module>kafka-consumer</module>
@@ -34,9 +35,9 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <kafka.version>3.7.0</kafka.version>
+        <kafka.version>3.8.0</kafka.version>
         <avro.version>1.11.3</avro.version>
-        <confluent.version>7.6.1</confluent.version>
+        <confluent.version>7.7.0</confluent.version>
         <apicurio.registry.version>2.4.1.Final</apicurio.registry.version>
         <hortonworks.registry.version>0.3.0</hortonworks.registry.version>
         <slf4j.version>1.7.15</slf4j.version>
