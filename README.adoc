@@ -1,7 +1,7 @@
 = Practical examples with Apache Kafka®
 :author: Giovanni Marigi
 :email: gio.marigi@gmail.com
-:revdate: April 16, 2024
+:revdate: August 26, 2024
 :revnumber: 1.2.1
 :version-label!:
 :toc: left
@@ -14,8 +14,8 @@
 
 == General Information
 
-This repository contains a number of use cases designed to demonstrate the functionality of link:https://kafka.apache.org[Apache Kafka®].
-The examples are mostly extracted from more complex projects and should not be considered complete or ready to be used in a production environment, unless after a refactoring and test work.
+This repository contains various examples designed to demonstrate the functionality of link:https://kafka.apache.org[Apache Kafka®].
+The examples are mostly extracted from more complex projects and should not be considered complete or ready to be used in a production environment, unless after a serious refactoring and test work.
 
 <<<
 
@@ -71,31 +71,31 @@ asciidoctor README.html
 
 == Installation with Docker
 
-Official documentation on how to install Docker on Linux/Mac/Windows:
+Official documentation on how to install Docker on Linux/Mac/Windows is available at this link:
 https://docs.docker.com/engine/install/
 
 === Prerequisites
 
-List of software required to run the examples:
+List of software required on your local machine to run the examples:
 
  - _curl_
  - _wget_
  - _openssl_
- - _Java SE 17_
+ - _Java SE 17 or 21_
  - _keytool_ from Java distribution
- - _Apache Maven_
+ - _Apache Maven 3.x_
  - _Go Programming language_ _(for proxy example)_
  - _Python_ _(for python clients)_
 
 === Docker Images Version
 
-Default image version are listed in file link:.env[.env]
+Default image version for required components is listed in file link:.env[.env]
 
 If you needed to change the docker image version for the specific components, just update file link:.env[.env].
 
 === Docker Images details
 
-Docker images are downloaded from Docker Hub link:https://hub.docker.com/r/apache/kafka[_apache/kafka_] and are based on Apache Kafka® version 3.7.x).
+Apache Kafka® docker images are downloaded from Docker Hub link:https://hub.docker.com/r/apache/kafka[_apache/kafka_] and are based on Apache Kafka® version 3.8.x).
 
 
 === Single-node cluster +
@@ -149,7 +149,7 @@ scripts/tear-down-isolated.sh
 
 === Prerequisites
 
-List of software required to run the examples:
+List of software required on your local machine to run the examples:
 
 - _helm_
 - _kubectl_
