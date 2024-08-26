@@ -2,9 +2,11 @@
 
 All contributions are more than welcome. Just have fun!!!
 
- 1. First, submit a link:https://github.com/hifly81/kafka-examples/issues[issue] or a link:https://github.com/hifly81/kafka-examples/issues[feature request] using the existing template and  describe your proposed change
- 2. Fork the repository
- 3. Create a branch on your local repository
- 4. Create a new branch on your local repository and use it only to make changes for the aforementioned issue or feature request
- 5. Open a pull request against the main branch and describe changes and mention the issue or the feature request
- 6. Add at least 1 reviewer
+ 1. First, submit a link:https://github.com/hifly81/kafka-examples/issues[issue] or a link:https://github.com/hifly81/kafka-examples/issues[feature request] using the existing template and  describe your proposed change.
+ 2. Fork the repository.
+ 3. Create a branch on your local repository.
+ 4. Create a new branch on your local repository and use it only to make changes for the aforementioned issue or feature request.
+ 5. Open a pull request against the _main_ branch and describe changes and mention the issue or the feature request.
+ 6. Add at least 1 reviewer.
+ 7. Eventually, resolve discussions opened by the reviewer/s on the pull request.
+ 8. Reviewer will merge the pull request when all discussions and checks have been solved.
