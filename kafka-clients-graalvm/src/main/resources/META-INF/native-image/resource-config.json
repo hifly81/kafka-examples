@@ -1,0 +1,14 @@
+{
+  "resources":{
+  "includes":[{
+    "pattern":"\\Qkafka/kafka-version.properties\\E"
+  }, {
+    "pattern":"\\Qorg/slf4j/impl/StaticLoggerBinder.class\\E"
+  }]},
+  "bundles": [
+    {
+      "name": "sun.security.util.Resources",
+      "locales": ["en", "it_IT"]
+    }
+  ]
+}

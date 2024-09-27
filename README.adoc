@@ -3499,6 +3499,125 @@ curl -v -X POST http://localhost:9090/kafka-microprofile2-consumer-1.2.1/order
 curl -v -X POST http://localhost:9080/kafka-microprofile2-producer-1.2.1/order
 ----
 
+=== GraalVM native images for Kafka clients
+
+Folder: link:kafka-clients-graalvm/[kafka-clients-graalvm]
+
+GraalVM for Java microservices using Kafka clients libraries and different authentication mechanisms.
+
+GraalVM offers Native Image, which allows you to compile JVM-based applications ahead of time into native machine code. This results in faster startup times and lower memory consumption compared to regular JVM applications.
+
+==== Pre Requisites
+
+- Install GraalVM for your target OS and Java JDK 17 from https://www.graalvm.org/
+
+==== Create the native image
+
+- Create package:
+
+[source,bash]
+----
+mvn clean package
+----
+
+- Generate configuration files:
+
+[source,bash]
+----
+$GRAALVM_HOME/bin/java -agentlib:native-image-agent=config-output-dir=src/main/resources/META-INF/native-image -jar target/kafka-clients-graalvm-0.0.1-jar-with-dependencies.jar
+----
+
+- Create native image
+
+[source,bash]
+----
+native-image --no-fallback \
+   --initialize-at-build-time=org.slf4j.LoggerFactory,org.slf4j.impl.StaticLoggerBinder,org.slf4j.impl.SimpleLogger \
+   -H:ReflectionConfigurationFiles=src/main/resources/META-INF/native-image/reflect-config.json \
+   -H:ResourceConfigurationFiles=src/main/resources/META-INF/native-image/resource-config.json \
+   -H:DynamicProxyConfigurationFiles=src/main/resources/META-INF/native-image/proxy-config.json \
+   -H:AdditionalSecurityProviders=com.sun.security.sasl.Provider \
+   -H:Name=kafka-clients-graalvm \
+   -jar target/kafka-clients-graalvm-0.0.1-jar-with-dependencies.jar
+----
+
+==== Testing
+
+===== No Authentication
+
+A broker listening on port 9092 is required.
+
+[source,bash]
+----
+chmod +x kafka-clients-graalvm-0.0.1-jar-with-dependencies
+./kafka-clients-graalvm-0.0.1-jar-with-dependencies
+
+Produce message: Hello GraalVM Kafka!
+Consumed message: Hello GraalVM Kafka!
+----
+
+===== SASL PLAIN Authentication with SSL
+
+e.g. This is the typical scenario when connecting to _Confluent Cloud_.
+
+[source,bash]
+----
+chmod +x kafka-clients-graalvm-0.0.1-jar-with-dependencies
+./kafka-clients-graalvm-0.0.1-jar-with-dependencies examples/producer.properties examples/consumer.properties
+
+Produce message: Hello GraalVM Kafka!
+Consumed message: Hello GraalVM Kafka!
+----
+
+===== SASL GSSAPI Authentication
+
+Kafka with Kerberos using docker containers:
+https://github.com/Dabz/kafka-security-playbook
+
+Start a kafka cluster with Kerberos:
+
+[source,bash]
+----
+cd kerberos
+./up
+----
+
+Wait for the containers to be up, then login into _client_ container
+
+[source,bash]
+----
+docker exec -it client /bin/bash
+----
+
+From _client_ container run:
+
+[source,bash]
+----
+cd kafka-clients-graalvm-playground-master/ && mvn clean package
+----
+
+Create native image:
+
+[source,bash]
+----
+/tmp/graalvm-jdk-17.0.12+8.1/bin/native-image --no-fallback \
+--initialize-at-build-time=org.slf4j.LoggerFactory,org.slf4j.impl.StaticLoggerBinder,org.slf4j.impl.SimpleLogger \
+-H:ReflectionConfigurationFiles=src/main/resources/META-INF/native-image/reflect-config.json \
+-H:ResourceConfigurationFiles=src/main/resources/META-INF/native-image/resource-config.json \
+-H:DynamicProxyConfigurationFiles=src/main/resources/META-INF/native-image/proxy-config.json \
+-H:AdditionalSecurityProviders=com.sun.security.sasl.Provider \
+-H:Name=kafka-clients-graalvm \
+-jar target/kafka-clients-graalvm-0.0.1-jar-with-dependencies.jar
+----
+
+Execute native image with GSSAPI auth:
+
+[source,bash]
+----
+chmod +x kafka-clients-graalvm-0.0.1-jar-with-dependencies
+./kafka-clients-graalvm-0.0.1-jar-with-dependencies /etc/kafka/producer.properties /etc/kafka/consumer.properties
+----
+
 <<<
 
 == Security

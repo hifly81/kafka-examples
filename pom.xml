@@ -30,6 +30,7 @@
         <module>principal-builder</module>
         <module>claim-check</module>
         <module>udp-proxy</module>
+        <module>kafka-clients-graalvm</module>
     </modules>
 
     <properties>
