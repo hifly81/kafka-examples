@@ -73,6 +73,9 @@ cd kerberos
 ./up dns
 ```
 
+IMPORTANT:
+_dns_lookup_kdc=true_ version is at the moment not working properly --> Cannot locate KDC
+
 Wait for the containers to be up, then login into _client_ container
 
 ```
