@@ -2,19 +2,12 @@
 
 - Install GraalVM for your target OS and Java JDK 17 from https://www.graalvm.org/
 
-
 # Create the native image
 
 - Create package:
 
 ```
 mvn clean package
-```
-
-- Generate configuration files:
-
-```
-$GRAALVM_HOME/bin/java -agentlib:native-image-agent=config-output-dir=src/main/resources/META-INF/native-image -jar target/kafka-clients-graalvm-1.2.1-jar-with-dependencies.jar
 ```
 
 - Create native image
@@ -36,6 +29,7 @@ native-image --no-fallback \
 
 ```
 chmod +x kafka-clients-graalvm-1.2.1-jar-with-dependencies
+
 ./kafka-clients-graalvm-1.2.1-jar-with-dependencies
 
 Produce message: Hello GraalVM Kafka!
@@ -48,6 +42,7 @@ e.g. This is the typical scenario when connecting to Confluent Cloud.
 
 ```
 chmod +x kafka-clients-graalvm-1.2.1-jar-with-dependencies
+
 ./kafka-clients-graalvm-1.2.1-jar-with-dependencies examples/producer.properties examples/consumer.properties
 
 Produce message: Hello GraalVM Kafka!
@@ -66,15 +61,16 @@ cd kerberos
 ./up
 ```
 
-or alternatively Start a kafka cluster with Kerberos and ad dns server (required for _dns_lookup_kdc=true_):
+or alternatively start a kafka cluster with Kerberos and a DNS server (required for _dns_lookup_kdc=true_):
 
 ```
 cd kerberos
 ./up dns
 ```
 
-IMPORTANT:
-_dns_lookup_kdc=true_ version is at the moment not working properly --> Cannot locate KDC
+**IMPORTANT:**
+_dns_lookup_kdc=true_ version is at the moment not working properly: 
+_Caused by: javax.security.auth.login.LoginException: Cannot locate KDC_
 
 Wait for the containers to be up, then login into _client_ container
 
@@ -82,13 +78,13 @@ Wait for the containers to be up, then login into _client_ container
 docker exec -it client /bin/bash
 ```
 
-From _client_ container run:
+From _client_ container, run:
 
 ```
 cd kafka-examples-master/kafka-clients-graalvm/ && mvn clean package && unzip target/kafka-clients-graalvm-1.2.1-jar-with-dependencies.jar
 ```
 
-Create native image:
+From _client_ container, create native image:
 
 ```
 /tmp/graalvm-jdk-17.0.12+8.1/bin/native-image --no-fallback \
@@ -102,7 +98,7 @@ Create native image:
 -jar target/kafka-clients-graalvm-1.2.1-jar-with-dependencies.jar
 ```
 
-Execute native image with GSSAPI auth:
+From _client_ container, execute native image with GSSAPI auth:
 
 ```
 chmod +x kafka-clients-graalvm-1.2.1-jar-with-dependencies
