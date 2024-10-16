@@ -476,5 +476,17 @@
     "name":"org.apache.kafka.common.security.kerberos.KerberosLogin",
     "allDeclaredMethods":true,
     "allDeclaredConstructors":true
+  },
+  {
+    "name": "sun.security.jgss.krb5.Krb5MechFactory",
+    "allDeclaredConstructors": true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "sun.security.jgss.GSSContextImpl",
+    "allDeclaredConstructors": true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
   }
 ]
