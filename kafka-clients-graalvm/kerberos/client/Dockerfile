@@ -1,5 +1,4 @@
 FROM centos:centos8
-MAINTAINER d.gasparina@gmail.com
 ENV container docker
 
 # 0. Fixing Mirror list for Centos
@@ -11,7 +10,9 @@ RUN rpm --import https://packages.confluent.io/rpm/5.4/archive.key
 COPY confluent.repo /etc/yum.repos.d/confluent.repo
 RUN yum clean all
 
-# 2. Install kafka, wget, tar
+# 2. Install net utils, kafka, wget, tar
+RUN yum install -y bind-utils
+RUN yum install -y telnet
 RUN yum install -y java-17-openjdk
 RUN yum install -y confluent-kafka-2.12
 RUN yum install -y wget
