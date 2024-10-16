@@ -66,6 +66,13 @@ cd kerberos
 ./up
 ```
 
+or alternatively Start a kafka cluster with Kerberos and ad dns server (required for _dns_lookup_kdc=true_):
+
+```
+cd kerberos
+./up dns
+```
+
 Wait for the containers to be up, then login into _client_ container
 
 ```
@@ -88,7 +95,6 @@ Create native image:
 -H:DynamicProxyConfigurationFiles=src/main/resources/META-INF/native-image/proxy-config.json \
 -H:AdditionalSecurityProviders=sun.security.jgss.SunProvider,sun.security.provider.Sun,com.sun.security.sasl.Provider \
 -H:Name=kafka-clients-graalvm \
--Dsun.security.krb5.debug=true \
 -Djava.library.path=/tmp/kafka-examples-master/kafka-clients-graalvm/linux/aarch64 \
 -jar target/kafka-clients-graalvm-1.2.1-jar-with-dependencies.jar
 ```
