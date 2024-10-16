@@ -1,0 +1,87 @@
+services:
+  dns:
+    build:
+      context: ./bind9
+    container_name: dns_server
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+    volumes:
+      - ./bind9/named.conf:/etc/bind/named.conf
+      - ./bind9/zones:/etc/bind/zones
+    networks:
+      kdcnet:
+        ipv4_address: 192.168.0.2
+  kdc:
+    hostname: kdc.kerberos-demo.local
+    #domainname: kerberos_default
+    build: kdc/
+    container_name: kdc
+    depends_on:
+      - dns
+    volumes:
+      - secret:/var/lib/secret
+      - ./kdc/krb5_dns.conf:/etc/kdc/krb5.conf
+    networks:
+      kdcnet:
+        ipv4_address: 192.168.0.3
+
+  zookeeper:
+    build: zookeeper/
+    container_name: zookeeper
+    hostname: zookeeper.kerberos-demo.local
+    #domainname: kerberos_default
+    depends_on:
+      - kdc
+    # Required to wait for the keytab to get generated
+    restart: on-failure
+    volumes:
+      - secret:/var/lib/secret
+      - ./kdc/krb5_dns.conf:/etc/krb5.conf
+    networks:
+      kdcnet:
+        ipv4_address: 192.168.0.5
+
+  kafka:
+    build: kafka/
+    container_name: kafka
+    hostname: kafka.kerberos-demo.local
+    #domainname: kerberos_default
+    depends_on:
+      - zookeeper
+      - kdc
+    # Required to wait for the keytab to get generated
+    restart: on-failure
+    volumes:
+      - secret:/var/lib/secret
+      - ./kdc/krb5_dns.conf:/etc/krb5.conf
+    networks:
+      kdcnet:
+        ipv4_address: 192.168.0.6
+
+  client:
+    build: client/
+    container_name: client
+    hostname: client.kerberos-demo.local
+    #domainname: kerberos_default
+    depends_on:
+      - kafka
+      - kdc
+    # Required to wait for the keytab to get generated
+    volumes:
+      - secret:/var/lib/secret
+      - ./kdc/krb5_dns.conf:/etc/krb5.conf
+    networks:
+      kdcnet:
+        ipv4_address: 192.168.0.7
+
+volumes:
+  secret: {}
+
+networks:
+  kdcnet:
+    name: kerberos-demo.local
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.0.0/24

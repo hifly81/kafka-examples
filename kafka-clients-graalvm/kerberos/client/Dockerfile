@@ -17,6 +17,7 @@ RUN yum install -y confluent-kafka-2.12
 RUN yum install -y wget
 RUN yum install -y tar
 RUN yum install -y unzip
+RUN yum install -y libzstd-devel
 
 # 3. Install Kerberos libaries
 RUN yum install -y krb5-workstation krb5-libs
@@ -36,16 +37,16 @@ RUN yum install -y gcc
 RUN yum install -y zlib-devel
 
 # Download GraalVM JDK 17 from Oracle and extract it to /tmp
-RUN wget https://download.oracle.com/graalvm/17/latest/graalvm-jdk-17_linux-aarch64_bin.tar.gz
-RUN tar -xvzf graalvm-jdk-17_linux-aarch64_bin.tar.gz
-RUN rm graalvm-jdk-17_linux-aarch64_bin.tar.gz
+RUN wget https://download.oracle.com/graalvm/17/archive/graalvm-jdk-17.0.12_linux-aarch64_bin.tar.gz
+RUN tar -xvzf graalvm-jdk-17.0.12_linux-aarch64_bin.tar.gz
+RUN rm graalvm-jdk-17.0.12_linux-aarch64_bin.tar.gz
 
 # Download Maven and extract it to /tmp
 RUN wget https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz
 RUN tar -xvzf apache-maven-3.9.9-bin.tar.gz
 RUN rm apache-maven-3.9.9-bin.tar.gz
 
-RUN wget https://github.com/hifly81/kafka-clients-graalvm-playground/archive/refs/heads/master.zip
+RUN wget https://github.com/hifly81/kafka-examples/archive/refs/heads/master.zip
 RUN unzip master.zip
 
 ENV MAVEN_HOME=/tmp/apache-maven-3.9.9

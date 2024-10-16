@@ -4,8 +4,14 @@ set -e
 # Starting kerberos,
 # Avoiding starting up all services at the begining to generate the keytab first
 
-docker compose build
-docker compose up -d kdc
+
+if [[ "$1" == "dns" ]]; then
+    docker compose -f docker-compose-dns.yml build
+    docker compose -f docker-compose-dns.yml up -d kdc
+else
+  docker compose build
+  docker compose up -d kdc
+fi
 
 
 
@@ -45,7 +51,11 @@ docker exec -ti kdc kadmin.local -w password -q "ktadd  -k /var/lib/secret/kafka
 
 
 # Starting zookeeper and kafka now that the keytab has been created with the required credentials and services
-docker compose up -d
+if [[ "$1" == "dns" ]]; then
+    docker compose -f docker-compose-dns.yml up -d
+else
+  docker compose up -d
+fi
 
 # Adding ACLs for consumer and producer user:
 docker exec client bash -c "kinit -k -t /var/lib/secret/kafka-admin.key admin/for-kafka && kafka-acls --bootstrap-server kafka:9093 --command-config /etc/kafka/command.properties --add --allow-principal User:kafka_producer --producer --topic=*"
