@@ -16,6 +16,7 @@
         <module>confluent-avro-hierarchy-event</module>
         <module>kafka-streams</module>
         <module>kafka-streams-processor</module>
+        <module>kafka-streams-k8s</module>
         <module>kafka-orders-tx</module>
         <module>kafka-microprofile2-producer</module>
         <module>kafka-microprofile2-consumer</module>

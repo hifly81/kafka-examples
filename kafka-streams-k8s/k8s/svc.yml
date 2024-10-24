@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-streams-service
+  labels:
+    app: kafka-streams-app
+spec:
+  ports:
+  - port: 8080
+    name: http
+  clusterIP: None  # Headless service
+  selector:
+    app: kafka-streams-app

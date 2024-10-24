@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka-streams-app
+spec:
+  serviceName: "kafka-streams-app-service"
+  replicas: 3  # Number of instances
+  selector:
+    matchLabels:
+      app: kafka-streams-app
+  template:
+    metadata:
+      labels:
+        app: kafka-streams-app
+    spec:
+      containers:
+        - name: kafka-streams-app
+          image: kafka-streams-app:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: rocksdb-storage
+              mountPath: /tmp/kafka-streams-rocksdb  # Mount the volume at the state directory
+          env:
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: "kafka:9071"
+            - name: APPLICATION_ID
+              value: "wordscounter_app"
+            - name: STATE_DIR
+              value: "/tmp/streams-wordscounter"
+            - name: PROCESSING_GUARANTEE_CONFIG
+              value: "exactly_once_v2"
+            - name: AUTO_OFFSET_RESET_CONFIG
+              value: "earliest"
+            - name: NUM_STREAM_THREADS_CONFIG
+              value: "2"
+            - name: INPUT_TOPIC_NAME
+              value: "words-input-topic"
+            - name: OUTPUT_TOPIC_NAME
+              value: "words-counter-output-topic"
+  volumeClaimTemplates:
+    - metadata:
+        name: rocksdb-storage
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi

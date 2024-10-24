@@ -1,7 +1,7 @@
 = Practical examples with Apache Kafka®
 :author: Giovanni Marigi
 :email: gio.marigi@gmail.com
-:revdate: August 26, 2024
+:revdate: October 24, 2024
 :revnumber: 1.2.1
 :version-label!:
 :toc: left
@@ -2798,6 +2798,79 @@ When running the _StreamCounter_ example, check in the terminal for entries like
 query result <key>: <value>
 ----
 
+=== Kafka Streams application deployed on Kubernetes
+
+Folder: link:kafka-streams-k8s/[kafka-streams-k8s]
+
+In this example a stateful Kafka Stream Application, using RocksDB will be deployed on a Kubernetes cluster using a StatefulSet.
+
+In order to run the example you need to provision first a Kafka cluster on Kubernetes. You can follow the example in this repo in section "Installation on Kubernetes using Confluent For Kubernetes" for running a cluster on Minikube.
+
+The application in this demo requires a kafka broker bound on address: "kafka:9071".
+
+After installed the kafka cluster on k8s, you need first to create a Docker Image for the demo application and register in your Kubernetes Docker Registry. The next commands show how to do it with Minikube and docker driver.
+
+[source,bash]
+----
+cd kafka-streams-k8s
+# Valid if you are suing minikube with docker driver
+eval $(minikube docker-env)
+docker build -t kafka-streams-app .
+----
+
+Verify that the image is listed in your Kubernetes Docker Registry:
+
+[source,bash]
+----
+$ docker images
+REPOSITORY                                TAG         IMAGE ID       CREATED         SIZE
+kafka-streams-app                         latest      9facf1537335   2 seconds ago   322MB
+confluentinc/confluent-operator           0.1033.33   1223f152dab7   6 weeks ago     146MB
+----
+
+Create the topics required for the demo:
+
+[source,bash]
+----
+kubectl exec --stdin --tty kafka-0 -- /bin/bash
+kafka-topics --bootstrap-server localhost:9092 --create --topic words-input-topic
+kafka-topics --bootstrap-server localhost:9092 --create --topic words-counter-output-topic
+exit
+----
+
+Now you can deploy the kafka stream application on Kubernetes suing a StatefulSet and a Headless Service:
+
+[source,bash]
+----
+kubectl apply -f k8s/statefulset.yml
+kubectl apply -f k8s/svc.yml
+----
+
+Verify that 3 instances of the application are running:
+
+[source,bash]
+----
+$ kubectl get pods
+NAME                                 READY   STATUS    RESTARTS   AGE
+confluent-operator-76c899cf8-pl6ng   1/1     Running   0          3m6s
+kafka-0                              1/1     Running   0          96s
+kafka-1                              1/1     Running   0          96s
+kafka-2                              1/1     Running   0          96s
+kafka-streams-app-0                  1/1     Running   0          43s
+kafka-streams-app-1                  1/1     Running   0          40s
+kafka-streams-app-2                  1/1     Running   0          38s
+kraftcontroller-0                    1/1     Running   0          2m49s
+----
+
+Check the log of the application to evaluate the application status (RUNNING):
+
+[source,bash]
+----
+$ kubectl logs -f kafka-streams-app-0
+
+[wordscounter_app-9752ab10-9474-4b55-b73d-bb4985137ee6-StreamThread-2] INFO org.apache.kafka.streams.processor.internals.StreamThread - stream-thread [wordscounter_app-9752ab10-9474-4b55-b73d-bb4985137ee6-StreamThread-2] State transition from PARTITIONS_ASSIGNED to RUNNING
+[wordscounter_app-9752ab10-9474-4b55-b73d-bb4985137ee6-StreamThread-2] INFO org.apache.kafka.streams.KafkaStreams - stream-client [wordscounter_app-9752ab10-9474-4b55-b73d-bb4985137ee6] State transition from REBALANCING to RUNNING
+----
 
 <<<
 
