@@ -5,6 +5,8 @@ metadata:
 spec:
   serviceName: "kafka-streams-app-service"
   replicas: 3  # Number of instances
+  updateStrategy:
+    type: RollingUpdate
   selector:
     matchLabels:
       app: kafka-streams-app
@@ -33,6 +35,12 @@ spec:
               value: "exactly_once_v2"
             - name: AUTO_OFFSET_RESET_CONFIG
               value: "earliest"
+            - name: MAX_POLL_INTERVAL_MS_CONFIG
+              value: "300000"
+            - name: SESSION_TIMEOUT_MS_CONFIG
+              value: "45000"
+            - name: HEARTBEAT_INTERVAL_MS_CONFIG
+              value: "3000"
             - name: NUM_STREAM_THREADS_CONFIG
               value: "2"
             - name: INPUT_TOPIC_NAME
