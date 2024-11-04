@@ -2461,6 +2461,94 @@ Teardown:
 scripts/tear-down-cdc-informix.sh
 ----
 
+=== CDC with Debezium MongoDB Source Connector
+
+Folder: link:cdc-debezium-mongo/[cdc-debezium-mongo]
+
+Usage of link:https://debezium.io/documentation/reference/stable/connectors/mongodb.html[Debezium Source Connector for MongoDB] to send updates into a topic.
+
+Run environment:
+
+[source,bash]
+----
+scripts/bootstrap-cdc-mongo.sh
+----
+
+Script will create a user _data-platform-cdc_ with the privileges required to run CDC:
+
+[source,bash]
+----
+use admin
+db.createRole({
+   role: "CDCRole",
+   privileges: [
+      { resource: { cluster: true }, actions: ["find", "changeStream"] },
+      { resource: { db: "", collection: "" }, actions: [ "find", "changeStream" ] }
+   ],
+   roles: []
+});
+
+db.createUser({
+  user: "data-platform-cdc",
+  pwd: "password",
+  roles: [
+    { role: "read", db: "admin" },
+    { role: "clusterMonitor", db: "admin" },
+    { role: "read", db: "config" },
+    { role: "read", db: "inventory" },
+    { role: "CDCRole", db: "admin"}
+  ]
+});
+----
+
+Script will also insert a document into _inventory_ database and _customer_ collection:
+
+[source,bash]
+----
+{
+  _id: 1006,
+  first_name: 'Bob',
+  last_name: 'Hopper',
+  email: 'thebob@example.com'
+}
+----
+
+Script will deploy a source connector:
+
+[source,json]
+----
+{
+  "name": "mongo-debezium-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.mongodb.MongoDbConnector",
+    "mongodb.connection.string": "mongodb://mongo:27017/?replicaSet=rs0",
+    "mongodb.name": "dbserver1",
+    "topic.prefix": "test",
+    "mongodb.user" : "data-platform-cdc",
+    "mongodb.password" : "password"
+  }
+}
+----
+
+Run a consumer on _test.inventory.customers_ topic and see the records:
+
+[source,bash]
+----
+kafka-avro-console-consumer --bootstrap-server localhost:9092 --topic test.inventory.customers --from-beginning --property schema.registry.url=http://localhost:8081
+----
+
+[source,bash]
+----
+{"before":null,"after":{"string":"{\"_id\": 1006,\"first_name\": \"Bob\",\"last_name\": \"Hopper\",\"email\": \"thebob@example.com\"}"},"updateDescription":null,"source":{"version":"2.4.2.Final","connector":"mongodb","name":"test","ts_ms":0,"snapshot":{"string":"last"},"db":"inventory","sequence":null,"rs":"rs0","collection":"customers","ord":-1,"lsid":null,"txnNumber":null,"wallTime":null},"op":{"string":"r"},"ts_ms":{"long":1730741797590},"transaction":null}
+----
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-cdc-mongo.sh
+----
+
 === Tasks distributions using a Datagen Source Connector
 
 Folder: link:kafka-connect-task-distribution/[kafka-connect-task-distribution]

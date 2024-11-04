@@ -1,0 +1,11 @@
+{
+  "name": "mongo-debezium-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.mongodb.MongoDbConnector",
+    "mongodb.connection.string": "mongodb://mongo:27017/?replicaSet=rs0",
+    "mongodb.name": "dbserver1",
+    "topic.prefix": "test",
+    "mongodb.user" : "data-platform-cdc",
+    "mongodb.password" : "password"
+  }
+}
