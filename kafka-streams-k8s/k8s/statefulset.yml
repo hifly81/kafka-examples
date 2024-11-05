@@ -5,6 +5,7 @@ metadata:
 spec:
   serviceName: "kafka-streams-app-service"
   replicas: 3  # Number of instances
+  podManagementPolicy: "Parallel"
   updateStrategy:
     type: RollingUpdate
   selector:
@@ -42,6 +43,8 @@ spec:
             - name: HEARTBEAT_INTERVAL_MS_CONFIG
               value: "3000"
             - name: NUM_STREAM_THREADS_CONFIG
+              value: "2"
+            - name: NUM_STANDBY_REPLICAS_CONFIG
               value: "2"
             - name: INPUT_TOPIC_NAME
               value: "words-input-topic"

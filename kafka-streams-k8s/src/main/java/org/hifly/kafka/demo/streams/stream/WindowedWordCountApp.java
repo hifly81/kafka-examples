@@ -26,6 +26,7 @@ public class WindowedWordCountApp {
     private static final String PROCESSING_GUARANTEE_CONFIG_ENV = "PROCESSING_GUARANTEE_CONFIG";
     private static final String AUTO_OFFSET_RESET_CONFIG_ENV = "AUTO_OFFSET_RESET_CONFIG";
     private static final String NUM_STREAM_THREADS_CONFIG_ENV = "NUM_STREAM_THREADS_CONFIG";
+    private static final String NUM_STANDBY_REPLICAS_CONFIG_ENV = "NUM_STANDBY_REPLICAS_CONFIG";
     private static final String MAX_POLL_INTERVAL_MS_CONFIG_ENV = "MAX_POLL_INTERVAL_MS_CONFIG";
     private static final String SESSION_TIMEOUT_MS_CONFIG_ENV = "SESSION_TIMEOUT_MS_CONFIG";
     private static final String HEARTBEAT_INTERVAL_MS_CONFIG_ENV = "HEARTBEAT_INTERVAL_MS_CONFIG";
@@ -101,6 +102,7 @@ public class WindowedWordCountApp {
         properties.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, System.getenv(PROCESSING_GUARANTEE_CONFIG_ENV) != null ? System.getenv(PROCESSING_GUARANTEE_CONFIG_ENV) : "exactly_once_v2");
         properties.put(StreamsConfig.NUM_STREAM_THREADS_CONFIG, System.getenv(NUM_STREAM_THREADS_CONFIG_ENV) != null ? System.getenv(NUM_STREAM_THREADS_CONFIG_ENV) : 2);
         properties.put(StreamsConfig.STATE_DIR_CONFIG, System.getenv(STATE_DIR_ENV) != null ? System.getenv(STATE_DIR_ENV) : "/tmp/streams-wordscounter");
+        properties.put(StreamsConfig.NUM_STANDBY_REPLICAS_CONFIG, System.getenv(NUM_STANDBY_REPLICAS_CONFIG_ENV) != null ? System.getenv(NUM_STANDBY_REPLICAS_CONFIG_ENV) : 2);
 
         //Consumer props
         properties.put(StreamsConfig.consumerPrefix(AUTO_OFFSET_RESET_CONFIG), System.getenv(AUTO_OFFSET_RESET_CONFIG_ENV) != null ? System.getenv(AUTO_OFFSET_RESET_CONFIG_ENV) : "earliest");
