@@ -110,6 +110,9 @@ public class WindowedWordCountApp {
         properties.put(StreamsConfig.consumerPrefix(SESSION_TIMEOUT_MS_CONFIG), System.getenv(SESSION_TIMEOUT_MS_CONFIG_ENV) != null ? System.getenv(SESSION_TIMEOUT_MS_CONFIG_ENV) : 45000);
         properties.put(StreamsConfig.consumerPrefix(HEARTBEAT_INTERVAL_MS_CONFIG), System.getenv(HEARTBEAT_INTERVAL_MS_CONFIG_ENV) != null ? System.getenv(HEARTBEAT_INTERVAL_MS_CONFIG_ENV) : 3000);
 
+        //RocksDB setting
+        properties.put("rocksdb.config.setter", "org.hifly.kafka.demo.streams.stream.RocksDBConfig");
+
         return properties;
     }
 

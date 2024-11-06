@@ -22,6 +22,13 @@ spec:
           imagePullPolicy: Never
           ports:
             - containerPort: 8080
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "1"
           volumeMounts:
             - name: rocksdb-storage
               mountPath: /tmp/kafka-streams-rocksdb  # Mount the volume at the state directory
@@ -31,7 +38,7 @@ spec:
             - name: APPLICATION_ID
               value: "wordscounter_app"
             - name: STATE_DIR
-              value: "/tmp/streams-wordscounter"
+              value: "/tmp/kafka-streams-rocksdb"
             - name: PROCESSING_GUARANTEE_CONFIG
               value: "exactly_once_v2"
             - name: AUTO_OFFSET_RESET_CONFIG
