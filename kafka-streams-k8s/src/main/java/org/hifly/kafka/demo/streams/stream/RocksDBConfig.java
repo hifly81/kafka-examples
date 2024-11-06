@@ -7,6 +7,10 @@ import java.util.Map;
 
 public class RocksDBConfig implements RocksDBConfigSetter {
 
+    static {
+        RocksDB.loadLibrary();
+    }
+
     private static final long TOTAL_OFF_HEAP_MEMORY = 1024 * 1024 * 100; // 100 MB
     private static final double INDEX_FILTER_BLOCK_RATIO = 0.2; // 20% of cache dedicated to indexes & filter
     private static final long TOTAL_MEMTABLE_MEMORY = 1024 * 1024 * 50; // 50 MB
@@ -14,9 +18,9 @@ public class RocksDBConfig implements RocksDBConfigSetter {
     private static final int N_MEMTABLES = 3;
     private static final int MEMTABLE_SIZE = 1024 * 1024 * 15; // 15 MB
 
-
     private final static org.rocksdb.Cache cache = new org.rocksdb.LRUCache(TOTAL_OFF_HEAP_MEMORY, -1, false, INDEX_FILTER_BLOCK_RATIO);
     private final static org.rocksdb.WriteBufferManager writeBufferManager = new org.rocksdb.WriteBufferManager(TOTAL_MEMTABLE_MEMORY, cache);
+
 
     @Override
     public void setConfig(final String storeName, final Options options, final Map<String, Object> configs) {

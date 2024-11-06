@@ -2903,6 +2903,7 @@ After installed the kafka cluster on k8s, you need first to create a Docker Imag
 [source,bash]
 ----
 cd kafka-streams-k8s
+mvn clean package
 # Valid if you are suing minikube with docker driver
 eval $(minikube docker-env)
 docker build -t kafka-streams-app .
