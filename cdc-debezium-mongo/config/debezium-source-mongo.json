@@ -9,7 +9,7 @@
     "mongodb.user" : "data-platform-cdc",
     "mongodb.password" : "password",
     "value.converter": "org.apache.kafka.connect.json.JsonConverter",
-    "value.converter.schemas.enable": "true",
+    "value.converter.schemas.enable": "false",
     "transforms": "outbox,unwrap",
     "transforms.outbox.type": "io.debezium.connector.mongodb.transforms.outbox.MongoEventRouter",
     "transforms.outbox.tracing.span.context.field": "propagation",
