@@ -17,7 +17,7 @@ db.createRole({
    role: "confluentCDCRole",
    privileges: [
       { resource: { cluster: true }, actions: ["find", "changeStream"] },
-      { resource: { db: "", collection: "" }, actions: [ "find", "changeStream" ] }
+      { resource: { db: "outbox", collection: "loans" }, actions: [ "find", "changeStream" ] }
    ],
    roles: []
 });
@@ -29,7 +29,7 @@ db.createUser({
     { role: "read", db: "admin" },
     { role: "clusterMonitor", db: "admin" },
     { role: "read", db: "config" },
-    { role: "read", db: "inventory" },
+    { role: "read", db: "outbox" },
     { role: "confluentCDCRole", db: "admin"}
   ]
 });
@@ -38,20 +38,30 @@ EOF
 
 sleep 5
 
-echo "Insert a record in inventory-->customers..."
+echo "Insert a record in outbox-->loans..."
 
 docker exec -i mongo mongosh << EOF
-use inventory
-db.customers.insert([
-{ _id : 1006, first_name : 'Bob', last_name : 'Hopper', email : 'thebob@example.com' }
+use outbox
+db.loans.insert([
+{
+  "aggregateId": "012313",
+  "aggregateType": "Consumer Loan",
+  "topicName": "CONSUMER_LOAN",
+  "eventDate": "2024-08-20T09:42:02.665Z",
+  "eventId": 1,
+  "eventType": "INSTALLMENT_PAYMENT",
+  "payload": {
+    "amount": "200000"
+  }
+}
 ]);
 EOF
 
-echo "View record in inventory-->customers..."
+echo "View record in outbox-->loans..."
 
 docker exec -i mongo mongosh << EOF
-use inventory
-db.customers.find().pretty();
+use outbox
+db.loans.find().pretty();
 EOF
 
 sleep 5

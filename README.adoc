@@ -2461,11 +2461,11 @@ Teardown:
 scripts/tear-down-cdc-informix.sh
 ----
 
-=== CDC with Debezium MongoDB Source Connector
+=== CDC with Debezium MongoDB Source Connector and Outbox Event Router
 
 Folder: link:cdc-debezium-mongo/[cdc-debezium-mongo]
 
-Usage of link:https://debezium.io/documentation/reference/stable/connectors/mongodb.html[Debezium Source Connector for MongoDB] to send updates into a topic.
+Usage of link:https://debezium.io/documentation/reference/stable/connectors/mongodb.html[Debezium Source Connector for MongoDB] to send updates into a topic. This example will use Debezium Event Router to implement a use case suitable for Outbox.
 
 Run environment:
 
@@ -2483,7 +2483,7 @@ db.createRole({
    role: "CDCRole",
    privileges: [
       { resource: { cluster: true }, actions: ["find", "changeStream"] },
-      { resource: { db: "", collection: "" }, actions: [ "find", "changeStream" ] }
+      { resource: { db: "outbox", collection: "loans" }, actions: [ "find", "changeStream" ] }
    ],
    roles: []
 });
@@ -2495,21 +2495,26 @@ db.createUser({
     { role: "read", db: "admin" },
     { role: "clusterMonitor", db: "admin" },
     { role: "read", db: "config" },
-    { role: "read", db: "inventory" },
+    { role: "read", db: "outbox" },
     { role: "CDCRole", db: "admin"}
   ]
 });
 ----
 
-Script will also insert a document into _inventory_ database and _customer_ collection:
+Script will also insert a document into _outbox_ database and _loans_ collection:
 
 [source,bash]
 ----
 {
-  _id: 1006,
-  first_name: 'Bob',
-  last_name: 'Hopper',
-  email: 'thebob@example.com'
+  "aggregateId": "012313",
+  "aggregateType": "Consumer Loan",
+  "topicName": "CONSUMER_LOAN",
+  "eventDate": "2024-08-20T09:42:02.665Z",
+  "eventId": 1,
+  "eventType": "INSTALLMENT_PAYMENT",
+  "payload": {
+    "amount": "200000"
+  }
 }
 ----
 
@@ -2522,24 +2527,44 @@ Script will deploy a source connector:
   "config": {
     "connector.class": "io.debezium.connector.mongodb.MongoDbConnector",
     "mongodb.connection.string": "mongodb://mongo:27017/?replicaSet=rs0",
-    "mongodb.name": "dbserver1",
     "topic.prefix": "test",
+    "database.include.list" : "outbox",
+    "collection.include.list" : "outbox.loans",
     "mongodb.user" : "data-platform-cdc",
-    "mongodb.password" : "password"
+    "mongodb.password" : "password",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": "true",
+    "transforms": "outbox,unwrap",
+    "transforms.outbox.type": "io.debezium.connector.mongodb.transforms.outbox.MongoEventRouter",
+    "transforms.outbox.tracing.span.context.field": "propagation",
+    "transforms.outbox.tracing.with.context.field.only": "false",
+    "transforms.outbox.tracing.operation.name": "debezium-read",
+    "transforms.outbox.collection.field.event.key": "aggregateId",
+    "transforms.outbox.collection.field.event.id": "aggregateId",
+    "transforms.outbox.collection.field.event.payload": "payload",
+    "transforms.outbox.collection.expand.json.payload": "true",
+    "transforms.outbox.collection.fields.additional.placement": "aggregateType:header:aggregateType,eventDate:header:eventTime,eventType:header:type,eventId:header:id",
+    "transforms.outbox.route.by.field": "topicName",
+    "transforms.outbox.route.topic.replacement": "${routedByValue}",
+    "transforms.unwrap.type": "io.debezium.connector.mongodb.transforms.ExtractNewDocumentState",
+    "transforms.unwrap.drop.tombstones": "false",
+    "transforms.unwrap.operation.header": "false",
+    "transforms.unwrap.delete.handling.mode": "drop",
+    "transforms.unwrap.array.encoding": "array"
   }
 }
 ----
 
-Run a consumer on _test.inventory.customers_ topic and see the records:
+Run a consumer on _CONSUMER_LOAN_ topic and see the records:
 
 [source,bash]
 ----
-kafka-avro-console-consumer --bootstrap-server localhost:9092 --topic test.inventory.customers --from-beginning --property schema.registry.url=http://localhost:8081
+kafka-console-consumer --bootstrap-server localhost:9092 --topic CONSUMER_LOAN --from-beginning --property print.key=true --property print.headers=true
 ----
 
 [source,bash]
 ----
-{"before":null,"after":{"string":"{\"_id\": 1006,\"first_name\": \"Bob\",\"last_name\": \"Hopper\",\"email\": \"thebob@example.com\"}"},"updateDescription":null,"source":{"version":"2.4.2.Final","connector":"mongodb","name":"test","ts_ms":0,"snapshot":{"string":"last"},"db":"inventory","sequence":null,"rs":"rs0","collection":"customers","ord":-1,"lsid":null,"txnNumber":null,"wallTime":null},"op":{"string":"r"},"ts_ms":{"long":1730741797590},"transaction":null}
+id:012313,aggregateType:Consumer Loan,eventTime:2024-08-20T09:42:02.665Z,type:INSTALLMENT_PAYMENT,id:1	012313	{"schema":{"type":"struct","fields":[{"type":"string","optional":true,"field":"amount"}],"optional":true,"name":"io.debezium.data.Json.payload"},"payload":{"amount":"200000"}}
 ----
 
 Teardown:
