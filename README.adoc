@@ -1,7 +1,7 @@
 = Practical examples with Apache Kafka®
 :author: Giovanni Marigi
 :email: gio.marigi@gmail.com
-:revdate: October 24, 2024
+:revdate: November 08, 2024
 :revnumber: 1.2.1
 :version-label!:
 :toc: left
@@ -2465,7 +2465,7 @@ scripts/tear-down-cdc-informix.sh
 
 Folder: link:cdc-debezium-mongo/[cdc-debezium-mongo]
 
-Usage of link:https://debezium.io/documentation/reference/stable/connectors/mongodb.html[Debezium Source Connector for MongoDB] to send updates into a topic. This example will use Debezium Event Router to implement a use case suitable for Outbox.
+Usage of link:https://debezium.io/documentation/reference/stable/connectors/mongodb.html[Debezium Source Connector for MongoDB] to send updates into a topic. This example will use Debezium Event Router to implement a scenario for the Outbox pattern.
 
 Run environment:
 
@@ -2518,7 +2518,7 @@ Script will also insert a document into _outbox_ database and _loans_ collection
 }
 ----
 
-Script will deploy a source connector:
+Script will deploy a source connector. Topic destination will be extracted from field _topicName_ in document. Message Key will be set using filed _aggregateId_:
 
 [source,json]
 ----
@@ -2555,7 +2555,7 @@ Script will deploy a source connector:
 }
 ----
 
-Run a consumer on _CONSUMER_LOAN_ topic and see the records:
+Run a consumer on _CONSUMER_LOAN_ topic and see the records _(headers - key - value)_:
 
 [source,bash]
 ----
