@@ -68,3 +68,5 @@ sleep 5
 
 echo "Installing mongo debezium..."
 curl -X POST -H Accept:application/json -H Content-Type:application/json http://localhost:8083/connectors/ -d @cdc-debezium-mongo/config/debezium-source-mongo.json
+echo "Installing mongo debezium with capture properties defined..."
+curl -X POST -H Accept:application/json -H Content-Type:application/json http://localhost:8083/connectors/ -d @cdc-debezium-mongo/config/debezium-source-mongo-with-capture-scope-database.json
