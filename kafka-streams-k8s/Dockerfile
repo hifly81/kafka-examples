@@ -12,6 +12,7 @@ COPY prometheus/kafka_streams.yml /app/kafka_streams.yml
 COPY prometheus/jmx_prometheus_javaagent-0.20.0.jar /app/jmx_prometheus_javaagent-0.20.0.jar
 
 EXPOSE 8080
+EXPOSE 1234
 
 ENV JAVA_OPTS="-javaagent:/app/jmx_prometheus_javaagent-0.20.0.jar=1234:/app/kafka_streams.yml"
 

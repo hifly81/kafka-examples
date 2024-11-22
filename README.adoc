@@ -2961,6 +2961,7 @@ Now you can deploy the kafka stream application on Kubernetes suing a StatefulSe
 ----
 kubectl apply -f k8s/statefulset.yml
 kubectl apply -f k8s/svc.yml
+kubectl apply -f k8s/svc-promethues.yml
 ----
 
 Verify that 3 instances of the application are running:
