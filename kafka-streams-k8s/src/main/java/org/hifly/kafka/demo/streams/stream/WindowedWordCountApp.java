@@ -1,5 +1,6 @@
 package org.hifly.kafka.demo.streams.stream;
 
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -14,8 +15,6 @@ import java.time.Duration;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 
-import static org.apache.kafka.clients.consumer.ConsumerConfig.*;
-
 public class WindowedWordCountApp {
 
     private static final Logger logger = LoggerFactory.getLogger(WindowedWordCountApp.class);
@@ -26,11 +25,6 @@ public class WindowedWordCountApp {
     private static final String PROCESSING_GUARANTEE_CONFIG_ENV = "PROCESSING_GUARANTEE_CONFIG";
     private static final String AUTO_OFFSET_RESET_CONFIG_ENV = "AUTO_OFFSET_RESET_CONFIG";
     private static final String NUM_STREAM_THREADS_CONFIG_ENV = "NUM_STREAM_THREADS_CONFIG";
-    private static final String NUM_STANDBY_REPLICAS_CONFIG_ENV = "NUM_STANDBY_REPLICAS_CONFIG";
-    private static final String MAX_POLL_INTERVAL_MS_CONFIG_ENV = "MAX_POLL_INTERVAL_MS_CONFIG";
-    private static final String SESSION_TIMEOUT_MS_CONFIG_ENV = "SESSION_TIMEOUT_MS_CONFIG";
-    private static final String HEARTBEAT_INTERVAL_MS_CONFIG_ENV = "HEARTBEAT_INTERVAL_MS_CONFIG";
-
     private static final String INPUT_TOPIC_NAME_ENV = "INPUT_TOPIC_NAME";
     private static final String OUTPUT_TOPIC_NAME_ENV = "OUTPUT_TOPIC_NAME";
 
@@ -101,18 +95,9 @@ public class WindowedWordCountApp {
         properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         properties.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, System.getenv(PROCESSING_GUARANTEE_CONFIG_ENV) != null ? System.getenv(PROCESSING_GUARANTEE_CONFIG_ENV) : "exactly_once_v2");
         properties.put(StreamsConfig.NUM_STREAM_THREADS_CONFIG, System.getenv(NUM_STREAM_THREADS_CONFIG_ENV) != null ? System.getenv(NUM_STREAM_THREADS_CONFIG_ENV) : 2);
+        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, System.getenv(AUTO_OFFSET_RESET_CONFIG_ENV) != null ? System.getenv(AUTO_OFFSET_RESET_CONFIG_ENV) : "earliest");
         properties.put(StreamsConfig.STATE_DIR_CONFIG, System.getenv(STATE_DIR_ENV) != null ? System.getenv(STATE_DIR_ENV) : "/tmp/streams-wordscounter");
-        properties.put(StreamsConfig.NUM_STANDBY_REPLICAS_CONFIG, System.getenv(NUM_STANDBY_REPLICAS_CONFIG_ENV) != null ? System.getenv(NUM_STANDBY_REPLICAS_CONFIG_ENV) : 2);
-
-        //Consumer props
-        properties.put(StreamsConfig.consumerPrefix(AUTO_OFFSET_RESET_CONFIG), System.getenv(AUTO_OFFSET_RESET_CONFIG_ENV) != null ? System.getenv(AUTO_OFFSET_RESET_CONFIG_ENV) : "earliest");
-        properties.put(StreamsConfig.consumerPrefix(MAX_POLL_INTERVAL_MS_CONFIG), System.getenv(MAX_POLL_INTERVAL_MS_CONFIG_ENV) != null ? System.getenv(MAX_POLL_INTERVAL_MS_CONFIG_ENV) : 300000);
-        properties.put(StreamsConfig.consumerPrefix(SESSION_TIMEOUT_MS_CONFIG), System.getenv(SESSION_TIMEOUT_MS_CONFIG_ENV) != null ? System.getenv(SESSION_TIMEOUT_MS_CONFIG_ENV) : 45000);
-        properties.put(StreamsConfig.consumerPrefix(HEARTBEAT_INTERVAL_MS_CONFIG), System.getenv(HEARTBEAT_INTERVAL_MS_CONFIG_ENV) != null ? System.getenv(HEARTBEAT_INTERVAL_MS_CONFIG_ENV) : 3000);
-
-        //RocksDB setting
-        properties.put("rocksdb.config.setter", "org.hifly.kafka.demo.streams.stream.RocksDBConfig");
-
+        properties.put(StreamsConfig.ROCKSDB_CONFIG_SETTER_CLASS_CONFIG, BoundedMemoryRocksDBConfig.class.getName());
         return properties;
     }
 
