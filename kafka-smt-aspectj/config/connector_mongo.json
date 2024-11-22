@@ -16,6 +16,5 @@
     "predicates": "IsFoo",
     "predicates.IsFoo.type": "org.apache.kafka.connect.transforms.predicates.TopicNameMatches",
     "predicates.IsFoo.pattern": "test"
-
   }
 }
