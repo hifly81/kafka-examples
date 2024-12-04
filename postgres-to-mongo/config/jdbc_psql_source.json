@@ -1,0 +1,24 @@
+{
+  "name": "jdbc-source-connector",
+  "config": {
+    "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+    "tasks.max": "1",
+    "connection.url": "jdbc:postgresql://postgres:5432/postgres",
+    "connection.user": "postgres",
+    "connection.password": "postgres",
+    "table.whitelist": "accounts",
+    "mode": "bulk",
+    "topic.prefix": "jdbc_",
+    "poll.interval.ms": "600000",
+    "numeric.mapping": "best_fit",
+    "value.converter": "io.confluent.connect.avro.AvroConverter",
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": "false",
+    "value.converter.schema.registry.url": "http://schema-registry:8081",
+    "transforms": "createKey,nestKey",
+    "transforms.createKey.type": "org.apache.kafka.connect.transforms.ValueToKey",
+    "transforms.createKey.fields": "id",
+    "transforms.nestKey.type": "org.apache.kafka.connect.transforms.ReplaceField$Key",
+    "transforms.nestKey.renames": "id:originalId"
+  }
+}

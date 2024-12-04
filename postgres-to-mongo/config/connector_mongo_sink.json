@@ -1,0 +1,24 @@
+{
+  "name": "mongo-sink-dlq",
+  "config": {
+    "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
+    "errors.tolerance": "all",
+    "topics": "jdbc_accounts",
+    "errors.deadletterqueue.topic.name": "dlq-mongo-accounts",
+    "errors.deadletterqueue.topic.replication.factor": "1",
+    "errors.deadletterqueue.context.headers.enable": "true",
+    "connection.uri": "mongodb://admin:password@mongo:27017",
+    "database": "Employee",
+    "collection": "account",
+    "mongo.errors.log.enable":"true",
+    "delete.on.null.values": "true",
+    "document.id.strategy.overwrite.existing": "true",
+    "document.id.strategy": "com.mongodb.kafka.connect.sink.processor.id.strategy.FullKeyStrategy",
+    "delete.writemodel.strategy": "com.mongodb.kafka.connect.sink.writemodel.strategy.DeleteOneDefaultStrategy",
+    "publish.full.document.only": "true",
+    "value.converter": "io.confluent.connect.avro.AvroConverter",
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": "false",
+    "value.converter.schema.registry.url": "http://schema-registry:8081"
+  }
+}

@@ -7,8 +7,8 @@ metadata:
 spec:
   dataVolumeCapacity: 1G
   image:
-    application: docker.io/confluentinc/cp-kafka:7.7.1
-    init: confluentinc/confluent-init-container:2.9.1
+    application: docker.io/confluentinc/cp-kafka:7.8.0
+    init: confluentinc/confluent-init-container:2.10.0
   replicas: 1
 ---
 apiVersion: platform.confluent.io/v1beta1
@@ -19,8 +19,8 @@ metadata:
 spec:
   replicas: 3
   image:
-    application: confluentinc/cp-kafka:7.7.1
-    init: confluentinc/confluent-init-container:2.9.1
+    application: confluentinc/cp-kafka:7.8.0
+    init: confluentinc/confluent-init-container:2.10.0
   dataVolumeCapacity: 1Gi
   dependencies:
     kRaftController:

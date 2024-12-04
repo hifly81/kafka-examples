@@ -1,0 +1,1 @@
+{"schema": "{\"type\": \"record\",\"name\": \"KeySchema\",\"fields\": [{\"name\": \"id\",\"type\": \"string\"}]}"}

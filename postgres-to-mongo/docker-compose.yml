@@ -1,6 +1,4 @@
 ---
-version: '2'
-
 services:
   broker:
     image: confluentinc/cp-kafka:${CONFLUENT_VERSION}
@@ -57,7 +55,8 @@ services:
       CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
       CONNECT_STATUS_STORAGE_TOPIC: docker-connect-status
       CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
-      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
+      CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
       CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
       CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
@@ -68,11 +67,33 @@ services:
       - |
         echo "Installing Connector"
         confluent-hub install --no-prompt  mongodb/kafka-connect-mongodb:1.9.1
+        confluent-hub install --no-prompt  confluentinc/kafka-connect-jdbc:10.8.0
         #
         echo "Launching Kafka Connect worker"
         /etc/confluent/docker/run &
         #
         sleep infinity
+
+  postgres:
+    image: postgres:${POSTGRES_VERSION}
+    container_name: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+      - ./config/create-tables.sql:/docker-entrypoint-initdb.d/init.sql
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    ports:
+      - '5432:5432'
+    command:
+      - "postgres"
+      - "-c"
+      - "wal_level=logical"
 
   mongodb:
     image: mongo:5.0

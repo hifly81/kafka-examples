@@ -1897,11 +1897,13 @@ Teardown:
 scripts/tear-down-smt-aspectj.sh
 ----
 
-=== Sink Connector Error Handling with a DLQ
+=== Postgres bulk to Mongo
 
-Folder: link:kafka-connect-sink-dlq[kafka-connect-sink-dlq]
+In this example a JDBC source connector will copy rows from a Postgres table to a MongoDB collection. Rows containing a JSON CLOB not properly parsable will be sent to DLQ topic.
 
-link:https://www.mongodb.com/docs/kafka-connector/current/sink-connector/[MongoDB sink connector] example configured to send bad messages to a DLQ topic named _dlq.mongo_.
+Folder: link:postgres-to-mongo[postgres-to-mongo]
+
+link:https://www.mongodb.com/docs/kafka-connector/current/sink-connector/[MongoDB sink connector] example configured to send bad messages to a DLQ topic named _dlq-mongo-accounts_.
 
 MongoDB Sink Connector has been configured to use a link:https://www.mongodb.com/docs/kafka-connector/current/sink-connector/configuration-properties/id-strategy/[id strategy] to determine the __id_ value for each document.
 
@@ -1911,79 +1913,92 @@ Run the example:
 
 [source,bash]
 ----
-scripts/bootstrap-connect-dlq.sh
+scripts/bootstrap-postgres-to-mongo.sh
 ----
 
-Create _test_ and _dlq.mongo_ topics:
-
-[source,bash]
-----
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic test --replication-factor 1 --partitions 1
-
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic dlq.mongo --replication-factor 1 --partitions 1
-----
-
-Deploy the connector:
-
-[source,bash]
-----
-curl -X POST -H Accept:application/json -H Content-Type:application/json http://localhost:8083/connectors/ -d @kafka-connect-sink-dlq/config/connector_mongo_sink.json
-----
-
-A MongoDB sink connector will be created with this link:kafka-connect-sink-dlq/config/connector_mongo_sink.json[config]:
+A JDBC source connector will be created with this link:postgres-to-mongo/config/jdbc_psql_source.json[config]:
 
 [source,bash]
 ----
 {
-  "name" : "mongo-sample-sink",
+  "name": "jdbc-source-connector",
   "config": {
-    "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
-    "topics": "test",
-    "connection.uri": "mongodb://admin:password@mongo:27017",
-    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
-    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
-    "key.converter.schemas.enable": false,
-    "value.converter.schemas.enable": false,
-    "database": "Tutorial2",
-    "collection": "pets",
-    "errors.tolerance": "all",
-    "errors.deadletterqueue.topic.name":"dlq.mongo",
-    "errors.deadletterqueue.topic.replication.factor": 1
+    "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+    "tasks.max": "1",
+    "connection.url": "jdbc:postgresql://postgres:5432/postgres",
+    "connection.user": "postgres",
+    "connection.password": "postgres",
+    "table.whitelist": "accounts",
+    "mode": "bulk",
+    "topic.prefix": "jdbc_",
+    "poll.interval.ms": "600000",
+    "numeric.mapping": "best_fit",
+    "value.converter": "io.confluent.connect.avro.AvroConverter",
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": "false",
+    "value.converter.schema.registry.url": "http://schema-registry:8081",
+    "transforms": "createKey,nestKey",
+    "transforms.createKey.type": "org.apache.kafka.connect.transforms.ValueToKey",
+    "transforms.createKey.fields": "id",
+    "transforms.nestKey.type": "org.apache.kafka.connect.transforms.ReplaceField$Key",
+    "transforms.nestKey.renames": "id:originalId"
   }
 }
 ----
 
-Send json messages to _test_ topic (second message is a malformed json message):
+A MongoDB sink connector will be created with this link:postgres-to-mongo/config/connector_mongo_sink.json[config]:
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic test --property "parse.key=true" --property "key.separator=:"
-> 1:{"FIELD1": "01","FIELD2": "20400","FIELD3": "001","FIELD4": "0006084655017","FIELD5": "20221117","FIELD6": 9000018}
-> 2:{"FIELD1": "01","FIELD2": "20400","FIELD3": "001","FIELD4": "0006084655017","FIELD5": "20221117",
-
+{
+  "name": "mongo-sink-dlq",
+  "config": {
+    "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
+    "errors.tolerance": "all",
+    "topics": "jdbc_accounts",
+    "errors.deadletterqueue.topic.name": "dlq-mongo-accounts",
+    "errors.deadletterqueue.topic.replication.factor": "1",
+    "errors.deadletterqueue.context.headers.enable": "true",
+    "connection.uri": "mongodb://admin:password@mongo:27017",
+    "database": "Employee",
+    "collection": "account",
+    "mongo.errors.log.enable":"true",
+    "delete.on.null.values": "true",
+    "document.id.strategy.overwrite.existing": "true",
+    "document.id.strategy": "com.mongodb.kafka.connect.sink.processor.id.strategy.FullKeyStrategy",
+    "delete.writemodel.strategy": "com.mongodb.kafka.connect.sink.writemodel.strategy.DeleteOneDefaultStrategy",
+    "publish.full.document.only": "true",
+    "value.converter": "io.confluent.connect.avro.AvroConverter",
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": "false",
+    "value.converter.schema.registry.url": "http://schema-registry:8081"
+  }
+}
 ----
 
-Sink connector will send only the first record in MongoDB _pets_ collection from _Tutorial2_ database.
-
-Second message will be stored in _dlq.mongo_ topic.
+Validate results, query documents in Mongo collection _account_ from database _Employee_:
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-consumer --topic dlq.mongo --bootstrap-server broker:9092 --from-beginning
+docker exec -it mongo mongosh "mongodb://admin:password@localhost:27017" --eval 'db.getSiblingDB("Employee").account.find()'
 ----
-
-Verify that the connector is still in _RUNNING_ status:
 
 [source,bash]
 ----
-curl -v http://localhost:8083/connectors?expand=status
+[
+  { _id: { originalId: '1' }, id: '1', ssn: 'AAAA' },
+  { _id: { originalId: '2' }, id: '2', ssn: 'BBBB' },
+  { _id: { originalId: '3' }, id: '3', ssn: 'CCCC' },
+  { _id: { originalId: '4' }, id: '4', ssn: 'DDDD' },
+  { _id: { originalId: '5' }, id: '5', ssn: 'EEEE' }
+]
 ----
 
 Teardown:
 
 [source,bash]
 ----
-scripts/tear-down-connect-dlq.sh
+scripts/tear-down-postgres-to-mongo.sh
 ----
 
 === HTTP Sink Connector example
@@ -2559,7 +2574,7 @@ Run a consumer on _CONSUMER_LOAN_ topic and see the records _(headers - key - va
 
 [source,bash]
 ----
-kafka-console-consumer --bootstrap-server localhost:9092 --topic CONSUMER_LOAN --from-beginning --property print.key=true --property print.headers=true
+docker exec -it broker kafka-console-consumer --bootstrap-server broker:9092 --topic CONSUMER_LOAN --from-beginning --property print.key=true --property print.headers=true
 ----
 
 [source,bash]
