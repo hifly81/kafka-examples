@@ -1,0 +1,12 @@
+name: "Alice Topic  Access"
+action: --add
+allow_principal: User:alice
+operations:
+  - WRITE
+  - READ
+
+resource_pattern_type: literal
+
+topics:
+  - test
+
