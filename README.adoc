@@ -3910,7 +3910,16 @@ docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --broker-list br
 org.apache.kafka.common.errors.TopicAuthorizationException: Not authorized to access topics: [test]
 ----
 
-Set topic read and topic write ACLs on topic _test_ for user _alice_:
+Set topic read and topic write ACLs on topic _test_ for user _alice_; you have 2 options:
+
+1. Run script run-acl.sh:
+
+[source,bash]
+----
+docker exec broker sh -c "chmod +x /tmp/run-acl.sh && /tmp/run-acl.sh"
+----
+
+2. Run kafka acls cli:
 
 [source,bash]
 ----

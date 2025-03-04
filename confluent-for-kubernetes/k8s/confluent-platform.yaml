@@ -7,7 +7,7 @@ metadata:
 spec:
   dataVolumeCapacity: 1G
   image:
-    application: docker.io/confluentinc/cp-kafka:7.8.0
+    application: docker.io/confluentinc/cp-kafka:7.8.1
     init: confluentinc/confluent-init-container:2.10.0
   replicas: 1
 ---
@@ -19,7 +19,7 @@ metadata:
 spec:
   replicas: 3
   image:
-    application: confluentinc/cp-kafka:7.8.0
+    application: confluentinc/cp-kafka:7.8.1
     init: confluentinc/confluent-init-container:2.10.0
   dataVolumeCapacity: 1Gi
   dependencies:
@@ -37,7 +37,7 @@ metadata:
 spec:
   replicas: 1
   image:
-    application: confluentinc/cp-kafka-connect-base:7.8.0
+    application: confluentinc/cp-kafka-connect-base:7.8.1
     init: confluentinc/confluent-init-container:2.10.0
   dependencies:
     kafka:
@@ -63,7 +63,7 @@ metadata:
 spec:
   replicas: 1
   image:
-    application: confluentinc/cp-schema-registry:7.8.0
+    application: confluentinc/cp-schema-registry:7.8.1
     init: confluentinc/confluent-init-container:2.10.0
 ---
 apiVersion: platform.confluent.io/v1beta1
@@ -76,6 +76,6 @@ spec:
     schemaRegistry:
       url: http://schemaregistry.confluent.svc.cluster.local:8081
   image:
-    application: confluentinc/cp-kafka-rest:7.8.0
+    application: confluentinc/cp-kafka-rest:7.8.1
     init: confluentinc/confluent-init-container:2.10.0
   replicas: 1
