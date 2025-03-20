@@ -4718,14 +4718,14 @@ cd /tmp/trogdor/coordinator/compression/nocompression/
 Run the test:
 [source,bash]
 ----
-./trogdor-task.sh
+chmod +x ./trogdor-task.sh && ./trogdor-task.sh
 ----
 
 Check the status and results:
 
 [source,bash]
 ----
-./trogdor-task-status.sh
+chmod +x ./trogdor-task-status.sh && ./trogdor-task-status.sh
 ----
 
 [source,bash]
@@ -4765,7 +4765,7 @@ Cancel the tasks:
 
 [source,bash]
 ----
-./trogdor-task-cancel.sh
+chmod +x ./trogdor-task-cancel.sh && ./trogdor-task-cancel.sh
 ----
 
 Alternative: you can run _kafka-producer-perf-test_ tool instead of trogdor and test the scenario:
@@ -4807,14 +4807,14 @@ cd /tmp/trogdor/coordinator/compression/lz4/
 Run the test:
 [source,bash]
 ----
-./trogdor-task.sh
+chmod +x ./trogdor-task.sh && ./trogdor-task.sh
 ----
 
 Check the status and results:
 
 [source,bash]
 ----
-./trogdor-task-status.sh
+chmod +x ./trogdor-task-status.sh && ./trogdor-task-status.sh
 ----
 
 [source,bash]
@@ -4854,7 +4854,7 @@ Cancel the tasks:
 
 [source,bash]
 ----
-./trogdor-task-cancel.sh
+chmod +x ./trogdor-task-cancel.sh && ./trogdor-task-cancel.sh
 ----
 
 Alternative: you can run _kafka-producer-perf-test_ tool instead of trogdor and test the scenario:
