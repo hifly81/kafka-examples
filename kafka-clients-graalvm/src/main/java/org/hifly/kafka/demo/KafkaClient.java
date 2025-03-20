@@ -10,8 +10,8 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.io.FileInputStream;
+import java.time.Duration;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Properties;
 
 public class KafkaClient {
@@ -57,7 +57,7 @@ public class KafkaClient {
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(consumerProps);
         consumer.subscribe(Collections.singletonList("my-topic"));
 
-        for (ConsumerRecord<String, String> record : consumer.poll(1000)) {
+        for (ConsumerRecord<String, String> record : consumer.poll(Duration.ofSeconds(1))) {
             System.out.println("Consumed message: " + record.value());
         }
 

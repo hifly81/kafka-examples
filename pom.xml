@@ -26,7 +26,6 @@
         <module>kafka-unixcommand-connector</module>
         <module>ksqldb-saga-example</module>
         <module>admin-client</module>
-        <module>authorizers</module>
         <module>interceptors</module>
         <module>principal-builder</module>
         <module>claim-check</module>
@@ -37,16 +36,16 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <kafka.version>3.9.0</kafka.version>
+        <kafka.version>4.0.0</kafka.version>
         <avro.version>1.11.4</avro.version>
-        <confluent.version>7.8.0</confluent.version>
+        <confluent.version>7.9.0</confluent.version>
         <apicurio.registry.version>2.4.1.Final</apicurio.registry.version>
         <hortonworks.registry.version>0.3.0</hortonworks.registry.version>
         <slf4j.version>1.7.15</slf4j.version>
         <junit.version>4.13.1</junit.version>
         <curator.version>5.0.0</curator.version>
         <minio.version>8.5.2</minio.version>
-        <jackson.version>2.12.7.1</jackson.version>
+        <jackson.version>2.13.1</jackson.version>
         <json-version>20231013</json-version>
     </properties>
 
@@ -56,7 +55,7 @@
 
             <dependency>
                 <groupId>org.apache.kafka</groupId>
-                <artifactId>kafka_2.12</artifactId>
+                <artifactId>kafka_2.13</artifactId>
                 <version>${kafka.version}</version>
             </dependency>
 
@@ -148,6 +147,12 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
 
