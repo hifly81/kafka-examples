@@ -1,7 +1,7 @@
 = Practical examples with Apache Kafka®
 :author: Giovanni Marigi
 :email: gio.marigi@gmail.com
-:revdate: November 08, 2024
+:revdate: March 20, 2025
 :revnumber: 1.2.1
 :version-label!:
 :toc: left
@@ -4094,58 +4094,6 @@ Teardown:
 [source,bash]
 ----
 scripts/tear-down-multi-listener.sh
-----
-
-=== Custom Authorizer
-
-Folder: link:authorizers/[authorizers]
-
-This example shows how to create a custom authorizer.
-
-IMPORTANT: this example is only for demo purposes and it's not intended to be deployed in production.
-
-Custom Authorizer link:authorizers/src/main/java/org/hifly/kafka/authorizer/DummyAuthorizer.java[_org.hifly.kafka.authorizer.DummyAuthirizer_] extends the basic _AclAuthorizer_ and allows authenticated users to execute
-operations on topics without setting any ACLs on them.
-
-Compile and package:
-
-[source,bash]
-----
-cd authorizers
-mvn clean package
-cp -rf ./target/authorizers-1.2.1.jar ./jars
-----
-
-Run broker with custom authorizer on port 9092:
-
-[source,bash]
-----
-scripts/bootstrap-auth.sh
-----
-
-Run a producer test using the link:authorizers/config/producer.properties[_producer.properties_] on listener port 9092:
-
-Producer command:
-
-[source,bash]
-----
-docker exec -it broker kafka-console-producer --broker-list broker:9093 --topic test --producer.config /tmp/producer.properties
-----
-
-Run a consumer test using the link:authorizers/config/consumer.properties[_consumer.properties_] on listener port 9092:
-
-Consumer command:
-
-[source,bash]
-----
-docker exec -it broker kafka-console-consumer --broker-list broker:9093 --topic test --consumer.config /tmp/consumer.properties
-----
-
-Teardown:
-
-[source,bash]
-----
-scripts/tear-down-auth.sh
 ----
 
 === Custom Principal Builder

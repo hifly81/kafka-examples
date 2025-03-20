@@ -1,11 +1,12 @@
 package org.hifly.kafka.demo.streams.processor;
 
 import org.apache.kafka.streams.KeyValue;
-import org.apache.kafka.streams.kstream.Transformer;
 import org.apache.kafka.streams.processor.Cancellable;
-import org.apache.kafka.streams.processor.ProcessorContext;
 import org.apache.kafka.streams.processor.PunctuationType;
 import org.apache.kafka.streams.processor.Punctuator;
+import org.apache.kafka.streams.processor.api.Processor;
+import org.apache.kafka.streams.processor.api.ProcessorContext;
+import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.json.JSONObject;
@@ -18,40 +19,38 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-public class ExpiredMessagesProcessor implements Transformer<String, String, KeyValue<String, String>> {
+public class ExpiredMessagesProcessor implements Processor<String, String, String, String> {
+
 
     private Logger log = LoggerFactory.getLogger(ExpiredMessagesProcessor.class);
-
-    private ProcessorContext context;
+    private ProcessorContext<String, String> context;
     private KeyValueStore<String, String> store;
 
     final static long SECONDS_SESSION_EXPIRED = 30l;
     final static int PUNCTUATE_INTERVAL = 15;
     final static int HOURS_CORRECTION = 2;
 
-
     @Override
-    public void init(ProcessorContext processorContext) {
-        this.context = processorContext;
+    public void init(final ProcessorContext<String, String> context) {
+        this.context = context;
         this.store = context.getStateStore(ExpiredMessagesApplication.STATE_STORE_NAME);
     }
 
     @Override
-    public KeyValue<String, String> transform(String key, String value) {
-
+    public void process(Record<String, String> record) {
         //Key not present in store
-        if (store.get(key) == null) {
-            store.put(key, value);
+        if (store.get(record.key()) == null) {
+            store.put(record.key(), record.value());
             RemoveEntry removeEntry = new RemoveEntry();
             // schedule a punctuate() method every PUNCTUATE_INTERVAL seconds based on stream-time
             Cancellable cancelTask = this.context.schedule(Duration.ofSeconds(PUNCTUATE_INTERVAL), PunctuationType.WALL_CLOCK_TIME, removeEntry);
             removeEntry.setCancellable(cancelTask);
 
-            context.forward(key, value);
+            context.forward(record);
         }
 
         context.commit();
-        return null;
+        context.forward(record);
     }
 
     @Override

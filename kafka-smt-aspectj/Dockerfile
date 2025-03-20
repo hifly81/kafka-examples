@@ -1,4 +1,4 @@
-FROM confluentinc/cp-kafka-connect-base:7.8.0
+FROM confluentinc/cp-kafka-connect-base:7.9.0
 
 COPY agent/aspectjweaver-1.9.19.jar /usr/share/java/aspectjweaver-1.9.19.jar
 

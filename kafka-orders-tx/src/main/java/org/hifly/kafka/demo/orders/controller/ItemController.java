@@ -1,5 +1,6 @@
 package org.hifly.kafka.demo.orders.controller;
 
+import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.hifly.kafka.demo.orders.kafka.KafkaConfig;
@@ -9,10 +10,6 @@ import org.hifly.kafka.demo.orders.model.Item;
 import org.hifly.kafka.demo.orders.model.Order;
 import org.hifly.kafka.demo.producer.serializer.json.JsonProducer;
 
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.TopicPartition;
@@ -108,6 +105,8 @@ public class ItemController {
 
     private int consumeItems(int pollSeconds, String TOPIC_OUTPUT, String CONS_GROUP, JsonProducer<Order> jsonProducer, KafkaConsumer<String, Item> jsonConsumer, boolean fromBeginning) {
         log.info("Fetching items...");
+        ConsumerGroupMetadata groupMetadata = new ConsumerGroupMetadata(CONS_GROUP);
+
         ConsumerRecords<String, Item> records;
 
         if(fromBeginning) {
@@ -139,7 +138,7 @@ public class ItemController {
             offsetsToCommit.put(partition, new OffsetAndMetadata(offset + 1));
         }
 
-        jsonProducer.getProducer().sendOffsetsToTransaction(offsetsToCommit, CONS_GROUP);
+        jsonProducer.getProducer().sendOffsetsToTransaction(offsetsToCommit, groupMetadata);
         jsonProducer.getProducer().commitTransaction();
 
         return records.count();

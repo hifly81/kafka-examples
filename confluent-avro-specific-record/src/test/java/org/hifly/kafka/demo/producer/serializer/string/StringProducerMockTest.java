@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.kafka.clients.producer.Partitioner;
+import org.apache.kafka.common.Cluster;
 import org.hifly.kafka.demo.producer.ProducerCallback;
 
 import org.apache.kafka.clients.producer.MockProducer;
@@ -22,7 +24,23 @@ public class StringProducerMockTest {
     public void testProduce() throws IOException {
         StringProducer baseProducer = new StringProducer();
 
-        final MockProducer<String, String> mockProducer = new MockProducer<>(true, new StringSerializer(), new StringSerializer());
+        Partitioner partitioner = new Partitioner() {
+
+            @Override
+            public int partition(String s, Object o, byte[] bytes, Object o1, byte[] bytes1, Cluster cluster) {
+                return 0;
+            }
+
+            @Override
+            public void close() {
+            }
+
+            @Override
+            public void configure(java.util.Map<String, ?> configs) {
+            }
+        };
+
+        final MockProducer<String, String> mockProducer = new MockProducer<>(true, partitioner, new StringSerializer(), new StringSerializer());
         baseProducer.start(mockProducer);
 
         final ProducerRecord<String, String> producerRecord1 = new ProducerRecord<>("topicOut", "foo", "bar");
@@ -43,7 +61,23 @@ public class StringProducerMockTest {
     public void testProduceAsync() throws IOException {
         StringProducer baseProducer = new StringProducer();
 
-        final MockProducer<String, String> mockProducer = new MockProducer<>(true, new StringSerializer(), new StringSerializer());
+        Partitioner partitioner = new Partitioner() {
+
+            @Override
+            public int partition(String s, Object o, byte[] bytes, Object o1, byte[] bytes1, Cluster cluster) {
+                return 0;
+            }
+
+            @Override
+            public void close() {
+            }
+
+            @Override
+            public void configure(java.util.Map<String, ?> configs) {
+            }
+        };
+
+        final MockProducer<String, String> mockProducer = new MockProducer<>(true, partitioner, new StringSerializer(), new StringSerializer());
         baseProducer.start(mockProducer);
 
         final ProducerRecord<String, String> producerRecord1 = new ProducerRecord<>("topicOut", "foo", "bar");

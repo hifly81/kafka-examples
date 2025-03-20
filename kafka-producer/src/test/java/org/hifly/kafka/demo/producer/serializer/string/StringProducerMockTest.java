@@ -22,7 +22,7 @@ public class StringProducerMockTest {
     public void testProduce() throws IOException {
         StringProducer baseProducer = new StringProducer();
 
-        final MockProducer<String, String> mockProducer = new MockProducer<>(true, new StringSerializer(), new StringSerializer());
+        final MockProducer<String, String> mockProducer = new MockProducer<>(true, null, new StringSerializer(), new StringSerializer());
         baseProducer.start(mockProducer);
 
         final ProducerRecord<String, String> producerRecord1 = new ProducerRecord<>("topicOut", "foo", "bar");
@@ -43,7 +43,7 @@ public class StringProducerMockTest {
     public void testProduceAsync() throws IOException {
         StringProducer baseProducer = new StringProducer();
 
-        final MockProducer<String, String> mockProducer = new MockProducer<>(true, new StringSerializer(), new StringSerializer());
+        final MockProducer<String, String> mockProducer = new MockProducer<>(true, null, new StringSerializer(), new StringSerializer());
         baseProducer.start(mockProducer);
 
         final ProducerRecord<String, String> producerRecord1 = new ProducerRecord<>("topicOut", "foo", "bar");

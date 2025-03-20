@@ -2,12 +2,10 @@ package org.hifly.kafka.demo.streams.processor;
 
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.Produced;
-import org.apache.kafka.streams.kstream.TransformerSupplier;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.StoreBuilder;
 import org.apache.kafka.streams.state.Stores;
@@ -44,11 +42,8 @@ public class ExpiredMessagesApplication {
                 Serdes.String()).withLoggingEnabled(changelogConfig);
         builder.addStateStore(stateStore);
 
-        //Create a Transformer
-        TransformerSupplier<String, String, KeyValue<String, String>> transformerSupplier = ExpiredMessagesProcessor::new;
-
         builder.stream(INPUT_TOPIC, Consumed.with(Serdes.String(), Serdes.String()))
-                .transform(transformerSupplier, stateStore.name())
+                .process(ExpiredMessagesProcessor::new, stateStore.name())
                 .to(OUTPUT_TOPIC, Produced.with(Serdes.String(), Serdes.String()));
 
         final KafkaStreams streams = new KafkaStreams(builder.build(), streamsConfiguration);

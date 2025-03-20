@@ -20,7 +20,7 @@ public class CustomDataJsonSerializer implements Serializer<CustomData> {
         byte[] retVal = null;
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            retVal = objectMapper.writeValueAsString(data).getBytes();
+            retVal = objectMapper.writeValueAsBytes(data);
         } catch (Exception exception) {
             LOGGER.error("Error in serializing object {}", data);
         }
