@@ -975,7 +975,7 @@ Operations currently added:
 
  - list of cluster nodes
  - list topics
- - list of broker fenced (available only from kafka 4.x)
+ - list of fenced brokers (available only from kafka 4.x)
 
 [source,bash]
 ----
@@ -4209,7 +4209,7 @@ Keycloak setup:
 
  - Login to http://localhost:8080 (admin/Pa55w0rd)
  - Create a realm called kafka
- - From the Clients tab, create a client with Cliend ID "kafka_user".
+ - From the Clients tab, create a client with Client ID "kafka_user".
  - Change Access Type to Confidential
  - Turn Standard Flow Enabled to OFF
  - Turn Service Accounts Enabled to ON
@@ -4218,6 +4218,13 @@ Keycloak setup:
  - Set Client Authenticator to "Client Id and Secret"
  - Copy the client-secret
  - Save
+----
+
+Start kafka cluster with command:
+
+[source,bash]
+----
+docker-compose -f kafka-oauth-kip-768/docker-compose-oauth.yml --env-file .env up -d
 ----
 
 Run a producer test using the link:kafka-oauth-kip-768/client-oauth.properties[_client-oauth-properties_] (add your client_secret into the file) on listener port 9093:
