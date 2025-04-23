@@ -1,13 +1,8 @@
 package org.hifly.kafka.admin;
 
-import org.apache.kafka.clients.admin.AdminClient;
-import org.apache.kafka.clients.admin.DescribeClusterResult;
-import org.apache.kafka.clients.admin.ListTopicsResult;
-import org.apache.kafka.clients.admin.TopicListing;
+import org.apache.kafka.clients.admin.*;
 import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.Node;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,13 +10,10 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Properties;
 import java.util.Scanner;
 
 public class AdminClientWrapper {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AdminClientWrapper.class);
 
     public static void main(String args []) {
 
@@ -32,7 +24,8 @@ public class AdminClientWrapper {
         String[] options = {
                 "1 - Nodes listing",
                 "2 - Topics listing",
-                "3 - Exit",
+                "3 - Fenced Brokers",
+                "4 - Exit",
         };
         Scanner scanner = new Scanner(System.in);
         int option;
@@ -47,6 +40,9 @@ public class AdminClientWrapper {
                     topicsListing(configFile);
                     break;
                 case 3:
+                    fencedBrokers(configFile);
+                    break;
+                case 4:
                     System.exit(0);
                 default:
                     System.out.println("Invalid operation!");
@@ -62,10 +58,27 @@ public class AdminClientWrapper {
             DescribeClusterResult describeClusterResult = client.describeCluster();
             KafkaFuture<Collection<Node>> nodesFuture = describeClusterResult.nodes();
             Collection<Node> nodes = nodesFuture.get();
-            Iterator iterator = nodes.iterator();
-            while ( iterator.hasNext()){
-                Node node = (Node)iterator.next();
-                LOGGER.info("Host:{}-Port:{}-Rack:{}\n", node.host(), node.port(), node.rack());
+            for (Node node : nodes) {
+                System.out.printf("Host:%s-Port:%s-Rack:%s\n", node.host(), node.port(), node.rack());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void fencedBrokers(String configFile) {
+        try (AdminClient client = AdminClient.create(loadConfig(configFile))) {
+            DescribeClusterOptions options = new DescribeClusterOptions().includeFencedBrokers(true);
+            DescribeClusterResult clusterResult = client.describeCluster(options);
+            for (Node broker : clusterResult.nodes().get()) {
+                boolean isFenced = broker.isFenced();
+                System.out.printf("Broker: %s, Host: %s, Port: %d, Fenced: %s%n",
+                        broker.id(), broker.host(), broker.port(), isFenced);
+                //if(isFenced) {
+                    //this removes from cluster metadata
+                    //client.unregisterBroker(broker.id()).all().get();
+                //}
             }
 
         } catch (Exception e) {
@@ -78,10 +91,8 @@ public class AdminClientWrapper {
             ListTopicsResult listTopicsResult = client.listTopics();
             KafkaFuture<Collection<TopicListing>> listings = listTopicsResult.listings();
             Collection<TopicListing> topicListings = listings.get();
-            Iterator iterator = topicListings.iterator();
-            while ( iterator.hasNext()){
-                TopicListing topicListing = (TopicListing)iterator.next();
-                LOGGER.info("Name:{}-Internal?{}\n", topicListing.name(), topicListing.isInternal()?"true":"false");
+            for (TopicListing topicListing : topicListings) {
+                System.out.printf("Name:%s-Internal?%s\n", topicListing.name(), topicListing.isInternal() ? "true" : "false");
             }
 
         } catch (Exception e) {

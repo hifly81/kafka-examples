@@ -975,6 +975,7 @@ Operations currently added:
 
  - list of cluster nodes
  - list topics
+ - list of broker fenced (available only from kafka 4.x)
 
 [source,bash]
 ----
@@ -4620,7 +4621,6 @@ CONTAINER ID   NAME         CPU %     MEM USAGE / LIMIT     MEM %     NET I/O   
 b693e9dbdfa0   broker2      0.45%     500.4MiB / 30.99GiB   1.58%     88.5MB / 59.8MB   0B / 0B     81
 0a97b237f198   broker3      0.41%     486.3MiB / 30.99GiB   1.53%     88.5MB / 60.5MB   0B / 0B     81
 4a678630aa03   broker       0.41%     521.2MiB / 30.99GiB   1.64%     88.5MB / 59.8MB   0B / 0B     85
-45e9d4500d66   zookeeper    0.13%     98.12MiB / 30.99GiB   0.31%     163kB / 87.8kB    0B / 0B     69
 ----
 
 Docker containers can be configured for RAM and CPU limits using:
