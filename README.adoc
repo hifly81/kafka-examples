@@ -369,7 +369,7 @@ helm upgrade --install confluent-operator confluentinc/confluent-for-kubernetes 
 Resources are stored in GitHub repo:
 https://github.com/hifly81/cfk-deployment
 
-=== Deploy Confluent Platform using ArgoCD
+==== Deploy Confluent Platform using ArgoCD
 
 Obtain Password to login to ArgoCD:
 
@@ -406,7 +406,7 @@ argocd app create cp-platform-app \
 --sync-policy manual
 ----
 
-=== Apply changes on Confluent Resources using ArgoCD
+==== Apply changes on Confluent Resources using ArgoCD
 
 At the moment, these are the resources that can be managed:
 
