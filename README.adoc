@@ -4200,7 +4200,7 @@ To test the SASL PLAIN SSL connection, you can try producing some data to a topi
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-producer --broker-list broker:9093 --producer.config /tmp/client.properties --topic topic1 --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server broker:9093 --producer.config /tmp/client.properties --topic topic1 --property "parse.key=true" --property "key.separator=:"
 1:test
 2:test2
 ----
