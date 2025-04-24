@@ -1,7 +1,7 @@
 = Practical examples with Apache Kafka®
 :author: Giovanni Marigi
 :email: gio.marigi@gmail.com
-:revdate: March 20, 2025
+:revdate: April 24, 2025
 :revnumber: 1.2.1
 :version-label!:
 :toc: left
@@ -322,6 +322,121 @@ Delete minikube:
 [source,bash]
 ----
 minikube delete
+----
+
+=== Manage Confluent for Kubernetes using ArgoCD
+
+Confluent For Kubernetes deployment with ArgoCD. Easily install and sync Confluent Platform components (kraft, kafka, schema registry, connect, ksql, control center) and resources (topics, acls, rbac, schemas, connectors).
+
+Install ArgoCD on argocd namespace and expose it on port 8080:
+
+[source,bash]
+----
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+----
+
+When state is Running, expose on port 8080:
+
+[source,bash]
+----
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+----
+
+Create a namespace named _confluent_:
+
+[source,bash]
+----
+kubectl create namespace confluent
+kubectl config set-context --current --namespace confluent
+----
+
+Add confluent repository to helm:
+
+[source,bash]
+----
+helm repo add confluentinc https://packages.confluent.io/helm
+helm repo update
+----
+
+Install confluent-for-kubernetes operator (latest version), with KRaft and Flink integration from Confluent’s Helm repo:
+
+[source,bash]
+----
+helm upgrade --install confluent-operator confluentinc/confluent-for-kubernetes --set kRaftEnabled=true --set enableCMFDay2Ops=true
+----
+
+Resources are stored in GitHub repo:
+https://github.com/hifly81/cfk-deployment
+
+=== Deploy Confluent Platform using ArgoCD
+
+Obtain Password to login to ArgoCD:
+
+[source,bash]
+----
+kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+----
+
+Login to ArgoCD:
+
+[source,bash]
+----
+argocd login localhost:8080 --username admin --password <your-password>
+----
+
+Create secret with confluent license _(you need to obtain a Confluent license first)_:
+
+[source,bash]
+----
+kubectl create secret generic confluent-license \
+--from-file=license.txt=./license.txt \
+--namespace confluent
+----
+
+Deploy cp-platform-app on confluent namespace for dev environment:
+
+[source,bash]
+----
+argocd app create cp-platform-app \
+--repo https://github.com/hifly81/cfk-deployment \
+--path confluent-platform/environments/dev \
+--dest-server https://kubernetes.default.svc \
+--dest-namespace confluent \
+--sync-policy manual
+----
+
+=== Apply changes on Confluent Resources using ArgoCD
+
+At the moment, these are the resources that can be managed:
+
+- Kafka Topics
+- Kafka Standard ACLs on Kraft
+
+Obtain Password to login to ArgoCD:
+
+[source,bash]
+----
+kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+----
+
+Login to ArgoCD:
+
+[source,bash]
+----
+argocd login localhost:8080 --username admin --password <your-password>
+----
+
+Apply configuration-app on confluent namespace for dev environment:
+
+[source,bash]
+----
+argocd app create configuration-app \
+--repo https://github.com/hifly81/cfk-deployment \
+--path configuration/environments/dev \
+--dest-server https://kubernetes.default.svc \
+--dest-namespace confluent \
+--sync-policy manual
 ----
 
 <<<
