@@ -76,6 +76,8 @@
                         <configuration>
                             <sourceDirectory>${project.basedir}/src/main/resources/</sourceDirectory>
                             <includes>
+                                <include>cdc-key.avsc</include>
+                                <include>cdc-value.avsc</include>
                                 <include>car.avsc</include>
                             </includes>
                             <outputDirectory>${project.basedir}/src/main/java</outputDirectory>

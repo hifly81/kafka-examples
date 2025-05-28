@@ -4,6 +4,7 @@ import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.hifly.kafka.demo.avro.domain.Car;
 import org.hifly.kafka.demo.producer.AbstractKafkaProducer;
 import org.hifly.kafka.demo.producer.IKafkaProducer;
 import org.hifly.kafka.demo.producer.ProducerCallback;
@@ -12,17 +13,17 @@ import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-public class RunnerProducer {
+public class CarProducer {
 
     private static final String TOPIC = "cars";
 
     public static void main (String [] args) {
-        CarProducer carProducer = new CarProducer();
+        CarKafkaProducer carProducer = new CarKafkaProducer();
         carProducer.start();
         bunchOfMessages(TOPIC, carProducer);
     }
 
-    public static void bunchOfMessages(String topic, CarProducer carProducer) {
+    public static void bunchOfMessages(String topic, CarKafkaProducer carProducer) {
         RecordMetadata lastRecord = null;
         for (int i= 0; i < 1000; i++ ) {
             Car car = new Car();
@@ -33,7 +34,7 @@ public class RunnerProducer {
 
     }
 
-    public static class CarProducer extends AbstractKafkaProducer<String, Car> implements IKafkaProducer<String, Car> {
+    public static class CarKafkaProducer extends AbstractKafkaProducer<String, Car> implements IKafkaProducer<String, Car> {
 
         private static final String BROKER_LIST =
                 System.getenv("kafka.broker.list") != null? System.getenv("kafka.broker.list") :"localhost:9092";

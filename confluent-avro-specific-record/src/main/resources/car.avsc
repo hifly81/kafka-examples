@@ -1,7 +1,7 @@
 {
   "type": "record",
   "name": "Car",
-  "namespace": "org.hifly.kafka.demo.avro",
+  "namespace": "org.hifly.kafka.demo.avro.domain",
   "fields": [
     {
       "name": "model",

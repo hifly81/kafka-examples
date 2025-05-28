@@ -1,0 +1,59 @@
+{
+  "type": "record",
+  "name": "KeyRecord",
+  "namespace": "org.hifly.kafka.demo.avro.domain.cdc",
+  "fields": [
+    {
+      "name": "FIELD1",
+      "type": [
+        "null",
+        {
+          "type": "bytes",
+          "logicalType": "decimal",
+          "precision": 3,
+          "scale": 0
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "FIELD2",
+      "type": [
+        "null",
+        {
+          "type": "bytes",
+          "logicalType": "decimal",
+          "precision": 3,
+          "scale": 0
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "FIELD3",
+      "type": [
+        "null",
+        {
+          "type": "bytes",
+          "logicalType": "decimal",
+          "precision": 6,
+          "scale": 0
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "FIELD4",
+      "type": [
+        "null",
+        {
+          "type": "bytes",
+          "logicalType": "decimal",
+          "precision": 8,
+          "scale": 0
+        }
+      ],
+      "default": null
+    }
+  ]
+}

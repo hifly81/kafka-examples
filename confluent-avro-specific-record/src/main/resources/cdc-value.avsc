@@ -1,0 +1,134 @@
+{
+  "type": "record",
+  "name": "DataRecord",
+  "namespace": "org.hifly.kafka.demo.avro.domain.cdc",
+  "fields": [
+    {
+      "name": "data",
+      "type": {
+        "type": "record",
+        "name": "Data",
+        "fields": [
+          {
+            "name": "FIELD1",
+            "type": [
+              "null",
+              {
+                "type": "bytes",
+                "logicalType": "decimal",
+                "precision": 3,
+                "scale": 0
+              }
+            ],
+            "default": null
+          },
+          {
+            "name": "FIELD2",
+            "type": [
+              "null",
+              {
+                "type": "bytes",
+                "logicalType": "decimal",
+                "precision": 3,
+                "scale": 0
+              }
+            ],
+            "default": null
+          },
+          {
+            "name": "FIELD3",
+            "type": [
+              "null",
+              {
+                "type": "bytes",
+                "logicalType": "decimal",
+                "precision": 5,
+                "scale": 2
+              }
+            ],
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "beforeData",
+      "type": [
+        "null",
+        "Data"
+      ],
+      "default": null
+    },
+    {
+      "name": "headers",
+      "type": {
+        "type": "record",
+        "name": "Headers",
+        "namespace": "org.hifly.kafka.demo.avro.domain.cdc",
+        "fields": [
+          {
+            "name": "operation",
+            "type": {
+              "type": "enum",
+              "name": "operation",
+              "symbols": [
+                "INSERT",
+                "UPDATE",
+                "DELETE",
+                "REFRESH"
+              ]
+            }
+          },
+          {
+            "name": "changeSequence",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "string"
+          },
+          {
+            "name": "streamPosition",
+            "type": "string"
+          },
+          {
+            "name": "transactionId",
+            "type": "string"
+          },
+          {
+            "name": "changeMask",
+            "type": [
+              "null",
+              "bytes"
+            ],
+            "default": null
+          },
+          {
+            "name": "columnMask",
+            "type": [
+              "null",
+              "bytes"
+            ],
+            "default": null
+          },
+          {
+            "name": "transactionEventCounter",
+            "type": [
+              "null",
+              "long"
+            ],
+            "default": null
+          },
+          {
+            "name": "transactionLastEvent",
+            "type": [
+              "null",
+              "boolean"
+            ],
+            "default": null
+          }
+        ]
+      }
+    }
+  ]
+}
