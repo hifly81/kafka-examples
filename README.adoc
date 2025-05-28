@@ -1332,7 +1332,7 @@ scripts/tear-down-hortonworks-sr.sh
 
 Folder: link:confluent-avro-specific-record/[confluent-avro-specific-record]
 
-Implementation of a producer and a consumer using Avro link:https://avro.apache.org/docs/1.11.1/api/java/org/apache/avro/specific/SpecificRecord.html[_SpecificRecord_] for serializing and deserializing.
+Implementation of producers and consumers using Avro link:https://avro.apache.org/docs/1.11.1/api/java/org/apache/avro/specific/SpecificRecord.html[_SpecificRecord_] for serializing and deserializing.
 
 Confluent Schema Registry is needed to run the example. +
 
@@ -1369,7 +1369,7 @@ Run the consumer:
 [source,bash]
 ----
 cd confluent-avro-specific-record
-mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.RunnerConsumer"
+mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.CarConsumer"
 ----
 
 Run the producer:
@@ -1377,7 +1377,47 @@ Run the producer:
 [source,bash]
 ----
 cd confluent-avro-specific-record
-mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.RunnerProducer"
+mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.CarProducer"
+----
+
+In this additional example, producer will create messages using DECIMAL types with precision and scale.
+An AVRO schema will be set for both, key and value.
+
+Create _CDC_topic_ topic:
+
+[source,bash]
+----
+docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic CDC_topic --replication-factor 1 --partitions 1
+----
+
+Avro schema for value link:confluent-avro-specific-record/src/main/resources/cdc-value.avsc[_cdc-value.avsc_]:
+
+Register first version of schema:
+
+[source,bash]
+----
+curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
+--data @confluent-avro-specific-record/src/main/resources/cdc-value.avsc \
+http://localhost:8081/subjects/CDC_topic-value/versions
+----
+
+Avro schema for key link:confluent-avro-specific-record/src/main/resources/cdc-key.avsc[_cdc-key.avsc_]:
+
+Register first version of schema:
+
+[source,bash]
+----
+curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
+--data @confluent-avro-specific-record/src/main/resources/cdc-key.avsc \
+http://localhost:8081/subjects/CDC_topic-key/versions
+----
+
+Run the producer:
+
+[source,bash]
+----
+cd confluent-avro-specific-record
+mvn clean compile package && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.avro.CDCProducer"
 ----
 
 Teardown:

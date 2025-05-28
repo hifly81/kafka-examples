@@ -66,7 +66,7 @@ services:
       - -c
       - |
         echo "Installing Connector"
-        confluent-hub install --no-prompt  mongodb/kafka-connect-mongodb:1.9.1
+        confluent-hub install --no-prompt  mongodb/kafka-connect-mongodb:1.13.1
         confluent-hub install --no-prompt  confluentinc/kafka-connect-jdbc:10.8.0
         #
         echo "Launching Kafka Connect worker"
