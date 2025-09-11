@@ -257,45 +257,35 @@ Topic create:
 
 [source,bash]
 ----
-kubectl exec --stdin --tty kafka-0 -- /bin/bash
-kafka-topics --bootstrap-server localhost:9092 --create --topic test-1
-exit
+kubectl exec --stdin --tty kafka-0 -- kafka-topics --bootstrap-server localhost:9092 --create --topic test-1
 ----
 
 Topic list:
 
 [source,bash]
 ----
-kubectl exec --stdin --tty kafka-0 -- /bin/bash
-kafka-topics --bootstrap-server localhost:9092 --list
-exit
+kubectl exec --stdin --tty kafka-0 -- kafka-topics --bootstrap-server localhost:9092 --list
 ----
 
 Topic describe:
 
 [source,bash]
 ----
-kubectl exec --stdin --tty kafka-0 -- /bin/bash
-kafka-topics --bootstrap-server localhost:9092 --topic test-1 --describe
-exit
+kubectl exec --stdin --tty kafka-0 -- kafka-topics --bootstrap-server localhost:9092 --topic test-1 --describe
 ----
 
 Produce messages to Topic:
 
 [source,bash]
 ----
-kubectl exec --stdin --tty kafka-0 -- /bin/bash
-kafka-producer-perf-test --num-records 1000000 --record-size 1000 --throughput -1 --topic test-1 --producer-props bootstrap.servers=localhost:9092
-exit
+kubectl exec --stdin --tty kafka-0 -- kafka-producer-perf-test --num-records 1000000 --record-size 1000 --throughput -1 --topic test-1 --producer-props bootstrap.servers=localhost:9092
 ----
 
 Consume messages from Topic:
 
 [source,bash]
 ----
-kubectl exec --stdin --tty kafka-0 -- /bin/bash
-kafka-console-consumer --bootstrap-server localhost:9092 --topic test-1 --from-beginning
-exit
+kubectl exec --stdin --tty kafka-0 -- kafka-console-consumer --bootstrap-server localhost:9092 --topic test-1 --from-beginning
 ----
 
 ==== Tear Down
@@ -3120,11 +3110,8 @@ Create the topics required for the demo:
 
 [source,bash]
 ----
-kubectl exec --stdin --tty kafka-0 -- /bin/bash
-
-kafka-topics --bootstrap-server localhost:9092 --create --topic words-input-topic --partitions 6
-kafka-topics --bootstrap-server localhost:9092 --create --topic words-counter-output-topic --partitions 6
-exit
+kubectl exec --stdin --tty kafka-0 -- kafka-topics --bootstrap-server localhost:9092 --create --topic words-input-topic --partitions 6
+kubectl exec --stdin --tty kafka-0 -- kafka-topics --bootstrap-server localhost:9092 --create --topic words-counter-output-topic --partitions 6
 ----
 
 Now you can deploy the kafka stream application on Kubernetes suing a StatefulSet and a Headless Service:
@@ -3181,26 +3168,20 @@ Produce some input data:
 
 [source,bash]
 ----
-kubectl exec --stdin --tty kafka-0 -- /bin/bash
+kubectl exec --stdin --tty kafka-0 -- kafka-console-producer --bootstrap-server localhost:9092 --topic words-input-topic --property "key.separator=:" --property "parse.key=true"
 
-kafka-console-producer --bootstrap-server localhost:9092 --topic words-input-topic --property "key.separator=:" --property "parse.key=true"
-
-user1:hello world
-user2:hello kafka streams
-user1:hello world
-user3:kafka streams example
-
+# Then type the following data:
+# user1:hello world
+# user2:hello kafka streams
+# user1:hello world
+# user3:kafka streams example
 ----
 
 Verify output data, this will display the count of words in 5-minute windows:
 
 [source,bash]
 ----
-kubectl exec --stdin --tty kafka-0 -- /bin/bash
-
-kafka-console-consumer --bootstrap-server localhost:9092 --topic  words-counter-output-topic --from-beginning --property "print.key=true" --property "key.separator=:" --value-deserializer "org.apache.kafka.common.serialization.LongDeserializer"
-
-
+kubectl exec --stdin --tty kafka-0 -- kafka-console-consumer --bootstrap-server localhost:9092 --topic words-counter-output-topic --from-beginning --property "print.key=true" --property "key.separator=:" --value-deserializer "org.apache.kafka.common.serialization.LongDeserializer"
 ----
 
 <<<
@@ -4401,7 +4382,7 @@ Producer command:
 
 [source,bash]
 ----
-kafka-producer-perf-test --topic my_topic --num-records 50 --throughput 10 --record-size 1 --producer-props bootstrap.servers=localhost:9093  --producer.config kafka-oauth-kip-768/client-oauth.properties
+docker exec broker kafka-producer-perf-test --topic my_topic --num-records 50 --throughput 10 --record-size 1 --producer-props bootstrap.servers=localhost:9093 --producer.config kafka-oauth-kip-768/client-oauth.properties
 ----
 
 Teardown:
@@ -4649,37 +4630,21 @@ Offline Partitions:
 
 [source,bash]
 ----
-kafka-run-class kafka.tools.JmxTool --jmx-url service:jmx:rmi:///jndi/rmi://localhost:9101/jmxrmi --object-name kafka.controller:type=KafkaController,name=OfflinePartitionsCount --one-time true
-
-Trying to connect to JMX url: service:jmx:rmi:///jndi/rmi://localhost:9101/jmxrmi.
-"time","kafka.controller:type=KafkaController,name=OfflinePartitionsCount:Value"
-1688273226797,0
-
+docker exec broker kafka-run-class kafka.tools.JmxTool --jmx-url service:jmx:rmi:///jndi/rmi://localhost:9101/jmxrmi --object-name kafka.controller:type=KafkaController,name=OfflinePartitionsCount --one-time true
 ----
 
 Get Under Replicated Partitions:
 
 [source,bash]
 ----
-kafka-run-class kafka.tools.JmxTool --jmx-url service:jmx:rmi:///jndi/rmi://localhost:9101/jmxrmi --object-name kafka.server:name=UnderMinIsrPartitionCount,type=ReplicaManager --one-time true
-
-Trying to connect to JMX url: service:jmx:rmi:///jndi/rmi://localhost:9101/jmxrmi.
-"time","kafka.server:type=ReplicaManager,name=UnderMinIsrPartitionCount:Value"
-1688272551582,0
-
+docker exec broker kafka-run-class kafka.tools.JmxTool --jmx-url service:jmx:rmi:///jndi/rmi://localhost:9101/jmxrmi --object-name kafka.server:name=UnderMinIsrPartitionCount,type=ReplicaManager --one-time true
 ----
 
 Number of Active controllers:
 
 [source,bash]
 ----
-kafka-run-class kafka.tools.JmxTool --jmx-url service:jmx:rmi:///jndi/rmi://localhost:9101/jmxrmi --object-name kafka.controller:type=KafkaController,name=ActiveControllerCount
-
-Trying to connect to JMX url: service:jmx:rmi:///jndi/rmi://localhost:9101/jmxrmi.
-"time","kafka.controller:type=KafkaController,name=ActiveControllerCount:Value"
-1688273125932,1
-
-
+docker exec broker kafka-run-class kafka.tools.JmxTool --jmx-url service:jmx:rmi:///jndi/rmi://localhost:9101/jmxrmi --object-name kafka.controller:type=KafkaController,name=ActiveControllerCount
 ----
 
 Teardown:
@@ -5071,7 +5036,7 @@ Test the proxy with some commands:
 
 [source,bash]
 ----
-kafka-producer-perf-test --topic topic-perf --num-records 1000000 --record-size 2000 --throughput -1 --producer-props bootstrap.servers=localhost:1999 --print-metrics
+docker exec broker kafka-producer-perf-test --topic topic-perf --num-records 1000000 --record-size 2000 --throughput -1 --producer-props bootstrap.servers=host.docker.internal:1999 --print-metrics
 ----
 
 Teardown:
