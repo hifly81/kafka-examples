@@ -16,6 +16,14 @@
         <maven.assembly.plugin>3.3.0</maven.assembly.plugin>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>confluent</id>
+            <name>Confluent Maven Repository</name>
+            <url>https://packages.confluent.io/maven/</url>
+        </repository>
+    </repositories>
+
 
     <dependencies>
         <dependency>

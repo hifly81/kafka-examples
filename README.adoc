@@ -1633,7 +1633,6 @@ Register the subjects using link:https://docs.confluent.io/platform/current/sche
 cd confluent-avro-multi-event
 mvn schema-registry:register
 
-[INFO] --- kafka-schema-registry-maven-plugin:7.4.0:register (default-cli) @ confluent-avro-references ---
 [INFO] Registered subject(car-info) with id 1 version 1
 [INFO] Registered subject(car-telemetry-data) with id 2 version 1
 [INFO] Registered subject(car-telemetry-value) with id 3 version 1
