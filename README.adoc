@@ -960,7 +960,7 @@ Error message detected: number of retries 0 left for key alice
 number of retries exhausted, send to DLQ topic: dlq-topic
 ----
 
-==== Kafka Queues
+=== Kafka Queues
 
 Enable shared groups in kafka cluster:
 
@@ -1030,7 +1030,6 @@ docker exec broker /opt/kafka/bin/kafka-share-groups.sh --bootstrap-server broke
 ----
 docker exec broker /opt/kafka/bin/kafka-share-groups.sh --bootstrap-server broker:9092 --describe --group group-1 --state
 ----
-
 
 === Interceptor
 
