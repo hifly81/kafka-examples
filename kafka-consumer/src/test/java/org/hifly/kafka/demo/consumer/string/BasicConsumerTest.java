@@ -1,5 +1,6 @@
 package org.hifly.kafka.demo.consumer.string;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,16 +31,16 @@ public class BasicConsumerTest {
         List<String> actualRecords = new ArrayList<>();
         final ConsumerHandle<String, String> recordsHandler = new ConsumerHandle<>(actualRecords);
 
-        GenericConsumerImpl baseConsumer = new GenericConsumerImpl(mockConsumer, "1", null, recordsHandler);
+        GenericConsumerImpl<String, String> baseConsumer = new GenericConsumerImpl<>(mockConsumer, "1", null, recordsHandler);
 
         // the KafkaConsumerApplication runs synchronously so the test needs to run
         // the application in its own thread
         new Thread(() -> {
             baseConsumer.subscribe("1", topic, true);
-            baseConsumer.poll(1000, -1, true);
+            baseConsumer.poll(Duration.ofMillis(1000), -1, true);
         }).start();
         Thread.sleep(500);
-        addTopicPartitionsAssignmentAndAddConsumerRecords(topic, mockConsumer, topicPartition);
+        addTopicPartitionsAssignmentAndAddConsumerRecords(mockConsumer, topicPartition);
         Thread.sleep(500);
         baseConsumer.shutdown();
 
@@ -48,20 +49,19 @@ public class BasicConsumerTest {
         assertThat(actualRecords, equalTo(expectedWords));
     }
 
-    private void addTopicPartitionsAssignmentAndAddConsumerRecords(final String topic,
-            final MockConsumer<String, String> mockConsumer, final TopicPartition topicPartition) {
+    private void addTopicPartitionsAssignmentAndAddConsumerRecords(final MockConsumer<String, String> mockConsumer, final TopicPartition topicPartition) {
 
         final Map<TopicPartition, Long> beginningOffsets = new HashMap<>();
         beginningOffsets.put(topicPartition, 0L);
         mockConsumer.rebalance(Collections.singletonList(topicPartition));
         mockConsumer.updateBeginningOffsets(beginningOffsets);
-        addConsumerRecords(mockConsumer, topic);
+        addConsumerRecords(mockConsumer);
     }
 
-    private void addConsumerRecords(final MockConsumer<String, String> mockConsumer, final String topic) {
-        mockConsumer.addRecord(new ConsumerRecord<>(topic, 0, 0, null, "test"));
-        mockConsumer.addRecord(new ConsumerRecord<>(topic, 0, 1, null, "test2"));
-        mockConsumer.addRecord(new ConsumerRecord<>(topic, 0, 2, null, "test3"));
+    private void addConsumerRecords(final MockConsumer<String, String> mockConsumer) {
+        mockConsumer.addRecord(new ConsumerRecord<>("topic0", 0, 0, null, "test"));
+        mockConsumer.addRecord(new ConsumerRecord<>("topic0", 0, 1, null, "test2"));
+        mockConsumer.addRecord(new ConsumerRecord<>("topic0", 0, 2, null, "test3"));
     }
 
 }

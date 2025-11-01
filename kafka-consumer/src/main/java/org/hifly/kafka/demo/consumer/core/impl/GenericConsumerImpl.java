@@ -24,14 +24,18 @@ public class GenericConsumerImpl<K, V> implements GenericConsumer {
 
     private Map<TopicPartition, OffsetAndMetadata> offsets = new HashMap<>();
     private Consumer<K, V> consumer;
-    private AbstractConsumerHandle consumerHandle;
-    private Properties properties;
-    private String id;
+    private final AbstractConsumerHandle<K, V> consumerHandle;
+    private final Properties properties;
+    private final String id;
     private String groupId;
     private boolean autoCommit;
     private boolean keepConsuming = true;
 
-    public GenericConsumerImpl(Consumer<K, V> consumer, String id, Properties properties, AbstractConsumerHandle consumerHandle) {
+    public GenericConsumerImpl(
+            Consumer<K, V> consumer,
+            String id,
+            Properties properties,
+            AbstractConsumerHandle<K, V> consumerHandle) {
         this.consumer = consumer;
         this.id = id;
         this.properties = properties;
@@ -41,7 +45,6 @@ public class GenericConsumerImpl<K, V> implements GenericConsumer {
     @Override
     public void shutdown() {
         keepConsuming = false;
-
     }
 
     @Override
@@ -55,7 +58,7 @@ public class GenericConsumerImpl<K, V> implements GenericConsumer {
     }
 
     @Override
-    public boolean assign(String topic, List partitions, boolean autoCommit) {
+    public void assign(String topic, List partitions, boolean autoCommit) {
         boolean isAssigned = false;
         consumer = new KafkaConsumer<>(
                 KafkaConfig.consumerConfig(groupId, properties.getProperty(KEY_DESERIALIZER_CLASS_CONFIG), properties.getProperty(VALUE_DESERIALIZER_CLASS_CONFIG), autoCommit));
@@ -72,11 +75,10 @@ public class GenericConsumerImpl<K, V> implements GenericConsumer {
             }
         }
         this.autoCommit = autoCommit;
-        return isAssigned;
     }
 
     @Override
-    public void poll(int timeout, long duration, boolean commitSync) {
+    public void poll(Duration timeout, long duration, boolean commitSync) {
         if (consumer == null)
             throw new IllegalStateException("Can't poll, consumer not subscribed or null!");
 
@@ -86,7 +88,7 @@ public class GenericConsumerImpl<K, V> implements GenericConsumer {
                     consume(timeout, commitSync);
             } else {
                 long startTime = System.currentTimeMillis();
-                while (false || (System.currentTimeMillis() - startTime) < duration) {
+                while ((System.currentTimeMillis() - startTime) < duration) {
                     consume(timeout, commitSync);
                 }
             }
@@ -109,8 +111,8 @@ public class GenericConsumerImpl<K, V> implements GenericConsumer {
         }
     }
 
-    private void consume(int timeout, boolean commitSync) {
-        ConsumerRecords<K, V> records = consumer.poll(Duration.ofMillis(timeout));
+    private void consume(Duration timeout, boolean commitSync) {
+        ConsumerRecords<K, V> records = consumer.poll(timeout);
         consumerHandle.addOffsets(offsets);
         consumerHandle.process(records, consumer.groupMetadata().groupId(), consumer.groupMetadata().memberId());
 

@@ -36,7 +36,7 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <kafka.version>4.0.0</kafka.version>
+        <kafka.version>4.1.0</kafka.version>
         <avro.version>1.11.4</avro.version>
         <confluent.version>7.9.0</confluent.version>
         <apicurio.registry.version>2.4.1.Final</apicurio.registry.version>

@@ -16,7 +16,7 @@ public class PartitionListener<T> implements ConsumerRebalanceListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PartitionListener.class);
 
-    private Consumer<String, T> consumer;
+    private final Consumer<String, T> consumer;
     private Map<TopicPartition, OffsetAndMetadata> offsets;
 
     public PartitionListener(Consumer<String, T> consumer, Map<TopicPartition, OffsetAndMetadata> offsets) {
@@ -37,7 +37,7 @@ public class PartitionListener<T> implements ConsumerRebalanceListener {
             try {
                 String offset = properties.getProperty(partition.topic() + "-" + partition.partition());
                 if (offset != null) {
-                    consumer.seek(partition, Long.valueOf(offset));
+                    consumer.seek(partition, Long.parseLong(offset));
                     LOGGER.info("Consumer - partition {} - initOffset {}\n", partition.partition(), offset);
                 }
             } catch (Exception ex) {

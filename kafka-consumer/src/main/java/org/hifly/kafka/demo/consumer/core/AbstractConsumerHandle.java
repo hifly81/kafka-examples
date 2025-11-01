@@ -10,4 +10,5 @@ public abstract class AbstractConsumerHandle<K,V> {
 
     public abstract void addOffsets(Map<TopicPartition, OffsetAndMetadata> offsets);
     public abstract void process(ConsumerRecords<K, V> consumerRecords, String groupId, String consumerId);
+    public abstract void process(ConsumerRecords<K, V> consumerRecords, String groupId);
 }

@@ -14,10 +14,10 @@ public class Runner {
         if(args != null && args.length >= 1) {
             topics = args[0];
         }
-        if(args.length == 2) {
+        if(args != null && args.length == 2) {
             partitionStrategy = args[1];
         }
-        if(args.length == 3) {
+        if(args != null && args.length == 3) {
             groupId = args[2];
         }
         pollAutoCommit(topics, partitionStrategy, groupId);
@@ -38,7 +38,7 @@ public class Runner {
                 true,
                 false,
                 true,
-                new ConsumerHandle(null)).consume();
+                new ConsumerHandle<String , String>(null)).consume();
     }
 }
 

@@ -33,5 +33,10 @@ public class OrderProcessHandle<K,V> extends AbstractConsumerHandle<K,V> {
         }
     }
 
+    @Override
+    public void process(ConsumerRecords<K, V> consumerRecords, String groupId) {
+        process(consumerRecords, groupId, null);
+    }
+
 }
 

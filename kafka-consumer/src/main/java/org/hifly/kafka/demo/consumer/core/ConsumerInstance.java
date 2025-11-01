@@ -4,22 +4,23 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.hifly.kafka.demo.consumer.core.impl.GenericConsumerImpl;
 
+import java.time.Duration;
 import java.util.Properties;
 
 public class ConsumerInstance<K, V>  {
 
-        private String id;
+        private final String id;
         private String groupId;
-        private String topic;
+        private final String topic;
         private String keyDeserializerClass;
         private String valueDeserializerClass;
         private String partitionStrategy;
         private String isolationLevel;
-        private int timeout;
-        private long duration;
-        private boolean autoCommit;
-        private boolean commitSync;
-        private boolean subscribeMode;
+        private final int timeout;
+        private final long duration;
+        private final boolean autoCommit;
+        private final boolean commitSync;
+        private final boolean subscribeMode;
         private KafkaConsumer kafkaConsumer;
         private AbstractConsumerHandle consumerHandle;
 
@@ -83,12 +84,16 @@ public class ConsumerInstance<K, V>  {
                 properties.setProperty(ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG, partitionStrategy);
                 properties.setProperty(ConsumerConfig.ISOLATION_LEVEL_CONFIG, isolationLevel);
             }
-            GenericConsumerImpl<K, V> consumer = new GenericConsumerImpl<>(kafkaConsumer, id, properties, consumerHandle);
+            GenericConsumerImpl<K, V> consumer = new GenericConsumerImpl<>(
+                    kafkaConsumer,
+                    id,
+                    properties,
+                    consumerHandle);
             if(subscribeMode)
                 consumer.subscribe(groupId, topic, autoCommit);
             else
                 consumer.assign(topic, null, autoCommit);
-            consumer.poll(timeout, duration, commitSync);
+            consumer.poll(Duration.ofMillis(timeout), duration, commitSync);
         }
 
     }

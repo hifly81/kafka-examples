@@ -10,9 +10,9 @@ services:
     volumes:
       - ./config/alice.properties:/tmp/alice.properties
       - ./config/admin.properties:/tmp/admin.properties
-      - ./config/admin.properties:/tmp/admin.properties
       - ./config/acl-config.yaml:/tmp/acl-config.yaml
       - ./config/run-acl.sh:/tmp/run-acl.sh
+      - ./config/run-acl.sh:/tmp/kafka-acl-dump.sh
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,AUTH:SASL_PLAINTEXT,INTERNAL:PLAINTEXT

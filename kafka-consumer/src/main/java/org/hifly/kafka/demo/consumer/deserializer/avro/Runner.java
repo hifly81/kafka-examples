@@ -21,10 +21,10 @@ public class Runner {
             schemaRegistry = args[0];
         }
 
-        pollAutoCommit(TOPIC, schemaRegistry);
+        pollAutoCommit(schemaRegistry);
     }
 
-    private static void pollAutoCommit(String topics, String schemaRegistry) {
+    private static void pollAutoCommit(String schemaRegistry) {
         SchemaRegistry schemaRegistryEnum = SchemaRegistry.valueOf(schemaRegistry);
         String deserializerName;
         KafkaConsumer<String, GenericRecord> consumer = null;
@@ -55,7 +55,7 @@ public class Runner {
 
         new ConsumerInstance<String , GenericRecord>(
                 UUID.randomUUID().toString(),
-                topics == null? "topic1": topics,
+                Runner.TOPIC,
                 consumer,
                 100,
                 -1,

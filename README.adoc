@@ -960,6 +960,78 @@ Error message detected: number of retries 0 left for key alice
 number of retries exhausted, send to DLQ topic: dlq-topic
 ----
 
+==== Kafka Queues
+
+Enable shared groups in kafka cluster:
+
+[source,bash]
+----
+docker exec broker /opt/kafka/bin/kafka-features.sh --bootstrap-server broker:9092 upgrade --feature share.version=1
+----
+
+Create topic _queue-topic_:
+
+[source,bash]
+----
+docker exec broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic queue-topic --replication-factor 1
+----
+
+Run 3 different consumer instances (from 3 different terminals) belonging to the same consumer group:
+
+consumer1:
+[source,bash]
+----
+cd kafka-consumer
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.queue.Runner"
+----
+
+consumer2:
+[source,bash]
+----
+cd kafka-consumer
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.queue.Runner"
+----
+
+consumer3:
+[source,bash]
+----
+cd kafka-consumer
+mvn clean compile && mvn exec:java -Dexec.mainClass="org.hifly.kafka.demo.consumer.queue.Runner"
+----
+
+Run a producer perf test to send messages to _queue-topic_:
+
+[source,bash]
+----
+docker exec -it broker /opt/kafka/bin/kafka-producer-perf-test.sh --topic queue-topic --num-records 10000 --throughput -1 --record-size 2000 --producer-props bootstrap.servers=broker:9092
+----
+
+Consumers will all be in the same share group and the produced records will be distributed among them depite the number of partitions set for the topic, in this example 1.
+
+
+Useful commands to inspect a shared group:
+
+[source,bash]
+----
+docker exec broker /opt/kafka/bin/kafka-share-groups.sh --bootstrap-server broker:9092 --list
+----
+
+[source,bash]
+----
+docker exec broker /opt/kafka/bin/kafka-share-groups.sh --bootstrap-server broker:9092 --describe --group group-1
+----
+
+[source,bash]
+----
+docker exec broker /opt/kafka/bin/kafka-share-groups.sh --bootstrap-server broker:9092 --describe --group group-1 --members
+----
+
+[source,bash]
+----
+docker exec broker /opt/kafka/bin/kafka-share-groups.sh --bootstrap-server broker:9092 --describe --group group-1 --state
+----
+
+
 === Interceptor
 
 Folder link:interceptors/[interceptors/]
@@ -4084,6 +4156,12 @@ Teardown:
 ----
 scripts/tear-down-acls.sh
 ----
+
+Additional scripts are available:
+
+ - _kafka-acl-dump.sh_ --> List Kafka ACLs via Admin API, outputs either raw tool output or CSV.
+ - _kafka-scram-users-dump.sh_ --> List Kafka users that have SCRAM credentials (SCRAM-SHA-256 / SCRAM-SHA-512), outputs CSV
+
 
 === SASL Plain with SSL listener
 
