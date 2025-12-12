@@ -67,6 +67,7 @@ services:
       - |
         echo "Installing Connector"
         confluent-hub install --no-prompt  debezium/debezium-connector-mongodb:latest
+        confluent-hub install --no-prompt  confluent-hub install --no-prompt  mongodb/kafka-connect-mongodb:1.16.0
         #
         echo "Launching Kafka Connect worker"
         /etc/confluent/docker/run &
@@ -91,6 +92,19 @@ services:
     volumes:
       - "mongo1_data:/data/db"
       - "mongo1_config:/data/configdb"
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    depends_on:
+      - broker
+      - schema-registry
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: "local"
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "broker:9092"
+      KAFKA_CLUSTERS_0_SCHEMAREGISTRY: "http://schema-registry:8081"
 
 volumes:
   mongo1_data:

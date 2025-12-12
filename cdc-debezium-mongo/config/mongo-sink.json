@@ -1,0 +1,16 @@
+{
+  "name": "mongo-sink-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.mongodb.MongoDbConnector",
+    "mongodb.connection.string": "mongodb://mongo:27017/?replicaSet=rs0",
+    "topic.prefix": "mvp-order",
+    "database.include.list" : "outbox",
+    "collection.include.list" : "outbox.Order",
+    "mongodb.user" : "data-platform-cdc",
+    "mongodb.password" : "password",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": "false",
+
+
+  }
+}

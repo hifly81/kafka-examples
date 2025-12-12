@@ -17,7 +17,7 @@ db.createRole({
    role: "confluentCDCRole",
    privileges: [
       { resource: { cluster: true }, actions: ["find", "changeStream"] },
-      { resource: { db: "outbox", collection: "loans" }, actions: [ "find", "changeStream" ] }
+      { resource: { db: "outbox", collection: "Order" }, actions: [ "find", "changeStream" ] }
    ],
    roles: []
 });
@@ -38,36 +38,27 @@ EOF
 
 sleep 3
 
-echo "Insert a record in outbox-->loans..."
+echo "Insert a record in outbox-->Order..."
 
 docker exec -i mongo mongosh << EOF
 use outbox
-db.loans.insert([
+db.Order.insert([
 {
-  "aggregateId": "012313",
-  "aggregateType": "Consumer Loan",
-  "topicName": "CONSUMER_LOAN",
-  "eventDate": "2024-08-20T09:42:02.665Z",
-  "eventId": 1,
-  "eventType": "INSTALLMENT_PAYMENT",
-  "payload": {
-    "amount": "200000"
-  }
+  "orderId": "abc_003",
+  "customerId": "mrc_001",
+  "operation": "CREATE"
 }
 ]);
 EOF
 
-echo "View record in outbox-->loans..."
+echo "View record in outbox-->Order..."
 
 docker exec -i mongo mongosh << EOF
 use outbox
-db.loans.find().pretty();
+db.Order.find().pretty();
 EOF
-
 
 sleep 3
 
 echo "Installing mongo debezium..."
-curl -X POST -H Accept:application/json -H Content-Type:application/json http://localhost:8083/connectors/ -d @cdc-debezium-mongo/config/debezium-source-mongo.json
-echo "Installing mongo debezium with capture properties defined..."
-curl -X POST -H Accept:application/json -H Content-Type:application/json http://localhost:8083/connectors/ -d @cdc-debezium-mongo/config/debezium-source-mongo-with-capture-scope-database.json
+curl -X POST -H Accept:application/json -H Content-Type:application/json http://localhost:8083/connectors/ -d @cdc-debezium-mongo/config/debezium-source-mongo-transforms.json

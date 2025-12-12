@@ -2806,6 +2806,103 @@ Teardown:
 scripts/tear-down-cdc-mongo.sh
 ----
 
+=== CDC with Debezium MongoDB Source Connector and SMTs
+
+Folder: link:cdc-debezium-mongo/[cdc-debezium-mongo-smt]
+
+Usage of link:https://debezium.io/documentation/reference/stable/connectors/mongodb.html[Debezium Source Connector for MongoDB] to send updates into a topic. This example will use out ob the SMTs to transform the original record.
+
+Run environment:
+
+[source,bash]
+----
+scripts/bootstrap-cdc-mongo-smt.sh
+----
+
+Script will create a user _data-platform-cdc_ with the privileges required to run CDC:
+
+[source,bash]
+----
+use admin
+db.createRole({
+   role: "CDCRole",
+   privileges: [
+      { resource: { cluster: true }, actions: ["find", "changeStream"] },
+      { resource: { db: "outbox", collection: "Order" }, actions: [ "find", "changeStream" ] }
+   ],
+   roles: []
+});
+
+db.createUser({
+  user: "data-platform-cdc",
+  pwd: "password",
+  roles: [
+    { role: "read", db: "admin" },
+    { role: "clusterMonitor", db: "admin" },
+    { role: "read", db: "config" },
+    { role: "read", db: "outbox" },
+    { role: "CDCRole", db: "admin"}
+  ]
+});
+----
+
+Script will also insert a document into _outbox_ database and _Order_ collection:
+
+[source,bash]
+----
+{
+  "orderId": "abc_003",
+  "customerId": "mrc_001",
+  "operation": "CREATE"
+}
+----
+
+Script will deploy a source connector.
+If the record value contains a field named "operation", that field’s value will be copied into a record header named "operation".
+If the value does not contain that field, no header will be added.
+
+[source,json]
+----
+{
+  "name": "mongo-debezium-transforms-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.mongodb.MongoDbConnector",
+    "mongodb.connection.string": "mongodb://mongo:27017/?replicaSet=rs0",
+    "topic.prefix": "mvp-order",
+    "database.include.list" : "outbox",
+    "collection.include.list" : "outbox.Order",
+    "mongodb.user" : "data-platform-cdc",
+    "mongodb.password" : "password",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": "false",
+    "transforms": "unwrap,addOpHeader",
+    "transforms.unwrap.type": "io.debezium.connector.mongodb.transforms.ExtractNewDocumentState",
+    "transforms.unwrap.drop.tombstones": "false",
+    "transforms.unwrap.operation.header": "false",
+    "transforms.unwrap.delete.handling.mode": "drop",
+    "transforms.unwrap.array.encoding": "array",
+    "transforms.addOpHeader.type": "org.apache.kafka.connect.transforms.HeaderFrom$Value",
+    "transforms.addOpHeader.headers": "operation",
+    "transforms.addOpHeader.fields": "operation",
+    "transforms.addOpHeader.operation": "copy"
+  }
+}
+----
+
+Run a consumer on _mvp-order.outbox.Order_ topic and see the records _(headers - key - value)_:
+
+[source,bash]
+----
+docker exec -it broker kafka-console-consumer --bootstrap-server broker:9092 --topic mvp-order.outbox.Order --from-beginning --property print.key=true --property print.headers=true
+----
+
+Teardown:
+
+[source,bash]
+----
+scripts/tear-down-cdc-mongo-smt.sh
+----
+
 === Tasks distributions using a Datagen Source Connector
 
 Folder: link:kafka-connect-task-distribution/[kafka-connect-task-distribution]

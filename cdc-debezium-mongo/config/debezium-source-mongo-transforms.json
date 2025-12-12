@@ -1,0 +1,24 @@
+{
+  "name": "mongo-debezium-transforms-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.mongodb.MongoDbConnector",
+    "mongodb.connection.string": "mongodb://mongo:27017/?replicaSet=rs0",
+    "topic.prefix": "mvp-order",
+    "database.include.list" : "outbox",
+    "collection.include.list" : "outbox.Order",
+    "mongodb.user" : "data-platform-cdc",
+    "mongodb.password" : "password",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": "false",
+    "transforms": "unwrap,addOpHeader",
+    "transforms.unwrap.type": "io.debezium.connector.mongodb.transforms.ExtractNewDocumentState",
+    "transforms.unwrap.drop.tombstones": "false",
+    "transforms.unwrap.operation.header": "false",
+    "transforms.unwrap.delete.handling.mode": "drop",
+    "transforms.unwrap.array.encoding": "array",
+    "transforms.addOpHeader.type": "org.apache.kafka.connect.transforms.HeaderFrom$Value",
+    "transforms.addOpHeader.headers": "operation",
+    "transforms.addOpHeader.fields": "operation",
+    "transforms.addOpHeader.operation": "copy"
+  }
+}
