@@ -2808,9 +2808,9 @@ scripts/tear-down-cdc-mongo.sh
 
 === CDC with Debezium MongoDB Source Connector and SMTs
 
-Folder: link:cdc-debezium-mongo/[cdc-debezium-mongo-smt]
+Folder: link:cdc-debezium-mongo-smt/[cdc-debezium-mongo-smt]
 
-Usage of link:https://debezium.io/documentation/reference/stable/connectors/mongodb.html[Debezium Source Connector for MongoDB] to send updates into a topic. This example will use out ob the SMTs to transform the original record.
+Usage of link:https://debezium.io/documentation/reference/stable/connectors/mongodb.html[Debezium Source Connector for MongoDB] to send updates into a topic. This example will use out of the SMTs to transform the original record.
 
 Run environment:
 
