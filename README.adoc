@@ -2810,7 +2810,11 @@ scripts/tear-down-cdc-mongo.sh
 
 Folder: link:cdc-debezium-mongo-smt/[cdc-debezium-mongo-smt]
 
-Usage of link:https://debezium.io/documentation/reference/stable/connectors/mongodb.html[Debezium Source Connector for MongoDB] to send updates into a topic. This example will use out of the SMTs to transform the original record.
+Usage of link:https://debezium.io/documentation/reference/stable/connectors/mongodb.html[Debezium Source Connector for MongoDB] to send updates into a topic.
+
+Usage of link:https://www.mongodb.com/docs/kafka-connector/current/sink-connector[MongoDB Sink Connector] to send updates into a new mongo collection.
+
+This example will use out of the SMTs to transform the original record.
 
 Run environment:
 
@@ -2828,7 +2832,9 @@ db.createRole({
    role: "CDCRole",
    privileges: [
       { resource: { cluster: true }, actions: ["find", "changeStream"] },
-      { resource: { db: "outbox", collection: "Order" }, actions: [ "find", "changeStream" ] }
+      { resource: { db: "outbox", collection: "Order" }, actions: [ "find", "changeStream" ] },
+      { resource: { db: "outbox", collection: "account" }, actions: [ "insert", "remove", "update"
+   ] }
    ],
    roles: []
 });
@@ -2889,11 +2895,43 @@ If the value does not contain that field, no header will be added.
 }
 ----
 
-Run a consumer on _mvp-order.outbox.Order_ topic and see the records _(headers - key - value)_:
+A sink connector will read messages from _mvp-order.outbox.Order_ topic and apply additional transformations before inserting the new document into a new collection on MongoDB, named _account_.
+
+[source,json]
+----
+{
+  "name": "mongo-sink-connector",
+  "config": {
+    "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
+    "topics": "mvp-order.outbox.Order",
+    "connection.uri": "mongodb://data-platform-cdc:password@mongo:27017/?replicaSet=rs0",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": false,
+    "value.converter.schemas.enable": false,
+    "database": "outbox",
+    "collection": "account",
+    "transforms": "ValueToKey,removeFields",
+    "transforms.ValueToKey.type": "org.apache.kafka.connect.transforms.ValueToKey",
+    "transforms.ValueToKey.fields": "orderId",
+    "document.id.strategy": "com.mongodb.kafka.connect.sink.processor.id.strategy.PartialValueStrategy",
+    "document.id.strategy.partial.value.projection.type": "AllowList",
+    "document.id.strategy.partial.value.projection.list": "orderId",
+    "behavior.on.null.values": "delete",
+    "transforms.removeFields.type": "org.apache.kafka.connect.transforms.ReplaceField$Value",
+    "transforms.removeFields.blacklist": "operation"
+  }
+}
+----
+
+Check the documents on _account_ collection using:
 
 [source,bash]
 ----
-docker exec -it broker kafka-console-consumer --bootstrap-server broker:9092 --topic mvp-order.outbox.Order --from-beginning --property print.key=true --property print.headers=true
+docker exec -i mongo mongosh << EOF
+use outbox
+db.Order.find().pretty();
+EOF
 ----
 
 Teardown:

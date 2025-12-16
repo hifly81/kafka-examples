@@ -17,7 +17,8 @@ db.createRole({
    role: "confluentCDCRole",
    privileges: [
       { resource: { cluster: true }, actions: ["find", "changeStream"] },
-      { resource: { db: "outbox", collection: "Order" }, actions: [ "find", "changeStream" ] }
+      { resource: { db: "outbox", collection: "Order" }, actions: [ "find", "changeStream" ] },
+      { resource: { db: "outbox", collection: "account" }, actions: [ "insert", "remove", "update" ] }
    ],
    roles: []
 });
@@ -62,3 +63,17 @@ sleep 3
 
 echo "Installing mongo debezium..."
 curl -X POST -H Accept:application/json -H Content-Type:application/json http://localhost:8083/connectors/ -d @cdc-debezium-mongo/config/debezium-source-mongo-transforms.json
+
+echo "Installing mongo sink..."
+curl -X POST -H Accept:application/json -H Content-Type:application/json http://localhost:8083/connectors/ -d @cdc-debezium-mongo/config/mongo-sink.json
+
+sleep 5
+
+echo "View record in outbox-->account..."
+
+docker exec -i mongo mongosh << EOF
+use outbox
+db.account.find().pretty();
+EOF
+
+sleep 3

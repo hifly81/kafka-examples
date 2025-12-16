@@ -1,16 +1,23 @@
 {
   "name": "mongo-sink-connector",
   "config": {
-    "connector.class": "io.debezium.connector.mongodb.MongoDbConnector",
-    "mongodb.connection.string": "mongodb://mongo:27017/?replicaSet=rs0",
-    "topic.prefix": "mvp-order",
-    "database.include.list" : "outbox",
-    "collection.include.list" : "outbox.Order",
-    "mongodb.user" : "data-platform-cdc",
-    "mongodb.password" : "password",
+    "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
+    "topics": "mvp-order.outbox.Order",
+    "connection.uri": "mongodb://data-platform-cdc:password@mongo:27017/?replicaSet=rs0",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
     "value.converter": "org.apache.kafka.connect.json.JsonConverter",
-    "value.converter.schemas.enable": "false",
-
-
+    "key.converter.schemas.enable": false,
+    "value.converter.schemas.enable": false,
+    "database": "outbox",
+    "collection": "account",
+    "transforms": "ValueToKey,removeFields",
+    "transforms.ValueToKey.type": "org.apache.kafka.connect.transforms.ValueToKey",
+    "transforms.ValueToKey.fields": "orderId",
+    "document.id.strategy": "com.mongodb.kafka.connect.sink.processor.id.strategy.PartialValueStrategy",
+    "document.id.strategy.partial.value.projection.type": "AllowList",
+    "document.id.strategy.partial.value.projection.list": "orderId",
+    "behavior.on.null.values": "delete",
+    "transforms.removeFields.type": "org.apache.kafka.connect.transforms.ReplaceField$Value",
+    "transforms.removeFields.blacklist": "operation"
   }
 }
