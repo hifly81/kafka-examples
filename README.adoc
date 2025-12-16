@@ -2934,6 +2934,15 @@ db.Order.find().pretty();
 EOF
 ----
 
+[source,json]
+----
+ {
+    _id: '694125ea5f7da1aec6b1ddf4',
+    customerId: 'mrc_001',
+    orderId: 'abc_003'
+  }
+----
+
 Teardown:
 
 [source,bash]
