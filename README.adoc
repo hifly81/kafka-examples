@@ -962,7 +962,9 @@ number of retries exhausted, send to DLQ topic: dlq-topic
 
 === Kafka Queues
 
-Enable shared groups in kafka cluster:
+Queues for Kafka introduce a queue‑like consumption model built on share consumers and share groups. Instead of assigning each partition to a single consumer (as with traditional consumer groups), multiple share consumers in the same share group can process records from the same partition concurrently, allowing parallelism beyond the partition count. Each record is individually acknowledged, controlled by _share.acknowledgement.mode_ (implicit by default, or explicit when you want fine‑grained ACCEPT/RELEASE/REJECT semantics).
+
+In order to test the feature, enable shared groups in kafka cluster:
 
 [source,bash]
 ----
@@ -973,7 +975,7 @@ Create topic _queue-topic_:
 
 [source,bash]
 ----
-docker exec broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --topic queue-topic --replication-factor 1
+docker exec broker /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --partitions 1 --topic queue-topic --replication-factor 1
 ----
 
 Run 3 different consumer instances (from 3 different terminals) belonging to the same consumer group:
@@ -1006,7 +1008,14 @@ Run a producer perf test to send messages to _queue-topic_:
 docker exec -it broker /opt/kafka/bin/kafka-producer-perf-test.sh --topic queue-topic --num-records 10000 --throughput -1 --record-size 2000 --producer-props bootstrap.servers=broker:9092
 ----
 
-Consumers will all be in the same share group and the produced records will be distributed among them depite the number of partitions set for the topic, in this example 1.
+Consumers will all be in the same share group and the produced records will be distributed among them despite the number of partitions set for the topic, in this example 1.
+
+It is possible to run a queue consumer using the CLI as well:
+
+[source,bash]
+----
+docker exec broker /opt/kafka/bin/kafka-console-share-consumer.sh --bootstrap-server broker:9092 --topic queue-topic --group test-share-group --property print.offset=true --property print.partition=true --property print.timestamp=true
+----
 
 
 Useful commands to inspect a shared group:
@@ -1030,6 +1039,7 @@ docker exec broker /opt/kafka/bin/kafka-share-groups.sh --bootstrap-server broke
 ----
 docker exec broker /opt/kafka/bin/kafka-share-groups.sh --bootstrap-server broker:9092 --describe --group group-1 --state
 ----
+
 
 === Interceptor
 

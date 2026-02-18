@@ -2,7 +2,6 @@ package org.hifly.kafka.demo.consumer.queue;
 
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.hifly.kafka.demo.consumer.core.impl.AckConsumerHandle;
-import org.hifly.kafka.demo.consumer.core.impl.ConsumerHandle;
 import org.hifly.kafka.demo.consumer.core.impl.SharedConsumerImpl;
 
 import java.time.Duration;
@@ -29,6 +28,7 @@ public class Runner {
         properties.put("group.id", groupId);
         properties.put("key.deserializer", StringDeserializer.class.getName());
         properties.put("value.deserializer", StringDeserializer.class.getName());
+        properties.put("share.acknowledgement.mode", "implicit");
 
         SharedConsumerImpl<String, String> sharedConsumer =
                 new SharedConsumerImpl<>(properties, new AckConsumerHandle<>());
