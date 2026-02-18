@@ -28,6 +28,12 @@ public class BasicConsumerTest {
         final String topic = "topic0";
         final TopicPartition topicPartition = new TopicPartition(topic, 0);
         final MockConsumer<String, String> mockConsumer = new MockConsumer<>(OffsetResetStrategy.EARLIEST);
+        mockConsumer.updateBeginningOffsets(
+                Map.of(topicPartition, 0L)
+        );
+        mockConsumer.updateEndOffsets(
+                Map.of(topicPartition, 1L)
+        );
         List<String> actualRecords = new ArrayList<>();
         final ConsumerHandle<String, String> recordsHandler = new ConsumerHandle<>(actualRecords);
 

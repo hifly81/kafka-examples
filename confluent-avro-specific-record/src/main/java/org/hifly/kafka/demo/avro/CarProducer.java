@@ -1,6 +1,5 @@
 package org.hifly.kafka.demo.avro;
 
-import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -46,7 +45,7 @@ public class CarProducer {
             Properties producerProperties = new Properties();
             producerProperties.put("bootstrap.servers", BROKER_LIST);
             producerProperties.put("max.block.ms", 15000);
-            producerProperties.put(AbstractKafkaAvroSerDeConfig.AUTO_REGISTER_SCHEMAS, false);
+            producerProperties.put("auto.register.schemas", false);
             producerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
             producerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
             producerProperties.put("schema.registry.url", CONFLUENT_SCHEMA_REGISTRY_URL);
