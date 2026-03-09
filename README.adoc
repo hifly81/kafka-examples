@@ -4072,14 +4072,6 @@ cd kafka-quarkus
 ./mvnw clean compile quarkus:dev
 ----
 
-Run on Openshift machine: 
-
-[source,bash]
-----
-cd kafka-quarkus
-./mvnw clean package -Dquarkus.container-image.build=true -Dquarkus.kubernetes.deploy=true
-----
-
 === Open Liberty MicroProfile v2
 
 Example for a kafka producer and consumer running on an open liberty MicroProfile v2 runtime.
