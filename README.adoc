@@ -95,7 +95,7 @@ If you needed to change the docker image version for the specific components, ju
 
 === Docker Images details
 
-Apache Kafka® docker images are downloaded from Docker Hub link:https://hub.docker.com/r/apache/kafka[_apache/kafka_] and are based on Apache Kafka® version 3.8.x).
+Apache Kafka® docker images are downloaded from Docker Hub link:https://hub.docker.com/r/apache/kafka[_apache/kafka_].
 
 
 === Single-node cluster +
