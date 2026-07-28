@@ -1,10 +1,9 @@
 package org.hifly.kafka.demo.producer.serializer.avro;
 
 import org.apache.avro.Schema;
-import org.apache.kafka.common.record.Record;
+import org.apache.avro.generic.GenericRecord;
 import org.hifly.kafka.demo.producer.ProducerCallback;
 import org.hifly.kafka.demo.producer.RecordMetadataUtil;
-import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
