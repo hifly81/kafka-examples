@@ -45,7 +45,7 @@
         <junit.version>4.13.1</junit.version>
         <curator.version>5.0.0</curator.version>
         <minio.version>8.6.0</minio.version>
-        <jackson.version>2.18.8</jackson.version>
+        <jackson.version>2.18.9</jackson.version>
         <json-version>20231013</json-version>
     </properties>
 
