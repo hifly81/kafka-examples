@@ -3,7 +3,7 @@
 sh scripts/tear-down.sh
 
 echo "Starting docker containers..."
-docker-compose -f kafka-connect-task-distribution/docker-compose.yml --env-file .env up -d
+docker compose -f kafka-connect-task-distribution/docker-compose.yml --env-file .env up -d
 
 echo "Wait 50 seconds..."
 

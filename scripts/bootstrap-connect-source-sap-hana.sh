@@ -10,7 +10,7 @@ mkdir -p kafka-connect-source-sap-hana/data/hana
 chmod a+rwx kafka-connect-source-sap-hana/data/hana
 
 echo "Starting Kafka cluster..."
-docker-compose -f kafka-connect-source-sap-hana/docker-compose.yml --env-file .env up -d
+docker compose -f kafka-connect-source-sap-hana/docker-compose.yml --env-file .env up -d
 
 echo "Wait 120 seconds..."
 

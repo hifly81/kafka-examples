@@ -17,7 +17,7 @@ sleep 3
 cd ..
 
 echo "Starting docker containers..."
-docker-compose -f kafka-smt-aspectj/docker-compose.yml --env-file .env up -d
+docker compose -f kafka-smt-aspectj/docker-compose.yml --env-file .env up -d
 
 echo "Wait 30 seconds..."
 

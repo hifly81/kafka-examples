@@ -13,4 +13,4 @@ sleep 3
 cd ..
 
 echo "Starting docker containers..."
-docker-compose -f performance/docker-compose.yml --env-file .env up -d
+docker compose -f performance/docker-compose.yml --env-file .env up -d

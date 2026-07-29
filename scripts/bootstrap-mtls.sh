@@ -64,4 +64,4 @@ echo  "changeit" > mtls-listener/ssl/kafka.broker.pkey_creds
 
 
 echo "Starting Kafka cluster..."
-docker-compose -f mtls-listener/docker-compose-mtls.yml --env-file .env up -d
+docker compose -f mtls-listener/docker-compose-mtls.yml --env-file .env up -d
