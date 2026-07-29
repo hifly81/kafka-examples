@@ -3,7 +3,7 @@
 sh scripts/tear-down-connect-sink-s3.sh
 
 echo "Starting Kafka cluster..."
-docker-compose -f kafka-connect-sink-s3/docker-compose.yml --env-file .env up -d
+docker compose -f kafka-connect-sink-s3/docker-compose.yml --env-file .env up -d
 
 echo "Wait 20 seconds..."
 

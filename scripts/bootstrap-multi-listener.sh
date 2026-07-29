@@ -44,4 +44,4 @@ echo  "changeit" > multi-listener/ssl/kafka.broker.pkey_creds
 
 
 echo "Starting Kafka cluster..."
-docker-compose -f multi-listener/docker-compose.yml --env-file .env up -d
+docker compose -f multi-listener/docker-compose.yml --env-file .env up -d

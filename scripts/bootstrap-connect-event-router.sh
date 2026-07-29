@@ -3,7 +3,7 @@
 sh scripts/tear-down.sh
 
 echo "Starting docker containers..."
-docker-compose -f kafka-connect-source-event-router/docker-compose.yml --env-file .env up -d
+docker compose -f kafka-connect-source-event-router/docker-compose.yml --env-file .env up -d
 
 echo "Wait 20 seconds..."
 

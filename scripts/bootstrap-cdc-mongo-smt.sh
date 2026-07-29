@@ -4,7 +4,7 @@ sh scripts/tear-down-cdc-mongo.sh
 
 
 echo "Starting kafka docker containers..."
-docker-compose -f cdc-debezium-mongo/docker-compose.yml --env-file .env up -d
+docker compose -f cdc-debezium-mongo/docker-compose.yml --env-file .env up -d
 
 echo "Wait 20 seconds..."
 sleep 20

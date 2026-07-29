@@ -64,4 +64,4 @@ keytool -keystore $SASL_SSL_SECRETS_FOLDER/kafka.client.keystore.jks -alias kafk
 
 
 echo "Starting Kafka cluster..."
-docker-compose -f sasl-ssl/docker-compose.yml --env-file .env up -d
+docker compose -f sasl-ssl/docker-compose.yml --env-file .env up -d

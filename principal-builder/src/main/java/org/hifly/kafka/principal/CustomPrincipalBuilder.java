@@ -26,7 +26,7 @@ public class CustomPrincipalBuilder implements KafkaPrincipalBuilder, KafkaPrinc
     @Override
     public KafkaPrincipal build(AuthenticationContext authenticationContext) {
         if (!(authenticationContext instanceof SslAuthenticationContext)) {
-            throw new IllegalStateException("Not SSL!");
+            return KafkaPrincipal.ANONYMOUS;
         }
 
         SSLSession session = ((SslAuthenticationContext) authenticationContext).session();

@@ -18,4 +18,4 @@ wget -P quotas/config/grafana/provisioning/dashboards https://raw.githubusercont
 
 
 echo "Starting Kafka cluster..."
-docker-compose -f quotas/docker-compose.yml --env-file .env up -d
+docker compose -f quotas/docker-compose.yml --env-file .env up -d

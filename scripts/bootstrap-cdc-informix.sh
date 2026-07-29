@@ -12,7 +12,7 @@ cp cdc-debezium-informix/jars/jdbc-4.50.10.jar cdc-debezium-informix/jars/debezi
 cp cdc-debezium-informix/jars/manifest.json cdc-debezium-informix/jars/debezium-connector-informix
 
 echo "Starting kafka docker containers..."
-docker-compose -f cdc-debezium-informix/docker-compose.yml --env-file .env up -d
+docker compose -f cdc-debezium-informix/docker-compose.yml --env-file .env up -d
 
 echo "Setup Informix docker container in background..."
 docker run -d --network=cdc-debezium-informix_default -v $(pwd)/cdc-debezium-informix/config/informix_ddl_sample.sql:/tmp/informix_ddl_sample.sql -it --name ifx -h ifx --privileged -e LICENSE=accept \

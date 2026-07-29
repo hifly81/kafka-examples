@@ -93,4 +93,4 @@ echo  "changeit" > principal-builder/ssl/kafka.broker.pkey_creds
 
 
 echo "Starting Kafka cluster..."
-docker-compose -f principal-builder/docker-compose.yml --env-file .env up -d
+docker compose -f principal-builder/docker-compose.yml --env-file .env up -d

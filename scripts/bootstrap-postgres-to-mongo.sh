@@ -3,7 +3,7 @@
 sh scripts/tear-down.sh
 
 echo "Starting docker containers..."
-docker-compose -f postgres-to-mongo/docker-compose.yml --env-file .env up -d
+docker compose -f postgres-to-mongo/docker-compose.yml --env-file .env up -d
 
 sleep 30
 
