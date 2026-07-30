@@ -1,7 +1,7 @@
 = Practical examples with Apache Kafka®
 :author: Giovanni Marigi
 :email: gio.marigi@gmail.com
-:revdate: April 24, 2025
+:revdate: July 30, 2026
 :revnumber: 1.2.1
 :version-label!:
 :toc: left
@@ -4835,49 +4835,22 @@ Run OpenTelemetry collector (otlp protocol on port 4317) and link:https://www.ja
 scripts/bootstrap-tracing.sh
 ----
 
-Create _sum-input-topic_ and _sum-output-topic_ topics:
+Send messages to _tracing-input_ input topics:
 
 [source,bash]
 ----
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic sum-input-topic --replication-factor 1 --partitions 1
-docker exec -it broker kafka-topics --bootstrap-server broker:9092 --create --topic sum-output-topic --replication-factor 1 --partitions 1
-----
-
-Run the stream application with the OpenTelemetry agent:
-
-[source,bash]
-----
-cd kafka-streams
-mvn clean package
-cd ..
-
-export OTEL_SERVICE_NAME=stream-sum-service
-export OTEL_TRACES_EXPORTER=otlp
-
-java -javaagent:kafka-distributed-tracing/app/opentelemetry-javaagent.jar -Dotel.instrumentation.messaging.experimental.receive-telemetry.enabled=true -jar kafka-streams/target/kafka-streams-1.2.1.jar
-----
-
-Send messages to _sum-input-topic_ input topics:
-
-[source,bash]
-----
-docker exec -it broker kafka-console-producer --broker-list broker:9092 --topic sum-input-topic --property "parse.key=true" --property "key.separator=:"
+docker exec -it broker kafka-console-producer \
+  --bootstrap-server broker:9092 \
+  --topic tracing-input
 "John":1
 "Mark":2
 "John":5
 ----
 
-Read from _sum-output-topic_ topic:
-
-[source,bash]
-----
-docker exec -it broker kafka-console-consumer --topic sum-output-topic --bootstrap-server broker:9092 --from-beginning --property print.key=true --property key.separator=" : " --value-deserializer "org.apache.kafka.common.serialization.IntegerDeserializer"
-----
-
 Open the JaegerUI on http://localhost:16686, you will have a list of traces from the streaming application.
 
-.List of traces in Jaeger UI
-image::images/traces.png[Traces]
+Search for service kafka-streams-tracing, you will see correlated spans for the consumer, stream processor, and producer steps linked under the same trace ID.
+
 
 Teardown:
 
