@@ -1,6 +1,4 @@
 ---
-version: '2'
-
 services:
 
   broker:
@@ -42,9 +40,29 @@ services:
     volumes:
       - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
     ports:
-      - "13133:13133" # Health_check extension
+      - "13133:13133"
     depends_on:
       - jaeger
+
+  streams-app:
+    container_name: streams-app
+    image: eclipse-temurin:17-jre
+    volumes:
+      - ./app/opentelemetry-javaagent.jar:/app/opentelemetry-javaagent.jar
+      - ./streams-app/target/streams-tracing-app.jar:/app/streams-tracing-app.jar
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: broker:9092
+      JAVA_TOOL_OPTIONS: >-
+        -javaagent:/app/opentelemetry-javaagent.jar
+        -Dotel.service.name=kafka-streams-tracing
+        -Dotel.exporter.otlp.endpoint=http://otel:4317
+        -Dotel.traces.exporter=otlp
+        -Dotel.metrics.exporter=none
+        -Dotel.logs.exporter=none
+    command: ["java", "-jar", "/app/streams-tracing-app.jar"]
+    depends_on:
+      - broker
+      - otel-collector
 
 volumes:
   db:
